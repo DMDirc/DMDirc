@@ -48,7 +48,6 @@ public class CertificateInformationEntry {
      */
     public CertificateInformationEntry(final String title, final String value,
             final boolean invalid, final boolean missing) {
-        super();
         this.title = title;
         this.value = value;
         this.invalid = invalid;

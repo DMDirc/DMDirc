@@ -107,7 +107,7 @@ public enum PopupType {
      *
      * @param arity The arity of the type
      */
-    private PopupType(final int arity) {
+    PopupType(final int arity) {
         this.arity = arity;
     }
 

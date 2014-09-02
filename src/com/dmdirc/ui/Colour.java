@@ -28,13 +28,13 @@ package com.dmdirc.ui;
 public class Colour {
 
     /** The colour white. */
-    public final static Colour WHITE = new Colour(255, 255, 255);
+    public static final Colour WHITE = new Colour(255, 255, 255);
     /** The colour light gray. */
-    public final static Colour LIGHT_GRAY = new Colour(192, 192, 192);
+    public static final Colour LIGHT_GRAY = new Colour(192, 192, 192);
     /** The colour gray. */
-    public final static Colour GRAY = new Colour(128, 128, 128);
+    public static final Colour GRAY = new Colour(128, 128, 128);
     /** The colour dark gray. */
-    public final static Colour DARK_GRAY = new Colour(64, 64, 64);
+    public static final Colour DARK_GRAY = new Colour(64, 64, 64);
     /** The colour black. */
     public static final Colour BLACK = new Colour(0, 0, 0);
     /** The colour red. */

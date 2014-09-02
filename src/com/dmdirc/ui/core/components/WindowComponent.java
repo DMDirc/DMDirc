@@ -47,7 +47,7 @@ public enum WindowComponent {
      *
      * @param identifier The identifier for this window component
      */
-    private WindowComponent(final String identifier) {
+    WindowComponent(final String identifier) {
         this.identifier = identifier;
     }
 

@@ -31,7 +31,7 @@ import java.util.Deque;
 public final class ConditionTree {
 
     /** The possible operations on a condition tree. */
-    public static enum OPERATION {
+    public enum OPERATION {
 
         /** Only passes if both subtrees are true. */
         AND,

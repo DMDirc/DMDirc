@@ -45,7 +45,6 @@ public class CertificateChainEntry {
      */
     public CertificateChainEntry(final String name, final boolean trusted,
             final boolean invalid) {
-        super();
         this.name = name;
         this.trusted = trusted;
         this.invalid = invalid;

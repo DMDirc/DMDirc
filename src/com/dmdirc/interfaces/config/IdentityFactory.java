@@ -40,8 +40,8 @@ public interface IdentityFactory {
      *
      * @return A config provider for the channel
      */
-    @Precondition(value = {"The specified network is non-null and not empty",
-        "The specified channel is non-null and not empty"})
+    @Precondition({"The specified network is non-null and not empty",
+            "The specified channel is non-null and not empty"})
     ConfigProvider createChannelConfig(String network, String channel);
 
     /**
@@ -51,7 +51,7 @@ public interface IdentityFactory {
      *
      * @return A config provider for the network
      */
-    @Precondition(value = "The specified network is non-null and not empty")
+    @Precondition("The specified network is non-null and not empty")
     ConfigProvider createNetworkConfig(String network);
 
     /**
@@ -61,7 +61,7 @@ public interface IdentityFactory {
      *
      * @return A config provider for the server
      */
-    @Precondition(value = "The specified server is non-null and not empty")
+    @Precondition("The specified server is non-null and not empty")
     ConfigProvider createServerConfig(String server);
 
     /**

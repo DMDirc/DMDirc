@@ -51,7 +51,7 @@ public enum UpdateStatus {
     /** Textual description of the status. */
     private final String description;
 
-    private UpdateStatus(final String description) {
+    UpdateStatus(final String description) {
         this.description = description;
     }
 

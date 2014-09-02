@@ -122,7 +122,7 @@ public class Help extends Command implements IntelligentCommand {
             final String name) {
         final Map.Entry<CommandInfo, Command> command;
 
-        if (name.length() > 0 && name.charAt(0) == getController().getCommandChar()) {
+        if (!name.isEmpty() && name.charAt(0) == getController().getCommandChar()) {
             command = getController().getCommand(name.substring(1));
         } else {
             command = getController().getCommand(name);

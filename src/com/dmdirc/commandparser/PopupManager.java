@@ -82,7 +82,7 @@ public class PopupManager {
         final PopupMenu res = new PopupMenu();
 
         for (String item : configManager.getOptionList("popups", menuName)) {
-            if (item.length() > 0 && item.charAt(0) == '<') {
+            if (!item.isEmpty() && item.charAt(0) == '<') {
                 res.addAll(getMenu(item.substring(1), type, configManager).getItems());
             } else {
                 res.add(getItem(item, type, configManager));
@@ -118,7 +118,7 @@ public class PopupManager {
             final String name = item.substring(0, colon);
             final String command = item.substring(colon + 1);
 
-            if (command.length() > 0 && command.charAt(0) == '<') {
+            if (!command.isEmpty() && command.charAt(0) == '<') {
                 res = new PopupMenuItem(commandController,
                         name, getMenu(command.substring(1),
                                 type, configManager));

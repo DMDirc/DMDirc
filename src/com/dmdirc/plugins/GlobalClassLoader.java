@@ -45,7 +45,6 @@ public final class GlobalClassLoader extends ClassLoader {
      * @param manager Plugin Manager that this GCL is used by.
      */
     public GlobalClassLoader(final PluginManager manager) {
-        super();
         this.manager = manager;
     }
 

@@ -63,7 +63,6 @@ public class ActionGroup implements Iterable<Action> {
      * @param name The name of this action group
      */
     public ActionGroup(final String name) {
-        super();
 
         this.name = name;
     }

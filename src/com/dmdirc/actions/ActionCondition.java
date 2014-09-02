@@ -52,7 +52,6 @@ public class ActionCondition {
      */
     public ActionCondition(final int arg, final ActionComponent component,
             final ActionComparison comparison, final String target) {
-        super();
 
         this.arg = arg;
         this.component = component;
@@ -69,7 +68,6 @@ public class ActionCondition {
      */
     public ActionCondition(final String starget, final ActionComparison comparison,
             final String target) {
-        super();
 
         this.arg = -1;
         this.starget = starget;

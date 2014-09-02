@@ -74,7 +74,6 @@ public final class ZipResourceManager extends ResourceManager {
      * @param file ZipFile to load
      */
     protected ZipResourceManager(final ZipFile file) {
-        super();
         zipFile = file;
         entries = new ArrayList<>();
         final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();

@@ -46,7 +46,6 @@ public class PluginFilesHelper {
      * @param pluginInfo This plugin's information object
      */
     public PluginFilesHelper(final PluginInfo pluginInfo) {
-        super();
         this.pluginInfo = pluginInfo;
         this.metaData = pluginInfo.getMetaData();
         filesDir = initFilesDir();

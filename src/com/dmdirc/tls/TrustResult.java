@@ -44,7 +44,7 @@ public enum TrustResult {
      *
      * @param trusted Whether or not this result means the cert chain is trusted.
      */
-    private TrustResult(final boolean trusted) {
+    TrustResult(final boolean trusted) {
         this.trusted = trusted;
     }
 

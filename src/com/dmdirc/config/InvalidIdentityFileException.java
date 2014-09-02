@@ -32,7 +32,6 @@ public class InvalidIdentityFileException extends Exception {
 
     /** Creates a new instance of InvalidIdentityFileException. */
     public InvalidIdentityFileException() {
-        super();
     }
 
     /**

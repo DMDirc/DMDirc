@@ -149,7 +149,7 @@ public class URIParser {
 
             host = portParts[0];
 
-            if (portParts[1].length() > 0 && portParts[1].charAt(0) == '+') {
+            if (!portParts[1].isEmpty() && portParts[1].charAt(0) == '+') {
                 ssl = true;
                 portParts[1] = portParts[1].substring(1);
             }

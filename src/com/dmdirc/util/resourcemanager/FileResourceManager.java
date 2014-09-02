@@ -49,7 +49,6 @@ public final class FileResourceManager extends ResourceManager {
      * @param basePath Base path for the resource manager
      */
     protected FileResourceManager(final String basePath) {
-        super();
 
         this.basePath = basePath;
     }

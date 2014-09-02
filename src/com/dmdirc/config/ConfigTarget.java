@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
 public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
 
     /** The possible target types. */
-    public static enum TYPE {
+    public enum TYPE {
 
         /** Client-wide default settings. */
         GLOBALDEFAULT,

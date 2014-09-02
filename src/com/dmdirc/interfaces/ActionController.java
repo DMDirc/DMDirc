@@ -44,7 +44,7 @@ public interface ActionController {
      *
      * @param action The action to be registered
      */
-    @Precondition(value = "The specified action is not null")
+    @Precondition("The specified action is not null")
     void addAction(final Action action);
 
     /**
@@ -60,13 +60,9 @@ public interface ActionController {
      * @param oldName The old name of the group
      * @param newName The new name of the group
      */
-    @Precondition(value = {
-        "The old name is non-null and not empty",
-        "The old name is an existing group",
-        "The new name is non-null and not empty",
-        "The new name is not an existing group",
-        "The old name does not equal the new name"
-    })
+    @Precondition({"The old name is non-null and not empty", "The old name is an existing group",
+            "The new name is non-null and not empty", "The new name is not an existing group",
+            "The old name does not equal the new name"})
     void changeGroupName(final String oldName, final String newName);
 
     /**
@@ -76,10 +72,8 @@ public interface ActionController {
      *
      * @return The newly created group
      */
-    @Precondition(value = {
-        "The specified group is non-null and not empty",
-        "The specified group is not an existing group"
-    })
+    @Precondition({"The specified group is non-null and not empty",
+            "The specified group is not an existing group"})
     ActionGroup createGroup(final String group);
 
     /**
@@ -87,10 +81,8 @@ public interface ActionController {
      *
      * @param group The group to be removed
      */
-    @Precondition(value = {
-        "The specified group is non-null and not empty",
-        "The specified group is an existing group"
-    })
+    @Precondition({"The specified group is non-null and not empty",
+            "The specified group is an existing group"})
     void deleteGroup(final String group);
 
     /**
@@ -100,7 +92,7 @@ public interface ActionController {
      *
      * @return A list of compatible action comparisons
      */
-    @Precondition(value = "The specified target is not null")
+    @Precondition("The specified target is not null")
     List<ActionComparison> findCompatibleComparisons(final Class<?> target);
 
     /**
@@ -110,7 +102,7 @@ public interface ActionController {
      *
      * @return A list of compatible action components
      */
-    @Precondition(value = "The specified target is not null")
+    @Precondition("The specified target is not null")
     List<ActionComponent> findCompatibleComponents(final Class<?> target);
 
     /**
@@ -120,7 +112,7 @@ public interface ActionController {
      *
      * @return A list of compatible action types
      */
-    @Precondition(value = "The specified type is not null")
+    @Precondition("The specified type is not null")
     List<ActionType> findCompatibleTypes(final ActionType type);
 
     /**
@@ -131,7 +123,7 @@ public interface ActionController {
      *
      * @return The actiontype with the specified name, or null on failure
      */
-    @Precondition(value = "The specified type is non-null and not empty")
+    @Precondition("The specified type is non-null and not empty")
     ActionComparison getComparison(final String type);
 
     /**
@@ -142,7 +134,7 @@ public interface ActionController {
      *
      * @return The actioncomponent with the specified name, or null on failure
      */
-    @Precondition(value = "The specified type is non-null and not empty")
+    @Precondition("The specified type is non-null and not empty")
     ActionComponent getComponent(final String type);
 
     /**
@@ -189,7 +181,7 @@ public interface ActionController {
      *
      * @param comps An array of ActionComparisons to be registered
      */
-    @Precondition(value = "None of the specified ActionComparisons are null")
+    @Precondition("None of the specified ActionComparisons are null")
     void registerComparisons(final ActionComparison[] comps);
 
     /**
@@ -197,7 +189,7 @@ public interface ActionController {
      *
      * @param comps An array of ActionComponents to be registered
      */
-    @Precondition(value = "None of the specified ActionComponents are null")
+    @Precondition("None of the specified ActionComponents are null")
     void registerComponents(final ActionComponent[] comps);
 
     /**
@@ -221,7 +213,7 @@ public interface ActionController {
      *
      * @param newTypes An array of ActionTypes to be registered
      */
-    @Precondition(value = "None of the specified ActionTypes are null")
+    @Precondition("None of the specified ActionTypes are null")
     void registerTypes(final ActionType[] newTypes);
 
     /**
@@ -229,7 +221,7 @@ public interface ActionController {
      *
      * @param action The action to be unregistered
      */
-    @Precondition(value = "The specified action is not null")
+    @Precondition("The specified action is not null")
     void removeAction(final Action action);
 
     /**
@@ -255,11 +247,10 @@ public interface ActionController {
      * @return True if the event should be processed, or false if an action listener has requested
      *         the event be skipped.
      */
-    @Precondition(value = {
-        "The specified ActionType is not null",
-        "The specified ActionType has a valid ActionMetaType",
-        "The length of the arguments array equals the arity of the ActionType's ActionMetaType"
-    })
+    @Precondition({"The specified ActionType is not null",
+            "The specified ActionType has a valid ActionMetaType",
+            "The length of the arguments array equals the arity of the ActionType's " +
+                    "ActionMetaType"})
     boolean triggerEvent(final ActionType type, final StringBuffer format, final Object... arguments);
 
     /**
