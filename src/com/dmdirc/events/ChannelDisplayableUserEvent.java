@@ -51,7 +51,7 @@ public abstract class ChannelDisplayableUserEvent extends ChannelUserEvent imple
     }
 
     @Override
-    public void setDisplayFormat(String format) {
+    public void setDisplayFormat(final String format) {
         this.displayFormatRef.set(format);
     }
 

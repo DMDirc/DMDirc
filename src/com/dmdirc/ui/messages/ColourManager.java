@@ -49,7 +49,7 @@ public class ColourManager {
     /** Config manager to read settings from. */
     private final AggregateConfigProvider configManager;
     /** Actual colours we're using for the 16 IRC colours. */
-    private Colour[] ircColours = DEFAULT_COLOURS.clone();
+    private final Colour[] ircColours = DEFAULT_COLOURS.clone();
 
     /**
      * Creates a new instance of {@link ColourManager}.
@@ -149,7 +149,7 @@ public class ColourManager {
             return Colour.WHITE;
         }
 
-        Colour colour;
+        final Colour colour;
         try {
             colour = new Colour(
                     Integer.parseInt(hex.substring(0, 2), 16),

@@ -70,7 +70,7 @@ public class URIParser {
         final String authority;
         final String host;
         final String portString;
-        int port;
+        final int port;
         final String path;
         final String query;
         final String fragment;
@@ -133,7 +133,7 @@ public class URIParser {
         }
 
         boolean ssl = false;
-        String host;
+        final String host;
         String pass = null;
         int port = -1;
 

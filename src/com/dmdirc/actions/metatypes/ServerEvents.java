@@ -56,9 +56,9 @@ public enum ServerEvents implements ActionMetaType {
     /** Server event type. */
     SERVER_EVENT(new String[]{"server"}, Connection.class);
     /** The names of the arguments for this meta type. */
-    private String[] argNames;
+    private final String[] argNames;
     /** The classes of the arguments for this meta type. */
-    private Class<?>[] argTypes;
+    private final Class<?>[] argTypes;
 
     /**
      * Creates a new instance of this meta-type.

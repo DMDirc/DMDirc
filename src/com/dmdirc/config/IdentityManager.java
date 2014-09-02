@@ -690,7 +690,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @param configManager The manager to be initialised.
      */
     private void setUpConfigManager(final ConfigManager configManager) {
-        List<ConfigProvider> sources = getIdentitiesForManager(configManager);
+        final List<ConfigProvider> sources = getIdentitiesForManager(configManager);
 
         for (ConfigProvider identity : sources) {
             log.trace("Found {}", identity);

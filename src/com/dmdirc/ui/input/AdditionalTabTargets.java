@@ -35,7 +35,7 @@ public final class AdditionalTabTargets extends ArrayList<String> {
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /** Whether to include normal targets. */
-    private List<TabCompletionType> includes = new ArrayList<>(Arrays.asList(TabCompletionType.
+    private final List<TabCompletionType> includes = new ArrayList<>(Arrays.asList(TabCompletionType.
             values()));
 
     /**

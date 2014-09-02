@@ -103,7 +103,7 @@ public class PopupManager {
      */
     private PopupMenuItem getItem(final String item,
             final PopupType type, final AggregateConfigProvider configManager) {
-        PopupMenuItem res;
+        final PopupMenuItem res;
 
         if ("-".equals(item)) {
             res = new PopupMenuItem(commandController);

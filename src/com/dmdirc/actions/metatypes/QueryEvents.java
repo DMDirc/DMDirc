@@ -39,9 +39,9 @@ public enum QueryEvents implements ActionMetaType {
     QUERY_SOURCED_EVENT_WITH_ARG(new String[]{"query", "source", "message"}, Query.class,
             ClientInfo.class, String.class);
     /** The names of the arguments for this meta type. */
-    private String[] argNames;
+    private final String[] argNames;
     /** The classes of the arguments for this meta type. */
-    private Class<?>[] argTypes;
+    private final Class<?>[] argTypes;
 
     /**
      * Creates a new instance of this meta-type.

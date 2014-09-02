@@ -29,7 +29,7 @@ import com.dmdirc.plugins.PluginInfo;
  */
 public abstract class PluginEvent extends DMDircEvent {
 
-    private PluginInfo plugin;
+    private final PluginInfo plugin;
 
     public PluginEvent(final PluginInfo plugin) {
         this.plugin = plugin;

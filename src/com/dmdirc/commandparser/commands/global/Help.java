@@ -120,7 +120,7 @@ public class Help extends Command implements IntelligentCommand {
      */
     private void showCommand(final FrameContainer origin, final boolean isSilent,
             final String name) {
-        Map.Entry<CommandInfo, Command> command;
+        final Map.Entry<CommandInfo, Command> command;
 
         if (name.length() > 0 && name.charAt(0) == getController().getCommandChar()) {
             command = getController().getCommand(name.substring(1));

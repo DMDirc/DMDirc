@@ -257,7 +257,7 @@ public final class ConditionTree {
                 final ConditionTree third = readTerm(myStack);
 
                 if (third != null && second instanceof Character) {
-                    OPERATION op;
+                    final OPERATION op;
 
                     if ((Character) second == '&') {
                         op = OPERATION.AND;

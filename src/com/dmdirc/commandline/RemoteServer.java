@@ -68,7 +68,7 @@ public class RemoteServer implements RemoteInterface {
      * Binds to the RMI registry so that other clients may find this remote server.
      */
     public void bind() {
-        RemoteInterface stub;
+        final RemoteInterface stub;
 
         try {
             stub = (RemoteInterface) UnicastRemoteObject.exportObject(this, 0);

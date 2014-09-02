@@ -42,7 +42,7 @@ public class ServerStatus {
     /** The current state of the server. */
     private ServerState state = ServerState.DISCONNECTED;
     /** A history of transactions for debugging purposes. */
-    private RollingList<String> history = new RollingList<>(10);
+    private final RollingList<String> history = new RollingList<>(10);
     /** A list of known parser hashcodes. */
     private final List<Integer> parsers = new ArrayList<>();
 

@@ -247,7 +247,7 @@ public class ErrorManager implements ConfigChangeListener {
      * @return True if a duplicate error has already been registered, false otherwise
      */
     protected boolean addError(final ProgramError error) {
-        int index;
+        final int index;
 
         synchronized (errors) {
             index = errors.indexOf(error);

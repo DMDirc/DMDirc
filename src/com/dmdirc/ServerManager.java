@@ -245,7 +245,7 @@ public class ServerManager implements ServerFactory {
         if (server.getState().isDisconnected()) {
             server.connect(uri, profile);
         } else {
-            Collection<? extends ChannelJoinRequest> joinRequests =
+            final Collection<? extends ChannelJoinRequest> joinRequests =
                     server.getParser().extractChannels(uri);
             server.join(joinRequests.toArray(new ChannelJoinRequest[joinRequests.size()]));
         }

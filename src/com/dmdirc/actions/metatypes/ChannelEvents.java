@@ -60,9 +60,9 @@ public enum ChannelEvents implements ActionMetaType {
     CHANNEL_SOURCED_EVENT_WITH_VICTIM(new String[]{"channel", "user", "victim", "message"},
             Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
     /** The names of the arguments for this meta type. */
-    private String[] argNames;
+    private final String[] argNames;
     /** The classes of the arguments for this meta type. */
-    private Class<?>[] argTypes;
+    private final Class<?>[] argTypes;
 
     /**
      * Creates a new instance of this meta-type.

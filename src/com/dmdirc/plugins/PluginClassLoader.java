@@ -117,7 +117,7 @@ public class PluginClassLoader extends ClassLoader {
             }
         }
 
-        ResourceManager res;
+        final ResourceManager res;
         try {
             res = pluginInfo.getResourceManager();
         } catch (IOException ioe) {
@@ -151,7 +151,7 @@ public class PluginClassLoader extends ClassLoader {
         }
 
         // We are meant to be loading this one!
-        byte[] data;
+        final byte[] data;
         if (res.resourceExists(fileName)) {
             data = res.getResourceBytes(fileName);
         } else {

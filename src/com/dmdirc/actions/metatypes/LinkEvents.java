@@ -37,9 +37,9 @@ public enum LinkEvents implements ActionMetaType {
     /** Nickname link clicked. */
     NICKNAME_CLICKED(new String[]{"Window", "Nickname"}, Window.class, String.class);
     /** The names of the arguments for this meta type. */
-    private String[] argNames;
+    private final String[] argNames;
     /** The classes of the arguments for this meta type. */
-    private Class<?>[] argTypes;
+    private final Class<?>[] argTypes;
 
     /**
      * Creates a new instance of this meta-type.

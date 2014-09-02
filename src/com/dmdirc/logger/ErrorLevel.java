@@ -36,9 +36,9 @@ public enum ErrorLevel {
     /** Unknown priority error. */
     UNKNOWN("Unknown", "info");
     /** Error level string. */
-    private String value;
+    private final String value;
     /** Error level icon. */
-    private String icon;
+    private final String icon;
 
     /**
      * Instantiates the enum.

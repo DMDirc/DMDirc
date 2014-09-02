@@ -53,7 +53,7 @@ public final class DMDircResourceManager {
         final CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
         try {
             final File jarFile = new File(codeSource.getLocation().toURI().getPath());
-            String jarDir;
+            final String jarDir;
             if (isRunningFromJar()) {
                 jarDir = jarFile.getParentFile().getPath();
             } else {

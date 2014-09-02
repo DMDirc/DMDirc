@@ -243,7 +243,7 @@ public class ActionSubstitutor {
                     ? new CommandArguments(commandController, (String) args[2])
                     : new CommandArguments(commandController, Arrays.asList((String[]) args[2]));
 
-            int start;
+            final int start;
             int end;
 
             start = end = Integer.parseInt(numberMatcher.group(1)) - 1;

@@ -425,10 +425,10 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @return True if the condition is valid, false otherwise
      */
     private boolean readCondition(final Map<String, String> data) {
-        int arg;
+        final int arg;
         ActionComponent component = null;
-        ActionComparison comparison;
-        String target;
+        final ActionComparison comparison;
+        final String target;
         String starget = null;
 
         // ------ Read the argument
@@ -502,7 +502,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      */
     private ActionComponent readComponent(final Map<String, String> data, final int arg) {
         final String componentName = data.get("component");
-        ActionComponent component;
+        final ActionComponent component;
 
         if (componentName.indexOf('.') == -1) {
             component = actionController.getComponent(componentName);

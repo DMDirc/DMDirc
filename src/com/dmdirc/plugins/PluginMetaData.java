@@ -111,7 +111,7 @@ public class PluginMetaData {
     /** The URL to load the metadata from. */
     private final URL url;
     /** The parent plugin manager. */
-    private PluginManager manager;
+    private final PluginManager manager;
 
     /**
      * Creates a new meta data reader for a config file at the specified URL.

@@ -121,7 +121,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         this.filename = new File(metadata.getPluginUrl().getPath()).getName();
         this.metaData = metadata;
 
-        ResourceManager res;
+        final ResourceManager res;
 
         try {
             res = getResourceManager();
@@ -222,8 +222,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         if (metaData.getParent() != null) {
             final PluginInfo parentInfo = metaData.getManager()
                     .getPluginInfoByName(metaData.getParent());
-            Plugin parent = parentInfo.getPlugin();
-            ObjectGraph parentGraph = parent.getObjectGraph();
+            final Plugin parent = parentInfo.getPlugin();
+            final ObjectGraph parentGraph = parent.getObjectGraph();
             if (parentGraph != null) {
                 return parentGraph;
             }

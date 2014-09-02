@@ -132,7 +132,7 @@ public abstract class ResourceManager {
             return false;
         }
 
-        File newDir;
+        final File newDir;
 
         if (usePath && resourceName.indexOf('/') > -1) {
             newDir = new File(directory,

@@ -158,7 +158,7 @@ public class Main {
         }
 
         try {
-            ClientModule clientModule = new ClientModule();
+            final ClientModule clientModule = new ClientModule();
             final ObjectGraph graph = ObjectGraph.create(clientModule);
             clientModule.setObjectGraph(graph);
 

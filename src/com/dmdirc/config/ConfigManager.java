@@ -246,7 +246,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      * @return True if the identity applies, false otherwise
      */
     public boolean identityApplies(final ConfigProvider identity) {
-        String comp;
+        final String comp;
 
         switch (identity.getTarget().getType()) {
             case PROTOCOL:

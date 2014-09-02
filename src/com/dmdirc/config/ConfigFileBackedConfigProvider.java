@@ -313,7 +313,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     @Override
     public void setOption(final String domain, final String option,
             final String value) {
-        String oldValue;
+        final String oldValue;
         boolean unset = false;
 
         synchronized (this) {

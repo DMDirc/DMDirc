@@ -75,7 +75,7 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     @Override
     public boolean hasOptionString(final String domain, final String option,
             final Validator<String> validator) {
-        String value;
+        final String value;
 
         return hasOption(domain, option, validator)
                 && !(value = getOption(domain, option, validator)).isEmpty()
@@ -101,7 +101,7 @@ public abstract class BaseConfigProvider implements ReadOnlyConfigProvider {
     public String getOptionString(final String domain, final String option,
             final boolean required, final Validator<String> validator,
             final String... fallbacks) {
-        String value;
+        final String value;
 
         final Validator<String> newValidator = required && fallbacks.length == 0
                 ? ValidatorChain.<String>builder().addValidator(

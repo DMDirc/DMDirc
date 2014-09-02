@@ -103,7 +103,7 @@ public class CommandFlagHandler {
         int offset;
         for (offset = 0; offset < arguments.getArguments().length; offset++) {
             final String arg = arguments.getArguments()[offset];
-            String name;
+            final String name;
 
             if (arg.startsWith("--")
                     && flags.containsKey(name = arg.substring(2).toLowerCase())) {

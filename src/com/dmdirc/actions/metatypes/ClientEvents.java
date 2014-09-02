@@ -65,9 +65,9 @@ public enum ClientEvents implements ActionMetaType {
     UNKNOWN_COMMAND(new String[]{"source", "command", "arguments"}, FrameContainer.class,
             String.class, String[].class);
     /** The names of the arguments for this meta type. */
-    private String[] argNames;
+    private final String[] argNames;
     /** The classes of the arguments for this meta type. */
-    private Class<?>[] argTypes;
+    private final Class<?>[] argTypes;
 
     /**
      * Creates a new instance of this meta-type.
