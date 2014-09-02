@@ -25,16 +25,10 @@ package com.dmdirc.events;
 import com.dmdirc.Channel;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 /**
  * Base type for displayable events that occur in channels against users.
  */
-public abstract class ChannelDisplayableUserEvent extends ChannelUserEvent implements
-        DisplayableEvent {
-
-    /** The display format to use for this event. */
-    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
+public abstract class ChannelDisplayableUserEvent extends ChannelUserEvent {
 
     public ChannelDisplayableUserEvent(final long timestamp, final Channel channel,
             final ChannelClientInfo user) {
@@ -43,16 +37,6 @@ public abstract class ChannelDisplayableUserEvent extends ChannelUserEvent imple
 
     public ChannelDisplayableUserEvent(final Channel channel, final ChannelClientInfo user) {
         super(channel, user);
-    }
-
-    @Override
-    public String getDisplayFormat() {
-        return displayFormatRef.get();
-    }
-
-    @Override
-    public void setDisplayFormat(final String format) {
-        this.displayFormatRef.set(format);
     }
 
 }
