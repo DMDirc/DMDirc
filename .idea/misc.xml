@@ -2,11 +2,12 @@
 <project version="4">
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
-    <list size="4">
+    <list size="5">
       <item index="0" class="java.lang.String" itemvalue="com.dmdirc.config.ConfigBinding" />
-      <item index="1" class="java.lang.String" itemvalue="com.google.common.eventbus.Subscribe" />
-      <item index="2" class="java.lang.String" itemvalue="dagger.Provides" />
-      <item index="3" class="java.lang.String" itemvalue="net.engio.mbassy.listener.Handler" />
+      <item index="1" class="java.lang.String" itemvalue="com.dmdirc.plugins.Exported" />
+      <item index="2" class="java.lang.String" itemvalue="com.google.common.eventbus.Subscribe" />
+      <item index="3" class="java.lang.String" itemvalue="dagger.Provides" />
+      <item index="4" class="java.lang.String" itemvalue="net.engio.mbassy.listener.Handler" />
     </list>
   </component>
   <component name="NullableNotNullManager">
