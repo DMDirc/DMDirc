@@ -22,35 +22,19 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 /**
- * Represents the result set from a tab completion operation.
+ * Describes a set of matches from a tab completion attempt.
  */
-public class TabCompleterResult {
+public class TabCompletionMatches {
 
-    /**
-     * The config provider to read settings from.
-     */
-    private final AggregateConfigProvider configProvider;
     /**
      * The result list for this tab completer.
      */
-    private final List<String> results;
-
-    /**
-     * Creates a new instance of TabCompleterResult with an empty result set.
-     *
-     * @param configProvider The config provider to read settings from.
-     */
-    public TabCompleterResult(final AggregateConfigProvider configProvider) {
-        this.configProvider = configProvider;
-        this.results = new ArrayList<>();
-    }
+    private final List<String> results = new ArrayList<>();
 
     /**
      * Adds a result to this result set.
@@ -77,7 +61,7 @@ public class TabCompleterResult {
      *
      * @param additional The results to merge
      */
-    public void merge(final TabCompleterResult additional) {
+    public void merge(final TabCompletionMatches additional) {
         for (String result : additional.getResults()) {
             if (!hasResult(result)) {
                 addResult(result);
@@ -95,41 +79,12 @@ public class TabCompleterResult {
     }
 
     /**
-     * Returns the longest substring that matches all results.
-     *
-     * @return longest possible substring matching all results
-     */
-    public String getBestSubstring() {
-        if (getResultCount() == 0) {
-            return "";
-        }
-
-        final boolean caseSensitive = configProvider.getOptionBool("tabcompletion", "casesensitive");
-
-        String res = results.get(0);
-        for (String entry : results) {
-            if (caseSensitive) {
-                while (!entry.startsWith(res)) {
-                    res = res.substring(0, res.length() - 1);
-                }
-            } else {
-                while (!entry.toLowerCase(Locale.getDefault()).startsWith(
-                        res.toLowerCase(Locale.getDefault()))) {
-                    res = res.substring(0, res.length() - 1);
-                }
-            }
-        }
-
-        return res;
-    }
-
-    /**
      * Retrieves the list of results that this set contains.
      *
-     * @return An arraylist containing the results
+     * @return An unmodifiable list containing the results
      */
     public List<String> getResults() {
-        return results;
+        return Collections.unmodifiableList(results);
     }
 
     @Override

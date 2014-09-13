@@ -87,9 +87,9 @@ public class TabCompleter {
      *
      * @return A TabCompleterResult containing any matches found
      */
-    public TabCompleterResult complete(final String partial,
+    public TabCompletionMatches complete(final String partial,
             final AdditionalTabTargets additionals) {
-        final TabCompleterResult result = new TabCompleterResult(configManager);
+        final TabCompletionMatches result = new TabCompletionMatches();
 
         final MapList<TabCompletionType, String> targets = new MapList<>(entries);
 
