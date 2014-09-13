@@ -42,6 +42,7 @@ __history
 /test_profile
 /*.key
 /teamcity-info.xml
+/.idea/libraries
 /.idea/workspace.xml
 /.idea/uiDesigner.xml
 /atlassian-ide-plugin.xml

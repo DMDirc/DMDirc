@@ -21,7 +21,6 @@
       <excludeFolder url="file://$MODULE_DIR$/installer" />
       <excludeFolder url="file://$MODULE_DIR$/junitreports" />
       <excludeFolder url="file://$MODULE_DIR$/lib" />
-      <excludeFolder url="file://$MODULE_DIR$/modules" />
       <excludeFolder url="file://$MODULE_DIR$/nbproject" />
       <excludeFolder url="file://$MODULE_DIR$/reports" />
     </content>
