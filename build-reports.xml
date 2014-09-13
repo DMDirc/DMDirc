@@ -31,7 +31,6 @@
     <target name="checkstyle-all" depends="-init-checkstyle">
         <checkstyle config="etc/checkstyle/dmdirc.xml" failureProperty="checkstyle.failure" failOnViolation="false">
             <fileset dir="src/" includes="**/*.java" excludes="net/miginfocom/**"/>
-            <fileset dir="modules/plugins/src/" includes="**/*.java"/>
             <fileset dir="modules/parser/src/" includes="**/*.java"/>
             <fileset dir="modules/util/src/" includes="**/*.java"/>
             <formatter type="xml" tofile="reports/checkstyle.xml"/>
@@ -48,7 +47,6 @@
             <ruleset>etc/pmd/full.xml</ruleset>
             <formatter type="xml" toFile="reports/report-pmd.xml" linkPrefix="http://pmd.sourceforge.net/xref/"/>
             <fileset dir="src/" includes="com/dmdirc/**/*.java" />
-            <fileset dir="modules/plugins/src/" includes="com/dmdirc/**/*.java"/>
             <fileset dir="modules/util/src/" includes="com/dmdirc/**/*.java"/>
             <fileset dir="modules/parser/src/" includes="com/dmdirc/**/*.java"/>
         </pmd>
@@ -60,7 +58,6 @@
             <ruleset>etc/pmd/minimal.xml</ruleset>
             <formatter type="xml" toFile="reports/report-pmd.xml" linkPrefix="http://pmd.sourceforge.net/xref/"/>
             <fileset dir="src/" includes="com/dmdirc/**/*.java" />
-            <fileset dir="modules/plugins/src/" includes="com/dmdirc/**/*.java"/>
             <fileset dir="modules/util/src/" includes="com/dmdirc/**/*.java"/>
             <fileset dir="modules/parser/src/" includes="com/dmdirc/**/*.java"/>
         </pmd>

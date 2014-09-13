@@ -3,12 +3,115 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$/modules/plugins">
-      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/activewindow/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/audio/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/calc/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/calc/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/conditional_execute/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/conditional_execute/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/contactlist/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/contactlist/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dcc/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dcc/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dcop/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dcop/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/debug/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/debug/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dns/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dns/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/exec/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/freedesktop_notifications/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/freedesktop_notifications/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/identd/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/identd/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/lagdisplay/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/lagdisplay/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/logging/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/logging/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_dbus/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_dcop/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_linux_title/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_mplayer/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_vlc/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_vlc/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_windows/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/nickcolours/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/nma/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/notifications/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/nowplaying/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/osd/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/osd/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/osx_integration/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/parser_irc/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/parser_xmpp/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/parserdebug/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/redirect/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/redirect/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/scriptplugin/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/serverlistdialog/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/serverlists/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/sessionlock/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/systray/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/tabcompletion_bash/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/tabcompletion_mirc/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/time/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/ui_swing/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/ui_swing/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/windowflashing/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/windowstatus/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/contactlist/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dcc/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/freedesktop_notifications/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_vlc/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_windows/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/nowplaying/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/osd/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/ui_swing/res" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/activewindow/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/audio/build" />
       <excludeFolder url="file://$MODULE_DIR$/modules/plugins/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/calc/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/conditional_execute/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/dcc/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/dcop/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/debug/build" />
       <excludeFolder url="file://$MODULE_DIR$/modules/plugins/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/dns/build" />
       <excludeFolder url="file://$MODULE_DIR$/modules/plugins/etc" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/exec/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/freedesktop_notifications/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/identd/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/lagdisplay/build" />
       <excludeFolder url="file://$MODULE_DIR$/modules/plugins/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/logging/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_dbus/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_dcop/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_linux_title/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_mplayer/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_vlc/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_windows/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/nickcolours/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/nma/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/notifications/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/nowplaying/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/osd/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/osx_integration/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/parser_irc/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/parser_xmpp/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/parserdebug/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/redirect/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/scriptplugin/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/serverlistdialog/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/serverlists/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/sessionlock/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/systray/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/tabcompletion_bash/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/tabcompletion_mirc/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/time/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/ui_swing/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/windowflashing/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/windowstatus/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
