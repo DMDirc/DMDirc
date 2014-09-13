@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.ui.Colour;
+import com.dmdirc.util.colours.Colour;
 
 /**
  * Describes a property that may be set on a {@link DisplayableEvent} to affect its display.

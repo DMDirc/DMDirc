@@ -26,7 +26,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.Colour;
+import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.validators.ColourValidator;
 
 import java.util.HashMap;
@@ -180,33 +180,6 @@ public class ColourManager {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid colour: " + number);
             return Colour.WHITE;
         }
-    }
-
-    /**
-     * Retrieves the hex representation of the specified colour.
-     *
-     * @param colour The colour to be parsed
-     *
-     * @return A 6-digit hex string representing the colour
-     */
-    public static String getHex(final Colour colour) {
-        final int r = colour.getRed();
-        final int g = colour.getGreen();
-        final int b = colour.getBlue();
-
-        return toHex(r) + toHex(g) + toHex(b);
-    }
-
-    /**
-     * Converts the specified integer (in the range 0-255) into a hex string.
-     *
-     * @param value The integer to convert
-     *
-     * @return A 2 char hex string representing the specified integer
-     */
-    private static String toHex(final int value) {
-        final String hex = Integer.toHexString(value);
-        return (hex.length() < 2 ? "0" : "") + hex;
     }
 
 }

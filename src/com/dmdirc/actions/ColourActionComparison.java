@@ -23,7 +23,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.interfaces.actions.ActionComparison;
-import com.dmdirc.ui.Colour;
+import com.dmdirc.util.colours.Colour;
 import com.dmdirc.ui.messages.ColourManager;
 
 import javax.inject.Inject;

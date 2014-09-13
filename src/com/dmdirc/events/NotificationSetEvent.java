@@ -23,7 +23,7 @@
 package com.dmdirc.events;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.Colour;
+import com.dmdirc.util.colours.Colour;
 
 /**
  * Fired when the notification colour has been changed.

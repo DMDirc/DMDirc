@@ -38,16 +38,16 @@ import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.ui.Colour;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
+import com.dmdirc.util.colours.Colour;
+import com.dmdirc.util.colours.ColourUtils;
 
 import com.google.common.base.Optional;
 
@@ -431,10 +431,10 @@ public class Channel extends MessageTarget implements GroupChat {
                 final String prefix;
 
                 if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
-                    prefix = ',' + ColourManager.getHex((Colour) map.get(
+                    prefix = ',' + ColourUtils.getHex((Colour) map.get(
                             ChannelClientProperty.TEXT_BACKGROUND));
                 } else {
-                    prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex((Colour) map.get(
+                    prefix = Styliser.CODE_HEXCOLOUR + ColourUtils.getHex((Colour) map.get(
                             ChannelClientProperty.TEXT_FOREGROUND));
                 }
 
