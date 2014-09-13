@@ -22,9 +22,10 @@
 
 package com.dmdirc.messages;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +43,12 @@ public class MessageSinkManager {
     public static final String DEFAULT_SINK = "self";
     /** A list of known sinks. */
     private final List<MessageSink> sinks = new ArrayList<>();
+    /** Event bus to post errors to. */
+    private final DMDircMBassador eventBus;
+
+    public MessageSinkManager(final DMDircMBassador eventBus) {
+        this.eventBus = eventBus;
+    }
 
     /**
      * Adds a new sink to the list of known sinks.
@@ -109,8 +116,8 @@ public class MessageSinkManager {
         }
 
         // None of the sinks matched :(
-        Logger.userError(ErrorLevel.MEDIUM, "Invalid target message sink for type "
-                + messageType + ": " + targetSink);
+        eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                "Invalid target message sink for type " + messageType + ": " + targetSink, ""));
 
         if (!DEFAULT_SINK.equals(targetSink)) {
             dispatchMessage(source, date, messageType, DEFAULT_SINK, args);

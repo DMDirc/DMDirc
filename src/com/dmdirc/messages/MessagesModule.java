@@ -22,6 +22,8 @@
 
 package com.dmdirc.messages;
 
+import com.dmdirc.DMDircMBassador;
+
 import java.util.Set;
 
 import javax.inject.Singleton;
@@ -37,8 +39,9 @@ public class MessagesModule {
 
     @Provides
     @Singleton
-    public MessageSinkManager getMessageSinkManager(final Set<MessageSink> defaultSinks) {
-        final MessageSinkManager messageSinkManager = new MessageSinkManager();
+    public MessageSinkManager getMessageSinkManager(final DMDircMBassador eventBus,
+            final Set<MessageSink> defaultSinks) {
+        final MessageSinkManager messageSinkManager = new MessageSinkManager(eventBus);
         for (MessageSink sink : defaultSinks) {
             messageSinkManager.addSink(sink);
         }
