@@ -25,13 +25,13 @@ package com.dmdirc.ui.core.aliases;
 import com.dmdirc.commandparser.aliases.Alias;
 import com.dmdirc.interfaces.ui.AliasDialogModel;
 
+import com.google.common.collect.Lists;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import clover.com.google.common.collect.Lists;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

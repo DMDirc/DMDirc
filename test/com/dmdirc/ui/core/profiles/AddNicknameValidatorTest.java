@@ -26,6 +26,7 @@ import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.ui.ProfilesDialogModel;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 
@@ -34,8 +35,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import clover.com.google.common.collect.Lists;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

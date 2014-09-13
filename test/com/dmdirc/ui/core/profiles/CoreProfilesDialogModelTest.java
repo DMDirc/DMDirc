@@ -29,6 +29,7 @@ import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.interfaces.ui.ProfilesDialogModelListener;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 
@@ -37,8 +38,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import clover.com.google.common.collect.Lists;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
