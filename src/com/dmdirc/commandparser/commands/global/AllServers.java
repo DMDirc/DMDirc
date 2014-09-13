@@ -34,7 +34,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompleterUtils;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -76,7 +76,7 @@ public class AllServers extends Command implements IntelligentCommand {
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
-        return TabCompleter.getIntelligentResults(arg, context, 0);
+        return TabCompleterUtils.getIntelligentResults(arg, context, 0);
     }
 
 }

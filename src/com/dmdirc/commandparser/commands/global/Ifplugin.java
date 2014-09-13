@@ -36,7 +36,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompleterUtils;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -123,7 +123,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
                 res.add("!" + possPlugin.getMetaData().getName());
             }
         } else {
-            res = TabCompleter.getIntelligentResults(arg, context, 1);
+            res = TabCompleterUtils.getIntelligentResults(arg, context, 1);
         }
 
         return res;

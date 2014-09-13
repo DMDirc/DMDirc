@@ -35,7 +35,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompleterUtils;
 
 import com.google.common.base.Optional;
 
@@ -135,7 +135,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
             res.addAll(aliasManager.getAliasNames());
         } else if (arg >= 1 && !context.getPreviousArgs().get(0).equals("--remove")) {
-            return TabCompleter.getIntelligentResults(arg, context, 1);
+            return TabCompleterUtils.getIntelligentResults(arg, context, 1);
         }
 
         return res;

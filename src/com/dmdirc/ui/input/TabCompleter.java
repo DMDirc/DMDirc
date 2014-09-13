@@ -22,18 +22,10 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.FrameContainer;
-import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.commands.IntelligentCommand;
-import com.dmdirc.commandparser.commands.IntelligentCommand.IntelligentCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.collections.MapList;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -203,90 +195,6 @@ public class TabCompleter {
      */
     public void clear(final TabCompletionType type) {
         entries.clear(type);
-    }
-
-    /**
-     * Retrieves intelligent results for a deferred command.
-     *
-     * @param arg     The argument number that is being requested
-     * @param context Intelligent tab completion context
-     * @param offset  The number of arguments our command used before deferring to this method
-     *
-     * @return Additional tab targets for the text, or null if none are available
-     */
-    public static AdditionalTabTargets getIntelligentResults(final int arg,
-            final IntelligentCommandContext context, final int offset) {
-        if (arg == offset) {
-            final AdditionalTabTargets targets = new AdditionalTabTargets().excludeAll();
-            targets.include(TabCompletionType.COMMAND);
-            return targets;
-        } else {
-            return getIntelligentResults(context.getWindow(),
-                    new CommandArguments(context.getWindow().getCommandParser().getCommandManager(),
-                            context.getPreviousArgs().subList(offset,
-                                    context.getPreviousArgs().size())), context.getPartial());
-        }
-    }
-
-    /**
-     * Retrieves the intelligent results for the command and its arguments formed from args.
-     *
-     * @param window  The input window the results are required for
-     * @param args    The input arguments
-     * @param partial The partially-typed word being completed (if any)
-     *
-     * @return Additional tab targets for the text, or null if none are available
-     *
-     * @since 0.6.4
-     */
-    private static AdditionalTabTargets getIntelligentResults(
-            final FrameContainer window,
-            final CommandArguments args, final String partial) {
-        if (!args.isCommand()) {
-            return null;
-        }
-
-        final Map.Entry<CommandInfo, Command> command = window.getCommandParser().
-                getCommandManager().getCommand(args.getCommandName());
-
-        AdditionalTabTargets targets = null;
-
-        if (command != null) {
-            if (command.getValue() instanceof IntelligentCommand) {
-                targets = ((IntelligentCommand) command.getValue())
-                        .getSuggestions(args.getArguments().length,
-                                new IntelligentCommandContext(window,
-                                        Arrays.asList(args.getArguments()), partial));
-            }
-
-            if (command.getKey().getType().equals(CommandType.TYPE_CHANNEL)) {
-                if (targets == null) {
-                    targets = new AdditionalTabTargets();
-                }
-
-                targets.include(TabCompletionType.CHANNEL);
-            }
-        }
-
-        return targets;
-    }
-
-    /**
-     * Handles potentially intelligent tab completion.
-     *
-     * @param window  The input window the results are required for
-     * @param text    The text that is being completed
-     * @param partial The partially-typed word being completed (if any)
-     *
-     * @return Additional tab targets for the text, or null if none are available
-     *
-     * @since 0.6.4
-     */
-    public static AdditionalTabTargets getIntelligentResults(
-            final FrameContainer window, final String text,
-            final String partial) {
-        return getIntelligentResults(window,
-                new CommandArguments(window.getCommandParser().getCommandManager(), text), partial);
     }
 
 }
