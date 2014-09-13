@@ -63,6 +63,7 @@ import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
@@ -231,11 +232,13 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final ConfigProvider userSettings,
             final ScheduledExecutorService executorService,
             final URI uri,
-            final ConfigProvider profile) {
+            final ConfigProvider profile,
+            final ColourManagerFactory colourManagerFactory) {
         super(null, "server-disconnected",
                 getHost(uri),
                 getHost(uri),
                 configMigrator.getConfigProvider(),
+                colourManagerFactory,
                 urlBuilder,
                 commandParser,
                 tabCompleterFactory.getTabCompleter(configMigrator.getConfigProvider(),

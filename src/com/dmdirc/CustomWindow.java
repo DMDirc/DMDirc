@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.components.WindowComponent;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import com.google.common.base.Optional;
@@ -48,9 +49,10 @@ public class CustomWindow extends FrameContainer {
             final String name,
             final String title,
             final FrameContainer parent,
-            final URLBuilder urlBuilder) {
-        super(parent, "custom", name, title, parent.getConfigManager(), urlBuilder,
-                parent.getEventBus(),
+            final URLBuilder urlBuilder,
+            final ColourManagerFactory colourManagerFactory) {
+        super(parent, "custom", name, title, parent.getConfigManager(), colourManagerFactory,
+                urlBuilder, parent.getEventBus(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
@@ -68,9 +70,10 @@ public class CustomWindow extends FrameContainer {
             final String title,
             final AggregateConfigProvider configProvider,
             final URLBuilder urlBuilder,
-            final DMDircMBassador eventBus) {
-        super(null, "custom", name, title, configProvider, urlBuilder, eventBus,
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
+            final DMDircMBassador eventBus,
+            final ColourManagerFactory colourManagerFactory) {
+        super(null, "custom", name, title, configProvider, colourManagerFactory, urlBuilder,
+                eventBus, Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
     @Override

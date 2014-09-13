@@ -137,15 +137,15 @@ public class Styliser implements ConfigChangeListener {
      *
      * @param connection    The {@link Connection} that this styliser is for. May be {@code null}.
      * @param configManager the {@link AggregateConfigProvider} to get settings from.
+     * @param colourManager The {@link ColourManager} to get colours from.
      *
      * @since 0.6.3
      */
-    public Styliser(final Connection connection, final AggregateConfigProvider configManager) {
+    public Styliser(final Connection connection, final AggregateConfigProvider configManager,
+            final ColourManager colourManager) {
         this.connection = connection;
         this.configManager = configManager;
-
-        // TODO: This should probably be passed in, not created here.
-        this.colourManager = new ColourManager(configManager);
+        this.colourManager = colourManager;
 
         configManager.addChangeListener("ui", "linkcolour", this);
         configManager.addChangeListener("ui", "channelcolour", this);

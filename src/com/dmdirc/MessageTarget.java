@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Collection;
@@ -60,14 +61,15 @@ public abstract class MessageTarget extends FrameContainer {
             final String name,
             final String title,
             final AggregateConfigProvider config,
+            final ColourManagerFactory colourManagerFactory,
             final CommandParser parser,
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
-        super(parent, icon, name, title, config, urlBuilder, parser, tabCompleter,
-                messageSinkManager, eventBus, components);
+        super(parent, icon, name, title, config,colourManagerFactory, urlBuilder, parser,
+                tabCompleter, messageSinkManager, eventBus, components);
     }
 
     /**

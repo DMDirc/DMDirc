@@ -20,41 +20,26 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.ui.messages;
 
-import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.messages.MessageSinkManager;
-import com.dmdirc.ui.messages.ColourManagerFactory;
-import com.dmdirc.util.URLBuilder;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Factory for {@link Raw}s.
+ * Factory to create {@link ColourManager}s.
  */
 @Singleton
-public class RawFactory {
-
-    private final CommandController commandController;
-    private final MessageSinkManager messageSinkManager;
-    private final URLBuilder urlBuilder;
-    private final ColourManagerFactory colourManagerFactory;
+public class ColourManagerFactory {
 
     @Inject
-    public RawFactory(final CommandController commandController,
-            final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder,
-            final ColourManagerFactory colourManagerFactory) {
-        this.commandController = commandController;
-        this.messageSinkManager = messageSinkManager;
-        this.urlBuilder = urlBuilder;
-        this.colourManagerFactory = colourManagerFactory;
+    public ColourManagerFactory() {
+        //Complicated constructor.
     }
 
-    public Raw getRaw(final Server server) {
-        return new Raw(server, commandController, messageSinkManager, urlBuilder,
-                colourManagerFactory);
+    public ColourManager getColourManager(final AggregateConfigProvider configManager) {
+        return new ColourManager(configManager);
     }
 
 }

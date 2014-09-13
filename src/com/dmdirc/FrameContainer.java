@@ -37,6 +37,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.CompositionState;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.input.TabCompleter;
@@ -105,6 +106,9 @@ public abstract class FrameContainer {
     private final IconManager iconManager;
     /** Whether or not this container is writable. */
     private final boolean writable;
+    /** The colour manager factory. */
+    private final ColourManagerFactory colourManagerFactory;
+
     /**
      * The command parser used for commands in this container.
      * <p>
@@ -144,6 +148,7 @@ public abstract class FrameContainer {
             final String name,
             final String title,
             final AggregateConfigProvider config,
+            final ColourManagerFactory colourManagerFactory,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
@@ -157,6 +162,7 @@ public abstract class FrameContainer {
         this.commandParser = Optional.absent();
         this.tabCompleter = Optional.absent();
         this.messageSinkManager = Optional.absent();
+        this.colourManagerFactory = colourManagerFactory;
 
         this.eventBusManager = new ChildEventBusManager(eventBus);
         this.eventBusManager.connect();
@@ -188,6 +194,7 @@ public abstract class FrameContainer {
             final String name,
             final String title,
             final AggregateConfigProvider config,
+            final ColourManagerFactory colourManagerFactory,
             final URLBuilder urlBuilder,
             final CommandParser commandParser,
             final TabCompleter tabCompleter,
@@ -204,6 +211,7 @@ public abstract class FrameContainer {
         this.commandParser = Optional.of(commandParser);
         this.tabCompleter = Optional.of(tabCompleter);
         this.messageSinkManager = Optional.of(messageSinkManager);
+        this.colourManagerFactory = colourManagerFactory;
         commandParser.setOwner(this);
 
         this.eventBusManager = new ChildEventBusManager(eventBus);
@@ -404,7 +412,8 @@ public abstract class FrameContainer {
     public Styliser getStyliser() {
         synchronized (styliserSync) {
             if (styliser == null) {
-                styliser = new Styliser(getConnection(), getConfigManager());
+                styliser = new Styliser(getConnection(), getConfigManager(),
+                        colourManagerFactory.getColourManager(getConfigManager()));
             }
             return styliser;
         }

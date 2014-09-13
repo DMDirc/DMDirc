@@ -33,6 +33,7 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.core.components.WindowComponent;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
@@ -61,8 +62,10 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
             final Server newServer,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder) {
-        super(newServer, "raw", "Raw", "(Raw log)", newServer.getConfigManager(), urlBuilder,
+            final URLBuilder urlBuilder,
+            final ColourManagerFactory colourManagerFactory) {
+        super(newServer, "raw", "Raw", "(Raw log)", newServer.getConfigManager(),
+                colourManagerFactory, urlBuilder,
                 new ServerCommandParser(newServer.getConfigManager(), commandController, newServer.
                         getEventBus()),
                 newServer.getTabCompleter(),

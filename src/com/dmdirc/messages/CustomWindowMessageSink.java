@@ -26,6 +26,7 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Date;
@@ -44,6 +45,8 @@ public class CustomWindowMessageSink implements MessageSink {
     private final WindowManager windowManager;
     /** The URL builder to use when finding icons. */
     private final URLBuilder urlBuilder;
+    /** Colour Manager Factory. */
+    private final ColourManagerFactory colourManagerFactory;
 
     /**
      * Creates a new custom window message sink.
@@ -54,9 +57,11 @@ public class CustomWindowMessageSink implements MessageSink {
     @Inject
     public CustomWindowMessageSink(
             final WindowManager windowManager,
-            final URLBuilder urlBuilder) {
+            final URLBuilder urlBuilder,
+            final ColourManagerFactory colourManagerFactory) {
         this.windowManager = windowManager;
         this.urlBuilder = urlBuilder;
+        this.colourManagerFactory = colourManagerFactory;
     }
 
     @Override
@@ -74,7 +79,7 @@ public class CustomWindowMessageSink implements MessageSink {
 
         if (targetWindow == null) {
             targetWindow = new CustomWindow(patternMatches[0], patternMatches[0],
-                    (Server) source.getConnection(), urlBuilder);
+                    (Server) source.getConnection(), urlBuilder, colourManagerFactory);
             windowManager.addWindow((Server) source.getConnection(), targetWindow);
         }
 

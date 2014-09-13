@@ -27,6 +27,7 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import javax.inject.Inject;
@@ -43,22 +44,25 @@ public class ChannelFactory {
     private final MessageSinkManager messageSinkManager;
     private final URLBuilder urlBuilder;
     private final DMDircMBassador eventBus;
+    private final ColourManagerFactory colourManagerFactory;
 
     @Inject
     public ChannelFactory(final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController, final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final DMDircMBassador eventBus) {
+            final URLBuilder urlBuilder, final DMDircMBassador eventBus,
+            final ColourManagerFactory colourManagerFactory) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;
         this.messageSinkManager = messageSinkManager;
         this.urlBuilder = urlBuilder;
         this.eventBus = eventBus;
+        this.colourManagerFactory = colourManagerFactory;
     }
 
     public Channel getChannel(final Server server,
             final ChannelInfo channelInfo,
             final ConfigProviderMigrator configMigrator) {
         return new Channel(server, channelInfo, configMigrator, tabCompleterFactory,
-                commandController, messageSinkManager, urlBuilder, eventBus);
+                commandController, messageSinkManager, urlBuilder, eventBus, colourManagerFactory);
     }
 }

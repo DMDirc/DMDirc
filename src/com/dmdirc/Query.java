@@ -49,6 +49,7 @@ import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
 
@@ -91,10 +92,12 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder) {
+            final URLBuilder urlBuilder,
+            final ColourManagerFactory colourManagerFactory) {
         super(newServer, "query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 newServer.getConfigManager(),
+                colourManagerFactory,
                 new QueryCommandParser(newServer, commandController, newServer.getEventBus()),
                 tabCompleterFactory.getTabCompleter(newServer.getTabCompleter(),
                         newServer.getConfigManager(),

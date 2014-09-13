@@ -30,6 +30,7 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import com.dmdirc.DMDircMBassador;
@@ -45,8 +46,9 @@ public class TestWritableFrameContainer extends FrameContainer {
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final DMDircMBassador eventBus) {
-        super(null, "raw", "Raw", "(Raw)", cm, urlBuilder,
+            final URLBuilder urlBuilder, final DMDircMBassador eventBus,
+            final ColourManagerFactory colourManagerFactory) {
+        super(null, "raw", "Raw", "(Raw)", cm, colourManagerFactory, urlBuilder,
                 new GlobalCommandParser(cm, commandManager, eventBus),
                 new TabCompleter(mock(CommandController.class), cm),
                 messageSinkManager,

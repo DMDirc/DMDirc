@@ -38,6 +38,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import javax.annotation.Nonnull;
@@ -61,6 +62,8 @@ public class OpenWindow extends Command implements IntelligentCommand {
     private final DMDircMBassador eventBus;
     /** The config provider to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
+    /** Colour manager factory. */
+    private final ColourManagerFactory colourManagerFactory;
 
     /**
      * Creates a new instance of this command.
@@ -77,13 +80,15 @@ public class OpenWindow extends Command implements IntelligentCommand {
             final WindowManager windowManager,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
-            @GlobalConfig final AggregateConfigProvider configProvider) {
+            @GlobalConfig final AggregateConfigProvider configProvider,
+            final ColourManagerFactory colourManagerFactory) {
         super(controller);
 
         this.windowManager = windowManager;
         this.urlBuilder = urlBuilder;
         this.eventBus = eventBus;
         this.configProvider = configProvider;
+        this.colourManagerFactory = colourManagerFactory;
     }
 
     @Override
@@ -125,11 +130,11 @@ public class OpenWindow extends Command implements IntelligentCommand {
                 final CustomWindow newWindow;
                 if (parent == null) {
                     newWindow = new CustomWindow(args.getArguments()[start], title,
-                            configProvider, urlBuilder, eventBus);
+                            configProvider, urlBuilder, eventBus, colourManagerFactory);
                     windowManager.addWindow(newWindow);
                 } else {
                     newWindow = new CustomWindow(args.getArguments()[start], title, parent,
-                            urlBuilder);
+                            urlBuilder, colourManagerFactory);
                     windowManager.addWindow(parent, newWindow);
                 }
             } else {

@@ -32,6 +32,7 @@ import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
@@ -60,8 +61,8 @@ public class GlobalWindow extends FrameContainer {
     public GlobalWindow(@GlobalConfig final AggregateConfigProvider config,
             final GlobalCommandParser parser, final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager, final URLBuilder urlBuilder,
-            final DMDircMBassador eventBus) {
-        super(null, "icon", "Global", "(Global)", config, urlBuilder, parser,
+            final DMDircMBassador eventBus, final ColourManagerFactory colourManagerFactory) {
+        super(null, "icon", "Global", "(Global)", config, colourManagerFactory, urlBuilder, parser,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
                 messageSinkManager, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),

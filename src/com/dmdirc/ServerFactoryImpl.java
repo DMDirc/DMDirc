@@ -30,6 +30,7 @@ import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.net.URI;
@@ -59,6 +60,7 @@ public class ServerFactoryImpl {
     private final DMDircMBassador eventBus;
     private final MessageEncoderFactory messageEncoderFactory;
     private final ConfigProvider userSettings;
+    private final ColourManagerFactory colourManagerFactory;
 
     @Inject
     public ServerFactoryImpl(
@@ -75,7 +77,8 @@ public class ServerFactoryImpl {
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
-            @ClientModule.UserConfig final ConfigProvider userSettings) {
+            @ClientModule.UserConfig final ConfigProvider userSettings,
+            final ColourManagerFactory colourManagerFactory) {
         this.manager = manager;
         this.parserFactory = parserFactory;
         this.tabCompleterFactory = tabCompleterFactory;
@@ -90,6 +93,7 @@ public class ServerFactoryImpl {
         this.eventBus = eventBus;
         this.messageEncoderFactory = messageEncoderFactory;
         this.userSettings = userSettings;
+        this.colourManagerFactory = colourManagerFactory;
     }
 
     public Server getServer(
@@ -102,6 +106,6 @@ public class ServerFactoryImpl {
                 tabCompleterFactory, identityFactory, messageSinkManager, statusBarManager,
                 windowManager, channelFactory.get(), queryFactory.get(), rawFactory.get(),
                 urlBuilder, eventBus, messageEncoderFactory, userSettings, executorService, uri,
-                profile);
+                profile, colourManagerFactory);
     }
 }

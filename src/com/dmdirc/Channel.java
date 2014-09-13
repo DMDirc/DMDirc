@@ -41,6 +41,7 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
@@ -111,10 +112,12 @@ public class Channel extends MessageTarget implements GroupChat {
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
-            final DMDircMBassador eventBus) {
+            final DMDircMBassador eventBus,
+            final ColourManagerFactory colourManagerFactory) {
         super(newServer, "channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
+                colourManagerFactory,
                 new ChannelCommandParser(newServer, commandController, eventBus),
                 tabCompleterFactory.getTabCompleter(newServer.getTabCompleter(),
                         configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,

@@ -33,6 +33,7 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.net.URI;
@@ -71,6 +72,7 @@ public class ServerTest {
     @Mock private DMDircMBassador eventBus;
     @Mock private ScheduledExecutorService executorService;
     @Mock private MessageEncoderFactory messageEncoderFactory;
+    @Mock private ColourManagerFactory colourManagerFactory;
 
     private Server server;
 
@@ -101,7 +103,8 @@ public class ServerTest {
                 userConfig,
                 executorService,
                 new URI("irc-test://255.255.255.255"),
-                profile);
+                profile,
+                colourManagerFactory);
     }
 
     @Test

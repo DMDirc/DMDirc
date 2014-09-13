@@ -48,7 +48,7 @@ public class IntelligentLinkingTest {
         final Server server = mock(Server.class);
         when(server.getChannelPrefixes()).thenReturn("#&+");
 
-        styliser = new Styliser(server, manager);
+        styliser = new Styliser(server, manager, new ColourManager(manager));
     }
 
     @Test
