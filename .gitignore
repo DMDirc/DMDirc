@@ -45,3 +45,5 @@ __history
 /.idea/workspace.xml
 /.idea/uiDesigner.xml
 /atlassian-ide-plugin.xml
+/.gradle
+/*/build
