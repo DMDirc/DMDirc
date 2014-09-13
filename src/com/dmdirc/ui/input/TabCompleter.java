@@ -116,10 +116,9 @@ public class TabCompleter {
                     continue;
                 }
 
-                if (caseSensitive && entry.startsWith(partial)) {
-                    result.addResult(entry);
-                } else if (!caseSensitive && entry.toLowerCase(Locale.getDefault())
-                        .startsWith(partial.toLowerCase(Locale.getDefault()))) {
+                if (caseSensitive && entry.startsWith(partial)
+                        || !caseSensitive && entry.toLowerCase(Locale.getDefault())
+                                .startsWith(partial.toLowerCase(Locale.getDefault()))) {
                     result.addResult(entry);
                 }
             }
@@ -161,7 +160,7 @@ public class TabCompleter {
      * @param type       The type of the entries that're being added
      * @param newEntries Entries to be added
      */
-    public void addEntries(final TabCompletionType type, final List<String> newEntries) {
+    public void addEntries(final TabCompletionType type, final Iterable<String> newEntries) {
         if (newEntries == null) {
             return;
         }

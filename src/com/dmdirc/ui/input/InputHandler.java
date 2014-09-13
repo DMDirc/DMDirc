@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -61,7 +62,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class InputHandler implements ConfigChangeListener {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(InputHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(InputHandler.class);
     /**
      * Indicates that the caret should be moved to the start of a selection when a control code has
      * been inserted.
@@ -333,9 +334,7 @@ public abstract class InputHandler implements ConfigChangeListener {
         if (state != newState) {
             state = newState;
 
-            if (parentWindow != null) {
-                parentWindow.setCompositionState(state);
-            }
+            parentWindow.setCompositionState(state);
         }
     }
 
@@ -502,8 +501,8 @@ public abstract class InputHandler implements ConfigChangeListener {
         }
 
         final int pos = target.getCaretPosition() - 1;
-        int start = (pos < 0) ? 0 : pos;
-        int end = (pos < 0) ? 0 : pos;
+        int start = pos < 0 ? 0 : pos;
+        int end = pos < 0 ? 0 : pos;
 
         // Traverse backwards
         while (start > 0 && text.charAt(start) != ' ') {

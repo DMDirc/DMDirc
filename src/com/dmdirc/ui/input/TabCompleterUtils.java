@@ -35,7 +35,11 @@ import java.util.Map;
 /**
  * Utilities relating to {@link TabCompleter}s.
  */
-public class TabCompleterUtils {
+public final class TabCompleterUtils {
+
+    private TabCompleterUtils() {
+    }
+
     /**
      * Retrieves intelligent results for a deferred command.
      *
@@ -90,7 +94,7 @@ public class TabCompleterUtils {
                                         Arrays.asList(args.getArguments()), partial));
             }
 
-            if (command.getKey().getType().equals(CommandType.TYPE_CHANNEL)) {
+            if (command.getKey().getType() == CommandType.TYPE_CHANNEL) {
                 if (targets == null) {
                     targets = new AdditionalTabTargets();
                 }

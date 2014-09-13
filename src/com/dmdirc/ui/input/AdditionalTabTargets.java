@@ -24,7 +24,7 @@ package com.dmdirc.ui.input;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * The AdditionalTabTargets class is a basic wrapper around an {@link ArrayList} that adds an
@@ -35,8 +35,8 @@ public final class AdditionalTabTargets extends ArrayList<String> {
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /** Whether to include normal targets. */
-    private final List<TabCompletionType> includes = new ArrayList<>(Arrays.asList(TabCompletionType.
-            values()));
+    private final Collection<TabCompletionType> includes =
+            new ArrayList<>(Arrays.asList(TabCompletionType.values()));
 
     /**
      * Determines if the specified type of completion should be used.
