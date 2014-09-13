@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: raven-4.2.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.kencochrane.raven/raven/4.2.1/3065e20a2824d820773663e31496508ad2bda2a6/raven-4.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.kencochrane.raven/raven/4.2.1/209a81d1a1f750b9f4e692fe33e364076d6e9667/raven-4.2.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
