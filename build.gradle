@@ -53,3 +53,7 @@ allprojects {
         testCompile group: 'org.mockito', name: 'mockito-all', version: '1.+'
     }
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
