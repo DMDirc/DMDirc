@@ -32,6 +32,7 @@ import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.events.FeedbackNagEvent;
 import com.dmdirc.events.FirstRunEvent;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -70,7 +71,7 @@ public class Main {
     /** The identity manager the client will use. */
     private final IdentityController identityManager;
     /** The server manager the client will use. */
-    private final ServerManager serverManager;
+    private final ConnectionManager connectionManager;
     /** The action manager the client will use. */
     private final ActionManager actionManager;
     /** The command-line parser used for this instance. */
@@ -98,7 +99,7 @@ public class Main {
      * Creates a new instance of {@link Main}.
      *
      * @param identityManager        The identity manager the client will use.
-     * @param serverManager          The server manager the client will use.
+     * @param connectionManager          The server manager the client will use.
      * @param actionManager          The action manager the client will use.
      * @param commandLineParser      The command-line parser used for this instance.
      * @param pluginManager          The plugin manager the client will use.
@@ -114,7 +115,7 @@ public class Main {
     @Inject
     public Main(
             final IdentityController identityManager,
-            final ServerManager serverManager,
+            final ConnectionManager connectionManager,
             final ActionManager actionManager,
             final CommandLineParser commandLineParser,
             final PluginManager pluginManager,
@@ -127,7 +128,7 @@ public class Main {
             final DMDircMBassador eventBus,
             final Set<CommandDetails> commands) {
         this.identityManager = identityManager;
-        this.serverManager = serverManager;
+        this.connectionManager = connectionManager;
         this.actionManager = actionManager;
         this.commandLineParser = commandLineParser;
         this.pluginManager = pluginManager;
@@ -197,7 +198,7 @@ public class Main {
         actionManager.loadUserActions();
         eventBus.publishAsync(new ClientOpenedEvent());
 
-        commandLineParser.processArguments(serverManager);
+        commandLineParser.processArguments(connectionManager);
 
         globalWindowManager.init();
 
@@ -210,7 +211,7 @@ public class Main {
                 }
 
                 eventBus.publishAsync(new ClientClosedEvent());
-                serverManager.disconnectAll("Unexpected shutdown");
+                connectionManager.disconnectAll("Unexpected shutdown");
                 identityManager.saveAll();
             }
         }, "Shutdown thread"));

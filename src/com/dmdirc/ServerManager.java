@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.ServerFactory;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -57,7 +57,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * them.
  */
 @Singleton
-public class ServerManager implements ServerFactory {
+public class ServerManager implements ConnectionManager {
 
     /** All servers that currently exist. */
     private final Set<Server> servers = new CopyOnWriteArraySet<>();
@@ -142,31 +142,19 @@ public class ServerManager implements ServerFactory {
         servers.remove(server);
     }
 
-    /**
-     * Returns a list of all servers.
-     *
-     * @return A list of all servers
-     */
-    public List<Connection> getServers() {
+    @Override
+    public List<Connection> getConnections() {
         return new ArrayList<Connection>(servers);
     }
 
-    /**
-     * Makes all servers disconnected with the specified quit message.
-     *
-     * @param message The quit message to send to the IRC servers
-     */
+    @Override
     public void disconnectAll(final String message) {
         for (Server server : servers) {
             server.disconnect(message);
         }
     }
 
-    /**
-     * Closes all servers with the specified quit message.
-     *
-     * @param message The quit message to send to the IRC servers
-     */
+    @Override
     public void closeAll(final String message) {
         for (Server server : servers) {
             server.disconnect(message);
@@ -174,23 +162,13 @@ public class ServerManager implements ServerFactory {
         }
     }
 
-    /**
-     * Returns the number of servers that are registered with the manager.
-     *
-     * @return number of registered servers
-     */
-    public int numServers() {
+    @Override
+    public int getConnectionCount() {
         return servers.size();
     }
 
-    /**
-     * Retrieves a list of servers connected to the specified network.
-     *
-     * @param network The network to search for
-     *
-     * @return A list of servers connected to the network
-     */
-    public List<Connection> getServersByNetwork(final String network) {
+    @Override
+    public List<Connection> getConnectionsByNetwork(final String network) {
         final List<Connection> res = new ArrayList<>();
 
         for (Server server : servers) {
@@ -202,33 +180,16 @@ public class ServerManager implements ServerFactory {
         return res;
     }
 
-    /**
-     * Creates a new server which will connect to the specified URI with the default profile.
-     *
-     * @param uri The URI to connect to
-     *
-     * @return The server which will be connecting
-     *
-     * @since 0.6.3
-     */
+    @Override
     public Connection connectToAddress(final URI uri) {
         return connectToAddress(uri,
                 identityController.getProvidersByType("profile").get(0));
     }
 
-    /**
-     * Creates a new server which will connect to the specified URI with the specified profile.
-     *
-     * @param uri     The URI to connect to
-     * @param profile The profile to use
-     *
-     * @return The server which will be connecting
-     *
-     * @since 0.6.3
-     */
-    public Server connectToAddress(final URI uri, final ConfigProvider profile) {
+    @Override
+    public Connection connectToAddress(final URI uri, final ConfigProvider profile) {
         checkArgument(profile.isProfile());
-        Server server = null;
+        Connection server = null;
 
         for (Server loopServer : servers) {
             if (loopServer.compareURI(uri)) {
@@ -254,11 +215,9 @@ public class ServerManager implements ServerFactory {
         return server;
     }
 
-    /**
-     * Connects the user to Quakenet if necessary and joins #DMDirc.
-     */
+    @Override
     public void joinDevChat() {
-        final List<Connection> qnetServers = getServersByNetwork("Quakenet");
+        final List<Connection> qnetServers = getConnectionsByNetwork("Quakenet");
 
         Connection connectedServer = null;
 

@@ -24,7 +24,7 @@ package com.dmdirc.ui.core.newserver;
 
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.ClientModule.UserConfig;
-import com.dmdirc.ServerManager;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
@@ -58,7 +58,7 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
     private final ListenerList listeners;
     private final AggregateConfigProvider globalConfig;
     private final ConfigProvider userConfig;
-    private final ServerManager serverManager;
+    private final ConnectionManager connectionManager;
     private final IdentityController controller;
     private final List<ConfigProvider> profiles;
     private Optional<ConfigProvider> selectedProfile;
@@ -73,11 +73,11 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
             @GlobalConfig final AggregateConfigProvider globalConfig,
             @UserConfig final ConfigProvider userConfig,
             final IdentityController identityController,
-            final ServerManager serverManager) {
+            final ConnectionManager connectionManager) {
         this.globalConfig = globalConfig;
         this.userConfig = userConfig;
         this.controller = identityController;
-        this.serverManager = serverManager;
+        this.connectionManager = connectionManager;
         listeners = new ListenerList();
         profiles = new ArrayList<>(5);
         selectedProfile = Optional.absent();
@@ -239,9 +239,9 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
         }
         try {
             if (selectedProfile.isPresent()) {
-                serverManager.connectToAddress(getServerURI(), selectedProfile.get());
+                connectionManager.connectToAddress(getServerURI(), selectedProfile.get());
             } else {
-                serverManager.connectToAddress(getServerURI());
+                connectionManager.connectToAddress(getServerURI());
             }
         } catch (URISyntaxException ex) {
             //This is tested in isSaveAllowed, shouldn't happen here.

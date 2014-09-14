@@ -23,7 +23,7 @@
 package com.dmdirc.commandline;
 
 import com.dmdirc.ClientModule.GlobalConfig;
-import com.dmdirc.ServerManager;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -66,7 +66,7 @@ public class CommandLineParser {
     /** A list of addresses to autoconnect to. */
     private final List<URI> addresses = new ArrayList<>();
     /** Provider to use to get server managers. */
-    @Nullable private final Provider<ServerManager> serverManagerProvider;
+    @Nullable private final Provider<ConnectionManager> serverManagerProvider;
     /** Provider to use to get the global config. */
     @Nullable private final Provider<AggregateConfigProvider> globalConfigProvider;
     /** The parser to use for URIs. */
@@ -89,7 +89,7 @@ public class CommandLineParser {
      */
     @Inject
     public CommandLineParser(
-            @Nullable final Provider<ServerManager> serverManagerProvider,
+            @Nullable final Provider<ConnectionManager> serverManagerProvider,
             @Nullable @GlobalConfig final Provider<AggregateConfigProvider> globalConfigProvider,
             @Nullable final URIParser uriParser) {
         this.serverManagerProvider = serverManagerProvider;
@@ -417,11 +417,11 @@ public class CommandLineParser {
      * Processes arguments once the client has been loaded properly. This allows us to auto-connect
      * to servers, etc.
      *
-     * @param serverManager The server manager to use to connect servers.
+     * @param connectionManager The server manager to use to connect servers.
      */
-    public void processArguments(final ServerManager serverManager) {
+    public void processArguments(final ConnectionManager connectionManager) {
         for (URI address : addresses) {
-            serverManager.connectToAddress(address);
+            connectionManager.connectToAddress(address);
         }
     }
 

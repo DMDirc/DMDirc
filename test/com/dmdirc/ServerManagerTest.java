@@ -95,23 +95,23 @@ public class ServerManagerTest {
     @Test
     public void testRegisterServer() {
         serverManager.registerServer(server);
-        assertEquals(1, serverManager.numServers());
+        assertEquals(1, serverManager.getConnectionCount());
     }
 
     @Test
     public void testUnregisterServer() {
         serverManager.registerServer(server);
         serverManager.unregisterServer(server);
-        assertEquals(0, serverManager.numServers());
+        assertEquals(0, serverManager.getConnectionCount());
     }
 
     @Test
     public void testNumServers() {
-        assertEquals(serverManager.getServers().size(), serverManager.numServers());
+        assertEquals(serverManager.getConnections().size(), serverManager.getConnectionCount());
         serverManager.registerServer(server);
-        assertEquals(serverManager.getServers().size(), serverManager.numServers());
+        assertEquals(serverManager.getConnections().size(), serverManager.getConnectionCount());
         serverManager.unregisterServer(server);
-        assertEquals(serverManager.getServers().size(), serverManager.numServers());
+        assertEquals(serverManager.getConnections().size(), serverManager.getConnectionCount());
     }
 
     @Test
@@ -128,14 +128,14 @@ public class ServerManagerTest {
         serverManager.registerServer(serverB);
         serverManager.registerServer(serverC);
 
-        assertEquals(1, serverManager.getServersByNetwork("Net1").size());
-        assertEquals(serverA, serverManager.getServersByNetwork("Net1").get(0));
+        assertEquals(1, serverManager.getConnectionsByNetwork("Net1").size());
+        assertEquals(serverA, serverManager.getConnectionsByNetwork("Net1").get(0));
 
-        assertEquals(2, serverManager.getServersByNetwork("Net2").size());
-        assertEquals(serverB, serverManager.getServersByNetwork("Net2").get(0));
-        assertEquals(serverC, serverManager.getServersByNetwork("Net2").get(1));
+        assertEquals(2, serverManager.getConnectionsByNetwork("Net2").size());
+        assertEquals(serverB, serverManager.getConnectionsByNetwork("Net2").get(0));
+        assertEquals(serverC, serverManager.getConnectionsByNetwork("Net2").get(1));
 
-        assertEquals(0, serverManager.getServersByNetwork("Net3").size());
+        assertEquals(0, serverManager.getConnectionsByNetwork("Net3").size());
     }
 
     @Test
@@ -196,7 +196,7 @@ public class ServerManagerTest {
 
         serverManager.joinDevChat();
 
-        assertEquals(3, serverManager.numServers());
+        assertEquals(3, serverManager.getConnectionCount());
 
         URI serverUri = uriCaptor.getValue();
         assertEquals("irc", serverUri.getScheme());

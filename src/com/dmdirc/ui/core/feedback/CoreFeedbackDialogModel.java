@@ -23,10 +23,10 @@
 package com.dmdirc.ui.core.feedback;
 
 import com.dmdirc.ClientModule;
-import com.dmdirc.ServerManager;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.FeedbackDialogModel;
 import com.dmdirc.interfaces.ui.FeedbackDialogModelListener;
@@ -49,7 +49,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
     private final FeedbackSenderFactory feedbackSenderFactory;
     private final ListenerList listeners;
     private final AggregateConfigProvider config;
-    private final ServerManager serverManager;
+    private final ConnectionManager connectionManager;
     private final String configDirectory;
     private Optional<String> name;
     private Optional<String> email;
@@ -59,9 +59,9 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
 
     @Inject
     public CoreFeedbackDialogModel(@ClientModule.GlobalConfig final AggregateConfigProvider config,
-            final ServerManager serverManager, final FeedbackSenderFactory feedbackSenderFactory,
+            final ConnectionManager connectionManager, final FeedbackSenderFactory feedbackSenderFactory,
             @Directory(DirectoryType.BASE) final String configDirectory) {
-        this.serverManager = serverManager;
+        this.connectionManager = connectionManager;
         this.configDirectory = configDirectory;
         this.feedbackSenderFactory = feedbackSenderFactory;
         this.config = config;
@@ -170,7 +170,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
         final StringBuilder serverInfo = new StringBuilder(255);
         final StringBuilder dmdircInfo = new StringBuilder(255);
         if (getIncludeServerInfo()) {
-            for (Connection connection : serverManager.getServers()) {
+            for (Connection connection : connectionManager.getConnections()) {
                 if (connection.getState().isDisconnected()) {
                     continue;
                 }

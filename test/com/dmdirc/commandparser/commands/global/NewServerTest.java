@@ -26,7 +26,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.ServerFactory;
+import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.plugins.PluginManager;
@@ -57,7 +57,7 @@ public class NewServerTest {
     @Mock private ConfigProvider identity;
     @Mock private FrameContainer container;
     @Mock private PluginManager pluginManager;
-    @Mock private ServerFactory factory;
+    @Mock private ConnectionFactory factory;
     @Mock private Server server;
     private NewServer command;
 

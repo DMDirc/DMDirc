@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -33,6 +32,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
@@ -49,18 +49,18 @@ public class AllServers extends Command implements IntelligentCommand {
             "allservers <command> - executes the command as though it had"
             + " been entered on all servers", CommandType.TYPE_GLOBAL);
     /** Server manager to use to iterate servers. */
-    private final ServerManager serverManager;
+    private final ConnectionManager connectionManager;
 
     /**
      * Creates a new instance of the {@link AllServers} command.
      *
      * @param controller    The controller that owns this command.
-     * @param serverManager The server manager to use to iterate servers.
+     * @param connectionManager The server manager to use to iterate servers.
      */
     @Inject
-    public AllServers(final CommandController controller, final ServerManager serverManager) {
+    public AllServers(final CommandController controller, final ConnectionManager connectionManager) {
         super(controller);
-        this.serverManager = serverManager;
+        this.connectionManager = connectionManager;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class AllServers extends Command implements IntelligentCommand {
             final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
 
-        for (Connection target : serverManager.getServers()) {
+        for (Connection target : connectionManager.getConnections()) {
             target.getWindowModel().getCommandParser()
                     .parseCommand(target.getWindowModel(), command);
         }

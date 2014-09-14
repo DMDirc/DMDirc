@@ -38,8 +38,9 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
-import com.dmdirc.interfaces.ServerFactory;
+import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -112,6 +113,11 @@ public class ClientModule {
 
     /** The object graph to inject where necessary. */
     private ObjectGraph objectGraph;
+
+    @Provides
+    public ConnectionManager getConnectionManager(final ServerManager serverManager) {
+        return serverManager;
+    }
 
     @Provides
     @Singleton
@@ -206,9 +212,9 @@ public class ClientModule {
     @Provides
     @Singleton
     public CommandManager getCommandManager(
-            final ServerManager serverManager,
+            final ConnectionManager connectionManager,
             @GlobalConfig final AggregateConfigProvider globalConfig) {
-        final CommandManager manager = new CommandManager(serverManager);
+        final CommandManager manager = new CommandManager(connectionManager);
         manager.initialise(globalConfig);
         return manager;
     }
@@ -275,8 +281,8 @@ public class ClientModule {
     }
 
     @Provides
-    public ServerFactory getServerFactory(final ServerManager serverManager) {
-        return serverManager;
+    public ConnectionFactory getServerFactory(final ConnectionManager connectionManager) {
+        return connectionManager;
     }
 
     @Provides

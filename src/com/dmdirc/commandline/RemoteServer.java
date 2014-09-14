@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandline;
 
-import com.dmdirc.ServerManager;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -46,14 +46,14 @@ public class RemoteServer implements RemoteInterface {
     /** The maximum port to use for RMI binding. */
     private static final int MAXPORT = MINPORT + 5;
     /** Provider for the server manager to use to connect. */
-    private final Provider<ServerManager> serverManager;
+    private final Provider<ConnectionManager> serverManager;
 
     /**
      * Crate a new RemoteServer.
      *
      * @param serverManager Provider of a server manager to use to connect.
      */
-    public RemoteServer(final Provider<ServerManager> serverManager) {
+    public RemoteServer(final Provider<ConnectionManager> serverManager) {
         this.serverManager = serverManager;
     }
 

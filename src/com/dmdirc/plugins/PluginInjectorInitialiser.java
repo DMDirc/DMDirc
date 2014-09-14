@@ -24,13 +24,13 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionSubstitutorFactory;
 import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.prefs.PreferencesManager;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.messages.MessageSinkManager;
@@ -55,7 +55,7 @@ public class PluginInjectorInitialiser {
     private final ActionFactory actionFactory;
     private final PluginManager pluginManager;
     private final IdentityController identityController;
-    private final ServerManager serverManager;
+    private final ConnectionManager connectionManager;
     private final ThemeManager themeManager;
     private final CommandManager commandManager;
     private final MessageSinkManager messageSinkManager;
@@ -76,7 +76,7 @@ public class PluginInjectorInitialiser {
             final ActionFactory actionFactory,
             final PluginManager pluginManager,
             final IdentityController identityController,
-            final ServerManager serverManager,
+            final ConnectionManager connectionManager,
             final ThemeManager themeManager,
             final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
@@ -95,7 +95,7 @@ public class PluginInjectorInitialiser {
         this.actionFactory = actionFactory;
         this.pluginManager = pluginManager;
         this.identityController = identityController;
-        this.serverManager = serverManager;
+        this.connectionManager = connectionManager;
         this.themeManager = themeManager;
         this.commandManager = commandManager;
         this.messageSinkManager = messageSinkManager;
@@ -121,7 +121,7 @@ public class PluginInjectorInitialiser {
         injector.addParameter(actionManager);
         injector.addParameter(PluginManager.class, pluginManager);
         injector.addParameter(identityController);
-        injector.addParameter(ServerManager.class, serverManager);
+        injector.addParameter(ConnectionManager.class, connectionManager);
         injector.addParameter(commandManager);
         injector.addParameter(MessageSinkManager.class, messageSinkManager);
         injector.addParameter(WindowManager.class, windowManager);

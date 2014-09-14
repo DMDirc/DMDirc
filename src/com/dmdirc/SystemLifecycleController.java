@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.ClientModule.GlobalConfig;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -36,14 +37,14 @@ public class SystemLifecycleController implements LifecycleController {
     /** Controller to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
     /** Manager to use to disconnect servers. */
-    private final ServerManager serverManager;
+    private final ConnectionManager connectionManager;
 
     @Inject
     public SystemLifecycleController(
             @GlobalConfig final AggregateConfigProvider configProvider,
-            final ServerManager serverManager) {
+            final ConnectionManager connectionManager) {
         this.configProvider = configProvider;
-        this.serverManager = serverManager;
+        this.connectionManager = connectionManager;
     }
 
     @Override
@@ -63,7 +64,7 @@ public class SystemLifecycleController implements LifecycleController {
 
     @Override
     public void quit(final String reason, final int exitCode) {
-        serverManager.disconnectAll(reason);
+        connectionManager.disconnectAll(reason);
 
         System.exit(exitCode);
     }

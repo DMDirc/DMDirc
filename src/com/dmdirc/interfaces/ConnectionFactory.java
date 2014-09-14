@@ -22,24 +22,23 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.Server;
 import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.net.URI;
 
 /**
- * Interface for factories which create new {@link Server}s.
+ * Interface for factories which create new {@link Connection}s.
  */
-public interface ServerFactory {
+public interface ConnectionFactory {
 
     /**
-     * Creates a new server which will connect to the specified URL with the specified profile.
+     * Creates a new connection which will connect to the specified URL with the specified profile.
      *
      * @param uri     The address of the server to connect to
      * @param profile The profile to use
      *
-     * @return A new {@link Server} instance with the appropriate configuration
+     * @return A new {@link Connection} instance with the appropriate configuration
      */
-    Server createServer(final URI uri, final ConfigProvider profile);
+    Connection createServer(final URI uri, final ConfigProvider profile);
 
 }

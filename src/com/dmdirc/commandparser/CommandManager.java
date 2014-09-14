@@ -23,12 +23,12 @@
 package com.dmdirc.commandparser;
 
 import com.dmdirc.Query;
-import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -50,7 +50,7 @@ public class CommandManager implements CommandController {
     /** A list of command parsers that have been instantiated. */
     private final MapList<CommandType, CommandParser> parsers = new MapList<>();
     /** The manager to use to iterate servers. */
-    private final ServerManager serverManager;
+    private final ConnectionManager connectionManager;
     /** The command char we're using. */
     @ConfigBinding(domain = "general", key = "commandchar")
     private char commandChar;
@@ -61,10 +61,10 @@ public class CommandManager implements CommandController {
     /**
      * Creates a new instance of the Command Manager.
      *
-     * @param serverManager the manager to use to iterate servers.
+     * @param connectionManager the manager to use to iterate servers.
      */
-    public CommandManager(final ServerManager serverManager) {
-        this.serverManager = serverManager;
+    public CommandManager(final ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 
     @Override
@@ -155,7 +155,7 @@ public class CommandManager implements CommandController {
         final String commandName = getCommandChar() + command.getName();
 
         // TODO: This logic is probably in two places. Abstract it.
-        for (Connection server : serverManager.getServers()) {
+        for (Connection server : connectionManager.getConnections()) {
             if (command.getType() == CommandType.TYPE_SERVER
                     || command.getType() == CommandType.TYPE_GLOBAL) {
                 registerCommandName(server.getWindowModel().getTabCompleter(),
