@@ -206,8 +206,8 @@ public class ServerManagerTest {
 
     @Test
     public void testAddsNewServersToWindowManager() {
-        final Server newServer = serverManager.connectToAddress(URI.create("irc://fobar"));
-        verify(windowManager).addWindow(newServer);
+        serverManager.connectToAddress(URI.create("irc://fobar"));
+        verify(windowManager).addWindow(server);
     }
 
     @Test

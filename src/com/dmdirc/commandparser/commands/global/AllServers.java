@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -33,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
@@ -68,8 +68,9 @@ public class AllServers extends Command implements IntelligentCommand {
             final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
 
-        for (Server target : serverManager.getServers()) {
-            target.getCommandParser().parseCommand(target, command);
+        for (Connection target : serverManager.getServers()) {
+            target.getWindowModel().getCommandParser()
+                    .parseCommand(target.getWindowModel(), command);
         }
     }
 

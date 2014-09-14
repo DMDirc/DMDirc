@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ServerFactory;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
@@ -146,8 +147,8 @@ public class ServerManager implements ServerFactory {
      *
      * @return A list of all servers
      */
-    public List<Server> getServers() {
-        return new ArrayList<>(servers);
+    public List<Connection> getServers() {
+        return new ArrayList<Connection>(servers);
     }
 
     /**
@@ -189,8 +190,8 @@ public class ServerManager implements ServerFactory {
      *
      * @return A list of servers connected to the network
      */
-    public List<Server> getServersByNetwork(final String network) {
-        final List<Server> res = new ArrayList<>();
+    public List<Connection> getServersByNetwork(final String network) {
+        final List<Connection> res = new ArrayList<>();
 
         for (Server server : servers) {
             if (server.isNetwork(network)) {
@@ -210,7 +211,7 @@ public class ServerManager implements ServerFactory {
      *
      * @since 0.6.3
      */
-    public Server connectToAddress(final URI uri) {
+    public Connection connectToAddress(final URI uri) {
         return connectToAddress(uri,
                 identityController.getProvidersByType("profile").get(0));
     }
@@ -257,11 +258,11 @@ public class ServerManager implements ServerFactory {
      * Connects the user to Quakenet if necessary and joins #DMDirc.
      */
     public void joinDevChat() {
-        final List<Server> qnetServers = getServersByNetwork("Quakenet");
+        final List<Connection> qnetServers = getServersByNetwork("Quakenet");
 
-        Server connectedServer = null;
+        Connection connectedServer = null;
 
-        for (Server server : qnetServers) {
+        for (Connection server : qnetServers) {
             if (server.getState() == ServerState.CONNECTED) {
                 connectedServer = server;
 

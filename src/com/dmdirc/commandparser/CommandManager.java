@@ -23,12 +23,12 @@
 package com.dmdirc.commandparser;
 
 import com.dmdirc.Query;
-import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -155,10 +155,11 @@ public class CommandManager implements CommandController {
         final String commandName = getCommandChar() + command.getName();
 
         // TODO: This logic is probably in two places. Abstract it.
-        for (Server server : serverManager.getServers()) {
+        for (Connection server : serverManager.getServers()) {
             if (command.getType() == CommandType.TYPE_SERVER
                     || command.getType() == CommandType.TYPE_GLOBAL) {
-                registerCommandName(server.getTabCompleter(), commandName, register);
+                registerCommandName(server.getWindowModel().getTabCompleter(),
+                        commandName, register);
             }
 
             if (command.getType() == CommandType.TYPE_CHANNEL
