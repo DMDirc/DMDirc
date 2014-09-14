@@ -48,3 +48,4 @@ __history
 /atlassian-ide-plugin.xml
 /.gradle
 /*/build
+/etc/nexus-teamcity.properties

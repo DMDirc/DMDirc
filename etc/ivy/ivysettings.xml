@@ -9,6 +9,7 @@
         <ibiblio name="jgit" root="http://download.eclipse.org/jgit/maven" m2compatible="true"/>
         <ibiblio name="dmdirc-thirdparty" root="http://nexus.dmdirc.com/nexus/content/repositories/thirdparty/" m2compatible="true"/>
         <ibiblio name="dmdirc-releases" root="http://nexus.dmdirc.com/nexus/content/repositories/releases/" m2compatible="true"/>
+        <ibiblio name="dmdirc-snapshots" root="http://nexus.dmdirc.com/nexus/content/repositories/snapshots/" m2compatible="true"/>
 
         <url name="ant-nsis">
             <artifact pattern="https://cloud.github.com/downloads/dreese/nsis-ant/nsisant-[revision].jar"/>

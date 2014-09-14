@@ -22,19 +22,31 @@
 
     <target name="publish-integration" depends="-init-dependencies,jar">
         <copy file="dist/DMDirc.jar" tofile="dist/client.jar"/>
-        <ivy:deliver deliverpattern="build/ivy.xml" pubrevision="${git.version}" />
+        <ivy:deliver deliverpattern="build/ivy.xml" pubrevision="${git.version}-SNAPSHOT" />
         <ivy:makepom ivyfile="build/ivy.xml" pomfile="dist/client.pom">
             <mapping conf="main" scope="compile"/>
         </ivy:makepom>
         <ivy:resolve file="build/ivy.xml"/>
         <ivy:retrieve/>
-        <ivy:publish resolver="dmdirc-releases"
+        <ivy:publish resolver="dmdirc-snapshots"
                      organisation="com.dmdirc"
                      module="client"
-                     revision="${git.version}"
+                     revision="${git.version}-SNAPSHOT"
                      status="integration"
                      artifactspattern="dist/[artifact].[ext]"
                      publishivy="false">
         </ivy:publish>
+    </target>
+
+    <target name="publish-from-teamcity" depends="-init-dependencies">
+        <echo>Downloading private files, if this fails please pass username and</echo>
+        <echo>password to ant using -Dusername=... -Dpassword=...</echo>
+
+        <get src="http://www.dmdirc.com/private/nexus-teamcity.properties" dest="etc/nexus-teamcity.properties" username="${username}" password="${password}"/>
+        <loadproperties srcFile="etc/nexus-teamcity.properties"/>
+
+        <ivy:settings>
+          <credentials host="nexus.dmdirc.com" realm="Sonatype Nexus Repository Manager" username="${nexus.user}" passwd="${nexus.pass}"/>
+        </ivy:settings>
     </target>
 </project>
