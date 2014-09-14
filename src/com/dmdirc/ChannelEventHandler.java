@@ -95,6 +95,7 @@ public class ChannelEventHandler extends EventHandler implements
     private final DMDircMBassador eventBus;
 
     public ChannelEventHandler(final Channel owner, final DMDircMBassador eventBus) {
+        super(eventBus);
         this.owner = owner;
         this.eventBus = eventBus;
     }

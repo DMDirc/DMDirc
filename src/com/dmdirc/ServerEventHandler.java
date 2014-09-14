@@ -124,6 +124,7 @@ public class ServerEventHandler extends EventHandler implements
      * @param eventBus The event bus to post events to
      */
     public ServerEventHandler(final Server owner, final DMDircMBassador eventBus) {
+        super(eventBus);
         this.owner = owner;
         this.eventBus = eventBus;
     }

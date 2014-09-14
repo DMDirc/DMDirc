@@ -22,9 +22,9 @@
 
 package com.dmdirc;
 
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.Parser;
@@ -36,6 +36,17 @@ import javax.annotation.Nonnull;
  * Abstracts some behaviour used by Event Handlers.
  */
 public abstract class EventHandler implements CallbackInterface {
+
+    private final DMDircMBassador eventBus;
+
+    /**
+     * Creates a new instance.
+     *
+     * @param eventBus The event bus to post errors to.
+     */
+    protected EventHandler(final DMDircMBassador eventBus) {
+        this.eventBus = eventBus;
+    }
 
     /**
      * Registers all callbacks that this event handler implements with the owner's parser.
@@ -50,8 +61,8 @@ public abstract class EventHandler implements CallbackInterface {
                 }
             }
         } catch (CallbackNotFoundException exception) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to register callbacks",
-                    exception);
+            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.FATAL, exception,
+                    "Unable to register callbacks", ""));
         }
     }
 
