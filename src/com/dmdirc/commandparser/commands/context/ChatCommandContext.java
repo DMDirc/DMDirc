@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.context;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandInfo;
 
 /**
@@ -46,7 +45,7 @@ public class ChatCommandContext extends ServerCommandContext {
      */
     public ChatCommandContext(final FrameContainer source,
             final CommandInfo commandInfo, final MessageTarget chat) {
-        super(source, commandInfo, (Server) chat.getConnection());
+        super(source, commandInfo, chat.getConnection());
         this.chat = chat;
     }
 
