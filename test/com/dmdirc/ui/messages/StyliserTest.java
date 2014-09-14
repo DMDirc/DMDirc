@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Enumeration;
@@ -83,7 +84,8 @@ public class StyliserTest {
         final String input2 = "abcdefghi";
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
-        final Styliser styliser = new Styliser(null, manager, new ColourManager(manager));
+        final Styliser styliser = new Styliser(null, manager, new ColourManager(manager,
+                mock(DMDircMBassador.class)));
 
         for (int i = 0; i < input2.length(); i++) {
             final Enumeration<?> res1 = styliser.getStyledString(new String[]{input1})

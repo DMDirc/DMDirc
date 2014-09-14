@@ -52,6 +52,7 @@ import com.dmdirc.plugins.ServiceLocator;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.updater.manager.UpdateManager;
@@ -217,8 +218,9 @@ public class ClientModule {
 
     @Provides
     @Singleton
-    public ColourManager getColourManager(@GlobalConfig final AggregateConfigProvider globalConfig) {
-        return new ColourManager(globalConfig);
+    public ColourManager getColourManager(final ColourManagerFactory colourManagerFactory,
+            @GlobalConfig final  AggregateConfigProvider globalConfig) {
+        return colourManagerFactory.getColourManager(globalConfig);
     }
 
     @Provides

@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.util.Utils;
 
@@ -64,7 +65,8 @@ public class StyliserStylesTest {
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
 
-        final Styliser styliser = new Styliser(null, manager, new ColourManager(manager));
+        final Styliser styliser = new Styliser(null, manager, new ColourManager(manager,
+                mock(DMDircMBassador.class)));
         styliser.addStyledString(doc, new String[]{input});
         final AttributedCharacterIterator aci = Utils.getAttributedString(styliser,
                 new String[]{input, }, "dialog", 12).

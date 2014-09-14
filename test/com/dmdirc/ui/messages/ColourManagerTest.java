@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorManager;
@@ -47,13 +48,14 @@ public class ColourManagerTest {
     @Mock private ErrorManager errorManager;
     @Mock private AggregateConfigProvider configManager;
     @Captor private ArgumentCaptor<ConfigChangeListener> configListener;
+    @Mock private DMDircMBassador eventBus;
     private ColourManager manager;
 
     @Before
     public void setup() {
         Logger.setErrorManager(errorManager);
 
-        manager = new ColourManager(configManager);
+        manager = new ColourManager(configManager, eventBus);
         verify(configManager).addChangeListener(anyString(), configListener.capture());
     }
 

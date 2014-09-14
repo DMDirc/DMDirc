@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -50,14 +52,18 @@ public class ColourManager {
     private final AggregateConfigProvider configManager;
     /** Actual colours we're using for the 16 IRC colours. */
     private final Colour[] ircColours = DEFAULT_COLOURS.clone();
+    /** Event bus to post errors to. */
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link ColourManager}.
      *
      * @param configManager The manager to read config settings from.
      */
-    public ColourManager(final AggregateConfigProvider configManager) {
+    public ColourManager(final AggregateConfigProvider configManager,
+            final DMDircMBassador eventBus) {
         this.configManager = configManager;
+        this.eventBus = eventBus;
 
         configManager.addChangeListener("colour", new ConfigChangeListener() {
             @Override
@@ -145,7 +151,8 @@ public class ColourManager {
         }
 
         if (hex.length() < 6) {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid colour #" + hex);
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Invalid Colour: #" + hex, ""));
             return Colour.WHITE;
         }
 
@@ -156,7 +163,8 @@ public class ColourManager {
                     Integer.parseInt(hex.substring(2, 4), 16),
                     Integer.parseInt(hex.substring(4, 6), 16));
         } catch (NumberFormatException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid colour #" + hex);
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Invalid Colour: #" + hex, ""));
             return Colour.WHITE;
         }
 
@@ -177,7 +185,8 @@ public class ColourManager {
         if (number >= 0 && number <= 15) {
             return ircColours[number];
         } else {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid colour: " + number);
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                    "Invalid Colour: " + number, ""));
             return Colour.WHITE;
         }
     }

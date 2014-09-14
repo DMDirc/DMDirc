@@ -21,6 +21,7 @@
  */
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Server;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -48,7 +49,8 @@ public class IntelligentLinkingTest {
         final Server server = mock(Server.class);
         when(server.getChannelPrefixes()).thenReturn("#&+");
 
-        styliser = new Styliser(server, manager, new ColourManager(manager));
+        styliser = new Styliser(server, manager, new ColourManager(manager,
+                mock(DMDircMBassador.class)));
     }
 
     @Test
