@@ -43,13 +43,7 @@ import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.messages.MessagesModule;
-import com.dmdirc.plugins.CorePluginExtractor;
-import com.dmdirc.plugins.CorePluginHelper;
-import com.dmdirc.plugins.LegacyServiceLocator;
-import com.dmdirc.plugins.PluginInjectorInitialiser;
-import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.plugins.ServiceLocator;
-import com.dmdirc.plugins.ServiceManager;
+import com.dmdirc.plugins.PluginModule;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.ColourManagerFactory;
@@ -73,6 +67,7 @@ import net.engio.mbassy.bus.config.BusConfiguration;
 /**
  * Provides dependencies for the client.
  */
+@SuppressWarnings("TypeMayBeWeakened")
 @Module(
         injects = {Main.class, CommandLineParser.class},
         includes = {
@@ -82,6 +77,7 @@ import net.engio.mbassy.bus.config.BusConfiguration;
                 CommandModule.class,
                 ConfigModule.class,
                 MessagesModule.class,
+                PluginModule.class,
                 UpdaterModule.class
         },
         library = true)
@@ -106,7 +102,6 @@ public class ClientModule {
     private ObjectGraph objectGraph;
 
     @Provides
-    @SuppressWarnings("TypeMayBeWeakened")
     public ConnectionManager getConnectionManager(final ServerManager serverManager) {
         return serverManager;
     }
@@ -168,39 +163,6 @@ public class ClientModule {
 
     @Provides
     @Singleton
-    public PluginManager getPluginManager(
-            final DMDircMBassador eventBus,
-            final IdentityController identityController,
-            final UpdateManager updateManager,
-            final Provider<PluginInjectorInitialiser> initialiserProvider,
-            final ObjectGraph objectGraph,
-            final CorePluginHelper pluginHelper,
-            @Directory(DirectoryType.PLUGINS) final String directory) {
-        final PluginManager manager = new PluginManager(eventBus, identityController,
-                updateManager, initialiserProvider, objectGraph, directory);
-        final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory, eventBus);
-        pluginHelper.checkBundledPlugins(extractor, manager,
-                identityController.getGlobalConfiguration());
-
-        for (String service : new String[]{"ui", "tabcompletion", "parser"}) {
-            pluginHelper.ensureExists(extractor, manager, service);
-        }
-
-        // The user may have an existing parser plugin (e.g. twitter) which
-        // will satisfy the service existence check above, but will render the
-        // client pretty useless, so we'll force IRC extraction for now.
-        extractor.extractCorePlugins("parser_irc");
-        manager.refreshPlugins();
-        return manager;
-    }
-
-    @Provides
-    public ServiceManager getServiceManager(final PluginManager pluginManager) {
-        return pluginManager;
-    }
-
-    @Provides
-    @Singleton
     public ThemeManager getThemeManager(
             final DMDircMBassador eventBus,
             final IdentityController controller,
@@ -226,11 +188,6 @@ public class ClientModule {
     @Provides
     public ConnectionFactory getServerFactory(final ConnectionManager connectionManager) {
         return connectionManager;
-    }
-
-    @Provides
-    public ServiceLocator getServiceLocator(final LegacyServiceLocator locator) {
-        return locator;
     }
 
     @Provides
