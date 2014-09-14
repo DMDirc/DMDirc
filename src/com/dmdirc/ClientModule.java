@@ -34,20 +34,14 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.aliases.AliasesModule;
 import com.dmdirc.commandparser.auto.AutoCommandModule;
 import com.dmdirc.commandparser.commands.CommandModule;
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.config.ConfigModule;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
-import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.ErrorManager;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.messages.MessagesModule;
 import com.dmdirc.plugins.CorePluginExtractor;
 import com.dmdirc.plugins.CorePluginHelper;
@@ -57,7 +51,6 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.ServiceLocator;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.IconManager;
-import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
@@ -65,10 +58,6 @@ import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.io.Downloader;
 
-import java.awt.GraphicsEnvironment;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Set;
 
 import javax.inject.Provider;
@@ -86,12 +75,13 @@ import net.engio.mbassy.bus.config.BusConfiguration;
 @Module(
         injects = {Main.class, CommandLineParser.class},
         includes = {
-            AliasesModule.class,
-            AutoCommandModule.class,
-            CommandLineOptionsModule.class,
-            CommandModule.class,
-            MessagesModule.class,
-            UpdaterModule.class
+                AliasesModule.class,
+                AutoCommandModule.class,
+                CommandLineOptionsModule.class,
+                CommandModule.class,
+                ConfigModule.class,
+                MessagesModule.class,
+                UpdaterModule.class
         },
         library = true)
 public class ClientModule {
@@ -115,6 +105,7 @@ public class ClientModule {
     private ObjectGraph objectGraph;
 
     @Provides
+    @SuppressWarnings("TypeMayBeWeakened")
     public ConnectionManager getConnectionManager(final ServerManager serverManager) {
         return serverManager;
     }
@@ -126,62 +117,12 @@ public class ClientModule {
     }
 
     @Provides
-    @Singleton
-    public IdentityManager getIdentityManager(
-            @Directory(DirectoryType.BASE) final String baseDirectory,
-            @Directory(DirectoryType.IDENTITIES) final String identitiesDirectory,
-            @Directory(DirectoryType.ERRORS) final String errorsDirectory,
-            final CommandLineParser commandLineParser,
-            final DMDircMBassador eventBus) {
-        final IdentityManager identityManager = new IdentityManager(baseDirectory,
-                identitiesDirectory, eventBus);
-        ErrorManager.getErrorManager()
-                .initialise(identityManager.getGlobalConfiguration(), errorsDirectory, eventBus);
-        identityManager.loadVersionIdentity();
-
-        try {
-            identityManager.initialise();
-        } catch (InvalidIdentityFileException ex) {
-            handleInvalidConfigFile(identityManager, baseDirectory);
-        }
-
-        if (commandLineParser.getDisableReporting()) {
-            identityManager.getUserSettings().setOption("temp", "noerrorreporting", true);
-        }
-
-        return identityManager;
-    }
-
-    @Provides
-    public IdentityController getIdentityController(final IdentityManager manager) {
-        return manager;
-    }
-
-    @Provides
-    @GlobalConfig
-    public AggregateConfigProvider getGlobalConfig(final IdentityController controller) {
-        return controller.getGlobalConfiguration();
-    }
-
-    @Provides
     @GlobalConfig
     @Singleton
     public IconManager getGlobalIconManager(
             @GlobalConfig final AggregateConfigProvider globalConfig,
             final URLBuilder urlBuilder) {
         return new IconManager(globalConfig, urlBuilder);
-    }
-
-    @Provides
-    @UserConfig
-    public ConfigProvider getUserConfig(final IdentityController controller) {
-        return controller.getUserSettings();
-    }
-
-    @Provides
-    @AddonConfig
-    public ConfigProvider getAddonConfig(final IdentityController controller) {
-        return controller.getAddonSettings();
     }
 
     @Provides
@@ -286,11 +227,6 @@ public class ClientModule {
     }
 
     @Provides
-    public IdentityFactory getIdentityFactory(final IdentityManager identityManager) {
-        return identityManager;
-    }
-
-    @Provides
     public ServiceLocator getServiceLocator(final LegacyServiceLocator locator) {
         return locator;
     }
@@ -313,51 +249,6 @@ public class ClientModule {
     @Singleton
     public ObjectGraph getObjectGraph() {
         return objectGraph;
-    }
-
-    /**
-     * Called when the global config cannot be loaded due to an error. This method informs the user
-     * of the problem and installs a new default config file, backing up the old one.
-     *
-     * @param identityManager The identity manager to re-initialise after installing defaults.
-     * @param configdir       The directory to extract default settings into.
-     */
-    private void handleInvalidConfigFile(final IdentityManager identityManager,
-            final String configdir) {
-        final String date = new SimpleDateFormat("yyyyMMddkkmmss").format(new Date());
-
-        final String message = "DMDirc has detected that your config file "
-                + "has become corrupted.<br><br>DMDirc will now backup "
-                + "your current config and try restarting with a default "
-                + "config.<br><br>Your old config will be saved as:<br>"
-                + "dmdirc.config." + date;
-
-        if (!GraphicsEnvironment.isHeadless()) {
-            new WarningDialog("Invalid Config File", message).displayBlocking();
-        }
-
-        // Let command-line users know what is happening.
-        System.out.println(message.replace("<br>", "\n"));
-
-        final File configFile = new File(configdir + "dmdirc.config");
-        final File newConfigFile = new File(configdir + "dmdirc.config." + date);
-
-        if (configFile.renameTo(newConfigFile)) {
-            try {
-                identityManager.initialise();
-            } catch (InvalidIdentityFileException iife) {
-                // This shouldn't happen!
-                Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife);
-            }
-        } else {
-            final String newMessage = "DMDirc was unable to rename the "
-                    + "global config file and is unable to fix this issue.";
-            if (!GraphicsEnvironment.isHeadless()) {
-                new WarningDialog("Invalid Config File", newMessage).displayBlocking();
-            }
-            System.out.println(newMessage.replace("<br>", "\n"));
-            System.exit(1);
-        }
     }
 
 }
