@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -34,6 +33,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
@@ -64,13 +64,13 @@ public class Nick extends Command implements IntelligentCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Server server = ((ServerCommandContext) context).getServer();
+        final Connection connection = ((ServerCommandContext) context).getConnection();
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "nick", "<new nickname>");
             return;
         }
 
-        server.getParser().getLocalClient().setNickname(args.getArguments()[0]);
+        connection.getParser().getLocalClient().setNickname(args.getArguments()[0]);
     }
 
     @Override

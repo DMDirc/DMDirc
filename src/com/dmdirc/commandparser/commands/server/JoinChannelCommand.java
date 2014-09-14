@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -82,7 +81,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Server server = ((ServerCommandContext) context).getServer();
+        final Connection connection = ((ServerCommandContext) context).getConnection();
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "join", "join <channel [key]>[,channel [key]...]");
             return;
@@ -101,7 +100,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
             }
         }
 
-        server.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[channels.size()]));
+        connection.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[channels.size()]));
     }
 
     @Handler

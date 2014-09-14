@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -34,6 +33,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
@@ -64,11 +64,11 @@ public class Notice extends Command implements IntelligentCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Server server = ((ServerCommandContext) context).getServer();
+        final Connection connection = ((ServerCommandContext) context).getConnection();
         if (args.getArguments().length < 2) {
             showUsage(origin, args.isSilent(), "notice", "<target> <message>");
         } else {
-            server.getParser().sendNotice(args.getArguments()[0],
+            connection.getParser().sendNotice(args.getArguments()[0],
                     args.getArgumentsAsString(1));
             sendLine(origin, args.isSilent(), "selfNotice", args.getArguments()[0],
                     args.getArgumentsAsString(1));

@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -34,6 +33,7 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -62,14 +62,14 @@ public class Umode extends Command {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Server server = ((ServerCommandContext) context).getServer();
-        if (server.getState() != ServerState.CONNECTED) {
+        final Connection connection = ((ServerCommandContext) context).getConnection();
+        if (connection.getState() != ServerState.CONNECTED) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "Not connected");
             return;
         }
 
-        server.getParser().sendRawMessage("MODE "
-                + server.getParser().getLocalClient().getNickname()
+        connection.getParser().sendRawMessage("MODE "
+                + connection.getParser().getLocalClient().getNickname()
                 + " " + args.getArgumentsAsString());
     }
 

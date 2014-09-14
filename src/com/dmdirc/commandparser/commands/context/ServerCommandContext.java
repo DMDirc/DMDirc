@@ -23,39 +23,39 @@
 package com.dmdirc.commandparser.commands.context;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.interfaces.Connection;
 
 /**
- * A command context for server commands.
+ * A command context for connection commands.
  *
  * @since 0.6.4
  */
 public class ServerCommandContext extends CommandContext {
 
-    /** The server the command was executed for. */
-    private final Server server;
+    /** The connection the command was executed for. */
+    private final Connection connection;
 
     /**
-     * Creates a new server command context.
+     * Creates a new connection command context.
      *
      * @param source      The source of the command
      * @param commandInfo The command info object which associated the command with the input
-     * @param server      The server associated with the command
+     * @param connection      The connection associated with the command
      */
     public ServerCommandContext(final FrameContainer source, final CommandInfo commandInfo,
-            final Server server) {
+            final Connection connection) {
         super(source, commandInfo);
-        this.server = server;
+        this.connection = connection;
     }
 
     /**
-     * Retrieves the server associated with this context.
+     * Retrieves the connection associated with this context.
      *
-     * @return This context's server
+     * @return This context's connection
      */
-    public Server getServer() {
-        return server;
+    public Connection getConnection() {
+        return connection;
     }
 
 }

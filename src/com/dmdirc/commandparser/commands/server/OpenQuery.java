@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -35,6 +34,7 @@ import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Styliser;
@@ -71,8 +71,8 @@ public class OpenQuery extends Command implements IntelligentCommand,
             return;
         }
 
-        final Server server = ((ServerCommandContext) context).getServer();
-        if (server.getParser().isValidChannelName(args.getArguments()[0])) {
+        final Connection connection = ((ServerCommandContext) context).getConnection();
+        if (connection.getParser().isValidChannelName(args.getArguments()[0])) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "You can't open a query "
                     + "with a channel; maybe you meant " + Styliser.CODE_FIXED
                     + Styliser.CODE_BOLD
@@ -83,7 +83,7 @@ public class OpenQuery extends Command implements IntelligentCommand,
             return;
         }
 
-        final Query query = server.getQuery(args.getArguments()[0], !args.isSilent());
+        final Query query = connection.getQuery(args.getArguments()[0], !args.isSilent());
 
         if (args.getArguments().length > 1) {
             query.sendLine(args.getArgumentsAsString(1), args.getArguments()[0]);
@@ -113,7 +113,7 @@ public class OpenQuery extends Command implements IntelligentCommand,
     public int getLineCount(final FrameContainer origin, final CommandArguments arguments) {
         if (arguments.getArguments().length >= 2) {
             final String target = arguments.getArguments()[0];
-            return ((Server) origin.getConnection()).getNumLines("PRIVMSG "
+            return ((Connection) origin.getConnection()).getWindowModel().getNumLines("PRIVMSG "
                     + target + " :" + arguments.getArgumentsAsString(1));
         } else {
             return 1;

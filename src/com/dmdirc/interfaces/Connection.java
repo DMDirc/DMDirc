@@ -33,6 +33,7 @@ import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.tls.CertificateProblemListener;
 
 import java.net.URI;
@@ -409,7 +410,7 @@ public interface Connection {
      * Parses the specified hostmask in a manner prescribed by the protocol currently used by this
      * server.
      *
-     * @see com.dmdirc.parser.interfaces.ProtocolDescription#parseHostmask(java.lang.String)
+     * @see ProtocolDescription#parseHostmask(String)
      * @param hostmask The hostmask to be parsed
      *
      * @return An array containing the nickname, username and hostname

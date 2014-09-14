@@ -22,10 +22,10 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -34,7 +34,7 @@ import com.dmdirc.util.URIParser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,13 +58,14 @@ public class NewServerTest {
     @Mock private FrameContainer container;
     @Mock private PluginManager pluginManager;
     @Mock private ConnectionFactory factory;
-    @Mock private Server server;
+    @Mock private Connection connection;
     private NewServer command;
 
     @Before
     public void setup() {
-        when(factory.createServer(any(URI.class), any(ConfigProvider.class))).thenReturn(server);
-        when(identityController.getProvidersByType("profile")).thenReturn(Arrays.asList(new ConfigProvider[] { identity }));
+        when(factory.createServer(any(URI.class), any(ConfigProvider.class))).thenReturn(connection);
+        when(identityController.getProvidersByType("profile")).thenReturn(
+                Collections.singletonList(identity));
         command = new NewServer(controller, factory, pluginManager, identityController, new URIParser());
     }
 
@@ -74,7 +75,7 @@ public class NewServerTest {
                 new CommandContext(null, NewServer.INFO));
 
         verify(factory).createServer(eq(new URI("irc://irc.foo.com")), any(ConfigProvider.class));
-        verify(server).connect();
+        verify(connection).connect();
     }
 
     @Test
@@ -83,7 +84,7 @@ public class NewServerTest {
                 new CommandContext(null, NewServer.INFO));
 
         verify(factory).createServer(eq(new URI("irc://irc.foo.com:1234")), any(ConfigProvider.class));
-        verify(server).connect();
+        verify(connection).connect();
     }
 
     @Test
@@ -92,7 +93,7 @@ public class NewServerTest {
                 new CommandContext(null, NewServer.INFO));
 
         verify(factory).createServer(eq(new URI("otheruri://foo.com:123/blah")), any(ConfigProvider.class));
-        verify(server).connect();
+        verify(connection).connect();
     }
 
     @Test

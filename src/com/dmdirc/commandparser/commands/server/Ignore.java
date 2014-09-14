@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -33,6 +32,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -67,22 +67,22 @@ public class Ignore extends Command implements IntelligentCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Server server = ((ServerCommandContext) context).getServer();
+        final Connection connection = ((ServerCommandContext) context).getConnection();
 
         if (args.getArguments().length == 0) {
-            executeView(origin, server, args.isSilent(), args, false);
+            executeView(origin, connection, args.isSilent(), args, false);
         } else if ("--remove".equalsIgnoreCase(args.getArguments()[0])) {
-            executeRemove(origin, server, args.isSilent(), args);
+            executeRemove(origin, connection, args.isSilent(), args);
         } else if ("--regex".equalsIgnoreCase(args.getArguments()[0])) {
-            executeRegex(origin, server, args.isSilent(), args);
+            executeRegex(origin, connection, args.isSilent(), args);
         } else {
-            executeAdd(origin, server, args.isSilent(), args);
+            executeAdd(origin, connection, args.isSilent(), args);
         }
     }
 
-    protected void executeView(final FrameContainer origin, final Server server,
+    protected void executeView(final FrameContainer origin, final Connection connection,
             final boolean isSilent, final CommandArguments args, final boolean forceRegex) {
-        final IgnoreList ignoreList = server.getIgnoreList();
+        final IgnoreList ignoreList = connection.getIgnoreList();
 
         if (ignoreList.count() == 0) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR,
@@ -108,24 +108,24 @@ public class Ignore extends Command implements IntelligentCommand {
         }
     }
 
-    protected void executeAdd(final FrameContainer origin, final Server server,
+    protected void executeAdd(final FrameContainer origin, final Connection connection,
             final boolean isSilent, final CommandArguments args) {
-        final IgnoreList ignoreList = server.getIgnoreList();
+        final IgnoreList ignoreList = connection.getIgnoreList();
         final String target = args.getArgumentsAsString();
 
         ignoreList.addSimple(target);
-        server.saveIgnoreList();
+        connection.saveIgnoreList();
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
     }
 
-    protected void executeRegex(final FrameContainer origin, final Server server,
+    protected void executeRegex(final FrameContainer origin, final Connection connection,
             final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 1) {
-            executeView(origin, server, args.isSilent(), args, true);
+            executeView(origin, connection, args.isSilent(), args, true);
             return;
         }
 
-        final IgnoreList ignoreList = server.getIgnoreList();
+        final IgnoreList ignoreList = connection.getIgnoreList();
         final String target = args.getArgumentsAsString(1);
 
         try {
@@ -138,23 +138,23 @@ public class Ignore extends Command implements IntelligentCommand {
         }
 
         ignoreList.add(target);
-        server.saveIgnoreList();
+        connection.saveIgnoreList();
         sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
     }
 
-    protected void executeRemove(final FrameContainer origin, final Server server,
+    protected void executeRemove(final FrameContainer origin, final Connection connection,
             final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 1) {
             showUsage(origin, args.isSilent(), "ignore", "--remove <host>");
             return;
         }
 
-        final IgnoreList ignoreList = server.getIgnoreList();
+        final IgnoreList ignoreList = connection.getIgnoreList();
         final String host = args.getArgumentsAsString(1);
 
         if (ignoreList.canConvert() && ignoreList.getSimpleList().contains(host)) {
             ignoreList.remove(ignoreList.getSimpleList().indexOf(host));
-            server.saveIgnoreList();
+            connection.saveIgnoreList();
             sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Removed " + host
                     + " from the ignore list.");
             return;
@@ -162,7 +162,7 @@ public class Ignore extends Command implements IntelligentCommand {
 
         if (ignoreList.getRegexList().contains(host)) {
             ignoreList.remove(ignoreList.getRegexList().indexOf(host));
-            server.saveIgnoreList();
+            connection.saveIgnoreList();
             sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Removed " + host
                     + " from the ignore list.");
             return;
@@ -183,7 +183,7 @@ public class Ignore extends Command implements IntelligentCommand {
             targets.add("--remove");
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
-        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
+        } else if (arg == 1 && "--remove".equals(context.getPreviousArgs().get(0))) {
             final IgnoreList ignoreList = context.getWindow().getConnection()
                     .getIgnoreList();
             if (ignoreList.canConvert()) {
@@ -195,7 +195,7 @@ public class Ignore extends Command implements IntelligentCommand {
                 targets.add(entry);
             }
 
-        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--regex")) {
+        } else if (arg == 1 && "--regex".equals(context.getPreviousArgs().get(0))) {
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
         }

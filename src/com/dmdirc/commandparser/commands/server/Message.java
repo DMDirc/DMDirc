@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -35,6 +34,7 @@ import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -67,7 +67,7 @@ public class Message extends Command implements IntelligentCommand,
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Server server = ((ServerCommandContext) context).getServer();
+        final Connection connection = ((ServerCommandContext) context).getConnection();
         if (args.getArguments().length < 2) {
             showUsage(origin, args.isSilent(), "msg", "<target> <message>");
         } else {
@@ -77,12 +77,12 @@ public class Message extends Command implements IntelligentCommand,
 
             // If this is a known server or channel, and this is not a silent
             // invocation, use sendLine, else send it raw to the parser.
-            if (!args.isSilent() && server.hasChannel(target)) {
-                server.getChannel(target).sendLine(message);
-            } else if (!args.isSilent() && server.hasQuery(target)) {
-                server.getQuery(target).sendLine(message, target);
+            if (!args.isSilent() && connection.hasChannel(target)) {
+                connection.getChannel(target).sendLine(message);
+            } else if (!args.isSilent() && connection.hasQuery(target)) {
+                connection.getQuery(target).sendLine(message, target);
             } else {
-                final Parser parser = server.getParser();
+                final Parser parser = connection.getParser();
 
                 if (parser == null) {
                     // This can happen if the server gets disconnected after
@@ -116,8 +116,8 @@ public class Message extends Command implements IntelligentCommand,
     public int getLineCount(final FrameContainer origin, final CommandArguments arguments) {
         if (arguments.getArguments().length >= 2) {
             final String target = arguments.getArguments()[0];
-            return ((Server) origin.getConnection()).getNumLines("PRIVMSG "
-                    + target + " :" + arguments.getArgumentsAsString(1));
+            return origin.getConnection().getWindowModel().getNumLines(
+                    "PRIVMSG " + target + " :" + arguments.getArgumentsAsString(1));
         } else {
             return 1;
         }
