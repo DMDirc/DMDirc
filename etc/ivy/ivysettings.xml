@@ -1,5 +1,8 @@
 <ivysettings>
     <settings defaultResolver="default"/>
+    <property name="${nexus.user}" value="invalid"  override="false"/>
+    <property name="${nexus.pass}" value="invalid"  override="false"/>
+    <credentials host="nexus.dmdirc.com" realm="Sonatype Nexus Repository Manager" username="${nexus.user}" passwd="${nexus.pass}"/>
     <resolvers>
         <ibiblio name="default" m2compatible="true"/>
 

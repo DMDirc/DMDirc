@@ -19,4 +19,22 @@
         <ivy:retrieve symlink="true" pattern="lib/[conf]/[artifact].[ext]" sync="true" />
         <property name="ivy.done" value="true"/>
     </target>
+
+    <target name="publish-integration" depends="-init-dependencies,jar">
+        <copy file="dist/DMDirc.jar" tofile="dist/client.jar"/>
+        <ivy:deliver deliverpattern="build/ivy.xml" pubrevision="${git.version}" />
+        <ivy:makepom ivyfile="build/ivy.xml" pomfile="dist/client.pom">
+            <mapping conf="main" scope="compile"/>
+        </ivy:makepom>
+        <ivy:resolve file="build/ivy.xml"/>
+        <ivy:retrieve/>
+        <ivy:publish resolver="dmdirc-releases"
+                     organisation="com.dmdirc"
+                     module="client"
+                     revision="${git.version}"
+                     status="integration"
+                     artifactspattern="dist/[artifact].[ext]"
+                     publishivy="false">
+        </ivy:publish>
+    </target>
 </project>
