@@ -22,9 +22,10 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.ClientModule;
 import com.dmdirc.interfaces.actions.ActionComparison;
-import com.dmdirc.util.colours.Colour;
 import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.util.colours.Colour;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -47,7 +48,7 @@ public class ColourActionComparison {
      * @param colourManager The colour manager to use.
      */
     @Inject
-    public ColourActionComparison(final Provider<ColourManager> colourManager) {
+    public ColourActionComparison(@ClientModule.GlobalConfig final Provider<ColourManager> colourManager) {
         this.equalsComparison = new Equals();
         this.notEqualsComparison = new NotEquals();
         this.colourManager = colourManager;

@@ -26,7 +26,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,19 +34,24 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyChar;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SetNickColourTest {
 
     @Mock private Channel channel;
-    @Mock private ColourManager colourManager;
+    @Mock private ColourManagerFactory colourManagerFactory;
     @Mock private CommandController controller;
     private SetNickColour command;
 
     @Before
     public void setUp() {
-        command = new SetNickColour(controller, colourManager);
+        command = new SetNickColour(controller, colourManagerFactory);
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
     }

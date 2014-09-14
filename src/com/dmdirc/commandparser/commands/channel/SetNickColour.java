@@ -35,10 +35,10 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
-import com.dmdirc.util.colours.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.util.colours.Colour;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -54,18 +54,19 @@ public class SetNickColour extends Command implements IntelligentCommand {
             + "set the specified person's display colour",
             CommandType.TYPE_CHANNEL);
     /** Manager to use to convert colours. */
-    private final ColourManager colourManager;
+    private final ColourManagerFactory colourManagerFactory;
 
     /**
      * Creates a new instance of the {@link SetNickColour} command.
      *
-     * @param controller    The command controller that owns this command.
-     * @param colourManager The colour manager to use to convert colours.
+     * @param controller           The command controller that owns this command.
+     * @param colourManagerFactory The colour manager factory to use to convert colours.
      */
     @Inject
-    public SetNickColour(final CommandController controller, final ColourManager colourManager) {
+    public SetNickColour(final CommandController controller,
+            final ColourManagerFactory colourManagerFactory) {
         super(controller);
-        this.colourManager = colourManager;
+        this.colourManagerFactory = colourManagerFactory;
     }
 
     @Override
@@ -112,8 +113,8 @@ public class SetNickColour extends Command implements IntelligentCommand {
             channel.refreshClients();
         } else {
             // We're setting the colour
-            final Colour newColour = colourManager.getColourFromString(args.getArguments()[offset],
-                    null);
+            final Colour newColour = colourManagerFactory.getColourManager(origin.getConfigManager())
+                    .getColourFromString(args.getArguments()[offset], null);
             if (newColour == null) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified.");
                 return;

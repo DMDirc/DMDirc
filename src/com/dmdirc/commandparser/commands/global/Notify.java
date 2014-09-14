@@ -31,9 +31,9 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.util.colours.Colour;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.util.colours.Colour;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -48,18 +48,19 @@ public class Notify extends Command implements IntelligentCommand {
             "notify <colour> - sets the notification colour for this window",
             CommandType.TYPE_GLOBAL);
     /** Manager to use to convert colours. */
-    private final ColourManager colourManager;
+    private final ColourManagerFactory colourManagerFactory;
 
     /**
      * Creates a new instance of the {@link Notify} command.
      *
-     * @param controller    The controller to use for command information.
-     * @param colourManager The colour manager to use to convert colours.
+     * @param controller           The controller to use for command information.
+     * @param colourManagerFactory The colour manager factory to use to convert colours.
      */
     @Inject
-    public Notify(final CommandController controller, final ColourManager colourManager) {
+    public Notify(final CommandController controller,
+            final ColourManagerFactory colourManagerFactory) {
         super(controller);
-        this.colourManager = colourManager;
+        this.colourManagerFactory = colourManagerFactory;
     }
 
     @Override
@@ -70,7 +71,8 @@ public class Notify extends Command implements IntelligentCommand {
             return;
         }
 
-        final Colour colour = colourManager.getColourFromString(args.getArguments()[0], null);
+        final Colour colour = colourManagerFactory.getColourManager(origin.getConfigManager())
+                .getColourFromString(args.getArguments()[0], null);
 
         if (colour == null) {
             showUsage(origin, args.isSilent(), "notify",

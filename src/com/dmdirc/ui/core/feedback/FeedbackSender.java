@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.core.feedback;
 
-import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.StatusBar;
 import com.dmdirc.ui.StatusMessage;
@@ -44,7 +43,7 @@ public class FeedbackSender implements Runnable {
     private final Downloader downloader;
 
     public FeedbackSender(
-            @GlobalConfig final AggregateConfigProvider config,
+            final AggregateConfigProvider config,
             final Downloader downloader,
             final StatusBar statusBar,
             final String name,

@@ -180,7 +180,8 @@ public class ClientModule {
 
     @Provides
     @Singleton
-    public ColourManager getColourManager(final ColourManagerFactory colourManagerFactory,
+    @GlobalConfig
+    public ColourManager getGlobalColourManager(final ColourManagerFactory colourManagerFactory,
             @GlobalConfig final  AggregateConfigProvider globalConfig) {
         return colourManagerFactory.getColourManager(globalConfig);
     }

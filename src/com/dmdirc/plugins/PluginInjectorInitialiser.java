@@ -87,7 +87,7 @@ public class PluginInjectorInitialiser {
             final LifecycleController lifecycleController,
             final CorePluginExtractor corePluginExtractor,
             final URLBuilder urlBuilder,
-            final ColourManager colourManager,
+            @GlobalConfig final ColourManager colourManager,
             final ActionSubstitutorFactory actionSubstitutorFactory,
             final DMDircMBassador eventBus,
             @GlobalConfig final IconManager iconManager) {
