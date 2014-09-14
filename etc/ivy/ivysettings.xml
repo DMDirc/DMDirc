@@ -15,11 +15,6 @@
             <artifact pattern="https://cloud.github.com/downloads/dreese/nsis-ant/nsisant-[revision].jar"/>
         </url>
 
-        <url name="jgit-describe">
-            <ivy pattern="file:///${basedir}/etc/ivy/[module]/ivy.xml"/>
-            <artifact pattern="http://shanemcc.github.com/jgit-describe/releases/jgit-describe-[revision].jar"/>
-        </url>
-
         <packager name="packager" buildRoot="${user.home}/.ivy2/packager/build" resourceCache="${user.home}/.ivy2/packager/cache" preserveBuildDirectories="true">
             <ivy pattern="file:///${basedir}/etc/ivy/[module]/ivy.xml"/>
             <artifact pattern="file:///${basedir}/etc/ivy/[module]/packager.xml"/>
@@ -27,7 +22,7 @@
     </resolvers>
     <modules>
         <module organisation="org.sourceforce.ant-nsis" name="ant-nsis" resolver="ant-nsis"/>
-        <module organisation="com.github.shanemcc" name="jgit-describe" resolver="jgit-describe"/>
+        <module organisation="com.github.shanemcc" name="jgit-describe" resolver="dmdirc-thirdparty"/>
         <module organisation="net.sourceforge.fikin-ant-tasks" name="ant-fikin" resolver="packager"/>
         <module organisation="org.eclipse.jgit" name="*" resolver="jgit"/>
         <module organisation="net.miginfocom" name="*" resolver="dmdirc-thirdparty"/>
