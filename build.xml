@@ -92,6 +92,12 @@
         </jar>
     </target>
 
+    <target name="-bundle-util">
+        <jar destfile="${dist.jar}" update="true">
+            <zipfileset src="lib/main/util.jar" includes="com/dmdirc/**" />
+        </jar>
+    </target>
+
     <target name="-init-submodule-dependencies">
         <subant buildpath="modules/plugins" target="init-dependencies"/>
     </target>
@@ -99,6 +105,6 @@
     <target name="-pre-init" depends="-init-dependencies,-init-submodule-dependencies,-init-private-properties"/>
     <target name="-post-compile" depends="-write-version, build-plugins"/>
     <target name="-post-test-run" depends="-do-test-reports"/>
-    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j,-bundle-dagger,-bundle-base64,-bundle-guava,-bundle-mbassador,-bundle-raven,-bundle-yamlreader"/>
+    <target name="-post-jar" depends="-update-bundled-plugins,-bundle-slf4j,-bundle-dagger,-bundle-base64,-bundle-guava,-bundle-mbassador,-bundle-raven,-bundle-yamlreader,-bundle-util"/>
 
 </project>

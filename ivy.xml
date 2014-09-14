@@ -37,6 +37,7 @@
 
         <dependency org="com.google.guava" name="guava" rev="17.+" conf="bundled,main->default" />
         <dependency org="net.engio" name="mbassador" rev="1.1.10" conf="bundled,main->default" />
+        <dependency org="com.dmdirc" name="util" rev="latest.integration" conf="bundled,main->default" />
 
         <dependency org="junit" name="junit" rev="4.+" conf="test->default" />
         <dependency org="org.mockito" name="mockito-all" rev="1.+" conf="test->default" />

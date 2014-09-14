@@ -26,6 +26,6 @@
         <module organisation="net.sourceforge.fikin-ant-tasks" name="ant-fikin" resolver="packager"/>
         <module organisation="org.eclipse.jgit" name="*" resolver="jgit"/>
         <module organisation="net.miginfocom" name="*" resolver="dmdirc-thirdparty"/>
-        <module organisation="com.dmdirc" name="*" resolver="dmdirc-releases"/>
+        <module organisation="com.dmdirc" name="*" resolver="dmdirc-snapshots"/>
     </modules>
 </ivysettings>
