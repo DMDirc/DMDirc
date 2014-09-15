@@ -48,3 +48,4 @@ __history
 /.gradle
 /*/build
 /etc/nexus-teamcity.properties
+/.idea/libraries
