@@ -78,20 +78,20 @@ public class AutoCommandHandler {
         }
 
         if (autoCommand.getProfile().isPresent() && !event.getConnection().getProfile().getName()
-                .equals(autoCommand.getProfile().get())) {
+                .equalsIgnoreCase(autoCommand.getProfile().get())) {
             // There's a profile specified in the command that isn't matched
             return;
         }
 
         if (autoCommand.getServer().isPresent() && !event.getConnection().getAddress()
-                .equals(autoCommand.getServer().get())) {
+                .equalsIgnoreCase(autoCommand.getServer().get())) {
             // There's a server specified in the command that isn't matched
             return;
         }
 
 
         if (autoCommand.getNetwork().isPresent() && !event.getConnection().getNetwork()
-                .equals(autoCommand.getNetwork().get())) {
+                .equalsIgnoreCase(autoCommand.getNetwork().get())) {
             // There's a network specified in the command that isn't matched
             return;
         }
