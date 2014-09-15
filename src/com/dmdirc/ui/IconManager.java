@@ -145,8 +145,10 @@ public class IconManager implements ConfigChangeListener {
      */
     private URL getIconURL(final String type) {
         final String iconType = getSpecialIcons(type);
-        final ClassLoader cldr = Thread.currentThread().getContextClassLoader();
-        final URL defaultURL = cldr.getResource("com/dmdirc/res/" + iconType + ".png");
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        final ClassLoader classLoader = contextClassLoader == null
+                ? getClass().getClassLoader() : contextClassLoader;
+        final URL defaultURL = classLoader.getResource("com/dmdirc/res/" + iconType + ".png");
 
         //Get the path for the url
         final String path = configManager.hasOptionString("icon", iconType)
@@ -161,14 +163,14 @@ public class IconManager implements ConfigChangeListener {
         }
 
         if (imageURL == null && defaultURL == null) {
-            imageURL = cldr.getResource("com/dmdirc/res/icon.png");
+            imageURL = classLoader.getResource("com/dmdirc/res/icon.png");
         }
 
         //Check URL points to a valid location
         try {
             imageURL.openConnection().connect();
         } catch (IOException ex) {
-            imageURL = cldr.getResource("com/dmdirc/res/icon.png");
+            imageURL = classLoader.getResource("com/dmdirc/res/icon.png");
         }
 
         if (imageURL == null) {
