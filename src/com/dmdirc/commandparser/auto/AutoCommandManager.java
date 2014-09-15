@@ -27,7 +27,7 @@ import com.dmdirc.DMDircMBassador;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,7 +45,7 @@ public class AutoCommandManager {
     /** The factory to use to create handlers. */
     private final AutoCommandHandlerFactory factory;
     /** Known auto commands, mapped on to their handlers. */
-    private final Map<AutoCommand, AutoCommandHandler> autoCommands = new ConcurrentSkipListMap<>();
+    private final Map<AutoCommand, AutoCommandHandler> autoCommands = new ConcurrentHashMap<>();
     /** Whether the manager has been started or not. */
     private boolean started;
 
@@ -56,7 +56,9 @@ public class AutoCommandManager {
      * @param factory  The factory to use to create handlers.
      */
     @Inject
-    public AutoCommandManager(final DMDircMBassador eventBus, final AutoCommandHandlerFactory factory) {
+    public AutoCommandManager(
+            final DMDircMBassador eventBus,
+            final AutoCommandHandlerFactory factory) {
         this.eventBus = eventBus;
         this.factory = factory;
     }
@@ -77,7 +79,7 @@ public class AutoCommandManager {
     public void stop() {
         started = false;
         for (AutoCommandHandler handler : autoCommands.values()) {
-            eventBus.subscribe(handler);
+            eventBus.unsubscribe(handler);
         }
     }
 
@@ -107,7 +109,7 @@ public class AutoCommandManager {
         final AutoCommandHandler handler = autoCommands.remove(autoCommand);
 
         if (started) {
-            eventBus.subscribe(handler);
+            eventBus.unsubscribe(handler);
         }
     }
 
