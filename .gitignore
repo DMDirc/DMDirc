@@ -49,3 +49,4 @@ __history
 /*/build
 /etc/nexus-teamcity.properties
 /.idea/libraries
+/.idea/dictionaries
