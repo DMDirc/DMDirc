@@ -12,6 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/modules/parser/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/modules/parser/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/modules/parser/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/parser/test-res" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/modules/parser/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/modules/parser/build" />
     </content>

@@ -24,18 +24,21 @@ allprojects {
 
     sourceSets {
         main {
-        java {
-            srcDir 'src'
+            java {
+                srcDir 'src'
+            }
+            resources {
+                srcDir 'res'
+            }
         }
-        resources {
-            srcDir 'res'
+        test {
+            java {
+                 srcDir 'test'
+            }
+            resources {
+                srcDir 'test-res'
+            }
         }
-       }
-       test {
-           java {
-           srcDir 'test'
-           }
-       }
     }
 
     sourceCompatibility = 1.7
