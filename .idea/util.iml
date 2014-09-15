@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.path="$MODULE_DIR$/modules/util" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="DMDirc.modules" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+<module external.linked.project.path="$MODULE_DIR$/modules/util" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="com.dmdirc" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/modules/util/build/classes/main" />
     <output-test url="file://$MODULE_DIR$/modules/util/build/classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/modules/util">
-      <sourceFolder url="file://$MODULE_DIR$/modules/util/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/util/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/util/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/util/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/util/res" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/util/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/util/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/modules/util/test-res" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/modules/util/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/modules/util/build" />
     </content>

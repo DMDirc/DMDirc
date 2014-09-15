@@ -5,11 +5,8 @@
     <output-test url="file://$MODULE_DIR$/modules/parser/build/classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/modules/parser">
-      <sourceFolder url="file://$MODULE_DIR$/modules/parser/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/parser/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/parser/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/parser/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/parser/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/modules/parser/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/modules/parser/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/modules/parser/.gradle" />

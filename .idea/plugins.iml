@@ -10,24 +10,18 @@
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/conditional_execute/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/conditional_execute/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/contactlist/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/contactlist/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dcc/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dcc/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dcop/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dcop/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/debug/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/debug/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dns/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/dns/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/exec/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/freedesktop_notifications/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/freedesktop_notifications/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/identd/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/identd/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/lagdisplay/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/lagdisplay/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/logging/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/modules/plugins/logging/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_dbus/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_dcop/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/modules/plugins/mediasource_linux_title/src" isTestSource="false" />
