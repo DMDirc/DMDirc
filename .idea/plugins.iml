@@ -8,7 +8,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="DMDirc" />
+    <orderEntry type="module" module-name="dmdirc" />
     <orderEntry type="module" module-name="parser" />
     <orderEntry type="module" module-name="util" />
     <orderEntry type="module-library">
