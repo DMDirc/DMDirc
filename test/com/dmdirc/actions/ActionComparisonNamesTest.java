@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class ActionComparisonNamesTest {
 
-    private ActionComparison comparison;
+    private final ActionComparison comparison;
 
     public ActionComparisonNamesTest(final ActionComparison comparison) {
         this.comparison = comparison;

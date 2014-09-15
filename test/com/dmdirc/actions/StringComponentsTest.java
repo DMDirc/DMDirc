@@ -34,7 +34,8 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class StringComponentsTest {
 
-    private String string1, string2;
+    private final String string1;
+    private final String string2;
 
     public StringComponentsTest(final String string1, final String string2) {
         this.string1 = string1;
@@ -61,13 +62,13 @@ public class StringComponentsTest {
 
     @Test
     public void testContains() {
-        assertEquals(string1.indexOf(string2) != -1,
+        assertEquals(string1.contains(string2),
                 CoreActionComparison.STRING_CONTAINS.test(string1, string2));
     }
 
     @Test
     public void testNotContains() {
-        assertEquals(string1.indexOf(string2) == -1,
+        assertEquals(!string1.contains(string2),
                 CoreActionComparison.STRING_NCONTAINS.test(string1, string2));
     }
 
