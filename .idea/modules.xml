@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/DMDirc.iml" filepath="$PROJECT_DIR$/DMDirc.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/plugins/activewindow/activewindow.iml" filepath="$PROJECT_DIR$/modules/plugins/activewindow/activewindow.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/plugins/audio/audio.iml" filepath="$PROJECT_DIR$/modules/plugins/audio/audio.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/plugins/calc/calc.iml" filepath="$PROJECT_DIR$/modules/plugins/calc/calc.iml" />
@@ -10,7 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/modules/plugins/dcc/dcc.iml" filepath="$PROJECT_DIR$/modules/plugins/dcc/dcc.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/plugins/dcop/dcop.iml" filepath="$PROJECT_DIR$/modules/plugins/dcop/dcop.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/plugins/debug/debug.iml" filepath="$PROJECT_DIR$/modules/plugins/debug/debug.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dmdirc.iml" filepath="$PROJECT_DIR$/dmdirc.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/plugins/dns/dns.iml" filepath="$PROJECT_DIR$/modules/plugins/dns/dns.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/plugins/exec/exec.iml" filepath="$PROJECT_DIR$/modules/plugins/exec/exec.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/plugins/freedesktop_notifications/freedesktop_notifications.iml" filepath="$PROJECT_DIR$/modules/plugins/freedesktop_notifications/freedesktop_notifications.iml" />
