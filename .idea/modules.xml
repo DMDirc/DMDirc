@@ -2,10 +2,52 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DMDirc.iml" filepath="$PROJECT_DIR$/DMDirc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/activewindow/activewindow.iml" filepath="$PROJECT_DIR$/modules/plugins/activewindow/activewindow.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/audio/audio.iml" filepath="$PROJECT_DIR$/modules/plugins/audio/audio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/calc/calc.iml" filepath="$PROJECT_DIR$/modules/plugins/calc/calc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/conditional_execute/conditional_execute.iml" filepath="$PROJECT_DIR$/modules/plugins/conditional_execute/conditional_execute.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/contactlist/contactlist.iml" filepath="$PROJECT_DIR$/modules/plugins/contactlist/contactlist.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/dcc/dcc.iml" filepath="$PROJECT_DIR$/modules/plugins/dcc/dcc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/dcop/dcop.iml" filepath="$PROJECT_DIR$/modules/plugins/dcop/dcop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/debug/debug.iml" filepath="$PROJECT_DIR$/modules/plugins/debug/debug.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dmdirc.iml" filepath="$PROJECT_DIR$/dmdirc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/dns/dns.iml" filepath="$PROJECT_DIR$/modules/plugins/dns/dns.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/exec/exec.iml" filepath="$PROJECT_DIR$/modules/plugins/exec/exec.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/freedesktop_notifications/freedesktop_notifications.iml" filepath="$PROJECT_DIR$/modules/plugins/freedesktop_notifications/freedesktop_notifications.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/identd/identd.iml" filepath="$PROJECT_DIR$/modules/plugins/identd/identd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/lagdisplay/lagdisplay.iml" filepath="$PROJECT_DIR$/modules/plugins/lagdisplay/lagdisplay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/logging/logging.iml" filepath="$PROJECT_DIR$/modules/plugins/logging/logging.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/mediasource_dbus/mediasource_dbus.iml" filepath="$PROJECT_DIR$/modules/plugins/mediasource_dbus/mediasource_dbus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/mediasource_dcop/mediasource_dcop.iml" filepath="$PROJECT_DIR$/modules/plugins/mediasource_dcop/mediasource_dcop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/mediasource_linux_title/mediasource_linux_title.iml" filepath="$PROJECT_DIR$/modules/plugins/mediasource_linux_title/mediasource_linux_title.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/mediasource_mplayer/mediasource_mplayer.iml" filepath="$PROJECT_DIR$/modules/plugins/mediasource_mplayer/mediasource_mplayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/mediasource_vlc/mediasource_vlc.iml" filepath="$PROJECT_DIR$/modules/plugins/mediasource_vlc/mediasource_vlc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/mediasource_windows/mediasource_windows.iml" filepath="$PROJECT_DIR$/modules/plugins/mediasource_windows/mediasource_windows.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/modules.iml" filepath="$PROJECT_DIR$/modules/modules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/nickcolours/nickcolours.iml" filepath="$PROJECT_DIR$/modules/plugins/nickcolours/nickcolours.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/nma/nma.iml" filepath="$PROJECT_DIR$/modules/plugins/nma/nma.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/notifications/notifications.iml" filepath="$PROJECT_DIR$/modules/plugins/notifications/notifications.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/nowplaying/nowplaying.iml" filepath="$PROJECT_DIR$/modules/plugins/nowplaying/nowplaying.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/osd/osd.iml" filepath="$PROJECT_DIR$/modules/plugins/osd/osd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/osx_integration/osx_integration.iml" filepath="$PROJECT_DIR$/modules/plugins/osx_integration/osx_integration.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/parser.iml" filepath="$PROJECT_DIR$/.idea/parser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/parser_irc/parser_irc.iml" filepath="$PROJECT_DIR$/modules/plugins/parser_irc/parser_irc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/parser_xmpp/parser_xmpp.iml" filepath="$PROJECT_DIR$/modules/plugins/parser_xmpp/parser_xmpp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/parserdebug/parserdebug.iml" filepath="$PROJECT_DIR$/modules/plugins/parserdebug/parserdebug.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/plugins.iml" filepath="$PROJECT_DIR$/.idea/plugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/redirect/redirect.iml" filepath="$PROJECT_DIR$/modules/plugins/redirect/redirect.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/scriptplugin/scriptplugin.iml" filepath="$PROJECT_DIR$/modules/plugins/scriptplugin/scriptplugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/serverlistdialog/serverlistdialog.iml" filepath="$PROJECT_DIR$/modules/plugins/serverlistdialog/serverlistdialog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/serverlists/serverlists.iml" filepath="$PROJECT_DIR$/modules/plugins/serverlists/serverlists.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/sessionlock/sessionlock.iml" filepath="$PROJECT_DIR$/modules/plugins/sessionlock/sessionlock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/systray/systray.iml" filepath="$PROJECT_DIR$/modules/plugins/systray/systray.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/tabcompletion_bash/tabcompletion_bash.iml" filepath="$PROJECT_DIR$/modules/plugins/tabcompletion_bash/tabcompletion_bash.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/tabcompletion_mirc/tabcompletion_mirc.iml" filepath="$PROJECT_DIR$/modules/plugins/tabcompletion_mirc/tabcompletion_mirc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/time/time.iml" filepath="$PROJECT_DIR$/modules/plugins/time/time.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/ui_swing/ui_swing.iml" filepath="$PROJECT_DIR$/modules/plugins/ui_swing/ui_swing.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/util.iml" filepath="$PROJECT_DIR$/.idea/util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/windowflashing/windowflashing.iml" filepath="$PROJECT_DIR$/modules/plugins/windowflashing/windowflashing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/plugins/windowstatus/windowstatus.iml" filepath="$PROJECT_DIR$/modules/plugins/windowstatus/windowstatus.iml" />
     </modules>
   </component>
 </project>

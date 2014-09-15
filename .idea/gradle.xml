@@ -14,6 +14,56 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/modules/plugins" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/modules/plugins" />
+            <option value="$PROJECT_DIR$/modules/plugins/activewindow" />
+            <option value="$PROJECT_DIR$/modules/plugins/audio" />
+            <option value="$PROJECT_DIR$/modules/plugins/calc" />
+            <option value="$PROJECT_DIR$/modules/plugins/conditional_execute" />
+            <option value="$PROJECT_DIR$/modules/plugins/contactlist" />
+            <option value="$PROJECT_DIR$/modules/plugins/dcc" />
+            <option value="$PROJECT_DIR$/modules/plugins/dcop" />
+            <option value="$PROJECT_DIR$/modules/plugins/debug" />
+            <option value="$PROJECT_DIR$/modules/plugins/dns" />
+            <option value="$PROJECT_DIR$/modules/plugins/exec" />
+            <option value="$PROJECT_DIR$/modules/plugins/freedesktop_notifications" />
+            <option value="$PROJECT_DIR$/modules/plugins/identd" />
+            <option value="$PROJECT_DIR$/modules/plugins/lagdisplay" />
+            <option value="$PROJECT_DIR$/modules/plugins/logging" />
+            <option value="$PROJECT_DIR$/modules/plugins/mediasource_dbus" />
+            <option value="$PROJECT_DIR$/modules/plugins/mediasource_dcop" />
+            <option value="$PROJECT_DIR$/modules/plugins/mediasource_linux_title" />
+            <option value="$PROJECT_DIR$/modules/plugins/mediasource_mplayer" />
+            <option value="$PROJECT_DIR$/modules/plugins/mediasource_vlc" />
+            <option value="$PROJECT_DIR$/modules/plugins/mediasource_windows" />
+            <option value="$PROJECT_DIR$/modules/plugins/nickcolours" />
+            <option value="$PROJECT_DIR$/modules/plugins/nma" />
+            <option value="$PROJECT_DIR$/modules/plugins/notifications" />
+            <option value="$PROJECT_DIR$/modules/plugins/nowplaying" />
+            <option value="$PROJECT_DIR$/modules/plugins/osd" />
+            <option value="$PROJECT_DIR$/modules/plugins/osx_integration" />
+            <option value="$PROJECT_DIR$/modules/plugins/parser_irc" />
+            <option value="$PROJECT_DIR$/modules/plugins/parser_xmpp" />
+            <option value="$PROJECT_DIR$/modules/plugins/parserdebug" />
+            <option value="$PROJECT_DIR$/modules/plugins/redirect" />
+            <option value="$PROJECT_DIR$/modules/plugins/scriptplugin" />
+            <option value="$PROJECT_DIR$/modules/plugins/serverlistdialog" />
+            <option value="$PROJECT_DIR$/modules/plugins/serverlists" />
+            <option value="$PROJECT_DIR$/modules/plugins/sessionlock" />
+            <option value="$PROJECT_DIR$/modules/plugins/systray" />
+            <option value="$PROJECT_DIR$/modules/plugins/tabcompletion_bash" />
+            <option value="$PROJECT_DIR$/modules/plugins/tabcompletion_mirc" />
+            <option value="$PROJECT_DIR$/modules/plugins/time" />
+            <option value="$PROJECT_DIR$/modules/plugins/ui_swing" />
+            <option value="$PROJECT_DIR$/modules/plugins/windowflashing" />
+            <option value="$PROJECT_DIR$/modules/plugins/windowstatus" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>

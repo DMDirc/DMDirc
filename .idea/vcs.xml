@@ -5,6 +5,10 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/defaults" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/defaults" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/defaults" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/defaults" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/defaults" vcs="Git" />
@@ -13,6 +17,10 @@
     <mapping directory="$PROJECT_DIR$/modules/installer" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/installer" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/installer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/installer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/installer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/parser" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/parser" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/parser" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/parser" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/parser" vcs="Git" />
@@ -21,6 +29,10 @@
     <mapping directory="$PROJECT_DIR$/modules/plugins" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/plugins" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/plugins" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/plugins" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/plugins" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/util" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/modules/util" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/util" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/util" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/modules/util" vcs="Git" />
