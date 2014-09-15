@@ -162,7 +162,7 @@ public class IconManager implements ConfigChangeListener {
             imageURL = defaultURL;
         }
 
-        if (imageURL == null && defaultURL == null) {
+        if (imageURL == null) {
             imageURL = classLoader.getResource("com/dmdirc/res/icon.png");
         }
 
@@ -184,9 +184,9 @@ public class IconManager implements ConfigChangeListener {
     private String getSpecialIcons(final String type) {
         final Calendar cal = new GregorianCalendar();
         cal.setTime(new Date());
-        if ((cal.get(Calendar.MONTH) == Calendar.DECEMBER
+        if (cal.get(Calendar.MONTH) == Calendar.DECEMBER
                 && cal.get(Calendar.DAY_OF_MONTH) >= 12
-                && cal.get(Calendar.DAY_OF_MONTH) <= 31)
+                && cal.get(Calendar.DAY_OF_MONTH) <= 31
                 && ("icon".equals(type) || "logo".equals(type))) {
             return "logo-special";
         }
