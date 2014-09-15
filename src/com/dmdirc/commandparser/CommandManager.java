@@ -131,7 +131,7 @@ public class CommandManager implements CommandController {
      * @since 0.6.3m1
      */
     private void registerCommand(final CommandInfo info, final Command command,
-            final List<? extends CommandParser> myParsers, final boolean register) {
+            final Iterable<? extends CommandParser> myParsers, final boolean register) {
         for (CommandParser parser : myParsers) {
             if (register) {
                 parser.registerCommand(command, info);
@@ -261,7 +261,7 @@ public class CommandManager implements CommandController {
         final Map<CommandInfo, Command> res = new HashMap<>();
 
         for (Map.Entry<CommandInfo, Command> entry : commands.entrySet()) {
-            if ((type == null || type.equals(entry.getKey().getType()))
+            if ((type == null || type == entry.getKey().getType())
                     && (name == null || name.equals(entry.getKey().getName()))) {
                 res.put(entry.getKey(), entry.getValue());
             }

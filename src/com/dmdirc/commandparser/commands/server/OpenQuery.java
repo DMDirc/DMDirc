@@ -77,9 +77,9 @@ public class OpenQuery extends Command implements IntelligentCommand,
                     + "with a channel; maybe you meant " + Styliser.CODE_FIXED
                     + Styliser.CODE_BOLD
                     + getController().getCommandChar()
-                    + (args.getArguments().length > 1 ? "msg" : "join") + " "
+                    + (args.getArguments().length > 1 ? "msg" : "join") + ' '
                     + args.getArgumentsAsString()
-                    + Styliser.CODE_BOLD + Styliser.CODE_FIXED + "?");
+                    + Styliser.CODE_BOLD + Styliser.CODE_FIXED + '?');
             return;
         }
 

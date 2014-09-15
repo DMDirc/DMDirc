@@ -28,7 +28,7 @@ package com.dmdirc.interfaces.ui;
 public interface SearchBar {
 
     /** Direction used for searching. */
-    public enum Direction {
+    enum Direction {
 
         /** Move up through the document. */
         UP,

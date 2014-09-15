@@ -227,7 +227,7 @@ public class ConfigTarget implements Comparable<ConfigTarget>, Serializable {
      */
     @Override
     public int compareTo(@Nonnull final ConfigTarget target) {
-        if (type.equals(target.getType())) {
+        if (type == target.getType()) {
             return target.getOrder() - order;
         } else {
             return type.compareTo(target.getType());

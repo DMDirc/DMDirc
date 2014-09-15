@@ -26,6 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.ui.Window;
@@ -33,12 +34,13 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
-import com.dmdirc.util.colours.Colour;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.util.colours.Colour;
 
+import java.awt.AWTKeyStroke;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import javax.swing.KeyStroke;
 
@@ -248,7 +250,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public Object get(final Object arg) {
             // TODO: This should understand unset notifications
-            return ((Channel) arg).getNotification().or(Colour.BLACK);
+            return ((FrameContainer) arg).getNotification().or(Colour.BLACK);
         }
 
         @Override
@@ -450,7 +452,7 @@ public enum CoreActionComponent implements ActionComponent {
     STRING_LENGTH {
         @Override
         public Object get(final Object arg) {
-            return ((String) arg).length();
+            return ((CharSequence) arg).length();
         }
 
         @Override
@@ -496,7 +498,7 @@ public enum CoreActionComponent implements ActionComponent {
     CALENDAR_FULLSTRING {
         @Override
         public Object get(final Object arg) {
-            return ((GregorianCalendar) arg).getTime().toString();
+            return ((Calendar) arg).getTime().toString();
         }
 
         @Override
@@ -520,7 +522,7 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_KEYNAME {
         @Override
         public Object get(final Object arg) {
-            return KeyEvent.getKeyText(((KeyStroke) arg).getKeyCode());
+            return KeyEvent.getKeyText(((AWTKeyStroke) arg).getKeyCode());
         }
 
         @Override
@@ -544,7 +546,7 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_CTRLSTATE {
         @Override
         public Object get(final Object arg) {
-            return (((KeyStroke) arg).getModifiers() & KeyEvent.CTRL_DOWN_MASK) != 0;
+            return (((AWTKeyStroke) arg).getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0;
         }
 
         @Override
@@ -568,7 +570,7 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_SHIFTSTATE {
         @Override
         public Object get(final Object arg) {
-            return (((KeyStroke) arg).getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != 0;
+            return (((AWTKeyStroke) arg).getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0;
         }
 
         @Override
@@ -592,7 +594,7 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_ALTSTATE {
         @Override
         public Object get(final Object arg) {
-            return (((KeyStroke) arg).getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0;
+            return (((AWTKeyStroke) arg).getModifiers() & InputEvent.ALT_DOWN_MASK) != 0;
         }
 
         @Override
@@ -614,7 +616,7 @@ public enum CoreActionComponent implements ActionComponent {
     QUERY_HOST {
         @Override
         public Object get(final Object arg) {
-            return ((Query) arg).getHost();
+            return ((PrivateChat) arg).getHost();
         }
 
         @Override
@@ -636,7 +638,7 @@ public enum CoreActionComponent implements ActionComponent {
     QUERY_NICK {
         @Override
         public Object get(final Object arg) {
-            return ((Query) arg).getName();
+            return ((FrameContainer) arg).getName();
         }
 
         @Override
@@ -661,7 +663,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public Object get(final Object arg) {
             // TODO: This should understand unset notifications
-            return ((Query) arg).getNotification().or(Colour.BLACK);
+            return ((FrameContainer) arg).getNotification().or(Colour.BLACK);
         }
 
         @Override

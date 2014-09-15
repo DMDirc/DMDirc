@@ -184,7 +184,7 @@ public final class ProgramError implements Serializable {
      * @param newStatus new ErrorReportStatus for the error
      */
     public void setReportStatus(final ErrorReportStatus newStatus) {
-        if (newStatus != null && !reportStatus.equals(newStatus)) {
+        if (newStatus != null && reportStatus != newStatus) {
             reportStatus = newStatus;
             ErrorManager.getErrorManager().fireErrorStatusChanged(this);
 
@@ -246,7 +246,7 @@ public final class ProgramError implements Serializable {
         if (errorFile.exists()) {
             boolean rename = false;
             for (int i = 0; !rename; i++) {
-                rename = errorFile.renameTo(new File(errorDir, logName + "-" + i + ".log"));
+                rename = errorFile.renameTo(new File(errorDir, logName + '-' + i + ".log"));
             }
         }
 
@@ -338,7 +338,7 @@ public final class ProgramError implements Serializable {
             return "1 occurrence on " + format.format(getDate());
         } else {
             return count.get() + " occurrences between " + format.format(
-                    getDate()) + " and " + format.format(getLastDate()) + ".";
+                    getDate()) + " and " + format.format(getLastDate()) + '.';
         }
     }
 
@@ -361,7 +361,7 @@ public final class ProgramError implements Serializable {
     @Override
     public String toString() {
         return "ID" + id + " Level: " + getLevel() + " Status: " + getReportStatus()
-                + " Message: '" + getMessage() + "'";
+                + " Message: '" + getMessage() + '\'';
     }
 
     @Override

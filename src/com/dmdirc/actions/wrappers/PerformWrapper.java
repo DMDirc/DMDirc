@@ -114,7 +114,7 @@ public class PerformWrapper extends ActionGroup {
      *
      * @since 0.6.4
      */
-    public void setPerform(final PerformDescription perform, final String[] content) {
+    public void setPerform(final PerformDescription perform, final String... content) {
         synchronized (this) {
             Action action = getAction(perform.getType() == PerformType.NETWORK
                     ? CoreActionComponent.SERVER_NETWORK : CoreActionComponent.SERVER_NAME,
@@ -177,7 +177,7 @@ public class PerformWrapper extends ActionGroup {
      *
      * @since 0.6.4
      */
-    private static boolean isEmpty(final String[] perform) {
+    private static boolean isEmpty(final String... perform) {
         for (String part : perform) {
             if (part != null && !part.isEmpty()) {
                 return false;
@@ -195,7 +195,7 @@ public class PerformWrapper extends ActionGroup {
      * @since 0.6.3m2
      * @return True if the conditions are valid, false otherwise
      */
-    protected boolean checkConditions(final List<ActionCondition> conditions) {
+    protected boolean checkConditions(final Iterable<ActionCondition> conditions) {
         boolean target = false;
         boolean profile = false;
 
@@ -383,20 +383,17 @@ public class PerformWrapper extends ActionGroup {
 
             final PerformDescription other = (PerformDescription) obj;
 
-            if (this.type != other.type || !this.target.equals(other.target)) {
-                return false;
-            }
+            return !(type != other.type || !target.equals(other.target)) &&
+                    (profile == null ? other.profile == null : profile.equals(other.profile));
 
-            return !((this.profile == null) ? (other.profile != null)
-                    : !this.profile.equals(other.profile));
         }
 
         @Override
         public int hashCode() {
             int hash = 7;
-            hash = 89 * hash + (this.type != null ? this.type.hashCode() : 0);
-            hash = 89 * hash + (this.target != null ? this.target.hashCode() : 0);
-            hash = 89 * hash + (this.profile != null ? this.profile.hashCode() : 0);
+            hash = 89 * hash + (type != null ? type.hashCode() : 0);
+            hash = 89 * hash + target.hashCode();
+            hash = 89 * hash + (profile != null ? profile.hashCode() : 0);
             return hash;
         }
 

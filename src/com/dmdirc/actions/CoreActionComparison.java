@@ -112,7 +112,7 @@ public enum CoreActionComparison implements ActionComparison {
     STRING_CONTAINS {
         @Override
         public boolean test(final Object arg1, final Object arg2) {
-            return ((String) arg1).contains((String) arg2);
+            return ((String) arg1).contains((CharSequence) arg2);
         }
 
         @Override
@@ -129,7 +129,7 @@ public enum CoreActionComparison implements ActionComparison {
     STRING_NCONTAINS {
         @Override
         public boolean test(final Object arg1, final Object arg2) {
-            return !((String) arg1).contains((String) arg2);
+            return !((String) arg1).contains((CharSequence) arg2);
         }
 
         @Override

@@ -22,14 +22,14 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,7 +58,7 @@ public class PreferencesSetting {
     /** The original value of this setting. */
     private String original;
     /** A list of change listeners. */
-    private final List<SettingChangeListener> listeners = new ArrayList<>();
+    private final Collection<SettingChangeListener> listeners = new ArrayList<>();
     /** Identity to save settings to. */
     private final ConfigProvider identity;
 
@@ -77,8 +77,8 @@ public class PreferencesSetting {
     public PreferencesSetting(final PreferencesType type,
             final Validator<String> validator, final String domain,
             final String option, final String title, final String helptext,
-            final AggregateConfigProvider configManager, final ConfigProvider identity) {
-        if (PreferencesType.MULTICHOICE.equals(type)) {
+            final ReadOnlyConfigProvider configManager, final ConfigProvider identity) {
+        if (PreferencesType.MULTICHOICE == type) {
             throw new IllegalArgumentException("Multi-choice preferences must "
                     + "have their options specified.");
         }
@@ -110,8 +110,8 @@ public class PreferencesSetting {
      */
     public PreferencesSetting(final PreferencesType type, final String domain,
             final String option, final String title, final String helptext,
-            final AggregateConfigProvider configManager, final ConfigProvider identity) {
-        if (PreferencesType.MULTICHOICE.equals(type)) {
+            final ReadOnlyConfigProvider configManager, final ConfigProvider identity) {
+        if (PreferencesType.MULTICHOICE == type) {
             throw new IllegalArgumentException("Multi-choice preferences must "
                     + "have their options specified.");
         }
@@ -143,7 +143,7 @@ public class PreferencesSetting {
     public PreferencesSetting(final String domain, final String option,
             final String title, final String helptext,
             final Map<String, String> options,
-            final AggregateConfigProvider configManager, final ConfigProvider identity) {
+            final ReadOnlyConfigProvider configManager, final ConfigProvider identity) {
         this.type = PreferencesType.MULTICHOICE;
         this.comboOptions = new HashMap<>(options);
         this.validator = new PermissiveValidator<>();
@@ -157,7 +157,7 @@ public class PreferencesSetting {
         original = value;
 
         if (!comboOptions.containsKey(value)) {
-            comboOptions.put(value, "Current (" + value + ")");
+            comboOptions.put(value, "Current (" + value + ')');
         }
     }
 
@@ -255,8 +255,8 @@ public class PreferencesSetting {
      * Dismisses changes to this setting.
      */
     public void dismiss() {
-        if ((original != null && original.equals(value))
-                || (original == null && value == null)) {
+        if (original != null && original.equals(value)
+                || original == null && value == null) {
             return;
         }
 

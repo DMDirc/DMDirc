@@ -211,15 +211,11 @@ public class ErrorManager implements ConfigChangeListener {
             final boolean appError,
             final boolean canReport) {
         final boolean dupe = addError(error);
-        if (error.getLevel().equals(ErrorLevel.FATAL)) {
+        if (error.getLevel() == ErrorLevel.FATAL) {
             if (dupe) {
                 error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             }
-        } else if (!canReport || (appError && !error.isValidSource())) {
-            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-        } else if (!appError) {
-            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-        } else if (dupe) {
+        } else if (!canReport || appError && !error.isValidSource() || !appError || dupe) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
         } else if (sendReports) {
             sendError(error);

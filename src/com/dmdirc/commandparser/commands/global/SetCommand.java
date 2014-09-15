@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -41,6 +40,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
+import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.List;
@@ -120,7 +120,7 @@ public class SetCommand extends Command implements IntelligentCommand {
             }
 
             identity = origin.getConnection().getServerIdentity();
-            manager = ((Server) origin.getConnection()).getConfigManager();
+            manager = ((FrameContainer) origin.getConnection()).getConfigManager();
         }
 
         if (res.hasFlag(channelFlag)) {
@@ -201,7 +201,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param domain   The domain to be inspected
      */
     private void doOptionsList(final FrameContainer origin,
-            final boolean isSilent, final AggregateConfigProvider manager, final String domain) {
+            final boolean isSilent, final ReadOnlyConfigProvider manager, final String domain) {
         final StringBuilder output = new StringBuilder(24);
 
         output.append("Options in domain '");
@@ -234,13 +234,13 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param option   The name of the option
      */
     private void doShowOption(final FrameContainer origin,
-            final boolean isSilent, final AggregateConfigProvider manager,
+            final boolean isSilent, final ReadOnlyConfigProvider manager,
             final String domain, final String option) {
         if (manager.hasOptionString(domain, option)) {
             sendLine(origin, isSilent, FORMAT_OUTPUT, "The current value of "
-                    + domain + "." + option + " is: " + manager.getOption(domain, option));
+                    + domain + '.' + option + " is: " + manager.getOption(domain, option));
         } else {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Option not found: " + domain + "." + option);
+            sendLine(origin, isSilent, FORMAT_ERROR, "Option not found: " + domain + '.' + option);
         }
     }
 
@@ -259,7 +259,7 @@ public class SetCommand extends Command implements IntelligentCommand {
             final String domain, final String option, final String newvalue) {
         identity.setOption(domain, option, newvalue);
 
-        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option
+        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + '.' + option
                 + " has been set to: " + newvalue);
     }
 
@@ -276,7 +276,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      */
     private void doAppendOption(final FrameContainer origin,
             final boolean isSilent, final ConfigProvider identity,
-            final AggregateConfigProvider manager,
+            final ReadOnlyConfigProvider manager,
             final String domain, final String option, final String data) {
         doSetOption(origin, isSilent, identity, domain, option,
                 (manager.hasOptionString(domain, option)
@@ -297,7 +297,7 @@ public class SetCommand extends Command implements IntelligentCommand {
             final String option) {
         identity.unsetOption(domain, option);
 
-        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option + " has been unset.");
+        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + '.' + option + " has been unset.");
     }
 
     @Override
@@ -315,10 +315,10 @@ public class SetCommand extends Command implements IntelligentCommand {
             res.add("--channel");
             res.excludeAll();
         } else if (arg == 1 && previousArgs.size() >= 1) {
-            if (previousArgs.get(0).equalsIgnoreCase("--unset")
-                    || previousArgs.get(0).equalsIgnoreCase("--append")
-                    || previousArgs.get(0).equalsIgnoreCase("--server")
-                    || previousArgs.get(0).equalsIgnoreCase("--channel")) {
+            if ("--unset".equalsIgnoreCase(previousArgs.get(0))
+                    || "--append".equalsIgnoreCase(previousArgs.get(0))
+                    || "--server".equalsIgnoreCase(previousArgs.get(0))
+                    || "--channel".equalsIgnoreCase(previousArgs.get(0))) {
                 res.addAll(context.getWindow().getConfigManager()
                         .getDomains());
             } else {
@@ -326,10 +326,10 @@ public class SetCommand extends Command implements IntelligentCommand {
                         .getOptions(previousArgs.get(0)).keySet());
             }
             res.excludeAll();
-        } else if (arg == 2 && (previousArgs.get(0).equalsIgnoreCase("--unset")
-                || previousArgs.get(0).equalsIgnoreCase("--append")
-                || previousArgs.get(0).equalsIgnoreCase("--server")
-                || previousArgs.get(0).equalsIgnoreCase("--channel"))) {
+        } else if (arg == 2 && ("--unset".equalsIgnoreCase(previousArgs.get(0))
+                || "--append".equalsIgnoreCase(previousArgs.get(0))
+                || "--server".equalsIgnoreCase(previousArgs.get(0))
+                || "--channel".equalsIgnoreCase(previousArgs.get(0)))) {
             res.addAll(context.getWindow().getConfigManager()
                     .getOptions(previousArgs.get(1)).keySet());
             res.excludeAll();

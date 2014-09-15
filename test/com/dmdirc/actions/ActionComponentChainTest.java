@@ -23,6 +23,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Server;
+import com.dmdirc.interfaces.actions.ActionComponent;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class ActionComponentChainTest {
     @Test
     public void testSingle() {
         final ActionComponentChain chain = new ActionComponentChain(String.class, "STRING_STRING", actionManager);
-        assertEquals(chain.get("foo bar baz"), "foo bar baz");
+        assertEquals("foo bar baz", chain.get("foo bar baz"));
         assertEquals("STRING_STRING", chain.toString());
     }
 
@@ -69,7 +70,7 @@ public class ActionComponentChainTest {
     public void testDouble() {
         final ActionComponentChain chain = new ActionComponentChain(String.class,
                 "STRING_STRING.STRING_STRING", actionManager);
-        assertEquals(chain.get("foo bar baz"), "foo bar baz");
+        assertEquals("foo bar baz", chain.get("foo bar baz"));
         assertEquals("STRING_STRING.STRING_STRING", chain.toString());
     }
 
@@ -90,66 +91,67 @@ public class ActionComponentChainTest {
 
     @Test
     public void testAppliesTo() {
-        final ActionComponentChain chain = new ActionComponentChain(String.class,
+        final ActionComponent chain = new ActionComponentChain(String.class,
                 "STRING_STRING.STRING_STRING.STRING_LENGTH", actionManager);
-        assertEquals(String.class, chain.appliesTo());
+        assertSame(String.class, chain.appliesTo());
     }
 
     @Test
     public void testGetType() {
-        final ActionComponentChain chain = new ActionComponentChain(String.class,
+        final ActionComponent chain = new ActionComponentChain(String.class,
                 "STRING_STRING.STRING_STRING.STRING_LENGTH", actionManager);
-        assertEquals(Integer.class, chain.getType());
+        assertSame(Integer.class, chain.getType());
     }
 
     @Test
     public void testGetName() {
-        final ActionComponentChain chain = new ActionComponentChain(String.class,
+        final ActionComponent chain = new ActionComponentChain(String.class,
                 "STRING_STRING.STRING_STRING.STRING_LENGTH", actionManager);
 
-        assertTrue(chain.getName().indexOf(CoreActionComponent.STRING_STRING.getName()) > -1);
-        assertTrue(chain.getName().indexOf(CoreActionComponent.STRING_LENGTH.getName()) > -1);
+        assertTrue(chain.getName().contains(CoreActionComponent.STRING_STRING.getName()));
+        assertTrue(chain.getName().contains(CoreActionComponent.STRING_LENGTH.getName()));
     }
 
     @Test(expected=AssertionError.class)
     public void testEmptyAppliesTo() {
-        final ActionComponentChain chain = new ActionComponentChain(String.class, "", actionManager);
+        final ActionComponent chain = new ActionComponentChain(String.class, "", actionManager);
         chain.appliesTo();
     }
 
     @Test(expected=AssertionError.class)
     public void testEmptyGetType() {
-        final ActionComponentChain chain = new ActionComponentChain(String.class, "", actionManager);
+        final ActionComponent chain = new ActionComponentChain(String.class, "", actionManager);
         chain.getType();
     }
 
     @Test(expected=AssertionError.class)
     public void testEmptyGetName() {
-        final ActionComponentChain chain = new ActionComponentChain(String.class, "", actionManager);
+        final ActionComponent chain = new ActionComponentChain(String.class, "", actionManager);
         chain.getName();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test(expected=AssertionError.class)
     public void testEmptyToString() {
         final ActionComponentChain chain = new ActionComponentChain(String.class, "", actionManager);
         chain.toString();
     }
 
-    @Test()
+    @Test
     public void testRequiresConnection1() {
         final ActionComponentChain chain = new ActionComponentChain(Server.class,
                 "SERVER_NETWORK", actionManager);
         assertTrue(chain.requiresConnection());
     }
 
-    @Test()
+    @Test
     public void testRequiresConnection2() {
         final ActionComponentChain chain = new ActionComponentChain(Server.class,
                 "SERVER_NETWORK.STRING_LENGTH", actionManager);
         assertTrue(chain.requiresConnection());
     }
 
-    @Test()
+    @Test
     public void testRequiresConnection3() {
         final ActionComponentChain chain = new ActionComponentChain(Server.class,
                 "SERVER_NAME.STRING_LENGTH", actionManager);
