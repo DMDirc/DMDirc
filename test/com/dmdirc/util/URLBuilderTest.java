@@ -111,7 +111,7 @@ public class URLBuilderTest {
         final URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider, eventBus);
         final URL url = urlBuilder.getUrlForDMDircResource("com/dmdirc/Main.class");
-        Assert.assertEquals("file", url.getProtocol());
+        Assert.assertTrue("file".equals(url.getProtocol()) || "jar".equals(url.getProtocol()));
         Assert.assertTrue(url.getFile().endsWith("com/dmdirc/Main.class"));
     }
 
@@ -134,7 +134,7 @@ public class URLBuilderTest {
         final URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider, eventBus);
         final URL url = urlBuilder.getUrl("dmdirc://com/dmdirc/Main.class");
-        Assert.assertEquals("file", url.getProtocol());
+        Assert.assertTrue("file".equals(url.getProtocol()) || "jar".equals(url.getProtocol()));
         Assert.assertTrue(url.getFile().endsWith("com/dmdirc/Main.class"));
     }
 
