@@ -24,6 +24,9 @@ package com.dmdirc.commandparser.auto;
 
 import com.dmdirc.DMDircMBassador;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -120,6 +123,46 @@ public class AutoCommandManager {
      */
     public Set<AutoCommand> getAutoCommands() {
         return Collections.unmodifiableSet(autoCommands.keySet());
+    }
+
+    /**
+     * Gets a set of all registered global auto commands.
+     *
+     * @return The set of all known global auto commands.
+     */
+    public Set<AutoCommand> getGlobalAutoCommands() {
+        return Sets.filter(getAutoCommands(), new GlobalCommandPredicate());
+    }
+
+    /**
+     * Gets a set of all registered connection auto commands.
+     *
+     * @return The set of all known connection auto commands.
+     */
+    public Set<AutoCommand> getConnectionAutoCommands() {
+        return Sets.filter(getAutoCommands(), new ConnectionCommandPredicate());
+    }
+
+    /**
+     * Predicate to check if an {@link AutoCommand} is global.
+     */
+    private static class GlobalCommandPredicate implements Predicate<AutoCommand> {
+
+        @Override
+        public boolean apply(final AutoCommand autoCommand) {
+            return !autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent();
+        }
+    }
+
+    /**
+     * Predicate to check if an {@link AutoCommand} relates to a connection.
+     */
+    private static class ConnectionCommandPredicate implements Predicate<AutoCommand> {
+
+        @Override
+        public boolean apply(final AutoCommand autoCommand) {
+            return autoCommand.getServer().isPresent() || autoCommand.getNetwork().isPresent();
+        }
     }
 
 }

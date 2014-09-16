@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.auto;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
 /**
@@ -64,6 +65,15 @@ public class AutoCommand {
 
     public String getResponse() {
         return response;
+    }
+
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("Connection", server)
+                .add("Network", network)
+                .add("Profile", profile)
+                .add("Response", response)
+                .toString();
     }
 
 }
