@@ -7,6 +7,9 @@
     <content url="file://$MODULE_DIR$/modules/plugins">
       <excludeFolder url="file://$MODULE_DIR$/modules/plugins/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/modules/plugins/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/etc" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/plugins/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

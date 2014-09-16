@@ -15,6 +15,9 @@
       <sourceFolder url="file://$MODULE_DIR$/modules/util/test-res" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/modules/util/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/modules/util/build" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/util/gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/util/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/modules/util/nbproject" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
