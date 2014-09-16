@@ -71,20 +71,20 @@ public class ProgramErrorTest {
 
     @Test
     public void testConstructorGood() {
-        new ProgramError(1, ErrorLevel.HIGH, "moo", new Exception(), null, new Date());
+        new ProgramError(1, ErrorLevel.HIGH, "moo", new UnsupportedOperationException(), null, new Date());
     }
 
     @Test
     public void testGetLevel() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new Exception(), null, new Date());
+                new UnsupportedOperationException(), null, new Date());
         assertEquals(ErrorLevel.HIGH, pe.getLevel());
     }
 
     @Test
     public void testGetMessage() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new Exception(), null, new Date());
+                new UnsupportedOperationException(), null, new Date());
         assertEquals("moo", pe.getMessage());
     }
 
@@ -92,14 +92,14 @@ public class ProgramErrorTest {
     public void testGetDate() {
         final Date date = new Date();
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new Exception(), null, date);
+                new UnsupportedOperationException(), null, date);
         assertEquals(date, pe.getDate());
     }
 
     @Test
     public void testReportStatus() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new Exception(), null, new Date());
+                new UnsupportedOperationException(), null, new Date());
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
         pe.setReportStatus(null);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
@@ -112,13 +112,13 @@ public class ProgramErrorTest {
     @Test
     public void testToString() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new Exception(), null, new Date());
-        assertTrue(pe.toString().indexOf("moo") > -1);
+                new UnsupportedOperationException(), null, new Date());
+        assertTrue(pe.toString().contains("moo"));
     }
 
     @Test
     public void testEquals() {
-        final Exception ex = new Exception();
+        final Exception ex = new UnsupportedOperationException();
         final ProgramError pe1 = new ProgramError(10, ErrorLevel.LOW, "moo",
                 ex, null, new Date());
         final ProgramError pe2 = new ProgramError(11, ErrorLevel.LOW, "moo",
@@ -130,7 +130,7 @@ public class ProgramErrorTest {
         final ProgramError pe5 = new ProgramError(10, ErrorLevel.LOW, "moo",
                 null, "Hello", new Date());
 
-        assertFalse(pe1.equals(null));
+        assertFalse(pe1.equals(null)); // NOPMD
         assertFalse(pe1.equals("moo"));
 
         assertTrue(pe1.equals(pe2));

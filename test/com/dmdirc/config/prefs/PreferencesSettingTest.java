@@ -52,7 +52,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testNormalConstructor() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -67,7 +67,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testValidatorConstructor() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
                 new NotEmptyValidator(), "domain",
@@ -83,7 +83,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testRestartNeeded() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -95,7 +95,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testMultichoiceAdding() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("new");
         final Map<String, String> map = new HashMap<>();
         map.put("a", "b");
@@ -110,7 +110,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testSetValue() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -120,7 +120,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testDismiss() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -137,7 +137,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testListener() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT, "domain",
                 "option", "title", "helptext", cm, null);
@@ -152,7 +152,7 @@ public class PreferencesSettingTest {
 
     @Test
     public void testNeedsSaving() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         when(cm.getOption("domain", "option2")).thenReturn("fallback");
         final PreferencesSetting ps = new PreferencesSetting(PreferencesType.TEXT,
@@ -173,8 +173,8 @@ public class PreferencesSettingTest {
 
     @Test
     public void testSaveUnset() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
-        ConfigProvider configProvider = mock(ConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
         when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");
@@ -191,8 +191,8 @@ public class PreferencesSettingTest {
 
     @Test
     public void testSaveNormal() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
-        ConfigProvider configProvider = mock(ConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
         when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");
@@ -209,8 +209,8 @@ public class PreferencesSettingTest {
 
     @Test
     public void testIsSet() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
-        ConfigProvider configProvider = mock(ConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
         when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");
@@ -223,8 +223,8 @@ public class PreferencesSettingTest {
 
     @Test
     public void testIsNotSet() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
-        ConfigProvider identity = mock(ConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final ConfigProvider identity = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn(null);
         when(identity.getOption("unit-test", "ps")).thenReturn(null);
@@ -237,8 +237,8 @@ public class PreferencesSettingTest {
 
     @Test
     public void testUnknownComboOption() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
-        ConfigProvider configProvider = mock(ConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
         when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");
@@ -253,8 +253,8 @@ public class PreferencesSettingTest {
 
     @Test
     public void testKnownComboOption() {
-        AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
-        ConfigProvider configProvider = mock(ConfigProvider.class);
+        final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
+        final ConfigProvider configProvider = mock(ConfigProvider.class);
 
         when(cm.getOption("unit-test", "ps")).thenReturn("abc");
         when(configProvider.getOption("unit-test", "ps")).thenReturn("abc");

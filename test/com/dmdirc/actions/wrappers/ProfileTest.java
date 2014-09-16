@@ -67,7 +67,7 @@ public class ProfileTest {
      */
     @Test
     public void testEmptyConstructor() {
-        Profile instance = new Profile("New Profile", identityFactory);
+        final Profile instance = new Profile("New Profile", identityFactory);
         assertEquals("", instance.getIdent());
         assertEquals("New Profile", instance.getName());
         assertEquals(new ArrayList<>(Arrays.asList("NewProfile")), instance.getNicknames());
@@ -79,7 +79,7 @@ public class ProfileTest {
      */
     @Test
     public void testIdentityConstructor() {
-        Profile instance = createProfile();
+        final Profile instance = createProfile();
         assertEquals("ident", instance.getIdent());
         assertEquals("profile", instance.getName());
         assertTrue(Arrays.asList(new String[]{"nickname1", "nickname2", })
@@ -91,8 +91,8 @@ public class ProfileTest {
      * Test of addNickname method, of class Profile.
      */
     @Test
-    public void testAddNickname_String() {
-        Profile instance = createProfile();
+    public void testAddNicknameString() {
+        final Profile instance = createProfile();
         instance.addNickname("nickname3");
         assertTrue(Arrays.asList(new String[]{"nickname1", "nickname2",
             "nickname3"}).equals(instance.getNicknames()));
@@ -102,8 +102,8 @@ public class ProfileTest {
      * Test of addNickname method, of class Profile.
      */
     @Test
-    public void testAddNickname_String_Contains() {
-        Profile instance = createProfile();
+    public void testAddNicknameStringContains() {
+        final Profile instance = createProfile();
         instance.addNickname("nickname2");
         assertTrue(Arrays.asList(new String[]{"nickname1", "nickname2"})
                 .equals(instance.getNicknames()));
@@ -113,8 +113,8 @@ public class ProfileTest {
      * Test of addNickname method, of class Profile.
      */
     @Test
-    public void testAddNickname_String_int() {
-        Profile instance = createProfile();
+    public void testAddNicknameStringInt() {
+        final Profile instance = createProfile();
         instance.addNickname("nickname3", 0);
         assertTrue(Arrays.asList(new String[]{"nickname3", "nickname1",
             "nickname2"}).equals(instance.getNicknames()));
@@ -124,8 +124,8 @@ public class ProfileTest {
      * Test of addNickname method, of class Profile.
      */
     @Test
-    public void testAddNickname_String_int_Contains() {
-        Profile instance = createProfile();
+    public void testAddNicknameStringIntContains() {
+        final Profile instance = createProfile();
         instance.addNickname("nickname2", 0);
         assertTrue(Arrays.asList(new String[]{"nickname1","nickname2"})
                 .equals(instance.getNicknames()));
@@ -136,7 +136,7 @@ public class ProfileTest {
      */
     @Test
     public void testDelNickname() {
-        Profile instance = createProfile();
+        final Profile instance = createProfile();
         instance.delNickname("nickname2");
         assertTrue(Arrays.asList(new String[]{"nickname1"})
                 .equals(instance.getNicknames()));
@@ -157,7 +157,7 @@ public class ProfileTest {
         when(configProvider.getOption("profile", "realname")).thenReturn("realname");
         when(configProvider.getOption("profile", "ident")).thenReturn("ident");
 
-        Profile instance = new Profile(identityFactory, configProvider);
+        final Profile instance = new Profile(identityFactory, configProvider);
         instance.save();
         verify(configProvider).setOption("identity", "name", "profile");
         verify(configProvider).setOption("profile", "nicknames", nicknames);
@@ -171,7 +171,7 @@ public class ProfileTest {
 
         when(identityFactory.createProfileConfig("New Profile")).thenReturn(configProvider);
 
-        Profile instance = new Profile("New Profile", identityFactory);
+        final Profile instance = new Profile("New Profile", identityFactory);
         instance.save();
         verify(identityFactory).createProfileConfig("New Profile");
     }
@@ -181,7 +181,7 @@ public class ProfileTest {
      */
     @Test
     public void testEditNicknameOldEmpty() {
-        Profile instance = createProfile();
+        final Profile instance = createProfile();
         instance.editNickname("", "nickname3");
         assertTrue(Arrays.asList(new String[]{"nickname1", "nickname2"})
                 .equals(instance.getNicknames()));
@@ -192,7 +192,7 @@ public class ProfileTest {
      */
     @Test
     public void testEditNicknameNewEmpty() {
-        Profile instance = createProfile();
+        final Profile instance = createProfile();
         instance.editNickname("nickname2", "");
         assertTrue(Arrays.asList(new String[]{"nickname1", "nickname2"})
                 .equals(instance.getNicknames()));
@@ -203,7 +203,7 @@ public class ProfileTest {
      */
     @Test
     public void testEditNicknameSame() {
-        Profile instance = createProfile();
+        final Profile instance = createProfile();
         instance.editNickname("nickname2", "nickname2");
         assertTrue(Arrays.asList(new String[]{"nickname1", "nickname2"})
                 .equals(instance.getNicknames()));
@@ -214,7 +214,7 @@ public class ProfileTest {
      */
     @Test
     public void testEditNickname() {
-        Profile instance = createProfile();
+        final Profile instance = createProfile();
         instance.editNickname("nickname2", "nickname3");
         assertTrue(Arrays.asList(new String[]{"nickname1", "nickname3"})
                 .equals(instance.getNicknames()));
@@ -235,7 +235,7 @@ public class ProfileTest {
         when(configProvider.getOption("profile", "realname")).thenReturn("realname");
         when(configProvider.getOption("profile", "ident")).thenReturn("ident");
 
-        Profile instance = new Profile(identityFactory, configProvider);
+        final Profile instance = new Profile(identityFactory, configProvider);
         instance.delete();
         verify(configProvider).delete();
     }
@@ -245,7 +245,7 @@ public class ProfileTest {
      */
     @Test
     public void testDeleteNullIdentity() throws IOException {
-        Profile instance = new Profile("New Profile", null);
+        final Profile instance = new Profile("New Profile", null);
         instance.delete();
     }
 }

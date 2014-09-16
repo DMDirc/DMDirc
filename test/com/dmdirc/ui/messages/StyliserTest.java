@@ -37,43 +37,43 @@ public class StyliserTest {
 
     @Test
     public void testStripControlCodes1() {
-        String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
+        final String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
 
-        String expResult = "This is a test";
-        String result = Styliser.stipControlCodes(input);
+        final String expResult = "This is a test";
+        final String result = Styliser.stipControlCodes(input);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testStripControlCodes2() {
-        String input = "This is "+((char) 3)+"5a "+((char) 4)+"FF0000test";
+        final String input = "This is "+((char) 3)+"5a "+((char) 4)+"FF0000test";
 
-        String expResult = "This is a test";
-        String result = Styliser.stipControlCodes(input);
+        final String expResult = "This is a test";
+        final String result = Styliser.stipControlCodes(input);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testReadUntilControl1() {
-        String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
-        String expResult = "This";
-        String result = Styliser.readUntilControl(input);
+        final String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
+        final String expResult = "This";
+        final String result = Styliser.readUntilControl(input);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testReadUntilControl2() {
-        String input = "This"+((char) 17)+" is "+((char) 17)+"a test";
-        String expResult = "This";
-        String result = Styliser.readUntilControl(input);
+        final String input = "This"+((char) 17)+" is "+((char) 17)+"a test";
+        final String expResult = "This";
+        final String result = Styliser.readUntilControl(input);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testReadUntilControl3() {
-        String input = ((char) 31)+" is "+((char) 17)+"a test";
-        String expResult = "";
-        String result = Styliser.readUntilControl(input);
+        final String input = ((char) 31)+" is "+((char) 17)+"a test";
+        final String expResult = "";
+        final String result = Styliser.readUntilControl(input);
         assertEquals(expResult, result);
     }
 

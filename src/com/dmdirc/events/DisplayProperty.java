@@ -30,8 +30,8 @@ import com.dmdirc.util.colours.Colour;
 public final class DisplayProperty<T> {
 
     /** The foreground colour of text relating to the event. */
-    public static DisplayProperty<Colour> FOREGROUND_COLOUR = new DisplayProperty<>();
+    public static final DisplayProperty<Colour> FOREGROUND_COLOUR = new DisplayProperty<>();
     /** The background colour of text relating to the event. */
-    public static DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayProperty<>();
+    public static final DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayProperty<>();
 
 }

@@ -50,7 +50,7 @@ public class URLHandlerTest {
             final String result = URLHandler.substituteParams((URI) test[0],
                     (String) test[1]);
             assertEquals(test[0].toString() + " + " + test[1].toString() + " ==> " + result,
-                    (String) test[2], result);
+                    test[2], result);
         }
     }
 }

@@ -36,7 +36,7 @@ public class ConditionTreeParserTest {
 
     private final String input, expected;
 
-    public ConditionTreeParserTest(String input, String expected) {
+    public ConditionTreeParserTest(final String input, final String expected) {
         this.input = input;
         this.expected = expected;
     }

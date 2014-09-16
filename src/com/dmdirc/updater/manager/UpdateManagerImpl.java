@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -49,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UpdateManagerImpl implements UpdateManager {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(UpdateManagerImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateManagerImpl.class);
     /** Collection of known update checking strategies. */
     private final List<UpdateCheckStrategy> checkers = new CopyOnWriteArrayList<>();
     /** Collection of known update retrieval strategies. */
@@ -94,27 +95,27 @@ public class UpdateManagerImpl implements UpdateManager {
 
     @Override
     public void addCheckStrategy(final UpdateCheckStrategy strategy) {
-        log.trace("Adding new check strategy: {}", strategy);
+        LOG.trace("Adding new check strategy: {}", strategy);
         this.checkers.add(strategy);
     }
 
     @Override
     public void addRetrievalStrategy(final UpdateRetrievalStrategy strategy) {
-        log.trace("Adding new retrieval strategy: {}", strategy);
+        LOG.trace("Adding new retrieval strategy: {}", strategy);
         strategy.addUpdateRetrievalListener(retrievalListener);
         this.retrievers.add(strategy);
     }
 
     @Override
     public void addInstallationStrategy(final UpdateInstallationStrategy strategy) {
-        log.trace("Adding new installation strategy: {}", strategy);
+        LOG.trace("Adding new installation strategy: {}", strategy);
         strategy.addUpdateInstallationListener(installationListener);
         this.installers.add(strategy);
     }
 
     @Override
     public void addComponent(final UpdateComponent component) {
-        log.trace("Adding new component: {}", component);
+        LOG.trace("Adding new component: {}", component);
         synchronized (componentsLock) {
             this.components.put(component.getName(), component);
         }
@@ -122,7 +123,7 @@ public class UpdateManagerImpl implements UpdateManager {
 
     @Override
     public void removeComponent(final UpdateComponent component) {
-        log.trace("Removing component: {}", component);
+        LOG.trace("Removing component: {}", component);
         synchronized (componentsLock) {
             this.components.remove(component.getName());
         }
@@ -147,10 +148,10 @@ public class UpdateManagerImpl implements UpdateManager {
     public void checkForUpdates() {
         final Collection<Map<UpdateComponent, UpdateCheckResult>> results = new ArrayList<>();
 
-        log.info("Checking for updates for {} components using {} strategies",
-                components.size(), checkers.size());
-        log.trace("Components: {}", components);
-        log.trace("Strategies: {}", checkers);
+        LOG.info("Checking for updates for {} components using {} strategies", components.size(),
+                checkers.size());
+        LOG.trace("Components: {}", components);
+        LOG.trace("Strategies: {}", checkers);
 
         final List<UpdateComponent> enabledComponents = new ArrayList<>(components.size());
         final List<UpdateComponent> disabledComponents = new ArrayList<>(components.size());
@@ -160,7 +161,7 @@ public class UpdateManagerImpl implements UpdateManager {
                 if (policy.canCheck(component)) {
                     enabledComponents.add(component);
                 } else {
-                    log.debug("Checking for updates for {} denied by policy", component.getName());
+                    LOG.debug("Checking for updates for {} denied by policy", component.getName());
                     disabledComponents.add(component);
                 }
             }
@@ -186,7 +187,7 @@ public class UpdateManagerImpl implements UpdateManager {
         for (UpdateComponent component : enabledComponents) {
             if (checkResults.containsKey(component) && checkResults.get(component).
                     isUpdateAvailable()) {
-                log.trace("Update is available for {}", component);
+                LOG.trace("Update is available for {}", component);
                 listenerList.getCallable(UpdateStatusListener.class)
                         .updateStatusChanged(component, UpdateStatus.UPDATE_PENDING, 0);
             } else {
@@ -214,7 +215,7 @@ public class UpdateManagerImpl implements UpdateManager {
         } else {
             listenerList.getCallable(UpdateStatusListener.class)
                     .updateStatusChanged(component, UpdateStatus.INSTALL_PENDING, 0);
-            log.debug("Scheduling install for {}", update);
+            LOG.debug("Scheduling install for {}", update);
             executor.execute(new InstallationTask(strategy, update));
         }
     }
@@ -232,7 +233,7 @@ public class UpdateManagerImpl implements UpdateManager {
      */
     public void retrieve(final UpdateComponent component, final boolean install) {
         if (!checkResults.containsKey(component) || !checkResults.get(component).isUpdateAvailable()) {
-            log.warn("Tried to retrieve component with no update: {}", component);
+            LOG.warn("Tried to retrieve component with no update: {}", component);
             return;
         }
 
@@ -245,7 +246,7 @@ public class UpdateManagerImpl implements UpdateManager {
         } else {
             listenerList.getCallable(UpdateStatusListener.class)
                     .updateStatusChanged(component, UpdateStatus.UPDATE_PENDING, 0);
-            log.debug("Scheduling retrieval for {}", update);
+            LOG.debug("Scheduling retrieval for {}", update);
             executor.execute(new RetrievalTask(this, strategy, update, install));
         }
     }
@@ -256,7 +257,7 @@ public class UpdateManagerImpl implements UpdateManager {
      * @param result The result retrieved from the {@link UpdateRetrievalStrategy}.
      */
     protected void setRetrievalResult(final UpdateRetrievalResult result) {
-        log.debug("Received retrieval result {}", result);
+        LOG.debug("Received retrieval result {}", result);
         retrievalResults.put(result.getCheckResult().getComponent(), result);
     }
 
@@ -269,18 +270,18 @@ public class UpdateManagerImpl implements UpdateManager {
      * @return A relevant strategy, or <code>null</code> if none are available
      */
     protected UpdateRetrievalStrategy getStrategy(final UpdateCheckResult result) {
-        log.debug("Trying to find retrieval strategy for {}", result);
+        LOG.debug("Trying to find retrieval strategy for {}", result);
 
         for (UpdateRetrievalStrategy strategy : retrievers) {
-            log.trace("Testing strategy {}", strategy);
+            LOG.trace("Testing strategy {}", strategy);
 
             if (strategy.canHandle(result)) {
-                log.debug("Found strategy {}", strategy);
+                LOG.debug("Found strategy {}", strategy);
                 return strategy;
             }
         }
 
-        log.warn("No strategy found to retrieve {}", result);
+        LOG.warn("No strategy found to retrieve {}", result);
         return null;
     }
 
@@ -293,18 +294,18 @@ public class UpdateManagerImpl implements UpdateManager {
      * @return A relevant strategy, or <code>null</code> if none are available
      */
     protected UpdateInstallationStrategy getStrategy(final UpdateRetrievalResult result) {
-        log.debug("Trying to find installation strategy for {}", result);
+        LOG.debug("Trying to find installation strategy for {}", result);
 
         for (UpdateInstallationStrategy strategy : installers) {
-            log.trace("Testing strategy {}", strategy);
+            LOG.trace("Testing strategy {}", strategy);
 
             if (strategy.canHandle(result)) {
-                log.debug("Found strategy {}", strategy);
+                LOG.debug("Found strategy {}", strategy);
                 return strategy;
             }
         }
 
-        log.warn("No strategy found to install {}", result);
+        LOG.warn("No strategy found to install {}", result);
         return null;
     }
 

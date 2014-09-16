@@ -111,8 +111,8 @@ public class WritableFrameContainerTest {
 
         for (String[][] test : tests) {
             final String[] res = container10.splitLine(test[0][0]).toArray(new String[0]);
-            assertTrue("'" + test[0][0] + "' → "
-                    + Arrays.toString(res) + " (expected: " + Arrays.toString(test[1]) + ")",
+            assertTrue('\'' + test[0][0] + "' → "
+                    + Arrays.toString(res) + " (expected: " + Arrays.toString(test[1]) + ')',
                     Arrays.equals(res, test[1]));
         }
     }

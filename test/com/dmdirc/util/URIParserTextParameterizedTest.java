@@ -36,7 +36,7 @@ public class URIParserTextParameterizedTest {
 
     private final String input, expected;
 
-    public URIParserTextParameterizedTest(String input, String expected) {
+    public URIParserTextParameterizedTest(final String input, final String expected) {
         this.input = input;
         this.expected = expected;
     }

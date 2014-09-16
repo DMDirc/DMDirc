@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ConfigFileBackedConfigProvider extends BaseConfigProvider implements ConfigProvider {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(
             ConfigFileBackedConfigProvider.class);
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity";
@@ -318,7 +318,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
         synchronized (this) {
             oldValue = getOption(domain, option);
-            log.trace("{}: setting {}.{} to {} (was: {})", getName(), domain, option, value,
+            LOG.trace("{}: setting {}.{} to {} (was: {})", getName(), domain, option, value,
                     oldValue);
 
             if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
@@ -409,11 +409,11 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
     @Override
     public synchronized void save() {
-        log.info("{}: saving. Needsave = {}", new Object[]{getName(), needSave});
+        LOG.info("{}: saving. Needsave = {}", new Object[]{getName(), needSave});
 
         if (needSave && file != null && file.isWritable()) {
             if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
-                log.debug("{}: I'm a global config", getName());
+                LOG.debug("{}: I'm a global config", getName());
 
                 // This branch is executed if this identity is global. In this
                 // case, we build a global config (removing ourself and the
@@ -437,9 +437,9 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                 globalConfig.removeIdentity(this);
                 globalConfig.removeIdentity(identityManager.getVersionSettings());
 
-                if (log.isTraceEnabled()) {
+                if (LOG.isTraceEnabled()) {
                     for (ConfigProvider source : globalConfig.getSources()) {
-                        log.trace("{}: source: {}",
+                        LOG.trace("{}: source: {}",
                                 new Object[]{getName(), source.getName()});
                     }
                 }
@@ -455,7 +455,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
                         if (globalConfig.hasOptionString(domain, key)
                                 && globalConfig.getOption(domain, key).equals(value)) {
-                            log.debug("{}: found superfluous setting: {}.{} (= {})", getName(),
+                            LOG.debug("{}: found superfluous setting: {}.{} (= {})", getName(),
                                     domain, key, value);
                             file.getKeyDomain(domain).remove(key);
                         }

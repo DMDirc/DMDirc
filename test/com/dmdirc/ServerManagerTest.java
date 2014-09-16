@@ -198,7 +198,7 @@ public class ServerManagerTest {
 
         assertEquals(3, serverManager.getConnectionCount());
 
-        URI serverUri = uriCaptor.getValue();
+        final URI serverUri = uriCaptor.getValue();
         assertEquals("irc", serverUri.getScheme());
         assertEquals("irc.quakenet.org", serverUri.getHost());
         assertEquals("DMDirc", serverUri.getPath().substring(1));

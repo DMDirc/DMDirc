@@ -43,9 +43,9 @@ public class CoreFeedbackDialogModelTest {
     @Mock private ConnectionManager connectionManager;
     @Mock private FeedbackSenderFactory feedbackSenderFactory;
     @Mock private FeedbackDialogModelListener listener;
-    private final String name = "Bob Dole";
-    private final String email = "bob@dole.com";
-    private final String feedback = "DMDirc Rocks.";
+    private static final String NAME = "Bob Dole";
+    private static final String EMAIL = "bob@dole.com";
+    private static final String FEEDBACK = "DMDirc Rocks.";
 
     @Test
     public void testName() {
@@ -53,8 +53,8 @@ public class CoreFeedbackDialogModelTest {
                 connectionManager,
                 feedbackSenderFactory, "configDirectory");
         assertEquals("testName", Optional.absent(), instance.getName());
-        instance.setName(Optional.fromNullable(name));
-        assertEquals("testName", Optional.fromNullable(name), instance.getName());
+        instance.setName(Optional.fromNullable(NAME));
+        assertEquals("testName", Optional.fromNullable(NAME), instance.getName());
     }
 
     @Test
@@ -63,8 +63,8 @@ public class CoreFeedbackDialogModelTest {
                 connectionManager,
                 feedbackSenderFactory, "configDirectory");
         assertEquals("testEmail", Optional.absent(), instance.getEmail());
-        instance.setEmail(Optional.fromNullable(email));
-        assertEquals("testEmail", Optional.fromNullable(email), instance.getEmail());
+        instance.setEmail(Optional.fromNullable(EMAIL));
+        assertEquals("testEmail", Optional.fromNullable(EMAIL), instance.getEmail());
     }
 
     @Test
@@ -73,8 +73,8 @@ public class CoreFeedbackDialogModelTest {
                 connectionManager,
                 feedbackSenderFactory, "configDirectory");
         assertEquals("testFeedback", Optional.absent(), instance.getFeedback());
-        instance.setFeedback(Optional.fromNullable(feedback));
-        assertEquals("testFeedback", Optional.fromNullable(feedback), instance.getFeedback());
+        instance.setFeedback(Optional.fromNullable(FEEDBACK));
+        assertEquals("testFeedback", Optional.fromNullable(FEEDBACK), instance.getFeedback());
     }
 
     @Test

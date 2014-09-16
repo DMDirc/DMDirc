@@ -36,7 +36,7 @@ public class ConditionTreeEvaluatorTest {
 
     private final Boolean[] data;
 
-    public ConditionTreeEvaluatorTest(Boolean[] data) {
+    public ConditionTreeEvaluatorTest(final Boolean[] data) {
         this.data = data;
     }
 

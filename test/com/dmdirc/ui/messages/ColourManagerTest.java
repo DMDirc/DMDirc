@@ -61,73 +61,73 @@ public class ColourManagerTest {
 
     @Test
     public void testGetColourInt() {
-        int spec = 4;
+        final int spec = 4;
 
-        Colour expResult = Colour.RED;
-        Colour result = manager.getColourFromIrcCode(spec);
+        final Colour expResult = Colour.RED;
+        final Colour result = manager.getColourFromIrcCode(spec);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testGetColourOOB() {
-        Colour result = manager.getColourFromIrcCode(20);
+        final Colour result = manager.getColourFromIrcCode(20);
         assertEquals(Colour.WHITE, result);
     }
 
     @Test
     public void testGetColourHexInvalid() {
-        String spec = "FFZZFF";
+        final String spec = "FFZZFF";
 
-        Colour result = manager.getColourFromHex(spec);
+        final Colour result = manager.getColourFromHex(spec);
         assertEquals(Colour.WHITE, result);
     }
 
     @Test
     public void testGetColourHex() {
-        String spec = "FFFFFF";
+        final String spec = "FFFFFF";
 
-        Colour expResult = Colour.WHITE;
-        Colour result = manager.getColourFromHex(spec);
+        final Colour expResult = Colour.WHITE;
+        final Colour result = manager.getColourFromHex(spec);
         assertEquals(expResult, result);
     }
 
     @Test
     public void testParseColourNull() {
-        Colour fallback = Colour.RED;
-        Colour result = manager.getColourFromString(null, fallback);
+        final Colour fallback = Colour.RED;
+        final Colour result = manager.getColourFromString(null, fallback);
 
         assertEquals(fallback, result);
     }
 
     @Test
     public void testParseColourInvalidNumber() {
-        Colour fallback = Colour.RED;
-        Colour result = manager.getColourFromString("zz", fallback);
+        final Colour fallback = Colour.RED;
+        final Colour result = manager.getColourFromString("zz", fallback);
 
         assertEquals(fallback, result);
     }
 
     @Test
     public void testParseColourOOBNumber() {
-        Colour fallback = Colour.RED;
-        Colour result = manager.getColourFromString("20", fallback);
+        final Colour fallback = Colour.RED;
+        final Colour result = manager.getColourFromString("20", fallback);
 
         assertEquals(fallback, result);
     }
 
     @Test
     public void testParseColourShortNumber() {
-        Colour fallback = Colour.RED;
-        Colour result = manager.getColourFromString("1234", fallback);
+        final Colour fallback = Colour.RED;
+        final Colour result = manager.getColourFromString("1234", fallback);
 
         assertEquals(fallback, result);
     }
 
     @Test
     public void testColourCache() {
-        Colour result1 = manager.getColourFromString("ff0f0f", Colour.WHITE);
-        Colour result2 = manager.getColourFromString("ff0f0f", Colour.WHITE);
-        Colour result3 = manager.getColourFromHex("ff0f0f");
+        final Colour result1 = manager.getColourFromString("ff0f0f", Colour.WHITE);
+        final Colour result2 = manager.getColourFromString("ff0f0f", Colour.WHITE);
+        final Colour result3 = manager.getColourFromHex("ff0f0f");
 
         assertSame(result1, result2);
         assertSame(result2, result3);

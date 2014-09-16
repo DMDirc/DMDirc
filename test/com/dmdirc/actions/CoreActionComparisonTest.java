@@ -30,7 +30,7 @@ public class CoreActionComparisonTest {
     @Test
     public void testStringRegex() {
         assertEquals(String.class, CoreActionComparison.STRING_REGEX.appliesTo());
-        assertTrue(CoreActionComparison.STRING_REGEX.getName().toLowerCase().indexOf("reg") > -1);
+        assertTrue(CoreActionComparison.STRING_REGEX.getName().toLowerCase().contains("reg"));
         assertTrue(CoreActionComparison.STRING_REGEX.test("hello", "h.*?o"));
         assertFalse(CoreActionComparison.STRING_REGEX.test("hello", "h.{8}o"));
         assertFalse(CoreActionComparison.STRING_REGEX.test("hello", "?!!?!{}"));
@@ -39,7 +39,7 @@ public class CoreActionComparisonTest {
     @Test
     public void testStringEquals() {
         assertEquals(String.class, CoreActionComparison.STRING_EQUALS.appliesTo());
-        assertTrue(CoreActionComparison.STRING_EQUALS.getName().toLowerCase().indexOf("equal") > -1);
+        assertTrue(CoreActionComparison.STRING_EQUALS.getName().toLowerCase().contains("equal"));
         assertTrue(CoreActionComparison.STRING_EQUALS.test("hello", "hello"));
         assertTrue(CoreActionComparison.STRING_EQUALS.test("hello", "HELLO"));
         assertFalse(CoreActionComparison.STRING_EQUALS.test("hello", "h.{8}o"));
@@ -49,9 +49,9 @@ public class CoreActionComparisonTest {
     @Test
     public void testStringNEquals() {
         assertEquals(String.class, CoreActionComparison.STRING_NEQUALS.appliesTo());
-        assertTrue(CoreActionComparison.STRING_NEQUALS.getName().toLowerCase().indexOf("equal") > -1);
-        assertTrue(CoreActionComparison.STRING_NEQUALS.getName().toLowerCase().indexOf("not") > -1
-                || CoreActionComparison.STRING_NEQUALS.getName().toLowerCase().indexOf("n't") > -1);
+        assertTrue(CoreActionComparison.STRING_NEQUALS.getName().toLowerCase().contains("equal"));
+        assertTrue(CoreActionComparison.STRING_NEQUALS.getName().toLowerCase().contains("not")
+                || CoreActionComparison.STRING_NEQUALS.getName().toLowerCase().contains("n't"));
         assertFalse(CoreActionComparison.STRING_NEQUALS.test("hello", "hello"));
         assertFalse(CoreActionComparison.STRING_NEQUALS.test("hello", "HELLO"));
         assertTrue(CoreActionComparison.STRING_NEQUALS.test("hello", "h.{8}o"));
@@ -61,8 +61,7 @@ public class CoreActionComparisonTest {
     @Test
     public void testStringStartsWith() {
         assertEquals(String.class, CoreActionComparison.STRING_STARTSWITH.appliesTo());
-        assertTrue(CoreActionComparison.STRING_STARTSWITH.getName().toLowerCase()
-                .indexOf("start") > -1);
+        assertTrue(CoreActionComparison.STRING_STARTSWITH.getName().toLowerCase().contains("start"));
         assertTrue(CoreActionComparison.STRING_STARTSWITH.test("hello", "hello"));
         assertTrue(CoreActionComparison.STRING_STARTSWITH.test("hello", "he"));
         assertFalse(CoreActionComparison.STRING_STARTSWITH.test("hello", "h.{8}o"));
@@ -72,8 +71,7 @@ public class CoreActionComparisonTest {
     @Test
     public void testStringContains() {
         assertEquals(String.class, CoreActionComparison.STRING_CONTAINS.appliesTo());
-        assertTrue(CoreActionComparison.STRING_CONTAINS.getName().toLowerCase()
-                .indexOf("contain") > -1);
+        assertTrue(CoreActionComparison.STRING_CONTAINS.getName().toLowerCase().contains("contain"));
         assertTrue(CoreActionComparison.STRING_CONTAINS.test("hello", "hello"));
         assertTrue(CoreActionComparison.STRING_CONTAINS.test("hello", "lo"));
         assertFalse(CoreActionComparison.STRING_CONTAINS.test("hello", "h.{8}o"));
@@ -83,10 +81,10 @@ public class CoreActionComparisonTest {
     @Test
     public void testStringNContains() {
         assertEquals(String.class, CoreActionComparison.STRING_NCONTAINS.appliesTo());
-        assertTrue(CoreActionComparison.STRING_NCONTAINS.getName().toLowerCase()
-                .indexOf("contain") > -1);
-        assertTrue(CoreActionComparison.STRING_NCONTAINS.getName().toLowerCase().indexOf("not") > -1
-                || CoreActionComparison.STRING_NCONTAINS.getName().toLowerCase().indexOf("n't") > -1);
+        assertTrue(
+                CoreActionComparison.STRING_NCONTAINS.getName().toLowerCase().contains("contain"));
+        assertTrue(CoreActionComparison.STRING_NCONTAINS.getName().toLowerCase().contains("not")
+                || CoreActionComparison.STRING_NCONTAINS.getName().toLowerCase().contains("n't"));
         assertFalse(CoreActionComparison.STRING_NCONTAINS.test("hello", "hello"));
         assertFalse(CoreActionComparison.STRING_NCONTAINS.test("hello", "lo"));
         assertTrue(CoreActionComparison.STRING_NCONTAINS.test("hello", "h.{8}o"));
@@ -96,8 +94,7 @@ public class CoreActionComparisonTest {
     @Test
     public void testBoolIs() {
         assertEquals(Boolean.class, CoreActionComparison.BOOL_IS.appliesTo());
-        assertTrue(CoreActionComparison.BOOL_IS.getName().toLowerCase()
-                .indexOf("is") > -1);
+        assertTrue(CoreActionComparison.BOOL_IS.getName().toLowerCase().contains("is"));
         assertTrue(CoreActionComparison.BOOL_IS.test(Boolean.TRUE, "true"));
         assertTrue(CoreActionComparison.BOOL_IS.test(Boolean.FALSE, "false"));
         assertFalse(CoreActionComparison.BOOL_IS.test(Boolean.FALSE, "true"));

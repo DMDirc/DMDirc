@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class InputHandler implements ConfigChangeListener {
 
-    private static final Logger log = LoggerFactory.getLogger(InputHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InputHandler.class);
     /**
      * Indicates that the caret should be moved to the start of a selection when a control code has
      * been inserted.
@@ -291,18 +291,18 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** Resets the composition state to idle and notifies the parent if relevant. */
     private void cancelTypingNotification() {
         if (compositionTimer != null) {
-            log.debug("Cancelling composition timer");
+            LOG.debug("Cancelling composition timer");
             compositionTimer.cancel();
         }
 
-        log.debug("Cancelling typing notification");
+        LOG.debug("Cancelling typing notification");
         setCompositionState(CompositionState.IDLE);
     }
 
     /** Updates the composition state to typing and starts/resets the idle timer. */
     private void updateTypingNotification() {
         if (compositionTimer != null) {
-            log.debug("Cancelling composition timer");
+            LOG.debug("Cancelling composition timer");
             compositionTimer.cancel();
         }
 
@@ -314,13 +314,13 @@ public abstract class InputHandler implements ConfigChangeListener {
             }
         }, TYPING_TIMEOUT);
 
-        log.debug("Setting composition state to typing. Timer scheduled for {}", TYPING_TIMEOUT);
+        LOG.debug("Setting composition state to typing. Timer scheduled for {}", TYPING_TIMEOUT);
         setCompositionState(CompositionState.TYPING);
     }
 
     /** Updates the composition state to "entered text". */
     private void timeoutTypingNotification() {
-        log.debug("Composition state timeout reached");
+        LOG.debug("Composition state timeout reached");
         setCompositionState(CompositionState.ENTERED_TEXT);
     }
 
@@ -485,15 +485,14 @@ public abstract class InputHandler implements ConfigChangeListener {
      */
     protected void doTabCompletion(final boolean shiftPressed) {
         if (tabCompleter == null || (flags & HANDLE_TABCOMPLETION) == 0) {
-            log.debug(
-                    "Aborting tab completion. Completer: {}, flags: {}",
+            LOG.debug("Aborting tab completion. Completer: {}, flags: {}",
                     new Object[]{tabCompleter, flags});
             return;
         }
 
         final String text = target.getText();
 
-        log.trace("Text for tab completion: {}", text);
+        LOG.trace("Text for tab completion: {}", text);
 
         if (text.isEmpty()) {
             doNormalTabCompletion(text, 0, 0, shiftPressed, null);
@@ -521,8 +520,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             end = start;
         }
 
-        log.trace("Offsets: start: {}, end: {}",
-                new Object[]{start, end});
+        LOG.trace("Offsets: start: {}, end: {}", new Object[]{start, end});
 
         if (start > 0 && text.charAt(0) == commandController.getCommandChar()) {
             doCommandTabCompletion(text, start, end, shiftPressed);

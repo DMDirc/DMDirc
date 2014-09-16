@@ -21,6 +21,7 @@ dependencies {
 
 allprojects {
     apply plugin: 'java'
+    apply plugin: 'pmd'
 
     sourceSets {
         main {
@@ -54,6 +55,11 @@ allprojects {
     dependencies {
         testCompile group: 'junit', name: 'junit', version: '4.+'
         testCompile group: 'org.mockito', name: 'mockito-all', version: '1.+'
+    }
+
+    pmd {
+        ruleSets = []
+        ruleSetFiles = files("$rootDir/etc/pmd/full.xml")
     }
 }
 

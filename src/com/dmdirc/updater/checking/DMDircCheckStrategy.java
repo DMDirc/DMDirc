@@ -40,6 +40,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DMDircCheckStrategy implements UpdateCheckStrategy {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(DMDircCheckStrategy.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DMDircCheckStrategy.class);
     /** The URL to request to check for updates. */
     private static final String UPDATE_URL = "http://updates.dmdirc.com/";
     /** The update channel to check for updates on. */
@@ -75,12 +76,12 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
      */
     @ConfigBinding(domain = "updater", key = "channel")
     public void setChannel(final String channel) {
-        log.info("Changing channel to {}", channel);
+        LOG.info("Changing channel to {}", channel);
 
         try {
             this.channel = UpdateChannel.valueOf(channel.toUpperCase());
         } catch (IllegalArgumentException ex) {
-            log.warn("Unknown channel {}", channel, ex);
+            LOG.warn("Unknown channel {}", channel, ex);
         }
     }
 
@@ -92,13 +93,13 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
 
         try {
             final List<String> response = downloader.getPage(UPDATE_URL, getPayload(components));
-            log.trace("Response from update server: {}", response);
+            LOG.trace("Response from update server: {}", response);
 
             for (String line : response) {
                 final UpdateComponent component = names.get(getComponent(line));
 
                 if (component == null) {
-                    log.warn("Unable to extract component from line: {}", line);
+                    LOG.warn("Unable to extract component from line: {}", line);
                     continue;
                 }
 
@@ -109,7 +110,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
                 }
             }
         } catch (IOException ex) {
-            log.warn("I/O exception when checking for updates", ex);
+            LOG.warn("I/O exception when checking for updates", ex);
         }
 
         return res;
@@ -127,8 +128,8 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
         final StringBuilder data = new StringBuilder("data=");
 
         for (UpdateComponent component : components) {
-            log.trace("Adding payload info for component {} (version {})",
-                    component.getName(), component.getVersion());
+            LOG.trace("Adding payload info for component {} (version {})", component.getName(),
+                    component.getVersion());
 
             data.append(component.getName());
             data.append(',');
@@ -138,7 +139,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
             data.append(';');
         }
 
-        log.debug("Constructed update payload: {}", data);
+        LOG.debug("Constructed update payload: {}", data);
 
         return data.toString();
     }
@@ -175,10 +176,10 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
             case "uptodate":
                 return new BaseCheckResult(component);
             case "error":
-                log.warn("Error received from update server: {}", line);
+                LOG.warn("Error received from update server: {}", line);
                 break;
             default:
-                log.error("Unknown update line received from server: {}", line);
+                LOG.error("Unknown update line received from server: {}", line);
                 break;
         }
 
@@ -199,7 +200,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
             return new BaseDownloadableResult(component, new URL(parts[5]),
                     parts[4], new Version(parts[3]));
         } catch (MalformedURLException ex) {
-            log.error("Unable to construct URL for update. Parts: {}", parts, ex);
+            LOG.error("Unable to construct URL for update. Parts: {}", parts, ex);
             return null;
         }
     }

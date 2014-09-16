@@ -30,17 +30,17 @@ import java.util.Map;
 public class TestConfigSource extends BaseConfigProvider {
 
     @Override
-    public boolean hasOption(String domain, String option, Validator<String> validator) {
+    public boolean hasOption(final String domain, final String option, final Validator<String> validator) {
         return Boolean.parseBoolean(domain);
     }
 
     @Override
-    public String getOption(String domain, String option, Validator<String> validator) {
+    public String getOption(final String domain, final String option, final Validator<String> validator) {
         return option;
     }
 
     @Override
-    public Map<String, String> getOptions(String domain) {
+    public Map<String, String> getOptions(final String domain) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

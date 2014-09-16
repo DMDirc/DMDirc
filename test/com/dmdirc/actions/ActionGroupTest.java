@@ -33,36 +33,36 @@ public class ActionGroupTest {
 
     @Test
     public void testGetAuthor() {
-        ActionGroup instance = new ActionGroup("moo");
+        final ActionGroup instance = new ActionGroup("moo");
         instance.setAuthor("foo");
 
-        String expResult = "foo";
-        String result = instance.getAuthor();
+        final String expResult = "foo";
+        final String result = instance.getAuthor();
         assertEquals(expResult, result);
     }
 
     @Test
     public void testGetDescription() {
-        ActionGroup instance = new ActionGroup("bar");
+        final ActionGroup instance = new ActionGroup("bar");
         instance.setDescription("Tra-la-la-la-la");
 
-        String expResult = "Tra-la-la-la-la";
-        String result = instance.getDescription();
+        final String expResult = "Tra-la-la-la-la";
+        final String result = instance.getDescription();
         assertEquals(expResult, result);
     }
 
     @Test
     public void testGetName() {
-        ActionGroup instance = new ActionGroup("foobar");
+        final ActionGroup instance = new ActionGroup("foobar");
 
-        String expResult = "foobar";
-        String result = instance.getName();
+        final String expResult = "foobar";
+        final String result = instance.getName();
         assertEquals(expResult, result);
     }
 
     @Test
     public void testGetSettings() {
-        ActionGroup instance = new ActionGroup("foo");
+        final ActionGroup instance = new ActionGroup("foo");
 
         assertTrue(instance.getSettings().isEmpty());
 
@@ -72,27 +72,27 @@ public class ActionGroupTest {
 
     @Test
     public void testGetVersion() {
-        ActionGroup instance = new ActionGroup("vtest");
+        final ActionGroup instance = new ActionGroup("vtest");
         instance.setVersion(new Version(73));
 
-        Version expResult = new Version(73);
-        Version result = instance.getVersion();
+        final Version expResult = new Version(73);
+        final Version result = instance.getVersion();
         assertEquals(expResult, result);
     }
 
     @Test
     public void testGetComponent() {
-        ActionGroup instance = new ActionGroup("zzz");
+        final ActionGroup instance = new ActionGroup("zzz");
         instance.setComponent(69);
 
-        int expResult = 69;
-        int result = instance.getComponent();
+        final int expResult = 69;
+        final int result = instance.getComponent();
         assertEquals(expResult, result);
     }
 
     @Test
     public void testClear() {
-        ActionGroup instance = new ActionGroup("zzz");
+        final ActionGroup instance = new ActionGroup("zzz");
         instance.add(null);
         assertTrue(instance.iterator().hasNext());
         instance.clear();
@@ -101,7 +101,7 @@ public class ActionGroupTest {
 
     @Test
     public void testRemove() {
-        ActionGroup instance = new ActionGroup("zzz");
+        final ActionGroup instance = new ActionGroup("zzz");
         instance.add(null);
         assertTrue(instance.iterator().hasNext());
         instance.remove(null);

@@ -56,12 +56,12 @@ public class FormatterTest {
     public void testBasicFormats() {
         assertEquals("Hello!", Formatter.formatMessage(configProvider, "1%1$s", "Hello!"));
         assertEquals("Hello!", Formatter.formatMessage(configProvider, "1%1$s", "Hello!", "Moo!", "Bar!"));
-        assertTrue(Formatter.formatMessage(configProvider, "0%1$s", "Hello!")
-                .toLowerCase().indexOf("no format string") > -1);
-        assertTrue(Formatter.formatMessage(configProvider, "1%5$s", "Hello!")
-                .toLowerCase().indexOf("invalid format string") > -1);
-        assertTrue(Formatter.formatMessage(configProvider, "1%1$Z", "Hello!")
-                .toLowerCase().indexOf("invalid format string") > -1);
+        assertTrue(Formatter.formatMessage(configProvider, "0%1$s", "Hello!").toLowerCase()
+                .contains("no format string"));
+        assertTrue(Formatter.formatMessage(configProvider, "1%5$s", "Hello!").toLowerCase()
+                .contains("invalid format string"));
+        assertTrue(Formatter.formatMessage(configProvider, "1%1$Z", "Hello!").toLowerCase()
+                .contains("invalid format string"));
     }
 
     @Test

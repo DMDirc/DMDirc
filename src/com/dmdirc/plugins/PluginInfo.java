@@ -52,6 +52,7 @@ import java.util.TreeMap;
 import javax.annotation.Nonnull;
 import javax.inject.Provider;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dagger.ObjectGraph;
@@ -61,7 +62,7 @@ import dagger.ObjectGraph;
  */
 public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(PluginInfo.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PluginInfo.class);
     /** The metadata for this plugin. */
     private final PluginMetaData metaData;
     /** The initialiser to use for the injector. */
@@ -252,8 +253,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private void getDefaults() {
         final ConfigProvider defaults = identityController.getAddonSettings();
 
-        log.trace("{}: Using domain '{}'",
-                new Object[]{metaData.getName(), getDomain()});
+        LOG.trace("{}: Using domain '{}'", new Object[]{metaData.getName(), getDomain()});
 
         for (Map.Entry<String, String> entry : metaData.getDefaultSettings().entrySet()) {
             final String key = entry.getKey();
@@ -569,7 +569,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return True if the plugin was found and loaded, false otherwise
      */
     protected boolean loadRequiredPlugin(final String name) {
-        log.info("Loading required plugin '{}' for plugin {}",
+        LOG.info("Loading required plugin '{}' for plugin {}",
                 new Object[]{name, metaData.getName()});
 
         final PluginInfo pi = metaData.getManager().getPluginInfoByName(name);
@@ -746,7 +746,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     } else {
                         plugin = (Plugin) temp;
 
-                        log.debug("{}: Setting domain '{}'",
+                        LOG.debug("{}: Setting domain '{}'",
                                 new Object[]{metaData.getName(), getDomain()});
 
                         plugin.setDomain(getDomain());
@@ -831,13 +831,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 }
 
                 // Delete ourself as a child of our parent.
-                if (!parentUnloading) {
-                    if (metaData.getParent() != null) {
-                        final PluginInfo pi = metaData.getManager()
-                                .getPluginInfoByName(metaData.getParent());
-                        if (pi != null) {
-                            pi.delChild(this);
-                        }
+                if (!parentUnloading && metaData.getParent() != null) {
+                    final PluginInfo pi = metaData.getManager()
+                            .getPluginInfoByName(metaData.getParent());
+                    if (pi != null) {
+                        pi.delChild(this);
                     }
                 }
 

@@ -37,7 +37,7 @@ public class StyliserIndicesTest {
     protected String input, output;
     protected int start, end;
 
-    public StyliserIndicesTest(String input, int start, int end, String output) {
+    public StyliserIndicesTest(final String input, final int start, final int end, final String output) {
         this.input = input;
         this.start = start;
         this.end = end;

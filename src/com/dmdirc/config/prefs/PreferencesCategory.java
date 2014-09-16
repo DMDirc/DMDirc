@@ -27,6 +27,7 @@ import com.dmdirc.util.collections.ListenerList;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PreferencesCategory {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(PreferencesCategory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PreferencesCategory.class);
     /** The title (name) of this category. */
     private final String title;
     /** A description of this category. */
@@ -235,11 +236,11 @@ public class PreferencesCategory {
      * @return Is a restart needed after saving?
      */
     public boolean save() {
-        log.debug("{} save method called", getTitle());
+        LOG.debug("{} save method called", getTitle());
 
         boolean restart = false;
         for (PreferencesSetting setting : settings) {
-            log.trace("{}: saving setting '{}'", getTitle(), setting.getTitle());
+            LOG.trace("{}: saving setting '{}'", getTitle(), setting.getTitle());
             if (setting.save() && setting.isRestartNeeded()) {
                 restart = true;
             }

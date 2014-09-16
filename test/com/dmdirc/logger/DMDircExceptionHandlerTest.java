@@ -44,14 +44,14 @@ public class DMDircExceptionHandlerTest {
 
     @Test
     public void testUncaughtException() {
-        final Exception exception = new Exception();
+        final Exception exception = new UnsupportedOperationException();
         eh.uncaughtException(null, exception);
         verify(errorManager).addError(eq(ErrorLevel.HIGH), anyString(), same(exception), eq(true));
     }
 
     @Test
     public void testUncaughtError() {
-        final Error error = new Error();
+        final Error error = new OutOfMemoryError();
         eh.uncaughtException(null, error);
         verify(errorManager).addError(eq(ErrorLevel.FATAL), anyString(), same(error), eq(true));
     }

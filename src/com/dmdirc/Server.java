@@ -109,7 +109,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class Server extends FrameContainer implements ConfigChangeListener,
         CertificateProblemListener, Connection {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(Server.class);
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general";
     /** The name of the profile domain. */
@@ -311,12 +311,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         assert profile != null;
 
         synchronized (myStateLock) {
-            log.info("Connecting to {}, current state is {}", address,
-                    myState.getState());
+            LOG.info("Connecting to {}, current state is {}", address, myState.getState());
 
             switch (myState.getState()) {
                 case RECONNECT_WAIT:
-                    log.debug("Cancelling reconnection timer");
+                    LOG.debug("Cancelling reconnection timer");
                     if (reconnectTimerFuture != null) {
                         reconnectTimerFuture.cancel(false);
                     }
@@ -414,7 +413,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     @Override
     public void disconnect(final String reason) {
         synchronized (myStateLock) {
-            log.info("Disconnecting. Current state: {}", myState.getState());
+            LOG.info("Disconnecting. Current state: {}", myState.getState());
 
             switch (myState.getState()) {
                 case CLOSING:
@@ -423,7 +422,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 case TRANSIENTLY_DISCONNECTED:
                     return;
                 case RECONNECT_WAIT:
-                    log.debug("Cancelling reconnection timer");
+                    LOG.debug("Cancelling reconnection timer");
                     if (reconnectTimerFuture != null) {
                         reconnectTimerFuture.cancel(false);
                     }
@@ -467,7 +466,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     @Precondition("The server state is transiently disconnected")
     private void doDelayedReconnect() {
         synchronized (myStateLock) {
-            log.info("Performing delayed reconnect. State: {}", myState.getState());
+            LOG.info("Performing delayed reconnect. State: {}", myState.getState());
 
             if (myState.getState() != ServerState.TRANSIENTLY_DISCONNECTED) {
                 throw new IllegalStateException("doDelayedReconnect when not "
@@ -483,8 +482,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 @Override
                 public void run() {
                     synchronized (myStateLock) {
-                        log.debug("Reconnect task executing, state: {}",
-                                myState.getState());
+                        LOG.debug("Reconnect task executing, state: {}", myState.getState());
                         if (myState.getState() == ServerState.RECONNECT_WAIT) {
                             myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
                             reconnect();
@@ -493,7 +491,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 }
             }, delay, TimeUnit.MILLISECONDS);
 
-            log.info("Scheduling reconnect task for delay of {}", delay);
+            LOG.info("Scheduling reconnect task for delay of {}", delay);
 
             myState.transition(ServerState.RECONNECT_WAIT);
             updateIcon();
@@ -1188,14 +1186,14 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * Called when the socket has been closed.
      */
     public void onSocketClosed() {
-        log.info("Received socket closed event, state: {}", myState.getState());
+        LOG.info("Received socket closed event, state: {}", myState.getState());
 
         if (whoTimerFuture != null) {
             whoTimerFuture.cancel(false);
         }
 
         if (Thread.holdsLock(myStateLock)) {
-            log.info("State lock contended: rerunning on a new thread");
+            LOG.info("State lock contended: rerunning on a new thread");
 
             executorService.schedule(new Runnable() {
                 @Override
@@ -1264,8 +1262,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     @Precondition("The current server state is CONNECTING")
     public void onConnectError(final ParserError errorInfo) {
         synchronized (myStateLock) {
-            log.info("Received connect error event, state: {}; error: {}",
-                    myState.getState(), errorInfo);
+            LOG.info("Received connect error event, state: {}; error: {}", myState.getState(),
+                    errorInfo);
 
             if (myState.getState() == ServerState.CLOSING
                     || myState.getState() == ServerState.DISCONNECTING) {
@@ -1337,7 +1335,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         if (parser.getPingTime()
                 >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
-            log.warn("Server appears to be stoned, reconnecting");
+            LOG.warn("Server appears to be stoned, reconnecting");
             handleNotification("stonedServer", getAddress());
             reconnect();
         }

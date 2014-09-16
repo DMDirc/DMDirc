@@ -49,7 +49,7 @@ public class StyliserStylesTest {
 
     protected String input, output;
 
-    public StyliserStylesTest(String input, String output) {
+    public StyliserStylesTest(final String input, final String output) {
         this.input = input;
         this.output = output;
     }
@@ -92,7 +92,7 @@ public class StyliserStylesTest {
             final StringBuilder builder) {
         builder.append('<');
 
-        String[] entries = new String[9];
+        final String[] entries = new String[9];
 
         for (Map.Entry<AttributedCharacterIterator.Attribute, Object> entry : map.entrySet()) {
 
@@ -136,7 +136,7 @@ public class StyliserStylesTest {
     protected static String toColour(final Object object) {
         final Color colour = (Color) object;
 
-        return colour.getRed() + "," + colour.getGreen() + ","
+        return colour.getRed() + "," + colour.getGreen() + ','
                 + colour.getBlue();
     }
 

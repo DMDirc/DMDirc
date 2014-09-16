@@ -59,32 +59,32 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void executeCommand(@Nonnull FrameContainer origin, CommandInfo commandInfo, Command command,
-            CommandArguments args, CommandContext context) {
+    protected void executeCommand(@Nonnull final FrameContainer origin, final CommandInfo commandInfo, final Command command,
+            final CommandArguments args, final CommandContext context) {
         executedCommand = command;
         wasSilent = args.isSilent();
         commandArgs = args;
     }
 
     @Override
-    protected CommandContext getCommandContext(FrameContainer origin, CommandInfo commandInfo,
-            Command command, CommandArguments args) {
+    protected CommandContext getCommandContext(final FrameContainer origin, final CommandInfo commandInfo,
+            final Command command, final CommandArguments args) {
         return new CommandContext(origin, commandInfo);
     }
 
     @Override
-    protected void handleNonCommand(FrameContainer origin, String line) {
+    protected void handleNonCommand(final FrameContainer origin, final String line) {
         nonCommandLine = line;
     }
 
     @Override
-    protected void handleInvalidCommand(FrameContainer origin,
-            CommandArguments args) {
+    protected void handleInvalidCommand(final FrameContainer origin,
+            final CommandArguments args) {
         invalidCommand = args.getCommandName();
     }
 
     @Override
-    public void setOwner(FrameContainer owner) {
+    public void setOwner(final FrameContainer owner) {
         // Don't care
     }
 

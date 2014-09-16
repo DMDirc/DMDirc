@@ -41,7 +41,7 @@ public class IntelligentLinkingTest {
     private final String input, expected;
     private final Styliser styliser;
 
-    public IntelligentLinkingTest(String input, String expected) {
+    public IntelligentLinkingTest(final String input, final String expected) {
         this.input = input;
         this.expected = expected;
 

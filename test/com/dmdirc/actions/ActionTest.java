@@ -24,7 +24,6 @@ package com.dmdirc.actions;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.GlobalWindow;
-import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.interfaces.ActionController;
@@ -72,7 +71,6 @@ public class ActionTest {
     @Rule public final TemporaryFolder folder = new TemporaryFolder();
 
     @Mock private DMDircMBassador eventBus;
-    @Mock private Provider<GlobalCommandParser> gcpProvider;
     @Mock private Provider<GlobalWindow> gwProvider;
     @Mock private ActionSubstitutorFactory substitutorFactory;
     @Mock private ActionController actionController;
@@ -122,7 +120,7 @@ public class ActionTest {
 
     @Test
     public void testSetGroup() {
-        Action action = new Action(filesystem, eventBus, gwProvider,
+        final Action action = new Action(filesystem, eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
@@ -137,7 +135,7 @@ public class ActionTest {
 
     @Test
     public void testSetName() {
-        Action action = new Action(filesystem, eventBus, gwProvider,
+        final Action action = new Action(filesystem, eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0], new String[0],
                 new ArrayList<ActionCondition>(), ConditionTree.createConjunction(0), null);
@@ -151,7 +149,7 @@ public class ActionTest {
 
     @Test
     public void testDelete() {
-        Action action = new Action(filesystem, eventBus, gwProvider,
+        final Action action = new Action(filesystem, eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0],
                 new String[0], new ArrayList<ActionCondition>(),
@@ -164,7 +162,7 @@ public class ActionTest {
 
     @Test
     public void testRead() throws IOException, InvalidConfigFileException {
-        Action action = new Action(filesystem, eventBus, gwProvider,
+        final Action action = new Action(filesystem, eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action1"));
@@ -183,7 +181,7 @@ public class ActionTest {
 
     @Test
     public void testMultipleGroups() throws IOException, InvalidConfigFileException {
-        Action action = new Action(filesystem, eventBus, gwProvider,
+        final Action action = new Action(filesystem, eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action_multisettings"));

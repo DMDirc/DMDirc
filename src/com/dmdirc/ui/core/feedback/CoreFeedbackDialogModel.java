@@ -175,29 +175,29 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
                     continue;
                 }
                 serverInfo.append("Actual name: ").append(connection.getParser()
-                        .getServerName()).append("\n");
+                        .getServerName()).append('\n');
                 serverInfo.append("Network: ").append(connection.getNetwork())
-                        .append("\n");
+                        .append('\n');
                 serverInfo.append("IRCd: ").append(connection.getParser()
                         .getServerSoftware()).append(" - ");
                 serverInfo.append(connection.getParser().getServerSoftwareType())
-                        .append("\n");
+                        .append('\n');
                 serverInfo.append("Modes: ").append(connection.getParser()
-                        .getBooleanChannelModes()).append(" ");
+                        .getBooleanChannelModes()).append(' ');
                 serverInfo.append(connection.getParser().getListChannelModes())
-                        .append(" ");
+                        .append(' ');
                 serverInfo.append(connection.getParser().getParameterChannelModes())
-                        .append(" ");
+                        .append(' ');
                 serverInfo.append(connection.getParser().
                         getDoubleParameterChannelModes());
             }
         }
         if (getIncludeDMDircInfo()) {
             dmdircInfo.append("DMDirc version: ").append(ClientInfo.getVersionInformation())
-                    .append("\n");
-            dmdircInfo.append("Profile directory: ").append(configDirectory).append("\n");
+                    .append('\n');
+            dmdircInfo.append("Profile directory: ").append(configDirectory).append('\n');
             dmdircInfo.append("Java version: ").append(ClientInfo.getJavaInformation())
-                    .append("\n");
+                    .append('\n');
             dmdircInfo.append("OS Version: ").append(ClientInfo.getOperatingSystemInformation());
         }
         final FeedbackSender sender = feedbackSenderFactory.getFeedbackSender(

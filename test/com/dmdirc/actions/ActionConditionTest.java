@@ -102,9 +102,9 @@ public class ActionConditionTest {
     public void testToString() {
         final ActionCondition ac1 = new ActionCondition("foobarbaz",
             CoreActionComparison.STRING_STARTSWITH, "foo");
-        assertTrue(ac1.toString().indexOf("foo") > -1);
-        assertTrue(ac1.toString().indexOf("foobarbaz") > -1);
-        assertTrue(ac1.toString().indexOf(CoreActionComparison.STRING_STARTSWITH.toString()) > -1);
+        assertTrue(ac1.toString().contains("foo"));
+        assertTrue(ac1.toString().contains("foobarbaz"));
+        assertTrue(ac1.toString().contains(CoreActionComparison.STRING_STARTSWITH.toString()));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class ActionConditionTest {
 
         assertTrue(ac1.equals(ac2));
         assertTrue(ac2.equals(ac1));
-        assertFalse(ac1.equals(null));
+        assertFalse(ac1.equals(null)); // NOPMD
         assertFalse(ac1.equals("foo"));
         assertEquals(ac1.hashCode(), ac2.hashCode());
 

@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
 class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         ConfigProviderListener, AggregateConfigProvider {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ConfigManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigManager.class);
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> STATS = new TreeMap<>();
     /** Magical domain to redirect to the version identity. */
@@ -276,7 +277,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         final boolean result = comp != null
                 && identityTargetMatches(identity.getTarget().getData(), comp);
 
-        log.trace("Checking if identity {} applies. Comparison: {}, target: {}, result: {}",
+        LOG.trace("Checking if identity {} applies. Comparison: {}, target: {}, result: {}",
                 identity, comp, identity.getTarget().getData(), result);
 
         return result;
@@ -359,8 +360,9 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      */
     void migrate(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        log.debug("Migrating from {{}, {}, {}, {}, {}} to {{}, {}, {}, {}, {}}", this.protocol, this.ircd,
-                this.network, this.server, this.channel, protocol, ircd, network, server, channel);
+        LOG.debug("Migrating from {{}, {}, {}, {}, {}} to {{}, {}, {}, {}, {}}", this.protocol,
+                this.ircd, this.network, this.server, this.channel, protocol, ircd, network, server,
+                channel);
 
         this.protocol = protocol;
         this.ircd = ircd;
@@ -370,18 +372,18 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
 
         for (ConfigProvider identity : new ArrayList<>(sources)) {
             if (!identityApplies(identity)) {
-                log.debug("Removing identity that no longer applies: {}", identity);
+                LOG.debug("Removing identity that no longer applies: {}", identity);
                 removeIdentity(identity);
             }
         }
 
         final List<ConfigProvider> newSources = manager.getIdentitiesForManager(this);
         for (ConfigProvider identity : newSources) {
-            log.trace("Testing new identity: {}", identity);
+            LOG.trace("Testing new identity: {}", identity);
             checkIdentity(identity);
         }
 
-        log.debug("New identities: {}", sources);
+        LOG.debug("New identities: {}", sources);
     }
 
     /**

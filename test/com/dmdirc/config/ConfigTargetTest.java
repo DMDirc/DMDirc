@@ -32,7 +32,7 @@ public class ConfigTargetTest {
     public void testDefault() {
         final ConfigTarget target = new ConfigTarget();
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.GLOBAL);
+        assertEquals(ConfigTarget.TYPE.GLOBAL, target.getType());
         assertTrue(target.toString().toLowerCase().matches("global.*config"));
     }
 
@@ -41,8 +41,8 @@ public class ConfigTargetTest {
         final ConfigTarget target = new ConfigTarget();
         target.setGlobal();
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.GLOBAL);
-        assertEquals(target.getTypeName(), "global");
+        assertEquals(ConfigTarget.TYPE.GLOBAL, target.getType());
+        assertEquals("global", target.getTypeName());
         assertTrue(target.toString().toLowerCase().matches("global.*config"));
     }
 
@@ -51,8 +51,8 @@ public class ConfigTargetTest {
         final ConfigTarget target = new ConfigTarget();
         target.setGlobalDefault();
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.GLOBALDEFAULT);
-        assertEquals(target.getTypeName(), "globaldefault");
+        assertEquals(ConfigTarget.TYPE.GLOBALDEFAULT, target.getType());
+        assertEquals("globaldefault", target.getTypeName());
         assertTrue(target.toString().toLowerCase().matches("global.*defaults"));
     }
 
@@ -61,8 +61,8 @@ public class ConfigTargetTest {
         final ConfigTarget target = new ConfigTarget();
         target.setTheme();
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.THEME);
-        assertEquals(target.getTypeName(), "theme");
+        assertEquals(ConfigTarget.TYPE.THEME, target.getType());
+        assertEquals("theme", target.getTypeName());
         assertTrue(target.toString().toLowerCase().matches("theme"));
     }
 
@@ -71,8 +71,8 @@ public class ConfigTargetTest {
         final ConfigTarget target = new ConfigTarget();
         target.setCustom("profile");
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.CUSTOM);
-        assertEquals(target.getTypeName(), "custom");
+        assertEquals(ConfigTarget.TYPE.CUSTOM, target.getType());
+        assertEquals("custom", target.getTypeName());
         assertEquals("profile", target.getData());
         assertEquals("custom: profile", target.toString().toLowerCase());
     }
@@ -82,9 +82,9 @@ public class ConfigTargetTest {
         final ConfigTarget target = new ConfigTarget();
         target.setProtocol("irc");
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.PROTOCOL);
-        assertEquals(target.getTypeName(), "protocol");
-        assertEquals(target.getData(), "irc");
+        assertEquals(ConfigTarget.TYPE.PROTOCOL, target.getType());
+        assertEquals("protocol", target.getTypeName());
+        assertEquals("irc", target.getData());
         assertTrue(target.toString().toLowerCase().matches("protocol.*: irc"));
     }
 
@@ -93,9 +93,9 @@ public class ConfigTargetTest {
         final ConfigTarget target = new ConfigTarget();
         target.setIrcd("ircd_name");
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.IRCD);
-        assertEquals(target.getTypeName(), "ircd");
-        assertEquals(target.getData(), "ircd_name");
+        assertEquals(ConfigTarget.TYPE.IRCD, target.getType());
+        assertEquals("ircd", target.getTypeName());
+        assertEquals("ircd_name", target.getData());
         assertTrue(target.toString().toLowerCase().matches("ircd.*: ircd_name"));
     }
 
@@ -104,9 +104,9 @@ public class ConfigTargetTest {
         final ConfigTarget target = new ConfigTarget();
         target.setNetwork("net_name");
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.NETWORK);
-        assertEquals(target.getTypeName(), "network");
-        assertEquals(target.getData(), "net_name");
+        assertEquals(ConfigTarget.TYPE.NETWORK, target.getType());
+        assertEquals("network", target.getTypeName());
+        assertEquals("net_name", target.getData());
         assertTrue(target.toString().toLowerCase().matches("network.*: net_name"));
     }
 
@@ -115,9 +115,9 @@ public class ConfigTargetTest {
         final ConfigTarget target = new ConfigTarget();
         target.setServer("server_name");
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.SERVER);
-        assertEquals(target.getTypeName(), "server");
-        assertEquals(target.getData(), "server_name");
+        assertEquals(ConfigTarget.TYPE.SERVER, target.getType());
+        assertEquals("server", target.getTypeName());
+        assertEquals("server_name", target.getData());
         assertTrue(target.toString().toLowerCase().matches("server.*: server_name"));
     }
 
@@ -126,9 +126,9 @@ public class ConfigTargetTest {
         final ConfigTarget target = new ConfigTarget();
         target.setChannel("channel_name");
 
-        assertEquals(target.getType(), ConfigTarget.TYPE.CHANNEL);
-        assertEquals(target.getTypeName(), "channel");
-        assertEquals(target.getData(), "channel_name");
+        assertEquals(ConfigTarget.TYPE.CHANNEL, target.getType());
+        assertEquals("channel", target.getTypeName());
+        assertEquals("channel_name", target.getData());
         assertTrue(target.toString().toLowerCase().matches("channel.*: channel_name"));
     }
 

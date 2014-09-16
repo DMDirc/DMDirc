@@ -135,10 +135,8 @@ public class WindowManagerTest {
 
     @Test
     public void testAddListenerAndSync() {
-        when(container.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{child, }));
-        when(child.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{grandchild, }));
+        when(container.getChildren()).thenReturn(Arrays.asList(child));
+        when(child.getChildren()).thenReturn(Arrays.asList(grandchild));
 
         manager.addWindow(container);
         manager.addListenerAndSync(frameListener);
@@ -159,8 +157,7 @@ public class WindowManagerTest {
 
     @Test
     public void testRemoveWindowRootWindowWithChildren() {
-        when(container.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{child, }));
+        when(container.getChildren()).thenReturn(Arrays.asList(child));
         when(child.getParent()).thenReturn(Optional.of(container));
 
         manager.addListener(frameListener);
@@ -173,8 +170,7 @@ public class WindowManagerTest {
 
     @Test
     public void testRemoveChildWindowNoChildren() {
-        when(container.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{child, }));
+        when(container.getChildren()).thenReturn(Arrays.asList(child));
         when(child.getParent()).thenReturn(Optional.of(container));
 
         manager.addListener(frameListener);
@@ -187,10 +183,8 @@ public class WindowManagerTest {
 
     @Test
     public void testRemoveChildWindowWithChildren() {
-        when(container.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{child, }));
-        when(child.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{grandchild, }));
+        when(container.getChildren()).thenReturn(Arrays.asList(child));
+        when(child.getChildren()).thenReturn(Arrays.asList(grandchild));
         when(child.getParent()).thenReturn(Optional.of(container));
 
         manager.addListener(frameListener);
@@ -207,7 +201,7 @@ public class WindowManagerTest {
         final FrameContainer root1 = mock(FrameContainer.class);
         final FrameContainer root2 = mock(FrameContainer.class);
         final Collection<FrameContainer> rootWindows
-                = Arrays.asList(new FrameContainer[]{root1, root2, });
+                = Arrays.asList(root1, root2);
 
         manager.addWindow(root1);
         manager.addWindow(root2);

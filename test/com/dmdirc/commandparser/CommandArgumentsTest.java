@@ -103,9 +103,9 @@ public class CommandArgumentsTest {
         final char c = '/';
         final char s = '.';
 
-        assertTrue(new CommandArguments(controller, c + "" + s).isSilent());
+        assertTrue(new CommandArguments(controller, Character.toString(c) + s).isSilent());
         assertFalse(new CommandArguments(controller, "f" + s).isSilent());
-        assertTrue(new CommandArguments(controller, c + "" + s + "foo").isSilent());
+        assertTrue(new CommandArguments(controller, Character.toString(c) + s + "foo").isSilent());
         assertFalse(new CommandArguments(controller, "").isSilent());
         assertFalse(new CommandArguments(controller, "foo").isSilent());
     }

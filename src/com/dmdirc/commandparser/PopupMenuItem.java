@@ -150,7 +150,7 @@ public class PopupMenuItem {
 
             if (offset >= expectedArgs) {
                 if (builder.length() > 0) {
-                    builder.append("\n");
+                    builder.append('\n');
                 }
 
                 builder.append(commandManager.getCommandChar());
@@ -165,7 +165,7 @@ public class PopupMenuItem {
             }
 
             if (builder.length() > 0) {
-                builder.append("\n");
+                builder.append('\n');
             }
 
             builder.append(commandManager.getCommandChar());

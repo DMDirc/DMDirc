@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -56,7 +57,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class IdentityManager implements IdentityFactory, IdentityController {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(IdentityManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IdentityManager.class);
     /** A regular expression that will match all characters illegal in file names. */
     private static final String ILLEGAL_CHARS = "[\\\\\"/:\\*\\?\"<>\\|]";
     /** The domain used for identity settings. */
@@ -77,7 +78,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** The event bus to post events to. */
     private final DMDircMBassador eventBus;
     /**
-     * The {@link IdentityListener}s that have registered with this manager.
+     * The {@link ConfigProviderListener}s that have registered with this manager.
      *
      * Listeners for standard identities are inserted with a <code>null</code> key, listeners for a
      * specific custom type use their type as the key.
@@ -417,8 +418,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             identities.add(target, identity);
         }
 
-        log.debug("Adding identity: {} (group: {})",
-                new Object[]{identity, target});
+        LOG.debug("Adding identity: {} (group: {})", new Object[]{identity, target});
 
         synchronized (listeners) {
             for (ConfigProviderListener listener : listeners.safeGet(target)) {
@@ -491,7 +491,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
         Collections.sort(sources, new ConfigProviderTargetComparator());
 
-        log.debug("Found {} source(s) for {}", sources.size(), manager);
+        LOG.debug("Found {} source(s) for {}", sources.size(), manager);
 
         return sources;
     }
@@ -693,7 +693,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final List<ConfigProvider> sources = getIdentitiesForManager(configManager);
 
         for (ConfigProvider identity : sources) {
-            log.trace("Found {}", identity);
+            LOG.trace("Found {}", identity);
             configManager.checkIdentity(identity);
         }
 

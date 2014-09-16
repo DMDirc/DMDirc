@@ -34,28 +34,28 @@ public class StatusMessageTest {
     @Test
     public void testGetMessageShortConstructor() {
         final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
-        StatusMessage instance = new StatusMessage("test", config);
+        final StatusMessage instance = new StatusMessage("test", config);
         assertEquals("test", instance.getMessage());
     }
 
     @Test
     public void testGetMessageLongConstructor() {
         final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
-        StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
+        final StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
         assertEquals("test", instance.getMessage());
     }
 
     @Test
     public void testGetIconType() {
         final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
-        StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
+        final StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
         assertEquals("icon", instance.getIconType());
     }
 
     @Test
     public void testGetMessageNotifierNull() {
         final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
-        StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
+        final StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
         assertNull(instance.getMessageNotifier());
     }
 
@@ -63,14 +63,14 @@ public class StatusMessageTest {
     public void testGetMessageNotifierNotNull() {
         final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
         final StatusMessageNotifier smn = mock(StatusMessageNotifier.class);
-        StatusMessage instance = new StatusMessage("icon", "test", smn, 10, config);
+        final StatusMessage instance = new StatusMessage("icon", "test", smn, 10, config);
         assertEquals(smn, instance.getMessageNotifier());
     }
 
     @Test
     public void testGetTimeout() {
         final AggregateConfigProvider config = mock(AggregateConfigProvider.class);
-        StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
+        final StatusMessage instance = new StatusMessage("icon", "test", null, 10, config);
         assertEquals(10, instance.getTimeout());
     }
 
@@ -80,7 +80,7 @@ public class StatusMessageTest {
 
         when(config.getOptionInt("statusBar", "messageDisplayLength")).thenReturn(10);
 
-        StatusMessage instance = new StatusMessage("icon", "test", null, -1, config);
+        final StatusMessage instance = new StatusMessage("icon", "test", null, -1, config);
         assertEquals(10, instance.getTimeout());
     }
 }

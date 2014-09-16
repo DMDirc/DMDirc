@@ -31,7 +31,6 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 public class LegacyInstallationStrategyTest {
@@ -53,7 +52,7 @@ public class LegacyInstallationStrategyTest {
     }
 
     @Test
-    public void testCallsInstallWithCorrectPath() throws Exception {
+    public void testCallsInstallWithCorrectPath() throws Exception { // NOPMD
         final File file = mock(File.class);
         when(file.getAbsolutePath()).thenReturn("/my/path");
         when(result.getFile()).thenReturn(file);
@@ -62,7 +61,7 @@ public class LegacyInstallationStrategyTest {
     }
 
     @Test
-    public void testRaisesCompletedEvent() throws Exception {
+    public void testRaisesCompletedEvent() throws Exception { // NOPMD
         final File file = mock(File.class);
         when(result.getFile()).thenReturn(file);
         strategy.addUpdateInstallationListener(listener);
@@ -71,7 +70,7 @@ public class LegacyInstallationStrategyTest {
     }
 
     @Test
-    public void testRaisesFailedEvent() throws Exception {
+    public void testRaisesFailedEvent() throws Exception { // NOPMD
         final File file = mock(File.class);
         when(result.getFile()).thenReturn(file);
         when(component.doInstall(anyString())).thenThrow(new IOException());

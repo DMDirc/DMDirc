@@ -129,7 +129,7 @@ public class ErrorReporter {
             title.append(" user: ").append(userModes);
         }
 
-        title.append(" [").append(ircd).append("]");
+        title.append(" [").append(ircd).append(']');
         return title.toString();
     }
 

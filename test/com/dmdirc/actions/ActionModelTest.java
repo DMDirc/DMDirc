@@ -23,7 +23,6 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.GlobalWindow;
-import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.actions.ActionType;
@@ -48,7 +47,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class ActionModelTest {
 
-    @Mock private Provider<GlobalCommandParser> gcpProvider;
     @Mock private Provider<GlobalWindow> gwProvider;
     @Mock private ActionSubstitutorFactory substitutorFactory;
     @Mock private ActionController actionController;
@@ -155,12 +153,10 @@ public class ActionModelTest {
         final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name",
                 new ActionType[]{CoreActionType.CHANNEL_ACTION},
-                new String[0], Arrays.asList(new ActionCondition[]{
-                    new ActionCondition(2, CoreActionComponent.STRING_STRING,
-                            CoreActionComparison.STRING_REGEX, ".*e{5}.*"),
-                    new ActionCondition(2, CoreActionComponent.STRING_STRING,
-                            CoreActionComparison.STRING_STARTSWITH, "abc"),
-                }), ConditionTree.parseString("0|1"), null);
+                new String[0], Arrays.asList(new ActionCondition(2, CoreActionComponent.STRING_STRING,
+                        CoreActionComparison.STRING_REGEX, ".*e{5}.*"),
+                new ActionCondition(2, CoreActionComponent.STRING_STRING,
+                        CoreActionComparison.STRING_STARTSWITH, "abc")), ConditionTree.parseString("0|1"), null);
         final ActionSubstitutor sub = new ActionSubstitutor(actionController,
                 commandController, configProvider, CoreActionType.CHANNEL_ACTION);
 
@@ -177,12 +173,10 @@ public class ActionModelTest {
         final ActionModel model = new ActionModel(gwProvider, substitutorFactory,
                 "group", "name",
                 new ActionType[]{CoreActionType.CHANNEL_ACTION},
-                new String[0], Arrays.asList(new ActionCondition[]{
-                    new ActionCondition(2, CoreActionComponent.STRING_STRING,
-                            CoreActionComparison.STRING_REGEX, ".*e{5}.*"),
-                    new ActionCondition(2, CoreActionComponent.STRING_STRING,
-                            CoreActionComparison.STRING_STARTSWITH, "abc"),
-                }), null, null);
+                new String[0], Arrays.asList(new ActionCondition(2, CoreActionComponent.STRING_STRING,
+                        CoreActionComparison.STRING_REGEX, ".*e{5}.*"),
+                new ActionCondition(2, CoreActionComponent.STRING_STRING,
+                        CoreActionComparison.STRING_STARTSWITH, "abc")), null, null);
         final ActionSubstitutor sub = new ActionSubstitutor(actionController, commandController,
                 configProvider, CoreActionType.CHANNEL_ACTION);
 

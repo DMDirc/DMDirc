@@ -61,15 +61,15 @@ public class CategoryReader {
     private static final String PARENT_KEY = "parent";
     private static final String ICON_KEY = "icon";
     private static final String DOMAIN_KEY = "domain";
-    private static final String ITEMS_KEY = "items";
+    private static final String ITEMS_KEY = "items"; // NOPMD
 
     private final Map<Object, Object> data;
     private final List<PreferencesSetting> items = new LinkedList<>();
     private String title;
     private String description;
     private String icon;
-    private String parent;
-    private String domain;
+    private String parent;  // NOPMD
+    private String domain;  // NOPMD
 
     public CategoryReader(final Map<Object, Object> data) {
         this.data = checkNotNull(data);
