@@ -32,12 +32,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.engio.mbassy.listener.Handler;
+import net.engio.mbassy.listener.Listener;
+import net.engio.mbassy.listener.References;
 
 /**
  * Listens for whois-like numeric events and automatically formats them.
  *
  * @since 0.6.3
  */
+@Listener(references = References.Strong)
 public class WhoisNumericFormatter {
 
     /** The name of the target of any current whois requests. */
