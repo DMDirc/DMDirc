@@ -67,6 +67,26 @@ public class AutoCommand {
         return response;
     }
 
+    public boolean equals(final Object object) {
+        if (object == null) {
+            return false;
+        }
+        if (getClass() != object.getClass()) {
+            return false;
+        }
+        final AutoCommand command = (AutoCommand) object;
+        return  Objects.equal(server, command.getServer())
+                && Objects.equal(network, command.getNetwork())
+                && Objects.equal(profile, command.getProfile())
+                && Objects.equal(response, command.getResponse());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(server, network, profile, response);
+    }
+
     public String toString() {
         return Objects.toStringHelper(this)
                 .add("Connection", server)
