@@ -23,9 +23,6 @@
 package com.dmdirc.commandparser.auto;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.GlobalWindow;
-import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.interfaces.CommandController;
 
 import com.google.common.base.Optional;
 
@@ -38,29 +35,34 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AutoCommandManagerTest {
 
-    @Mock GlobalCommandParser globalCommandParser;
-    @Mock GlobalWindow globalWindow;
-    @Mock CommandController commandController;
-    @Mock DMDircMBassador eventBus;
+    @Mock private DMDircMBassador eventBus;
+    @Mock private AutoCommandHandlerFactory factory;
+    @Mock private AutoCommandHandler globalHandler;
+    @Mock private AutoCommandHandler connectionHandler;
     private AutoCommandManager autoCommandManager;
+    private AutoCommand global;
+    private AutoCommand connection;
 
     @Before
     public void setup() {
-        final AutoCommandHandlerFactory factory = new AutoCommandHandlerFactory(
-                globalCommandParser, globalWindow, commandController);
         autoCommandManager = new AutoCommandManager(eventBus, factory);
+        global = new AutoCommand(Optional.<String>absent(), Optional.<String>absent(),
+                Optional.<String>absent(), "");
+        connection = new AutoCommand(Optional.<String>absent(),
+                Optional.fromNullable("Quakenet"), Optional.<String>absent(), "");
+        when(factory.getAutoCommandHandler(global)).thenReturn(globalHandler);
+        when(factory.getAutoCommandHandler(connection)).thenReturn(connectionHandler);
     }
 
     @Test
     public void testRemoveAutoCommand() {
-        final AutoCommand global = new AutoCommand(Optional.<String>absent(),
-                Optional.<String>absent(), Optional.<String>absent(), "DO STUFF");
-        final AutoCommand connection = new AutoCommand(Optional.<String>absent(),
-                Optional.fromNullable("Quakenet"), Optional.<String>absent(), "DO STUFF");
         autoCommandManager.addAutoCommand(global);
         autoCommandManager.addAutoCommand(connection);
         assertEquals(2, autoCommandManager.getAutoCommands().size());
@@ -72,10 +74,6 @@ public class AutoCommandManagerTest {
 
     @Test
     public void testGetAutoCommands() {
-        final AutoCommand global = new AutoCommand(Optional.<String>absent(),
-                Optional.<String>absent(), Optional.<String>absent(), "DO STUFF");
-        final AutoCommand connection = new AutoCommand(Optional.<String>absent(),
-                Optional.fromNullable("Quakenet"), Optional.<String>absent(), "DO STUFF");
         autoCommandManager.addAutoCommand(global);
         autoCommandManager.addAutoCommand(connection);
         assertEquals(2, autoCommandManager.getAutoCommands().size());
@@ -83,10 +81,6 @@ public class AutoCommandManagerTest {
 
     @Test
     public void testGetGlobalAutoCommands() {
-        final AutoCommand global = new AutoCommand(Optional.<String>absent(),
-                Optional.<String>absent(), Optional.<String>absent(), "DO STUFF");
-        final AutoCommand connection = new AutoCommand(Optional.<String>absent(),
-                Optional.fromNullable("Quakenet"), Optional.<String>absent(), "DO STUFF");
         autoCommandManager.addAutoCommand(global);
         autoCommandManager.addAutoCommand(connection);
         assertEquals(1, autoCommandManager.getGlobalAutoCommands().size());
@@ -95,13 +89,52 @@ public class AutoCommandManagerTest {
 
     @Test
     public void testGetConnectionAutoCommands() {
-        final AutoCommand global = new AutoCommand(Optional.<String>absent(),
-                Optional.<String>absent(), Optional.<String>absent(), "DO STUFF");
-        final AutoCommand connection = new AutoCommand(Optional.<String>absent(),
-                Optional.fromNullable("Quakenet"), Optional.<String>absent(), "DO STUFF");
         autoCommandManager.addAutoCommand(global);
         autoCommandManager.addAutoCommand(connection);
         assertEquals(1, autoCommandManager.getConnectionAutoCommands().size());
         assertTrue(autoCommandManager.getConnectionAutoCommands().contains(connection));
+    }
+
+    @Test
+    public void testStart() {
+        autoCommandManager.addAutoCommand(global);
+        autoCommandManager.start();
+        verify(eventBus).subscribe(globalHandler);
+    }
+
+    @Test
+    public void testStop() {
+        autoCommandManager.addAutoCommand(global);
+        autoCommandManager.stop();
+        verify(eventBus).unsubscribe(globalHandler);
+    }
+
+    @Test
+    public void testAddWhenStarted() {
+        autoCommandManager.start();
+        autoCommandManager.addAutoCommand(global);
+        verify(eventBus).subscribe(globalHandler);
+    }
+
+    @Test
+    public void testAddWhenStopped() {
+        autoCommandManager.addAutoCommand(global);
+        verify(eventBus, never()).subscribe(globalHandler);
+    }
+
+    @Test
+    public void testRemoveWhenStarted() {
+        autoCommandManager.start();
+        autoCommandManager.addAutoCommand(global);
+        autoCommandManager.removeAutoCommand(global);
+        verify(eventBus).subscribe(globalHandler);
+        verify(eventBus).unsubscribe(globalHandler);
+    }
+
+    @Test
+    public void testRemoveWhenStopped() {
+        autoCommandManager.removeAutoCommand(global);
+        verify(eventBus, never()).subscribe(global);
+        verify(eventBus, never()).unsubscribe(globalHandler);
     }
 }
