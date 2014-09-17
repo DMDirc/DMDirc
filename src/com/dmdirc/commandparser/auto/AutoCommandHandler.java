@@ -30,6 +30,8 @@ import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.interfaces.CommandController;
 
+import com.google.common.base.Optional;
+
 import net.engio.mbassy.listener.Handler;
 
 /**
@@ -60,7 +62,7 @@ public class AutoCommandHandler {
      */
     @Handler
     public void checkAutoCommand(final ClientOpenedEvent event) {
-        if (!autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent()) {
+        if (isGlobalCommand()) {
             execute(globalWindow, globalCommandParser);
         }
     }
@@ -72,33 +74,28 @@ public class AutoCommandHandler {
      */
     @Handler
     public void checkAutoCommand(final ServerConnectedEvent event) {
-        if (!autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent()) {
-            // This is a global auto command, shouldn't be executed for servers.
-            return;
+        if (appliesToServer(event.getConnection().getNetwork(),
+                event.getConnection().getAddress(), event.getConnection().getProfile().getName())) {
+            final FrameContainer container = event.getConnection().getWindowModel();
+            final CommandParser parser = container.getCommandParser();
+            execute(container, parser);
         }
+    }
 
-        if (autoCommand.getProfile().isPresent() && !event.getConnection().getProfile().getName()
-                .equalsIgnoreCase(autoCommand.getProfile().get())) {
-            // There's a profile specified in the command that isn't matched
-            return;
-        }
+    private boolean appliesToServer(final String network, final String server,
+            final String profile) {
+        return !isGlobalCommand()
+                && matchesIfPreset(autoCommand.getNetwork(), network)
+                && matchesIfPreset(autoCommand.getServer(), server)
+                && matchesIfPreset(autoCommand.getProfile(), profile);
+    }
 
-        if (autoCommand.getServer().isPresent() && !event.getConnection().getAddress()
-                .equalsIgnoreCase(autoCommand.getServer().get())) {
-            // There's a server specified in the command that isn't matched
-            return;
-        }
+    private boolean isGlobalCommand() {
+        return !autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent();
+    }
 
-
-        if (autoCommand.getNetwork().isPresent() && !event.getConnection().getNetwork()
-                .equalsIgnoreCase(autoCommand.getNetwork().get())) {
-            // There's a network specified in the command that isn't matched
-            return;
-        }
-
-        final FrameContainer container = event.getConnection().getWindowModel();
-        final CommandParser parser = container.getCommandParser();
-        execute(container, parser);
+    private boolean matchesIfPreset(final Optional<String> target, final String value) {
+        return !target.isPresent() || target.get().equalsIgnoreCase(value);
     }
 
     private void execute(final FrameContainer origin, final CommandParser parser) {
