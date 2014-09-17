@@ -112,7 +112,11 @@ public class URLBuilder {
      * @return An URL corresponding to the specified resource
      */
     public URL getUrlForDMDircResource(final String resource) {
-        return Thread.currentThread().getContextClassLoader().getResource(resource);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (classLoader == null) {
+            classLoader = getClass().getClassLoader();
+        }
+        return classLoader.getResource(resource);
     }
 
     /**
