@@ -23,6 +23,7 @@
 package com.dmdirc.commandline;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import javax.inject.Qualifier;
 import javax.inject.Singleton;
@@ -190,6 +191,48 @@ public class CommandLineOptionsModule {
     @Directory(DirectoryType.TEMPORARY)
     public String getTempDirectory(@Directory(DirectoryType.BASE) final String baseDirectory) {
         return baseDirectory;
+    }
+
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.BASE)
+    public Path getBasePath(@Directory(DirectoryType.BASE) final String directory) {
+        return new File(directory).toPath();
+    }
+
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.PLUGINS)
+    public Path getPluginsPath(@Directory(DirectoryType.PLUGINS) final String directory) {
+        return new File(directory).toPath();
+    }
+
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.ACTIONS)
+    public Path getActionsPath(@Directory(DirectoryType.ACTIONS) final String directory) {
+        return new File(directory).toPath();
+    }
+
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.IDENTITIES)
+    public Path getIdentitiesPath(@Directory(DirectoryType.IDENTITIES) final String directory) {
+        return new File(directory).toPath();
+    }
+
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.ERRORS)
+    public Path getErrorsPath(@Directory(DirectoryType.ERRORS) final String directory) {
+        return new File(directory).toPath();
+    }
+
+    @Provides
+    @Singleton
+    @Directory(DirectoryType.THEMES)
+    public Path getThemesPath(@Directory(DirectoryType.THEMES) final String directory) {
+        return new File(directory).toPath();
     }
 
 }

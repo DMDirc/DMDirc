@@ -22,19 +22,23 @@
 
 package com.dmdirc.commandparser.aliases;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.Migrator;
+import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
 import com.google.common.base.Joiner;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -44,9 +48,10 @@ import javax.inject.Singleton;
 @Singleton
 public class ActionAliasMigrator implements Migrator {
 
-    private final File directory;
+    private final Path directory;
     private final AliasFactory aliasFactory;
     private final AliasManager aliasManager;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new alias migrator.
@@ -54,33 +59,38 @@ public class ActionAliasMigrator implements Migrator {
      * @param directory    The base directory to read alias actions from.
      * @param aliasFactory The factory to use to create new aliases.
      * @param aliasManager The manager to add aliases to.
+     * @param eventBus     Bus to report errors on.
      */
     @Inject
     public ActionAliasMigrator(
-            @Directory(DirectoryType.ACTIONS) final String directory,
+            @Directory(DirectoryType.ACTIONS) final Path directory,
             final AliasFactory aliasFactory,
-            final AliasManager aliasManager) {
-        this.directory = new File(directory, "aliases");
+            final AliasManager aliasManager,
+            final DMDircMBassador eventBus) {
+        this.directory = directory.resolve("aliases");
         this.aliasFactory = aliasFactory;
         this.aliasManager = aliasManager;
+        this.eventBus = eventBus;
     }
 
     @Override
     public boolean needsMigration() {
-        return directory.exists();
+        return Files.isDirectory(directory);
     }
 
     @Override
     public void migrate() {
-        @Nullable final File[] files = directory.listFiles();
-        if (files != null) {
-            for (File child : files) {
-                if (migrate(child)) {
-                    child.delete();
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
+            for (Path path : directoryStream) {
+                if (migrate(path)) {
+                    Files.delete(path);
                 }
             }
+            Files.delete(directory);
+        } catch (IOException ex) {
+            eventBus.publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to migrate aliases", ex.getMessage()));
         }
-        directory.delete();
     }
 
     /**
@@ -90,9 +100,10 @@ public class ActionAliasMigrator implements Migrator {
      *
      * @return True if the file was migrated successfully, false otherwise.
      */
-    private boolean migrate(final File file) {
+    private boolean migrate(final Path file) {
         try {
-            final ConfigFile configFile = new ConfigFile(file);
+            // TODO: Make ConfigFile take a Path.
+            final ConfigFile configFile = new ConfigFile(file.toFile());
             configFile.read();
 
             final String response = Joiner.on('\n').join(configFile.getFlatDomain("response"));

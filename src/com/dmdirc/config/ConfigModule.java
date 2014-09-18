@@ -56,7 +56,6 @@ import static com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 @Module(library = true, complete = false)
 public class ConfigModule {
 
-
     @Provides
     @Singleton
     public IdentityManager getIdentityManager(

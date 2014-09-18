@@ -13,15 +13,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/test-res" type="java-test-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/.clover" />
       <excludeFolder url="file://$MODULE_DIR$/.gradle" />
-      <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
-      <excludeFolder url="file://$MODULE_DIR$/etc" />
-      <excludeFolder url="file://$MODULE_DIR$/gradle" />
-      <excludeFolder url="file://$MODULE_DIR$/installer" />
-      <excludeFolder url="file://$MODULE_DIR$/junitreports" />
-      <excludeFolder url="file://$MODULE_DIR$/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -42,6 +35,7 @@
     <orderEntry type="library" exported="" name="Gradle: com.squareup:javawriter:2.3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.12-beta-1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.mockito:mockito-all:1.9.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.google.jimfs:jimfs:1.0" level="project" />
   </component>
 </module>
 
