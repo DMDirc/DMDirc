@@ -32,7 +32,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -40,31 +39,40 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActionAliasMigratorTest {
 
-    @Mock private AliasManager aliasManager;
     @Mock private AliasFactory aliasFactory;
+    @Mock private AliasManager aliasManager;
     @Mock private DMDircMBassador eventBus;
 
     private FileSystem fs;
     private ActionAliasMigrator migrator1;
     private ActionAliasMigrator migrator2;
+    private ActionAliasMigrator migrator3;
 
     @Before
     public void setup() throws IOException {
         fs = Jimfs.newFileSystem(Configuration.unix());
+
         Files.createDirectories(fs.getPath("test1/aliases"));
         Files.createDirectories(fs.getPath("test2/other-stuff/aliases"));
+        Files.createDirectories(fs.getPath("test3/aliases"));
+
         Files.copy(getClass().getResource("op-greater-0").openStream(),
                 fs.getPath("test1/aliases/op"));
         Files.copy(getClass().getResource("unset-equals-2").openStream(),
                 fs.getPath("test1/aliases/unset"));
+        Files.copy(getClass().getResource("no-trigger").openStream(),
+                fs.getPath("test3/aliases/bad"));
 
         migrator1 = new ActionAliasMigrator(fs.getPath("test1"), aliasFactory,
                 aliasManager, eventBus);
         migrator2 = new ActionAliasMigrator(fs.getPath("test2"), aliasFactory,
+                aliasManager, eventBus);
+        migrator3 = new ActionAliasMigrator(fs.getPath("test3"), aliasFactory,
                 aliasManager, eventBus);
     }
 
@@ -75,7 +83,6 @@ public class ActionAliasMigratorTest {
     }
 
     @Test
-    @Ignore("Converts to a file, throws UnsupportedOperationException under JimFs")
     public void testDeletesFilesAfterMigration() {
         migrator1.migrate();
         assertFalse(Files.exists(fs.getPath("test1/aliases/unset")));
@@ -88,6 +95,19 @@ public class ActionAliasMigratorTest {
     public void testLeavesOtherFilesDuringMigration() {
         migrator2.migrate();
         assertTrue(Files.exists(fs.getPath("test2/other-stuff/aliases")));
+    }
+
+    @Test
+    public void testMigrationCreatesAliases() {
+        migrator1.migrate();
+        verify(aliasFactory).createAlias("op", 1, "/mode ooooooooooooooo $1-");
+        verify(aliasFactory).createAlias("unset", 2, "/set --unset $1-");
+    }
+
+    @Test
+    public void testBadActionsLeftOnDisk() {
+        migrator3.migrate();
+        assertTrue(Files.exists(fs.getPath("test3/aliases/bad")));
     }
 
 }

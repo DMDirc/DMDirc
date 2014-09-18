@@ -102,8 +102,7 @@ public class ActionAliasMigrator implements Migrator {
      */
     private boolean migrate(final Path file) {
         try {
-            // TODO: Make ConfigFile take a Path.
-            final ConfigFile configFile = new ConfigFile(file.toFile());
+            final ConfigFile configFile = new ConfigFile(file);
             configFile.read();
 
             final String response = Joiner.on('\n').join(configFile.getFlatDomain("response"));
@@ -149,9 +148,13 @@ public class ActionAliasMigrator implements Migrator {
     private int getArguments(final ConfigFile configFile) throws NumberFormatException {
         for (Map<String, String> section : configFile.getKeyDomains().values()) {
             if (section.containsKey("comparison")
-                    && section.containsKey("target")
-                    && "INT_GREATER".equals(section.get("comparison"))) {
-                return 1 + Integer.valueOf(section.get("target"));
+                    && section.containsKey("target")) {
+                if ("INT_GREATER".equals(section.get("comparison"))) {
+                    return 1 + Integer.valueOf(section.get("target"));
+                }
+                if ("INT_EQUALS".equals(section.get("comparison"))) {
+                    return Integer.valueOf(section.get("target"));
+                }
             }
         }
         return 0;
