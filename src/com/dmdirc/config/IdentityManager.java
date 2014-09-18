@@ -42,12 +42,12 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,7 +160,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 if (!success) {
                     eventBus.publishAsync(new UserErrorEvent(ErrorLevel.HIGH, null,
                             "Unable to create directory for default settings folder ("
-                            + target + ")",
+                            + target + ')',
                             "A file with that name already exists, and couldn't be renamed."
                             + " Rename or delete " + file.getAbsolutePath()));
                     continue;
@@ -175,7 +175,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 return;
             }
 
-            if (file.listFiles() == null || file.listFiles().length == 0) {
+            final File[] files = file.listFiles();
+            if (files == null || files.length == 0) {
                 extractIdentities(target);
             }
 
@@ -260,11 +261,12 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         checkNotNull(dir);
         checkArgument(dir.isDirectory());
 
-        if (dir.listFiles() == null) {
+        final File[] files = dir.listFiles();
+        if (files == null) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Unable to load user identity files from " + dir.getAbsolutePath(), ""));
         } else {
-            for (File file : dir.listFiles()) {
+            for (File file : files) {
                 if (file.isDirectory()) {
                     loadUser(file);
                 } else {
@@ -283,7 +285,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     private void loadIdentity(final File file) {
         synchronized (identities) {
             for (ConfigProvider identity : getAllIdentities()) {
-                if ((identity instanceof ConfigFileBackedConfigProvider)
+                if (identity instanceof ConfigFileBackedConfigProvider
                         && ((ConfigFileBackedConfigProvider) identity).isFile(file)) {
                     // TODO: This manager should keep a list of files->identities instead of
                     //       relying on the identities remembering.
@@ -292,7 +294,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                     } catch (IOException ex) {
                         eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                                 "I/O error when reloading identity file: "
-                                + file.getAbsolutePath() + " (" + ex.getMessage() + ")", ""));
+                                + file.getAbsolutePath() + " (" + ex.getMessage() + ')', ""));
                     } catch (InvalidConfigFileException ex) {
                         // Do nothing
                     }
@@ -307,7 +309,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         } catch (InvalidIdentityFileException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Invalid identity file: " + file.getAbsolutePath() + " ("
-                    + ex.getMessage() + ")", ""));
+                    + ex.getMessage() + ')', ""));
         } catch (IOException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "I/O error when reading identity file: " + file.getAbsolutePath(), ""));
@@ -321,8 +323,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @since 0.6.4
      */
-    private Set<ConfigProvider> getAllIdentities() {
-        final Set<ConfigProvider> res = new LinkedHashSet<>();
+    private Iterable<ConfigProvider> getAllIdentities() {
+        final Collection<ConfigProvider> res = new LinkedHashSet<>();
 
         for (Map.Entry<String, List<ConfigProvider>> entry : identities.entrySet()) {
             res.addAll(entry.getValue());
@@ -517,7 +519,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                     + "with null or empty channel\n\nChannel: " + channel);
         }
 
-        final String myTarget = (channel + "@" + network).toLowerCase();
+        final String myTarget = (channel + '@' + network).toLowerCase();
 
         synchronized (identities) {
             for (ConfigProvider identity : identities.safeGet(null)) {
@@ -665,7 +667,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         int attempt = 1;
 
         while (file.exists()) {
-            file = new File(identitiesDirectory + name + "-" + attempt);
+            file = new File(identitiesDirectory + name + '-' + attempt);
             attempt++;
         }
 

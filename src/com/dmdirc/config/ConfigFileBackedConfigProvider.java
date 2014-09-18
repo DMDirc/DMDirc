@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -160,7 +161,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
             target.setChannel(getOption(DOMAIN, "channel"));
         } else if (hasOptionString(DOMAIN, "globaldefault")) {
             target.setGlobalDefault();
-        } else if (hasOptionString(DOMAIN, "global") || (forceDefault && !isProfile())) {
+        } else if (hasOptionString(DOMAIN, "global") || forceDefault && !isProfile()) {
             target.setGlobal();
         } else if (isProfile()) {
             target.setCustom(PROFILE_DOMAIN);
@@ -205,7 +206,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
             return;
         }
 
-        final List<String[]> changes = new LinkedList<>();
+        final Collection<String[]> changes = new LinkedList<>();
 
         synchronized (this) {
             final Map<String, Map<String, String>> oldProps = file.getKeyDomains();
@@ -276,7 +277,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
             // Migrate
 
             setOption(PROFILE_DOMAIN, "nicknames", getOption(PROFILE_DOMAIN, "nickname")
-                    + (hasOptionString(PROFILE_DOMAIN, "altnicks") ? "\n"
+                    + (hasOptionString(PROFILE_DOMAIN, "altnicks") ? '\n'
                     + getOption(PROFILE_DOMAIN, "altnicks") : ""));
             unsetOption(PROFILE_DOMAIN, "nickname");
             unsetOption(PROFILE_DOMAIN, "altnicks");
@@ -349,8 +350,8 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                 }
             }
 
-            if (!unset && ((oldValue == null && value != null)
-                    || (oldValue != null && !oldValue.equals(value)))) {
+            if (!unset && (oldValue == null && value != null
+                    || oldValue != null && !oldValue.equals(value))) {
                 file.getKeyDomain(domain).put(option, value);
                 needSave = true;
             }
@@ -358,8 +359,8 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
         // Fire any setting change listeners now we're no longer holding
         // a lock on this identity.
-        if (unset || (oldValue == null && value != null)
-                || (oldValue != null && !oldValue.equals(value))) {
+        if (unset || oldValue == null && value != null
+                || oldValue != null && !oldValue.equals(value)) {
             fireSettingChange(domain, option);
         }
     }
@@ -411,7 +412,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     public synchronized void save() {
         LOG.info("{}: saving. Needsave = {}", new Object[]{getName(), needSave});
 
-        if (needSave && file != null && file.isWritable()) {
+        if (needSave && file.isWritable()) {
             if (myTarget != null && myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 LOG.debug("{}: I'm a global config", getName());
 
@@ -480,10 +481,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
     @Override
     public synchronized void delete() throws IOException {
-        if (file != null) {
-            file.delete();
-        }
-
+        file.delete();
         identityManager.removeConfigProvider(this);
     }
 
@@ -502,7 +500,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * @since 0.6.4
      */
     public boolean isFile(final File target) {
-        return file != null && file.getFile() != null && file.getFile().equals(target);
+        return file.getFile() != null && file.getFile().equals(target);
     }
 
     @Override
@@ -533,8 +531,8 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof ConfigFileBackedConfigProvider
-                && getName().equals(((ConfigFileBackedConfigProvider) obj).getName())
-                && getTarget() == ((ConfigFileBackedConfigProvider) obj).getTarget();
+                && getName().equals(((ConfigProvider) obj).getName())
+                && getTarget() == ((ConfigProvider) obj).getTarget();
     }
 
 }
