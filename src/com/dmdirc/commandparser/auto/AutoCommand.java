@@ -67,6 +67,7 @@ public class AutoCommand {
         return response;
     }
 
+    @Override
     public boolean equals(final Object object) {
         if (object == null) {
             return false;
@@ -87,6 +88,7 @@ public class AutoCommand {
         return Objects.hashCode(server, network, profile, response);
     }
 
+    @Override
     public String toString() {
         return Objects.toStringHelper(this)
                 .add("Connection", server)
