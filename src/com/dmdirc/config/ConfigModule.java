@@ -34,7 +34,9 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WarningDialog;
 
 import java.awt.GraphicsEnvironment;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -59,8 +61,8 @@ public class ConfigModule {
     @Provides
     @Singleton
     public IdentityManager getIdentityManager(
-            @Directory(DirectoryType.BASE) final String baseDirectory,
-            @Directory(DirectoryType.IDENTITIES) final String identitiesDirectory,
+            @Directory(DirectoryType.BASE) final Path baseDirectory,
+            @Directory(DirectoryType.IDENTITIES) final Path identitiesDirectory,
             @Directory(DirectoryType.ERRORS) final String errorsDirectory,
             final CommandLineParser commandLineParser,
             final DMDircMBassador eventBus) {
@@ -114,12 +116,11 @@ public class ConfigModule {
     /**
      * Called when the global config cannot be loaded due to an error. This method informs the user
      * of the problem and installs a new default config file, backing up the old one.
-     *
-     * @param identityManager The identity manager to re-initialise after installing defaults.
+     *  @param identityManager The identity manager to re-initialise after installing defaults.
      * @param configdir       The directory to extract default settings into.
      */
     private void handleInvalidConfigFile(final IdentityManager identityManager,
-            final String configdir) {
+            final Path configdir) {
         final String date = new SimpleDateFormat("yyyyMMddkkmmss").format(new Date());
 
         final String message = "DMDirc has detected that your config file "
@@ -135,17 +136,19 @@ public class ConfigModule {
         // Let command-line users know what is happening.
         System.out.println(message.replace("<br>", "\n"));
 
-        final File configFile = new File(configdir + "dmdirc.config");
-        final File newConfigFile = new File(configdir + "dmdirc.config." + date);
+        final Path configFile = configdir.resolve("dmdirc.config");
+        final Path newConfigFile = configdir.resolve("dmdirc.config." + date);
 
-        if (configFile.renameTo(newConfigFile)) {
+        try {
+            Files.move(configFile, newConfigFile);
+
             try {
                 identityManager.initialise();
             } catch (InvalidIdentityFileException iife) {
                 // This shouldn't happen!
                 Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife);
             }
-        } else {
+        } catch (IOException ex) {
             final String newMessage = "DMDirc was unable to rename the "
                     + "global config file and is unable to fix this issue.";
             if (!GraphicsEnvironment.isHeadless()) {

@@ -39,8 +39,10 @@ import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,6 +50,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,9 +68,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** The domain used for profile settings. */
     private static final String PROFILE_DOMAIN = "profile";
     /** Base configuration directory where the main configuration file will be located. */
-    private final String configDirectory;
+    private final Path configDirectory;
     /** Directory to save and load identities in. */
-    private final String identitiesDirectory;
+    private final Path identitiesDirectory;
     /**
      * The identities that have been loaded into this manager.
      *
@@ -75,6 +78,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * custom type as the key.
      */
     private final MapList<String, ConfigProvider> identities = new MapList<>();
+    /** Map of paths to corresponding config providers, to facilitate reloading. */
+    private final Map<Path, ConfigProvider> configProvidersByPath = new ConcurrentHashMap<>();
     /** The event bus to post events to. */
     private final DMDircMBassador eventBus;
     /**
@@ -100,7 +105,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @param identitiesDirectory The directory to store identities in.
      * @param eventBus            The event bus to post events to
      */
-    public IdentityManager(final String baseDirectory, final String identitiesDirectory,
+    public IdentityManager(final Path baseDirectory, final Path identitiesDirectory,
             final DMDircMBassador eventBus) {
         this.configDirectory = baseDirectory;
         this.identitiesDirectory = identitiesDirectory;
@@ -129,7 +134,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         target.setGlobalDefault();
         target.setOrder(500000);
 
-        final ConfigFile addonConfigFile = new ConfigFile((File) null);
+        final ConfigFile addonConfigFile = new ConfigFile((Path) null);
         final Map<String, String> addonSettings = new HashMap<>();
         addonSettings.put("name", "Addon defaults");
         addonConfigFile.addDomain("identity", addonSettings);
@@ -148,13 +153,18 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String[] targets = {"default", "modealiases"};
 
         for (String target : targets) {
-            final File file = new File(identitiesDirectory + target);
+            final Path file = identitiesDirectory.resolve(target);
 
-            if (file.exists() && !file.isDirectory()) {
+            if (Files.exists(file) && !Files.isDirectory(file)) {
                 boolean success = false;
                 for (int i = 0; i < 10 && !success; i++) {
-                    final String suffix = ".old" + (i > 0 ? "-" + i : "");
-                    success = file.renameTo(new File(file.getParentFile(), target + suffix));
+                    try {
+                        final String suffix = ".old" + (i > 0 ? "-" + i : "");
+                        Files.move(file, identitiesDirectory.resolve(target + suffix));
+                        success = true;
+                    } catch (IOException ex) {
+                        success = false;
+                    }
                 }
 
                 if (!success) {
@@ -162,22 +172,33 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                             "Unable to create directory for default settings folder ("
                             + target + ')',
                             "A file with that name already exists, and couldn't be renamed."
-                            + " Rename or delete " + file.getAbsolutePath()));
+                            + " Rename or delete " + file));
                     continue;
                 }
             }
 
-            if (!file.exists() && !file.mkdirs()) {
-                eventBus.publishAsync(new UserErrorEvent(ErrorLevel.FATAL, null,
-                        "Unable to create required directory '" + file.getAbsolutePath()
-                        + "'. Please check file permissions or specify "
-                        + "a different configuration directory.", ""));
-                return;
+            if (!Files.exists(file)) {
+                try {
+                    Files.createDirectories(file);
+                } catch (IOException ex) {
+                    eventBus.publishAsync(new UserErrorEvent(ErrorLevel.FATAL, null,
+                            "Unable to create required directory '" + file + "'. Please check " +
+                                    "file permissions or specify a different configuration " +
+                                    "directory.", ""));
+                    return;
+                }
             }
 
-            final File[] files = file.listFiles();
-            if (files == null || files.length == 0) {
-                extractIdentities(target);
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(file)) {
+                if (!directoryStream.iterator().hasNext()) {
+                    extractIdentities(target);
+                }
+            } catch (IOException ex) {
+                eventBus.publishAsync(new UserErrorEvent(ErrorLevel.FATAL, null,
+                        "Unable to iterate required directory '" + file + "'. Please check " +
+                                "file permissions or specify a different configuration " +
+                                "directory.", ""));
+                return;
             }
 
             loadUser(file);
@@ -196,7 +217,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
             if (bundledVersion.compareTo(installedVersion) > 0) {
                 extractIdentities("default");
-                loadUser(new File(identitiesDirectory, "default"));
+                loadUser(identitiesDirectory.resolve("default"));
             }
         }
     }
@@ -233,19 +254,16 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     @Override
     public void loadUserIdentities() {
-        final File dir = new File(identitiesDirectory);
-
-        if (!dir.exists()) {
+        if (!Files.exists(identitiesDirectory)) {
             try {
-                dir.mkdirs();
-                dir.createNewFile();
+                Files.createDirectories(identitiesDirectory);
             } catch (IOException ex) {
                 eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
                         "Unable to create identity dir", ""));
             }
         }
 
-        loadUser(dir);
+        loadUser(identitiesDirectory);
     }
 
     /**
@@ -257,22 +275,21 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         "The specified File is not null",
         "The specified File is a directory"
     })
-    private void loadUser(final File dir) {
+    private void loadUser(final Path dir) {
         checkNotNull(dir);
-        checkArgument(dir.isDirectory());
+        checkArgument(Files.isDirectory(dir));
 
-        final File[] files = dir.listFiles();
-        if (files == null) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Unable to load user identity files from " + dir.getAbsolutePath(), ""));
-        } else {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    loadUser(file);
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+            for (Path child : directoryStream) {
+                if (Files.isDirectory(child)) {
+                    loadUser(child);
                 } else {
-                    loadIdentity(file);
+                    loadIdentity(child);
                 }
             }
+        } catch (IOException ex) {
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to load user identity files from " + dir, ""));
         }
     }
 
@@ -282,37 +299,31 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @param file The file to load the identity from.
      */
-    private void loadIdentity(final File file) {
+    private void loadIdentity(final Path file) {
         synchronized (identities) {
-            for (ConfigProvider identity : getAllIdentities()) {
-                if (identity instanceof ConfigFileBackedConfigProvider
-                        && ((ConfigFileBackedConfigProvider) identity).isFile(file)) {
-                    // TODO: This manager should keep a list of files->identities instead of
-                    //       relying on the identities remembering.
-                    try {
-                        identity.reload();
-                    } catch (IOException ex) {
-                        eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                                "I/O error when reloading identity file: "
-                                + file.getAbsolutePath() + " (" + ex.getMessage() + ')', ""));
-                    } catch (InvalidConfigFileException ex) {
-                        // Do nothing
-                    }
-
-                    return;
+            if (configProvidersByPath.containsKey(file)) {
+                try {
+                    configProvidersByPath.get(file).reload();
+                } catch (IOException ex) {
+                    eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
+                            "I/O error when reloading identity file: "
+                                    + file + " (" + ex.getMessage() + ')', ""));
+                } catch (InvalidConfigFileException ex) {
+                    // Do nothing
                 }
             }
         }
 
         try {
-            addConfigProvider(new ConfigFileBackedConfigProvider(this, file, false));
+            final ConfigProvider provider = new ConfigFileBackedConfigProvider(this, file, false);
+            addConfigProvider(provider);
+            configProvidersByPath.put(file, provider);
         } catch (InvalidIdentityFileException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Invalid identity file: " + file.getAbsolutePath() + " ("
-                    + ex.getMessage() + ')', ""));
+                    "Invalid identity file: " + file + " (" + ex.getMessage() + ')', ""));
         } catch (IOException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "I/O error when reading identity file: " + file.getAbsolutePath(), ""));
+                    "I/O error when reading identity file: " + file, ""));
         }
     }
 
@@ -367,14 +378,15 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      */
     private void loadConfig() throws InvalidIdentityFileException {
         try {
-            final File file = new File(configDirectory + "dmdirc.config");
+            final Path file = configDirectory.resolve("dmdirc.config");
 
-            if (!file.exists()) {
-                file.createNewFile();
+            if (!Files.exists(file)) {
+                Files.createFile(file);
             }
 
             config = new ConfigFileBackedConfigProvider(this, file, true);
             config.setOption("identity", "name", "Global config");
+            configProvidersByPath.put(file, config);
             addConfigProvider(config);
         } catch (IOException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
@@ -436,6 +448,17 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String group = getGroup(identity);
 
         checkArgument(identities.containsValue(group, identity));
+
+        Path path = null;
+        for (Map.Entry<Path, ConfigProvider> entry : configProvidersByPath.entrySet()) {
+            if (entry.getValue() == identity) {
+                path = entry.getKey();
+            }
+        }
+
+        if (path != null) {
+            configProvidersByPath.remove(path);
+        }
 
         synchronized (identities) {
             identities.remove(group, identity);
@@ -663,11 +686,11 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
         final String name = settings.get(IDENTITY_DOMAIN).get("name").replaceAll(ILLEGAL_CHARS, "_");
 
-        File file = new File(identitiesDirectory + name);
+        Path file = identitiesDirectory.resolve(name);
         int attempt = 1;
 
-        while (file.exists()) {
-            file = new File(identitiesDirectory + name + '-' + attempt);
+        while (Files.exists(file)) {
+            file = identitiesDirectory.resolve(name + '-' + attempt);
             attempt++;
         }
 

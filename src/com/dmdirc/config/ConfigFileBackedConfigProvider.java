@@ -34,6 +34,7 @@ import com.dmdirc.util.validators.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -82,8 +83,9 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException                  Input/output exception
      */
-    public ConfigFileBackedConfigProvider(@Nullable final IdentityManager identityManager, final File file,
-            final boolean forceDefault) throws IOException, InvalidIdentityFileException {
+    public ConfigFileBackedConfigProvider(@Nullable final IdentityManager identityManager,
+            final Path file, final boolean forceDefault) throws IOException,
+            InvalidIdentityFileException {
         this.identityManager = identityManager;
         this.file = new ConfigFile(file);
         this.file.setAutomake(true);

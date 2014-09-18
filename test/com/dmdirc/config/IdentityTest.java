@@ -141,7 +141,7 @@ public class IdentityTest {
         myIdent.save();
 
         myIdent = new ConfigFileBackedConfigProvider(identityManager,
-                myIdent.file.getFile(), false);
+                myIdent.file.getFile().toPath(), false);
 
         assertEquals("baz!", myIdent.getOption("foo", "bar"));
     }
