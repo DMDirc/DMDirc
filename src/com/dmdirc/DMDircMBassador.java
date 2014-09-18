@@ -26,6 +26,7 @@ import com.dmdirc.events.DMDircEvent;
 
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
+import net.engio.mbassy.bus.config.Feature;
 
 /**
  * Generified MBassador.
@@ -33,7 +34,10 @@ import net.engio.mbassy.bus.config.BusConfiguration;
 public class DMDircMBassador extends MBassador<DMDircEvent> {
 
     public DMDircMBassador() {
-        super(BusConfiguration.Default());
+        super(new BusConfiguration()
+                .addFeature(Feature.SyncPubSub.Default())
+                .addFeature(Feature.AsynchronousHandlerInvocation.Default())
+                .addFeature(Feature.AsynchronousMessageDispatch.Default()));
     }
 
     public DMDircMBassador(final BusConfiguration configuration) {

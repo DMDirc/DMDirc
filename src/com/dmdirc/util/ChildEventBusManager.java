@@ -25,7 +25,6 @@ package com.dmdirc.util;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.DMDircEvent;
 
-import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.listener.Handler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -44,7 +43,7 @@ public class ChildEventBusManager {
 
     public ChildEventBusManager(final DMDircMBassador parent) {
         this.parent = checkNotNull(parent);
-        this.child = new DMDircMBassador(BusConfiguration.Default());
+        this.child = new DMDircMBassador();
         this.propagator = new EventPropagator();
     }
 
