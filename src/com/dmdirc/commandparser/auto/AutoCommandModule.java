@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.auto;
 
+import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 
 import java.nio.file.Paths;
@@ -51,6 +52,11 @@ public class AutoCommandModule {
     public SystemLifecycleComponent getLifecycleComponent(
             final AutoCommandLifecycleManager manager) {
         return manager;
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public Migrator getServerPerformMigrator(final ActionServerPerformMigrator migrator) {
+        return migrator;
     }
 
 }
