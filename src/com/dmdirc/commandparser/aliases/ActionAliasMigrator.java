@@ -150,10 +150,10 @@ public class ActionAliasMigrator implements Migrator {
             if (section.containsKey("comparison")
                     && section.containsKey("target")) {
                 if ("INT_GREATER".equals(section.get("comparison"))) {
-                    return 1 + Integer.valueOf(section.get("target"));
+                    return 1 + Integer.parseInt(section.get("target"));
                 }
                 if ("INT_EQUALS".equals(section.get("comparison"))) {
-                    return Integer.valueOf(section.get("target"));
+                    return Integer.parseInt(section.get("target"));
                 }
             }
         }
