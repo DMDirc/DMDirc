@@ -1,0 +1,5 @@
+[gerrit]
+host=dmdirc.com
+port=29418
+project=client
+defaultbranch=master
