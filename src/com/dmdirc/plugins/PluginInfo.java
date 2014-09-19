@@ -313,9 +313,17 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * this plugin.
      */
     private void loadIdentities() {
+        if (!Files.exists(pluginFilesystem.getPath("/META-INF/identities/"))) {
+            return;
+        }
         try {
-            final Map<String, InputStream> identityStreams = getResourceManager()
-                    .getResourcesStartingWithAsInputStreams("META-INF/identities/");
+            final Map<String, InputStream> identityStreams = new HashMap<>();
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(
+                    pluginFilesystem.getPath("/META-INF/licenses/"))) {
+                for (Path path : directoryStream) {
+                    identityStreams.put(path.getFileName().toString(), Files.newInputStream(path));
+                }
+            }
 
             unloadIdentities();
 
