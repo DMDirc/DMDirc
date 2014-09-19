@@ -31,7 +31,6 @@ import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.validators.Validator;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -490,19 +489,6 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     @Override
     public ConfigTarget getTarget() {
         return myTarget;
-    }
-
-    /**
-     * Determines if this identity is loaded from the specified File.
-     *
-     * @param target The file to be checked
-     *
-     * @return True if this identity comes from the target file, false otherwise
-     *
-     * @since 0.6.4
-     */
-    public boolean isFile(final File target) {
-        return file.getFile() != null && file.getFile().equals(target);
     }
 
     @Override
