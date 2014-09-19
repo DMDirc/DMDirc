@@ -1,0 +1,16 @@
+keysections:
+  identity
+  meep
+  unit
+
+identity:
+  name=unit test
+  ircd=DMDircircd!
+  order=5000
+
+meep:
+  moop=2
+  mop=yes
+
+unit:
+  test=true

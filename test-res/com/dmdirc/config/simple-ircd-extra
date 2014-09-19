@@ -1,0 +1,19 @@
+keysections:
+  identity
+  meep
+  more
+
+identity:
+  name=unit test
+  ircd=DMDircircd!
+  order=5000
+
+meep:
+  moop=3
+  mop=yes
+
+more:
+  settings=here
+  because=they
+  are=very
+  fun=11111

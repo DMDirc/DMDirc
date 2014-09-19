@@ -42,6 +42,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -210,7 +211,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
         final Collection<String[]> changes = new LinkedList<>();
 
         synchronized (this) {
-            final Map<String, Map<String, String>> oldProps = file.getKeyDomains();
+            final Map<String, Map<String, String>> oldProps = new HashMap<>(file.getKeyDomains());
 
             file.read();
 
@@ -221,19 +222,33 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
                     final String key = subentry.getKey();
                     final String value = subentry.getValue();
 
-                    if (!oldProps.containsKey(domain)) {
+                    if (!oldProps.containsKey(domain) || !oldProps.get(domain).containsKey(key)) {
+                        // Newly added (didn't exist in the old file)
                         changes.add(new String[]{domain, key});
-                    } else if (!oldProps.get(domain).containsKey(key)
-                            || !oldProps.get(domain).get(key).equals(value)) {
+                    } else if (!oldProps.get(domain).get(key).equals(value)) {
+                        // Modified in some way
                         changes.add(new String[]{domain, key});
+                        oldProps.get(domain).remove(key);
+                    } else {
+                        // Not modified
                         oldProps.get(domain).remove(key);
                     }
                 }
 
+                // Anything left in the domain must have been moved
                 if (oldProps.containsKey(domain)) {
                     for (String key : oldProps.get(domain).keySet()) {
                         changes.add(new String[]{domain, key});
                     }
+                }
+
+                oldProps.remove(domain);
+            }
+
+            // Any domains left must have been removed
+            for (Map.Entry<String, Map<String, String>> entry : oldProps.entrySet()) {
+                for (String key : entry.getValue().keySet()) {
+                    changes.add(new String[]{entry.getKey(), key});
                 }
             }
         }
@@ -360,8 +375,7 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
         // Fire any setting change listeners now we're no longer holding
         // a lock on this identity.
-        if (unset || oldValue == null && value != null
-                || oldValue != null && !oldValue.equals(value)) {
+        if (unset || !Objects.equals(oldValue, value)) {
             fireSettingChange(domain, option);
         }
     }
@@ -391,6 +405,10 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
     @Override
     public void unsetOption(final String domain, final String option) {
+        if (!file.isKeyDomain(domain) || !file.getKeyDomain(domain).containsKey(option)) {
+            return;
+        }
+
         synchronized (this) {
             file.getKeyDomain(domain).remove(option);
             needSave = true;

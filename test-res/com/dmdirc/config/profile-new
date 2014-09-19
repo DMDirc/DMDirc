@@ -1,0 +1,11 @@
+keysections:
+  identity
+  profile
+
+identity:
+  name=New Profile
+
+profile:
+  nicknames=nick1\nnick2\nnick3
+  ident=ident
+  realname=Guy Incognito

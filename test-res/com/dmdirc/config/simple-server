@@ -1,14 +1,10 @@
 keysections:
   identity
   meep
-  unit
 
 identity:
   name=unit test
-  ircd=DMDircircd!
+  server=test123
 
 meep:
   moop=2
-
-unit:
-  test=true
