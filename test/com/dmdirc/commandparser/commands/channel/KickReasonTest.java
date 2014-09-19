@@ -28,8 +28,8 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.parser.irc.IRCChannelClientInfo;
-import com.dmdirc.parser.irc.IRCChannelInfo;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.parser.interfaces.ChannelInfo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyChar;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.matches;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KickReasonTest {
@@ -65,7 +71,7 @@ public class KickReasonTest {
     @Test
     public void testUnknown() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
+        final ChannelInfo channelInfo = mock(ChannelInfo.class);
         final Channel channel = mock(Channel.class);
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
@@ -80,9 +86,9 @@ public class KickReasonTest {
     @Test
     public void testWithReason() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
+        final ChannelInfo channelInfo = mock(ChannelInfo.class);
         final Channel channel = mock(Channel.class);
-        final IRCChannelClientInfo cci = mock(IRCChannelClientInfo.class);
+        final ChannelClientInfo cci = mock(ChannelClientInfo.class);
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channelInfo.getChannelClient("user1")).thenReturn(cci);
@@ -97,9 +103,9 @@ public class KickReasonTest {
     public void testWithoutReason() {
         final FrameContainer tiw = mock(FrameContainer.class);
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
-        final IRCChannelInfo channelInfo = mock(IRCChannelInfo.class);
+        final ChannelInfo channelInfo = mock(ChannelInfo.class);
         final Channel channel = mock(Channel.class);
-        final IRCChannelClientInfo cci = mock(IRCChannelClientInfo.class);
+        final ChannelClientInfo cci = mock(ChannelClientInfo.class);
 
         when(tiw.getConfigManager()).thenReturn(manager);
         when(channel.getChannelInfo()).thenReturn(channelInfo);
