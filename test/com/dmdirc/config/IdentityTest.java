@@ -134,14 +134,14 @@ public class IdentityTest {
     }
 
     @Test
-    @Ignore("Needs to be rewritten to work without an IdentityManager/profile dir")
+    @Ignore("Needs to be rewritten to work without a file system, and not be completely nuts")
     public void testSave() throws IOException, InvalidIdentityFileException {
         myIdent.setOption("foo", "bar", "baz!");
 
         myIdent.save();
 
-        myIdent = new ConfigFileBackedConfigProvider(identityManager,
-                myIdent.file.getFile().toPath(), false);
+        //myIdent = new ConfigFileBackedConfigProvider(identityManager,
+        //        myIdent.file.getFile().toPath(), false);
 
         assertEquals("baz!", myIdent.getOption("foo", "bar"));
     }
