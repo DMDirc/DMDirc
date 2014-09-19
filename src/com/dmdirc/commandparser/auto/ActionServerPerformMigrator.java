@@ -22,20 +22,24 @@
 
 package com.dmdirc.commandparser.auto;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.Migrator;
+import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -45,32 +49,38 @@ import javax.inject.Singleton;
 @Singleton
 public class ActionServerPerformMigrator implements Migrator {
 
-    private final File directory;
+    private final Path directory;
     private final AutoCommandManager autoCommandManager;
+    private final DMDircMBassador eventBus;
 
     @Inject
-    public ActionServerPerformMigrator(@Directory(DirectoryType.ACTIONS) final String directory,
-            final AutoCommandManager autoCommandManager) {
-        this.directory = new File(directory, "performs");
+    public ActionServerPerformMigrator(
+            @Directory(DirectoryType.ACTIONS) final Path directory,
+            final AutoCommandManager autoCommandManager,
+            final DMDircMBassador eventBus) {
+        this.directory = directory.resolve("performs");
         this.autoCommandManager = autoCommandManager;
+        this.eventBus = eventBus;
     }
 
     @Override
     public boolean needsMigration() {
-        return directory.exists();
+        return Files.isDirectory(directory);
     }
 
     @Override
     public void migrate() {
-        @Nullable final File[] files = directory.listFiles();
-        if (files != null) {
-            for (File child : files) {
-                if (migrate(child)) {
-                    child.delete();
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
+            for (Path path : directoryStream) {
+                if (migrate(path)) {
+                    Files.delete(path);
                 }
             }
+            Files.delete(directory);
+        } catch (IOException ex) {
+            eventBus.publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to migrate performs", ex.getMessage()));
         }
-        directory.delete();
     }
 
     /**
@@ -80,7 +90,7 @@ public class ActionServerPerformMigrator implements Migrator {
      *
      * @return True if the file was migrated successfully, false otherwise.
      */
-    private boolean migrate(final File file) {
+    private boolean migrate(final Path file) {
         try {
             final ConfigFile configFile = new ConfigFile(file);
             configFile.read();
