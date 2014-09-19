@@ -105,7 +105,7 @@ public class CorePluginExtractor {
                         plugin.pluginUpdated();
                     }
                 }
-            } catch (IOException ex) {
+            } catch (PluginException | IOException ex) {
                 eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
                         "Failed to extract plugins", ""));
             }

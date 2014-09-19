@@ -23,6 +23,7 @@
 package com.dmdirc.updater.components;
 
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.plugins.PluginException;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
@@ -116,7 +117,11 @@ public class PluginComponent implements UpdateComponent {
             new File(path).renameTo(newTarget);
             returnCode = true;
         } else {
-            plugin.pluginUpdated();
+            try {
+                plugin.pluginUpdated();
+            } catch (PluginException ex) {
+                returnCode = true;
+            }
         }
 
         return returnCode;

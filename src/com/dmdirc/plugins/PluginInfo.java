@@ -39,6 +39,15 @@ import com.dmdirc.util.validators.ValidationResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -97,6 +106,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private final List<ConfigProvider> configProviders = new ArrayList<>();
     /** Event bus to post plugin loaded events to. */
     private final DMDircMBassador eventBus;
+    /** File system for the plugin's jar. */
+    private final FileSystem pluginFilesystem;
 
     /**
      * Create a new PluginInfo.
@@ -110,6 +121,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @throws PluginException if there is an error loading the Plugin
      */
     public PluginInfo(
+            final String pluginDirectory,
             final PluginMetaData metadata,
             final Provider<PluginInjectorInitialiser> injectorInitialiser,
             final DMDircMBassador eventBus,
@@ -122,16 +134,20 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         this.filename = new File(metadata.getPluginUrl().getPath()).getName();
         this.metaData = metadata;
 
-        final ResourceManager res;
-
         try {
-            res = getResourceManager();
+            pluginFilesystem = FileSystems.newFileSystem(Paths.get(pluginDirectory, filename), null);
+        } catch (IOException ex) {
+            lastError = "Error loading filesystem: " + ex.getMessage();
+            throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ex);
+        }
+        try {
+            // TODO: Stop using ResourceManager
+            getResourceManager();
         } catch (IOException ioe) {
             lastError = "Error with resourcemanager: " + ioe.getMessage();
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ioe);
         }
-
-        updateClassList(res);
+        updateClassList();
 
         if (!myClasses.contains(metadata.getMainClass())) {
             lastError = "main class file (" + metadata.getMainClass() + ") not found in jar.";
@@ -164,17 +180,25 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
     /**
      * Updates the list of known classes within this plugin from the specified resource manager.
-     *
-     * @param res Resource manager to use to read the plugin contents.
      */
-    private void updateClassList(final ResourceManager res) {
+    private void updateClassList() throws PluginException {
         myClasses.clear();
+        try {
+            Files.walkFileTree(pluginFilesystem.getPath("/"), new SimpleFileVisitor<Path>() {
 
-        for (final String classfilename : res.getResourcesStartingWith("")) {
-            final String classname = classfilename.replace('/', '.');
-            if (classname.endsWith(".class")) {
-                myClasses.add(classname.substring(0, classname.length() - 6));
-            }
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
+                    if (file.getFileName().toString().endsWith(".class")) {
+                        final String classname = file.toAbsolutePath().toString().replace('/',
+                                '.');
+                        myClasses.add(classname.substring(1, classname.length() - 6));
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException ex) {
+            lastError = "Error loading classes: " + ex.getMessage();
+            throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ex);
         }
     }
 
@@ -242,8 +266,15 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public Map<String, InputStream> getLicenceStreams() throws IOException {
         final TreeMap<String, InputStream> licences = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        licences.putAll(getResourceManager().getResourcesStartingWithAsInputStreams(
-                "META-INF/licences/"));
+        if (!Files.exists(pluginFilesystem.getPath("/META-INF/licenses/"))) {
+            return licences;
+        }
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(
+                pluginFilesystem.getPath("/META-INF/licenses/"))) {
+            for (Path path : directoryStream) {
+                licences.put(path.getFileName().toString(), Files.newInputStream(path));
+            }
+        }
         return licences;
     }
 
@@ -366,18 +397,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Called when the plugin is updated using the updater. Reloads metaData and updates the list of
      * files.
      */
-    public void pluginUpdated() {
-        try {
-            // Force a new resourcemanager just in case.
-            updateClassList(getResourceManager(true));
-
+    public void pluginUpdated() throws PluginException {
+            updateClassList();
             updateMetaData();
             updateProvides();
             getDefaults();
-        } catch (IOException ioe) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ioe,
-                    "There was an error updating " + metaData.getName(), ""));
-        }
     }
 
     /**
