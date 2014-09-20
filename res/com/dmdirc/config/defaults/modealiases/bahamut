@@ -1,0 +1,41 @@
+# Default mode settings for Bahamut
+# beI,k,jl,cimMnOprRst
+#
+# http://docs.dal.net/docs/modes.html
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Bahamut mode aliases
+  ircd=bahamut
+
+server:
+  modej=Join throttling
+
+  moder=Registered
+  modeR=Registered users only
+
+  modeL=Appear in /list
+
+  umodea=Services admin
+  umodeA=Server admin
+  umodeb=View oper chatops
+  umodec=Show client connections
+  umoded=Show debug messages
+  umodee=Show blocked DCC sends
+  umodef=Show flood alerts
+  umodeF=Bypass throttling
+  umodeg=View oper globops
+  umodeh=Helpful mode
+  umodeI=Hide server info
+  umodej=Show drone messages
+  umodek=Show kill messages
+  umodeK=Kill messages from U:lined servers
+  umodem=Report spambots
+  umoden=Show routing messages
+  umoder=Registered
+  umodex=Squelsh
+  umodeX=Silent squelsh
+  umodey=Spy mode

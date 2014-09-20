@@ -1,0 +1,50 @@
+# Plexus mode aliases
+# http://www.rizon.net/vbulletin/showthread.php?t=27
+# http://www.rizon.net/vbulletin/showthread.php?t=26
+# http://code.google.com/p/ircd-rizon/source/browse/trunk/help/opers/umode
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Plexus mode aliases
+  ircd=plexus
+
+server:
+  modez=Persist Channel
+  modeB=Bandwidth saver mode
+  modeM=Registered Moderated
+  modeN=No channel notices
+  modeO=Oper only
+  modeR=Registered only
+  modeS=SSL users only
+  modep=Paranoid mode
+  modea=Admin
+  modeq=Owner
+
+  umodez=Receive oper wallops
+  umodel=Receive oper local wallops
+  umodec=Receive client connections and quits
+  umodeu=Receive unauthorized client connections
+  umodej=Receive rejected client notices
+  umodek=Receive server kill messages
+  umodef=Receive 'I-line is full' notices
+  umodey=Receive stats/links/admin requests
+  umoded=Receive debug messages
+  umoden=Receive client nick changes
+  umodeX=Receive new server connections and quits
+  umodeb=Receive possible bot join/flood warnings
+  umodea=Server administrator
+  umodeN=Network administrator
+  umodeC=Receive extended client connections and quits
+  umodep=Hides client from whois output for non admins
+  umodeD=Deaf
+  umodeG=Soft Caller ID
+  umodeg=Caller ID
+  umoder=Registered
+  umodeR=Only registered users may query
+  umodeS=SSL'd connection
+  umodeW=CGI:IRC connection
+  umodeq=Routing team member
+  umodes=Receive generic server messages

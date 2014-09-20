@@ -1,0 +1,21 @@
+# Default mode settings for Asuka
+# b,k,l,imnpstrDdcCNu
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Asuka mode aliases
+  ircd=re:asuka|snircd|bircd
+
+server:
+  modeN=No channel notices
+  enablemodeN=true
+  modeu=No quit messages
+  enablemodeu=true
+
+  umodeh=Set host
+  umodeI=Hide idle time
+  umoden=Hide channel list
+  umodeX=Extended operator

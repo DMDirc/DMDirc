@@ -1,0 +1,84 @@
+# Default mode settings for Hyperion
+# bdeIq,k,lfJD,cgijLmnPQrRstz
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Hyperion mode aliases
+  ircd=hyperion
+
+server:
+  moded=Real name ban
+  modeq=Silence
+
+  modef=Forward uninvited
+  modeJ=Join throttling
+  modeD=Auto D:Line clients
+
+  modec=Filter control codes
+  modeg=Allow anybody to invite
+  modej=Juped
+  modeL=Allow large lists
+  modeP=Permanent channel
+  modeQ=No forwarded users
+  moder=Registered users only
+  modeR=Silence unidentified users
+  modez=Reduced moderation
+
+  umodea=See invisible users
+  umodeA=See invisible things
+  umodeb=See bots
+  umodeB=Can change other people's hosts
+  umodec=See client connections
+  umodeC=No CTCPs
+  umoded=Receive debugging info
+  umodeD=Can use DIE command
+  umodee=Identified with nickserv
+  umodeE=Only registered users may query
+  umodef=Full messages
+  umodeF=No flood protection
+  umodeg=Caller ID
+  umodeG=Can KILL globally
+  umodeh=High priority
+  umodeH=Can rehash
+  umodeI=No invites
+  umodej=Immune to auto-d-line
+  umodek=See server kills
+  umodeK=Can KILL/KLINE
+  umodel=See channel creation notices
+  umodeL=Can force LUSERS
+  umodem=Immune from kick/deop
+  umodeM=Can send mass notices
+  umoden=See nick change notices
+  umodeN=Can use any nickname
+  umodep=God mode
+  umodeP=Can use /sethost
+  umodeQ=Immune to forwards
+  umoder=See bot rejections
+  umodeR=Can CONNECT/SQUIT
+  umodeS=Can retrieve info remotely
+  umodet=Can log channels
+  umodeT=Show as staff member
+  umodeu=Can join more channels
+  umodeU=Can remove k-lines
+  umodev=Can see operator privileges
+  umodeV=Can see routing information
+  umodeW=Can send wallops
+  umodex=See servers introduced
+  umodeX=Can use experimental commands
+  umodey=Spy mode
+  umodeY=Receive server connect messages
+  umodez=Receive oper wallops
+  umodeZ=Can send oper wallops
+  umode0=Can see opers
+  umode1=Can see B/E/F/I/Y-lines
+  umode2=Can see D/K-lines
+  umode3=Can see Q/X-lines
+  umode4=Can use /stats S and T
+  umode5=Can see StatsServ info
+  umode6=Don't block messages
+  umode9=Test-line
+  umode*=Can grant modes
+  umode@=Can use any host in /sethost

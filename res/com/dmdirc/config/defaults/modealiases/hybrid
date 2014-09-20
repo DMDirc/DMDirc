@@ -1,0 +1,34 @@
+# Hybrid and oftc-hybrid mode aliases
+# http://www.oftc.net/oftc/ChannelModes
+# http://www.oftc.net/oftc/UserModes
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Hybrid mode aliases
+  ircd=re:(oftc-)?hybrid|scoutlink|tr-ircd|dancer
+
+server:
+  modeR=Registered users only
+  modeS=SSL users only
+
+  umodea=Server admin
+  umodeb=Receive bot detection notices
+  umodec=Receive connection notices
+  umodeC=Server
+  umoded=Show debug messages
+  umodeD=Deaf
+  umodef=Show fake mode/nick collisions
+  umodeg=Caller ID mode
+  umodeG=Soft Caller ID mode
+  umodek=Receive kill notices
+  umodel=Show excess connections
+  umoden=Follow nick changes
+  umodeP=Network service
+  umoder=Show reject notices
+  umodeS=God mode
+  umodeu=Show unauthorised connections
+  umodey=Spy mode
+  umodez=Receive wallops

@@ -1,0 +1,13 @@
+# 0002799: Missing mode aliases: channel: +H user: +AcfgIjkMnNrty [starchat]
+# Missing mode aliases: channel: +RH user: +AcfgIjkMnNrty [starchat]
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Starchat mode aliases
+  ircd=starchat
+
+server:
+  modeR=Registered users only

@@ -1,0 +1,54 @@
+# Unreal IRCd mode aliases
+#
+# http://www.unrealircd.com/files/docs/unreal32docs.html#userchannelmodes
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Unreal mode aliases
+  ircd=unreal
+
+server:
+  modeA=Admins only
+  modea=Channel admin
+  modeC=No channel CTCPs
+  modef=Flood protection
+  modeG=G-rated
+  modej=Join throttle
+  modeK=Disable /knock
+  modeL=Limit redirection
+  modeN=No nick changes
+  modeq=Channel owner
+  modeQ=Only servers can kick
+  moder=Registered
+  modeR=Registered users only
+  modeS=Strip colours
+  modeT=No channel notices
+  modeu=Auditorium
+  modeU=Strip all formatting
+  modeV=Disable /invite
+
+  umodeA=Server Admin
+  umodea=Services Admin
+  umodeB=Bot
+  umodec=Strip colours in queries
+  umodeC=Co-Admin
+  umodeD=No private messages
+  umodeG=Filter bad words
+  umodeg=Send/receive globops/locops
+  umodeH=Hide IRCop status
+  umodeh=Help Operator
+  umodeN=Network Administrator
+  umodep=Hide channel list
+  umodeq=Unkickable
+  umoder=Registered
+  umodeS=Network Service
+  umodeT=Block CTCPs
+  umodet=Using a vhost
+  umodeV=WebTV user
+  umodev=Receive DCC Send rejection notices
+  umodeW=Can see /WHOIS notices
+  umodew=Can listen to wallop messages
+  umodez=SSL'd connection

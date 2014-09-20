@@ -1,0 +1,23 @@
+#Ithildin mode aliases
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Ithildin mode aliases
+  ircd=ithildin
+
+server:
+  modeP=NPC
+  modeO=Oper only
+  modeM=Registered to talk
+  modeR=Registered to join
+  moder=Registered channel
+
+  umodea=Services Admin
+  umodeA=Admin
+  umodeb=Chat ops enabled
+  umodeg=Global Ops enabled
+  umodeh=Helper
+  umoder=Registered user

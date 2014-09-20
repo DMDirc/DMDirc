@@ -1,0 +1,36 @@
+# Default mode settings for IRCD Seven
+# channel: +CFLPQgrfj user: +DQSZghlpz
+# http://freenode.net/using_the_network.shtml
+# http://dev.freenode.net/ircd-seven/browser/src/s_user.c#L64
+# http://dev.freenode.net/ircd-seven/browser/src/chmode.c#L1572
+
+keysections:
+  identity
+  server
+
+identity:
+  name=IRCD-Seven mode aliases
+  ircd=ircd-seven
+
+server:
+  modeC=No channel CTCPs
+  modeF=Enable forwarding
+  modeL=Allow large lists
+  modeP=Permanent channel
+  modeQ=Block forwarded users
+  modeg=Allow anybody to invite
+  modef=Forward uninvited
+  moder=Registered users only
+  modej=Join throttling
+  modez=Reduced moderation
+  modeS=SSL'd users only
+
+  umodeD=Deaf
+  umodeQ=Immune to forwards
+  umodeS=Services Operator
+  umodeZ=SSL'd Connection
+  umodeg=Caller ID
+  umodeh=Help Op
+  umodel=Local Operator
+  umodep=Operator immune
+  umodez=Receives operator wallops

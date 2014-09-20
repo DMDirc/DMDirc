@@ -1,0 +1,34 @@
+# Scoutlink mode aliases
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Scoutlink mode aliases
+  ircd=scoutlink
+
+server:
+  modeA=Tech team only
+  modeB=No bots
+  modeC=SSL users only
+  modeK=Notify of failed joins
+  modeR=Registered users only
+  moded=No repeats
+  modeS=Anti spam mode
+  modeO=Operators Only
+  moder=Registered user
+  #modeL=
+  #modeX=
+  modef=Flood limit
+  modeN=No nick changes
+
+  umodeA=Server admin
+  umodeB=Bot
+  umodeh=IRC helper
+  umodeH=Hide oper status
+  #umodeN=
+  umodep=Private user
+  umodeT=Technical Admin
+  umodev=No DCC send
+  umodez=Zombie user

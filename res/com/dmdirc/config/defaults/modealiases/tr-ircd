@@ -1,0 +1,42 @@
+# TR-IRCD mode aliases (Based on hybrid, added bahumut features)
+
+keysections:
+  identity
+  server
+
+identity:
+  name=TR-IRCD mode aliases
+  ircd=tr-ircd
+
+server:
+  modeC=Block CTCP
+  #modeK=
+  modeN=No unresolved hosts
+  modeT=Topic change only by protected users
+  moded=Hide quit/part reasons
+  modeg=Moderation on non registered nicknames
+  #modej=
+  #moder=
+  modex=Hide nick for op commands
+  #modeu=
+  #modeJ=
+  modeL=Linked channels
+  modef=Flood control
+  modew=Disable word filters
+  modeM=Moderated userlist
+  modez=Banned channels
+  modeh=Half ops
+  modeq=Quiet mode
+  enablemodeq=false
+  modea=Protect user
+  modeu=Owner
+
+  #umodeA=
+  umodeh=Helper
+  umodeH=See hidden things
+  #umodep=
+  umodet=Translation
+  umodeq=Quiet user
+  umodez=Zombie user
+  umodeR=Registered user messages only
+  umodex=Spoofed hostname

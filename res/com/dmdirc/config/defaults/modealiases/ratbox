@@ -1,0 +1,32 @@
+# 0000799: Missing mode aliases: user: +zcekfynbuglZCD [EFNet]
+# http://svn.ratbox.org/svnroot/ircd-ratbox/trunk/src/channel.c
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Ratbox mode aliases
+  ircd=re:ratbox|linknet
+
+server:
+  moder=Registered users only
+  modeS=SSL users only
+
+  umodea=Server admin
+  umodeb=Receive bot detection notices
+  umodec=Show client connections
+  umodeC=Show client connections
+  umodeD=Deaf
+#  umodee=??
+  umodeI=Hide idle time
+  umodef=Show excess connections
+  umodeg=Caller ID mode
+  umodek=Show kills
+  umodel=Receive locops
+  umoden=Show client nick changes
+  umoder=Show reject notices
+  umodeu=Show unauthorised connections
+  umodey=Show WHOIS requests
+  umodez=Receive wallops
+  umodeZ=Monitor operspy notices

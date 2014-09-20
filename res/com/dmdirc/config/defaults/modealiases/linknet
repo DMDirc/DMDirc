@@ -1,0 +1,19 @@
+#Linknet mode aliases
+#channel: +Hd user: +ehAS
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Linknet mode aliases
+  ircd=linknet
+
+server:
+  #modeH=
+  #moded=
+
+  #umodee=
+  #umodeh=
+  #umodeA=
+  #umodeS=

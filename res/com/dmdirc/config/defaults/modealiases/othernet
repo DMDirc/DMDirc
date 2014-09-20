@@ -1,0 +1,13 @@
+# Default mode settings for othernet
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Othernet mode aliases
+  ircd=othernet
+
+server:
+  umodeg=Receive debug information
+  umodek=Services operator

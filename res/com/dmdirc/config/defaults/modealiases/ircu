@@ -1,0 +1,33 @@
+# Default mode settings for ircu
+# CHANMODES=b,k,l,imnpstrDd
+
+keysections:
+  identity
+  server
+
+identity:
+  name=IRCu mode aliases
+  ircd=re:ircu|asuka|snircd|bircd
+
+server:
+  modeA=Admin password
+  modeC=No channel CTCPs
+  enablemodeC=true
+  modeD=Auditorium mode
+  moded=Auditorium mode
+  enablemoded=false
+  moder=Registered users only
+  modeR=Registered
+  modeS=Strip all colours
+  modeT=No multi-target messages
+  modeU=User password
+
+  umodeg=Receive debug information
+  umodek=Services operator
+  umoden=Hide Channels
+  umodeI=Hide Idle time
+  umodeX=Extra Oper
+  umodeS=Sethost applied
+  umodeH=Hidden Oper
+  umodec=Override strip colours
+  umodeW=Web IRC user

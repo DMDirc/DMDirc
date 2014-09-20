@@ -1,0 +1,32 @@
+# Default mode settings for UltimateIRCd
+
+keysections:
+  identity
+  server
+
+identity:
+  name=UltimateIRCd mode aliases
+  ircd=ultimateircd
+
+server:
+  modea=Admin
+  modeq=Quits appear as parts
+  modeA=Only Administrators can join
+  modeK=No /knock
+  modeN=No /invite
+  modeS=SSL users only
+
+  umodeD=Seen /DCCALLOW warning message
+  umodek=Can see kill notices
+  umoder=Registered nickname
+  umodeS=Services client
+
+  umodec=Can see connect notices
+  umodeg=Can see /GLOBOPS notices
+  umodeh=Help operator
+  umodep=Protected irc operator
+  umodeW=Can see /WHOIS notices
+
+  umodea=Services operator
+  umodeP=Services administrator
+  umodeZ=Services root administrator

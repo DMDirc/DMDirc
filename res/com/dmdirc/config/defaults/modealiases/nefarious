@@ -1,0 +1,39 @@
+# 0000797: Missing mode aliases: channel: +CLNQSTZ user: +fghknBIWX [CollectiveIRC]
+# http://evilnet.sourceforge.net/index.php?option=com_content&task=view&id=20&Itemid=44
+# http://evilnet.svn.sourceforge.net/viewvc/evilnet/trunk/nefarious/ircd/s_user.c?view=markup#l_1077
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Nefarious mode aliases
+  ircd=nefarious
+
+server:
+  modea=Admins only
+  modeC=No channel CTCPs
+  modeL=No channel modes in /list
+  modeN=No channel notices
+  modeQ=No quit/part messages
+  moder=Registered users only
+  modeS=Strip colours
+  modeT=No multi-target messages
+  modez=Persistant
+  modeZ=SSL users only
+
+  umodea=Server admin
+  umodeB=Bot
+  umodeC=Cloak host
+  umodec=Cloak IP
+  umodef=Fake host
+  umodeg=Receive debug messages
+  umodeh=Hidden host
+  umodeI=Hide idle time
+  umodek=Network service
+  umoden=Hide channel list
+  umodeS=Sethost
+  umodeW=See WHOIS requests
+  umodex=Hide host
+  umodeX=Xtra oper
+  umodez=SSL'd connection

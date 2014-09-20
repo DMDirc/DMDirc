@@ -1,0 +1,14 @@
+# Default mode settings for Snircd
+# b,k,l,imnpstrDducCN
+
+keysections:
+  identity
+  server
+
+identity:
+  name=Snircd mode aliases
+  ircd=snircd
+
+server:
+  umodeP=Paranoid
+  umodeR=Only registered users may query

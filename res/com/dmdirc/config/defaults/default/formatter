@@ -1,0 +1,293 @@
+keysections:
+  identity
+  formatter
+
+identity:
+  name=DMDirc default formats
+  globaldefault=true
+  order=100000
+
+formatter:
+# Type: Timestamp
+#    1: Current timestamp
+  timestamp=%1$tH:%1$tM:%1$tS %1$tA, %1$tB %1$te %1$tY%1$tH:%1$tM:%1$tS | 
+
+# Type: Server names and titles
+#    1: User supplied name
+#    2: Server supplied name
+#    3: Port
+#    4: Network
+#    5: Current nickname
+  serverName=%1$s
+  serverTitle=%5$s on %1$s (%4$s)
+
+# Type: Channel Messages with mode
+#    1: User mode prefixes
+#    2: User nickname
+#    3: User ident
+#    4: User host
+#    5: Mode
+#    6: Message content
+#    7: Channel name
+  channelModeNotice=5-%1$s%2$s:%5$s%7$s- %6$s
+
+# Type: Channel Message
+#    1: User mode prefixes
+#    2: User nickname
+#    3: User ident
+#    4: User host
+#    5: Message content
+#    6: Channel name
+  channelNotice=5-%1$s%2$s:%6$s- %5$s
+  channelMessage=<%1$s%2$s> %5$s
+  channelHighlight=4<%1$s%2$s> %5$s
+  channelAction=6* %1$s%2$s %5$s
+  channelHighlightAction=4* %1$s%2$s %5$s
+  channelSelfMessage=<%1$s%2$s> %5$s
+  channelSelfAction=6* %1$s%2$s %5$s
+  channelSelfExternalMessage=<%1$s%2$s> %5$s
+  channelSelfExternalAction=6* %1$s%2$s %5$s
+  channelTopicChanged=3* %1$s%2$s has changed the topic to '%5$s'.
+  channelTopicRemoved=3* %1$s%2$s has removed the topic on %6$s.
+  channelModeChanged=3* %1$s%2$s sets mode: %5$s.
+  channelSelfModeChanged=3* You set mode: %5$s.
+
+# Type: Channel Message with time
+#    1: User mode prefixes
+#    2: User nickname
+#    3: User ident
+#    4: User host
+#    5: Message content
+#    6: Time
+#    7: Channel name
+  channelTopicDiscovered=3* The topic for %7$s is '%5$s'.\n3* Topic was set by %2$s at %6$tR on %6$tA, %6$tB %6$te %6$tY.
+
+# Type: Channel CTCP
+#    1: User mode prefixes
+#    2: User nickname
+#    3: User ident
+#    4: User host
+#    5: CTCP type
+#    6: CTCP content
+#    7: Channel name
+  channelCTCP=4-!- CTCP %5$S from %1$s%2$s
+
+# Type: Channel Event with possible reason
+#    1: User mode prefixes
+#    2: User nickname
+#    3: User ident
+#    4: User host
+#    5: Reason/message
+#    6: Channel name
+  channelPart=3* %1$s%2$s (%3$s@%4$s) has left %6$s.
+  channelPartReason=3* %1$s%2$s (%3$s@%4$s) has left %6$s (%5$s).
+  channelQuit=2* %1$s%2$s (%3$s@%4$s) has quit IRC.
+  channelQuitReason=2* %1$s%2$s (%3$s@%4$s) has quit IRC (%5$s).
+  channelSelfPart=3* You have left the channel.
+  channelSelfPartReason=3* You have left the channel.
+  channelNickChange=3* %1$s%5$s is now known as %2$s.
+  channelSelfNickChange=3* You are now known as %2$s.
+
+# Type: Channel Event
+#    1: User mode prefixes
+#    2: User nickname
+#    3: User ident
+#    4: User host
+#    5: Channel name
+  channelJoin=3* %2$s (%3$s@%4$s) has joined %5$s.
+  channelSelfJoin=3* You are now talking in %5$s.
+  channelUserAway=14-- %1$s%2$s is now away.
+  channelUserBack=14-- %1$s%2$s is now back.
+  channelUserAwayDiscovered=14-- %1$s%2$s is away.
+  channelUserBackDiscovered=14-- %1$s%2$s is back.
+
+# Type: Channel Event with content
+#    1: User mode prefixes
+#    2: User nickname
+#    3: User ident
+#    4: User host
+#    5: Channel name
+#    6: Content
+# @Deprecated - remove post-0.6
+  channelTopicChange=3* %1$s%2$s has changed the topic to '%6$s'.
+  channelModeChange=3* %1$s%2$s sets mode: %6$s.
+  channelSelfModeChange=3* You set mode: %6$s.
+
+# Type: Binary Channel Event
+#    1: Source user mode prefixes
+#    2: Source user nickname
+#    3: Source user ident
+#    4: Source user host
+#    5: Target user mode prefixes
+#    6: Target user nickname
+#    7: Target user ident
+#    8: Target user host
+#    9: Channel name
+  channelKick=3* %1$s%2$s has kicked %5$s%6$s from %9$s.
+
+# Type: Binary Channel Event with content
+#    1: Source user mode prefixes
+#    2: Source user nickname
+#    3: Source user ident
+#    4: Source user host
+#    5: Target user mode prefixes
+#    6: Target user nickname
+#    7: Target user ident
+#    8: Target user host
+#    9: Content
+#   10: Channel name
+  channelKickReason=3* %1$s%2$s has kicked %5$s%6$s from %10$s (%9$s).
+  channelSplitUserMode_default=3* %1$s%2$s sets mode %9$s on %6$s.
+
+# Type: Channel mode discovery
+#     1: Channel modes
+#     2: Channel name
+  channelNoModes=3* There are no channel modes for %2$s.
+  channelModeDiscovered=3* Channel modes for %2$s are: %1$s.
+
+# Type: Private CTCP
+#    1: User nickname
+#    2: User ident
+#    3: User host
+#    4: CTCP type
+#    5: CTCP content
+  privateCTCP=4-!- CTCP %4$S from %1$s
+  privateCTCPreply=4-!- CTCP %4$S reply from %1$s: %5$s
+
+# Type: Private communications
+#    1: User nickname
+#    2: User ident
+#    3: User host
+#    4: Message content
+  privateNotice=5-%1$s- %4$s
+  serverNotice=5-%1$s- %4$s
+  queryMessage=<%1$s> %4$s
+  queryAction=6* %1$s %4$s
+  querySelfMessage=<%1$s> %4$s
+  querySelfExternalMessage=<%1$s> %4$s
+  querySelfAction=6* %1$s %4$s
+  querySelfExternalAction=6* %1$s %4$s
+  queryNickChanged=3* %1$s is now known as %4$s.
+  userModeChanged=3* %1$s sets user mode: %4$s.
+  userNoModes=3* No user modes.
+  userModeDiscovered=3* User modes are: %4$s.
+  queryQuitReason=2* %1$s has quit IRC (%4$s).
+  queryMessageHighlight=4<%1$s> %4$s
+  queryActionHighlight=6* %1$s %4$s
+  inviteReceived=2* You have been invited to %4$s by %1$s.
+  walluser=5!%1$s! %4$s
+  wallop=5$%1$s$ %4$s
+  walldesync=5/%1$s/ %4$s
+
+# Type: Private event
+#    1: User nickname
+#    2: User ident
+#    3: User host
+  queryQuit=2* %1$s has quit IRC.
+
+# Type: Outgoing message
+#    1: Target
+#    2: Message
+  selfCTCP=4->- [%1$s] %2$s
+  selfNotice=5>%1$s> %2$s
+  selfMessage=>[%1$s]> %2$s
+
+# Type: Miscellaneous server
+#    1: Server name
+#    2: Miscellaneous argument
+  connectError=2Error connecting: %2$s
+  connectRetry=2Reconnecting in %2$u...
+  serverConnecting=Connecting to %1$s:%2$s...
+
+# Type: Argless
+  back=14You are no longer marked as away.
+  serverDisconnectInProgress=A disconnection attempt is in progress, please wait...
+  serverConnectInProgress=A connection attempt is in progress, please wait...
+
+# Type: Miscellaneous
+#    1: Miscellaneous data
+  authNotice=5-AUTH- %1$s
+  away=14You are now marked as away (%1$s14).
+  channelNoTopic=3* There is no topic set for %1$s.
+  rawCommand=10>>> %1$s
+  unknownCommand=14Unknown command %1$s.
+  socketClosed=2-!- You have been disconnected from the server.
+  stonedServer=2-!- Disconnected from a non-responsive server.
+  motdStart=10%1$s
+  motdLine=10%1$s
+  motdEnd=10%1$s
+  rawIn=<< %1$s
+  rawOut=>> %1$s
+  commandOutput=%1$s
+  commandError=7%1$s
+  actionTooLong=Warning: action too long to be sent
+  tabCompletion=14Multiple possibilities: %1$s
+  serverError=4ERROR: %1$s
+  serverUnknownProtocol=4Unknown protocol '%1$s'. Unable to connect.
+
+# Type: Binary Miscellaneous
+#    1: Miscellaneous data
+#    2: Miscellaneous data
+  selfNickChange=3* You are now known as %2$s.
+
+# Type: Unknown target events
+#    1: Source
+#    2: Target
+#    3: Message
+  unknownNotice=5-[%1$s:%2$s]- %3$s
+  unknownMessage=5<[%1$s:%2$s]> %3$s
+  unknownNotice=5* [%1$s:%2$s] %3$s
+
+# Type: Command usage
+#    1: Command char
+#    2: Command name
+#    3: Arguments
+  commandUsage=7Usage: %1$s%2$s %3$s
+
+# Type: Numerical data
+  numeric_006=%4$s
+  numeric_007=%4$s
+  numeric_015=%4$s
+  numeric_017=%4$s
+
+  numeric_251=10%4$s
+  numeric_252=10%4$s %5$s
+  numeric_253=10%4$s %5$s
+  numeric_254=10%4$s %5$s
+  numeric_255=10%4$s
+
+  numeric_290=%4$s
+  numeric_292=%4$s
+  numeric_294=%4$s
+
+  numeric_301=%4$s is away: %5$s
+  numeric_311=-\n%4$s is %5$s@%6$s (%8$s).
+  numeric_312=%4$s is connected to %5$s (%6$s).
+  numeric_317=%4$s has been idle for %5$u; signed on at %6$TT on %6$TF.
+  numeric_318=End of WHOIS info for %4$s.\n-
+  numeric_319=%4$s is on: %5$s
+
+  numeric_401=6A7000%4$s: %5$s
+  numeric_404=6A7000%5$s
+  numeric_405=6A7000%4$s: %5$s
+  numeric_421=6A7000%4$s: %5$s
+  numeric_432=6A7000%5$s
+  numeric_433=6A7000%4$s: %5$s
+  numeric_437=6A7000%5$s
+  numeric_438=6A7000%5$s
+  numeric_461=6A7000%4$s: %5$s
+  numeric_471=6A7000%4$s: %5$s
+  numeric_472=6A7000%4$s: %5$s
+  numeric_473=6A7000%4$s: %5$s
+  numeric_474=6A7000%4$s: %5$s
+  numeric_475=6A7000%4$s: %5$s
+  numeric_479=6A7000%4$s: %5$s
+  numeric_482=6A7000%4$s: %5$s
+  numeric_486=6A7000%4$s: %5$s
+  numeric_unreal_486=6A7000%4$s
+  numeric_499=6A7000%4$s: %5$s
+  numeric_501=6A7000%4$s: %5$s
+  numeric_hybrid_501=6A7000%4$s
+  numeric_524=6A7000%4$s: %5$s
+
+  numeric_705=%5$s
