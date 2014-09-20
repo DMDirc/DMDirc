@@ -319,7 +319,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         try {
             final Map<String, InputStream> identityStreams = new HashMap<>();
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(
-                    pluginFilesystem.getPath("/META-INF/licenses/"))) {
+                    pluginFilesystem.getPath("/META-INF/identities/"))) {
                 for (Path path : directoryStream) {
                     identityStreams.put(path.getFileName().toString(), Files.newInputStream(path));
                 }
