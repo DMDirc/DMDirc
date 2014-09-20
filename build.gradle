@@ -104,7 +104,8 @@ task createVersionConfig << {
 
     // Copy to the build directory so it's accessible during tests
     java.nio.file.Files.copy(targetFile.toPath(),
-       sourceSets.main.output.classesDir.toPath().resolve('com').resolve('dmdirc').resolve('version.config'));
+       sourceSets.main.output.classesDir.toPath().resolve('com').resolve('dmdirc').resolve('version.config'),
+       java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 }
 
 jar.dependsOn createVersionConfig
