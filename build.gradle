@@ -15,8 +15,8 @@ dependencies {
     bundle group: 'net.kencochrane.raven', name: 'raven', version: '5.0.1'
     bundle group: 'com.google.guava', name:'guava', version: '18.0'
     bundle group: 'net.engio', name: 'mbassador', version: '1.2.0'
-    bundle project(':modules:util')
-    bundle project(':modules:parser')
+    bundle group: 'com.dmdirc', name: 'util', version: '+', changing: true
+    bundle group: 'com.dmdirc.parser', name: 'common', version: '+', changing: true
 }
 
 allprojects {
@@ -50,6 +50,9 @@ allprojects {
         mavenCentral()
         maven {
             url 'http://nexus.dmdirc.com/nexus/content/repositories/thirdparty/'
+        }
+        maven {
+            url 'http://nexus.dmdirc.com/nexus/content/repositories/snapshots/'
         }
     }
 
