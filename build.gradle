@@ -81,6 +81,54 @@ allprojects {
     }
 }
 
+task createVersionConfig << {
+    def gitDir = new File(projectDir, '.git')
+
+    def jgit = new org.mdonoughe.JGitDescribeTask()
+    jgit.dir = gitDir
+
+    version = jgit.getDescription()
+    def targetFile = new File(buildDir, 'version.config')
+
+    targetFile << "keysections:\n identity\n version\n updater\n\n"
+    targetFile << "identity:\n name=DMDirc version information\n globaldefault=true\n order=95000\n\n"
+    targetFile << "version:\n version=${version}\n\n"
+    targetFile << "buildenv:\n"
+    def compileConfiguration = project.configurations.getByName("compile")
+    def resolvedConfiguration = compileConfiguration.resolvedConfiguration
+    def resolvedArtifacts = resolvedConfiguration.resolvedArtifacts
+    resolvedArtifacts.each { dp ->
+       def version = dp.moduleVersion.id
+       targetFile << " " + version.group + " " + version.name + " " + version.version + "\n"
+    }
+}
+
+jar.dependsOn createVersionConfig
+
+jar {
+    from("$buildDir/version.config") {
+        into 'com/dmdirc/'
+    }
+
+    from { configurations.bundle.collect { it.isDirectory() ? it : zipTree(it) } } {
+        exclude 'META-INF/**'
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url 'http://nexus.dmdirc.com/nexus/content/repositories/thirdparty/'
+        }
+    }
+
+    dependencies {
+        classpath group: 'com.github.shanemcc', name: 'jgit-describe', version: '0.5'
+        classpath group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '2.3.1.+'
+    }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
