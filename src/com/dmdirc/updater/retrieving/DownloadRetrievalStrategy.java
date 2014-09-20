@@ -29,13 +29,12 @@ import com.dmdirc.updater.checking.DownloadableUpdate;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.io.DownloadListener;
 import com.dmdirc.util.io.Downloader;
-
-import java.io.File;
-import java.io.IOException;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-
-import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * An {@link UpdateRetrievalStrategy} that downloads a file specified in a
@@ -77,7 +76,7 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
                     .retrievalProgressChanged(checkResult.getComponent(), 0);
 
             LOG.debug("Downloading file from {} to {}", checkResult.getUrl(), file);
-            downloader.downloadPage(checkResult.getUrl().toString(), file,
+            downloader.downloadPage(checkResult.getUrl().toString(), Paths.get(file),
                     new DownloadProgressListener(checkResult.getComponent()));
 
             listenerList.getCallable(UpdateRetrievalListener.class)
