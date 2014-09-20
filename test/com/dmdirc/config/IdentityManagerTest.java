@@ -48,13 +48,13 @@ public class IdentityManagerTest {
 
     @Mock private DMDircMBassador eventBus;
 
-    private FileSystem fs;
     private Path baseDirectory;
     private Path identitiesDirectory;
 
     @Before
+    @SuppressWarnings("resource")
     public void setUp() throws Exception {
-        fs = Jimfs.newFileSystem(Configuration.unix());
+        final FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
         baseDirectory = fs.getPath("config");
         identitiesDirectory = baseDirectory.resolve("identities");
     }
@@ -100,6 +100,32 @@ public class IdentityManagerTest {
         assertTrue(Files.exists(identitiesDirectory.resolve("default.old-1")));
         assertTrue(Files.exists(identitiesDirectory.resolve("default.old-2")));
         assertTrue(Files.isDirectory(identitiesDirectory.resolve("default")));
+    }
+
+    @Test
+    public void testExtractsDefaults() throws InvalidIdentityFileException {
+        final IdentityManager identityManager = new IdentityManager(
+                baseDirectory, identitiesDirectory, eventBus);
+        identityManager.initialise();
+
+        assertTrue(Files.isDirectory(identitiesDirectory.resolve("default")));
+        assertTrue(Files.exists(identitiesDirectory.resolve("default").resolve("defaults")));
+        assertTrue(Files.exists(identitiesDirectory.resolve("default").resolve("formatter")));
+    }
+
+    @Test
+    public void testAlwaysUpdatesFormatter() throws InvalidIdentityFileException, IOException {
+        final Path formatterPath = identitiesDirectory.resolve("default").resolve("formatter");
+
+        Files.createDirectories(identitiesDirectory.resolve("default"));
+        Files.createFile(formatterPath);
+
+        final IdentityManager identityManager = new IdentityManager(
+                baseDirectory, identitiesDirectory, eventBus);
+        identityManager.initialise();
+
+        assertTrue(Files.exists(formatterPath));
+        assertTrue(Files.size(formatterPath) > 0);
     }
 
 }

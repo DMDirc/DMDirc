@@ -36,8 +36,8 @@ import com.dmdirc.updater.Version;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.collections.WeakMapList;
 import com.dmdirc.util.io.ConfigFile;
+import com.dmdirc.util.io.FileUtils;
 import com.dmdirc.util.io.InvalidConfigFileException;
-import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -227,9 +227,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      */
     private void extractFormatters() {
         try {
-            ResourceManager.getResourceManager().extractResource(
-                    "com/dmdirc/config/defaults/default/formatter",
-                    identitiesDirectory + "default/", false);
+            FileUtils.copyResources(getClass().getResource("defaults/default/formatter"),
+                    identitiesDirectory.resolve("default"));
         } catch (IOException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Unable to extract default formatters: " + ex.getMessage(), ""));
@@ -243,9 +242,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      */
     private void extractIdentities(final String target) {
         try {
-            ResourceManager.getResourceManager().extractResources(
-                    "com/dmdirc/config/defaults/" + target,
-                    identitiesDirectory + target, false);
+            FileUtils.copyResources(getClass().getResource("defaults/" + target),
+                    identitiesDirectory);
         } catch (IOException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
                     "Unable to extract default identities: " + ex.getMessage(), ""));
