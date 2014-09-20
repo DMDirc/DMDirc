@@ -1,0 +1,30 @@
+# This is a DMDirc configuration file.
+# Written on: Sun Nov 25 13:32:17 GMT 2007
+
+# This section indicates which sections below take key/value
+# pairs, rather than a simple list. It should be placed above
+# any sections that take key/values.
+keysections:
+  condition 0
+  condition 1
+
+triggers:
+  UNKNOWN_COMMAND
+
+response:
+  /raw $1-
+
+format:
+
+
+condition 0:
+  argument=1
+  component=STRING_STRING
+  target=quote
+  comparison=STRING_EQUALS
+
+condition 1:
+  argument=2
+  component=STRINGARRAY_LENGTH
+  target=0
+  comparison=INT_GREATER
