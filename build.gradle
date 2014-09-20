@@ -90,9 +90,11 @@ task createVersionConfig << {
     version = jgit.getDescription()
     def targetFile = new File(buildDir, 'version.config')
 
-    targetFile << "keysections:\n identity\n version\n updater\n\n"
+    targetFile.text = ''
+    targetFile << "keysections:\n identity\n version\n updater\n bundledplugins_versions\n\n"
     targetFile << "identity:\n name=DMDirc version information\n globaldefault=true\n order=95000\n\n"
     targetFile << "version:\n version=${version}\n\n"
+    targetFile << "updater:\n channel=${updaterChannel}\n\n"
     targetFile << "buildenv:\n"
     def compileConfiguration = project.configurations.getByName("compile")
     def resolvedConfiguration = compileConfiguration.resolvedConfiguration
