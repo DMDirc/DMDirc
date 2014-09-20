@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -126,6 +127,44 @@ public class IdentityManagerTest {
 
         assertTrue(Files.exists(formatterPath));
         assertTrue(Files.size(formatterPath) > 0);
+    }
+
+    @Test
+    public void testCreatesDefaultProfile() throws InvalidIdentityFileException {
+        final IdentityManager identityManager = new IdentityManager(
+                baseDirectory, identitiesDirectory, eventBus);
+        identityManager.initialise();
+
+        final List<ConfigProvider> profiles = identityManager.getProvidersByType("profile");
+        assertEquals(1, profiles.size());
+        assertEquals("Default Profile", profiles.get(0).getName());
+    }
+
+    @Test
+    public void testUsesSystemUsernameForProfileNickname() throws InvalidIdentityFileException {
+        final IdentityManager identityManager = new IdentityManager(
+                baseDirectory, identitiesDirectory, eventBus);
+        identityManager.initialise();
+
+        System.setProperty("user.name", "Awesome User");
+        final ConfigProvider config = identityManager.createProfileConfig("test 123");
+        assertEquals("Awesome_User", config.getOption("profile", "nicknames"));
+    }
+
+    @Test
+    public void testDoesNotCreateProfileIfOneExists()
+            throws IOException, InvalidIdentityFileException {
+        Files.createDirectories(identitiesDirectory);
+        Files.copy(getClass().getResourceAsStream("profile-new"),
+                identitiesDirectory.resolve("profile"));
+
+        final IdentityManager identityManager = new IdentityManager(
+                baseDirectory, identitiesDirectory, eventBus);
+        identityManager.initialise();
+
+        final List<ConfigProvider> profiles = identityManager.getProvidersByType("profile");
+        assertEquals(1, profiles.size());
+        assertEquals("New Profile", profiles.get(0).getName());
     }
 
 }
