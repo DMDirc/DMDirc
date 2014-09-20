@@ -22,10 +22,9 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.util.resourcemanager.ResourceManager;
-
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -117,16 +116,10 @@ public class PluginClassLoader extends ClassLoader {
             }
         }
 
-        final ResourceManager res;
-        try {
-            res = pluginInfo.getResourceManager();
-        } catch (IOException ioe) {
-            throw new ClassNotFoundException("Error with resourcemanager", ioe);
-        }
-
         final String fileName = name.replace('.', '/') + ".class";
         try {
-            if (pluginInfo.isPersistent(name) || !res.resourceExists(fileName)) {
+            if (pluginInfo.isPersistent(name) || !Files.exists(
+                    pluginInfo.getPath(fileName))) {
                 if (!pluginInfo.isPersistent(name) && askGlobal) {
                     return globalLoader.loadClass(name);
                 } else {
@@ -152,8 +145,12 @@ public class PluginClassLoader extends ClassLoader {
 
         // We are meant to be loading this one!
         final byte[] data;
-        if (res.resourceExists(fileName)) {
-            data = res.getResourceBytes(fileName);
+        if (Files.exists(pluginInfo.getPath(fileName))) {
+            try {
+                data = Files.readAllBytes(pluginInfo.getPath(fileName));
+            } catch (IOException ex) {
+                throw new ClassNotFoundException(ex.getMessage(), ex);
+            }
         } else {
             throw new ClassNotFoundException("Resource '" + name + "' (wanted by " + pluginInfo.
                     getMetaData().getName() + ") does not exist.");
@@ -181,9 +178,7 @@ public class PluginClassLoader extends ClassLoader {
     @Override
     protected URL findResource(final String name) {
         try {
-            final ResourceManager res = pluginInfo.getResourceManager();
-            final URL url = res.getResourceURL(name);
-
+            final URL url = pluginInfo.getPath(name).toUri().toURL();
             if (url != null) {
                 return url;
             }

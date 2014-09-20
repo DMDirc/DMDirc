@@ -425,12 +425,36 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     }
 
     /**
+     * Returns the file system for this plugin's jar.
+     *
+     * @return Filesystem
+     */
+    public FileSystem getFileSystem() {
+        return pluginFilesystem;
+    }
+
+    /**
+     * Returns a path inside the plugin's jar for the given name.
+     *
+     * @param   first The path string or initial part of the path string
+     * @param   more Additional strings to be joined to form the full path
+     *
+     * @return The resulting path inside the plugin's jar
+     */
+    public Path getPath(final String first, final String... more) {
+        return pluginFilesystem.getPath(first, more);
+    }
+
+    /**
      * Gets a resource manager for this plugin
      *
      * @return The resource manager for this plugin
      *
      * @throws IOException if there is any problem getting a ResourceManager for this plugin
+     *
+     * @deprecated @See getFileSystem()
      */
+    @Deprecated
     public ResourceManager getResourceManager() throws IOException {
         return getResourceManager(false);
     }
@@ -444,7 +468,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      *
      * @throws IOException if there is any problem getting a ResourceManager for this plugin
      * @since 0.6
+     *
+     * @deprecated @See getFileSystem()
      */
+    @Deprecated
     public synchronized ResourceManager getResourceManager(final boolean forceNew) throws
             IOException {
         if (resourceManager == null || forceNew) {
