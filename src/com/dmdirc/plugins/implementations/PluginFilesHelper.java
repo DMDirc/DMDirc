@@ -27,6 +27,12 @@ import com.dmdirc.plugins.PluginMetaData;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Helper file to manage plugins that need extracted files on disk.
@@ -79,8 +85,7 @@ public class PluginFilesHelper {
      * @return File directory as a string
      */
     public String getFilesDirString() {
-        return getFilesDir().getAbsolutePath()
-                + System.getProperty("file.separator");
+        return getFilesDir().getAbsolutePath() + System.getProperty("file.separator");
     }
 
     /**
@@ -91,7 +96,9 @@ public class PluginFilesHelper {
      * @throws IOException if the write operation fails
      */
     public void extractResource(final String resourceName) throws IOException {
-        pluginInfo.getResourceManager().extractResource(resourceName, filesDir.toString(), true);
+        final Path resource = pluginInfo.getPath(resourceName);
+        Files.copy(resource, filesDir.toPath().resolve(resource.getFileName().toString()),
+                StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**
@@ -102,7 +109,17 @@ public class PluginFilesHelper {
      * @throws IOException if the resources failed to extract
      */
     public void extractResourcesStartingWith(final String prefix) throws IOException {
-        pluginInfo.getResourceManager().extractResources(prefix, filesDir.toString(), true);
+        Files.walkFileTree(pluginInfo.getPath("/"), new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
+                    throws IOException {
+                if (file.getFileName().toString().startsWith(prefix)) {
+                    Files.copy(file, filesDir.toPath().resolve(file.getFileName().toString()),
+                            StandardCopyOption.REPLACE_EXISTING);
+                } return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     /**
@@ -113,7 +130,18 @@ public class PluginFilesHelper {
      * @throws IOException if the resources failed to extract
      */
     public void extractResourcesEndingWith(final String suffix) throws IOException {
-        pluginInfo.getResourceManager().extractResourcesEndingWith(filesDir, suffix);
+        Files.walkFileTree(pluginInfo.getPath("/"), new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
+                    throws IOException {
+                if (file.getFileName().toString().endsWith(suffix)) {
+                    Files.copy(file, filesDir.toPath().resolve(file.getFileName().toString()),
+                            StandardCopyOption.REPLACE_EXISTING);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
 }
