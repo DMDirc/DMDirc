@@ -1,5 +1,3 @@
-rootProject.name = 'dmdirc'
-
 include 'modules:util'
 include 'modules:parser'
 include 'modules:plugins'
