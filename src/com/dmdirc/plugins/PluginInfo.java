@@ -33,7 +33,6 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.SimpleInjector;
-import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.util.validators.ValidationResponse;
 
 import java.io.File;
@@ -54,8 +53,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
@@ -86,8 +83,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private Plugin plugin;
     /** The classloader used for this Plugin. */
     private PluginClassLoader pluginClassLoader;
-    /** The resource manager used by this pluginInfo. */
-    private ResourceManager resourceManager;
     /** Is this plugin only loaded temporarily? */
     private boolean tempLoaded;
     /** List of classes this plugin has. */
@@ -139,13 +134,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         } catch (IOException ex) {
             lastError = "Error loading filesystem: " + ex.getMessage();
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ex);
-        }
-        try {
-            // TODO: Stop using ResourceManager
-            getResourceManager();
-        } catch (IOException ioe) {
-            lastError = "Error with resourcemanager: " + ioe.getMessage();
-            throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ioe);
         }
         updateClassList();
 
@@ -443,51 +431,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public Path getPath(final String first, final String... more) {
         return pluginFilesystem.getPath(first, more);
-    }
-
-    /**
-     * Gets a resource manager for this plugin
-     *
-     * @return The resource manager for this plugin
-     *
-     * @throws IOException if there is any problem getting a ResourceManager for this plugin
-     *
-     * @deprecated @See getFileSystem()
-     */
-    @Deprecated
-    public ResourceManager getResourceManager() throws IOException {
-        return getResourceManager(false);
-    }
-
-    /**
-     * Get the resource manager for this plugin
-     *
-     * @return The resource manager for this plugin
-     *
-     * @param forceNew Force a new resource manager rather than using the old one.
-     *
-     * @throws IOException if there is any problem getting a ResourceManager for this plugin
-     * @since 0.6
-     *
-     * @deprecated @See getFileSystem()
-     */
-    @Deprecated
-    public synchronized ResourceManager getResourceManager(final boolean forceNew) throws
-            IOException {
-        if (resourceManager == null || forceNew) {
-            resourceManager = ResourceManager.getResourceManager("jar://" + metaData.getPluginUrl().
-                    getPath());
-
-            // Clear the resourcemanager in 10 seconds to stop us holding the file open
-            new Timer(filename + "-resourcemanagerTimer").schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    resourceManager = null;
-                }
-            }, 10000);
-        }
-
-        return resourceManager;
     }
 
     @Override
