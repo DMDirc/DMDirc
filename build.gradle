@@ -1,6 +1,6 @@
 configurations {
     bundle
-
+    plugin
     compile {
         extendsFrom bundle
     }
@@ -9,6 +9,7 @@ configurations {
 dependencies {
     compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.0'
     compile group: 'com.squareup.dagger', name: 'dagger-compiler', version: '1.2.1'
+
     bundle group: 'com.squareup.dagger', name: 'dagger', version: '1.2.1'
     bundle group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.08'
     bundle group: 'com.brsanthu', name: 'migbase64', version: '2.2'
@@ -17,6 +18,11 @@ dependencies {
     bundle group: 'net.engio', name: 'mbassador', version: '1.2.0'
     bundle group: 'com.dmdirc', name: 'util', version: '+', changing: true
     bundle group: 'com.dmdirc.parser', name: 'common', version: '+', changing: true
+
+    plugin group: 'com.dmdirc', name: 'ui_swing', version: '+', changing: true
+    plugin group: 'com.dmdirc', name: 'parser_irc', version: '+', changing: true
+    plugin group: 'com.dmdirc', name: 'tabcompleter_bash', version: '+', changing: true
+    plugin group: 'com.dmdirc', name: 'tabcompleter_mirc', version: '+', changing: true
 }
 
 allprojects {
