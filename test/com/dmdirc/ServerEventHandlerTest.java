@@ -1,0 +1,246 @@
+/*
+ * Copyright (c) 2006-2014 DMDirc Developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.dmdirc;
+
+import com.dmdirc.events.AppErrorEvent;
+import com.dmdirc.events.DMDircEvent;
+import com.dmdirc.events.ServerCtcpEvent;
+import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.parser.common.CallbackManager;
+import com.dmdirc.parser.common.ParserError;
+import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
+import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
+import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
+import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
+
+import com.google.common.collect.Lists;
+
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ServerEventHandlerTest {
+
+    @Mock private Server server;
+    @Mock private Parser parser;
+    @Mock private CallbackManager callbackManager;
+    @Mock private DMDircMBassador eventBus;
+    @Mock private ChannelInfo channelInfo;
+    @Mock private ClientInfo clientInfo;
+    @Mock private Query query;
+    @Mock private Date date;
+
+    @Before
+    public void setUp() {
+        when(server.getParser()).thenReturn(parser);
+        when(server.getState()).thenReturn(ServerState.CONNECTED);
+        when(parser.getCallbackManager()).thenReturn(callbackManager);
+
+        final ServerEventHandler handler = new ServerEventHandler(server, eventBus);
+        handler.registerCallbacks();
+    }
+
+    @Test
+    public void testSelfJoinAddsChannel() {
+        final ChannelSelfJoinListener listener = getCallback(ChannelSelfJoinListener.class);
+        listener.onChannelSelfJoin(parser, date, channelInfo);
+        verify(server).addChannel(channelInfo);
+    }
+
+    @Test
+    public void testOnPrivateMessageCreatesQuery() {
+        when(server.hasQuery("ho!st@name")).thenReturn(false);
+        when(server.getQuery("ho!st@name")).thenReturn(query);
+
+        final PrivateMessageListener listener = getCallback(PrivateMessageListener.class);
+        listener.onPrivateMessage(parser, date, "message", "ho!st@name");
+        verify(server).getQuery("ho!st@name");
+    }
+
+    @Test
+    public void testOnPrivateMessageRelaysMessage() {
+        when(server.hasQuery("ho!st@name")).thenReturn(false);
+        when(server.getQuery("ho!st@name")).thenReturn(query);
+
+        final PrivateMessageListener listener = getCallback(PrivateMessageListener.class);
+        listener.onPrivateMessage(parser, date, "message", "ho!st@name");
+        verify(query).onPrivateMessage(parser, date, "message", "ho!st@name");
+    }
+
+    @Test
+    public void testOnPrivateActionCreatesQuery() {
+        when(server.hasQuery("ho!st@name")).thenReturn(false);
+        when(server.getQuery("ho!st@name")).thenReturn(query);
+
+        final PrivateActionListener listener = getCallback(PrivateActionListener.class);
+        listener.onPrivateAction(parser, date, "message", "ho!st@name");
+        verify(server).getQuery("ho!st@name");
+    }
+
+    @Test
+    public void testOnPrivateActionRelaysMessage() {
+        when(server.hasQuery("ho!st@name")).thenReturn(false);
+        when(server.getQuery("ho!st@name")).thenReturn(query);
+
+        final PrivateActionListener listener = getCallback(PrivateActionListener.class);
+        listener.onPrivateAction(parser, date, "message", "ho!st@name");
+        verify(query).onPrivateAction(parser, date, "message", "ho!st@name");
+    }
+
+    @Test
+    public void testOnErrorInfoEmitsUserErrorEvent() {
+        final ParserError error = mock(ParserError.class);
+        when(parser.getServerInformationLines()).thenReturn(Lists.newArrayList("iline1", "iline2"));
+        when(error.getLastLine()).thenReturn("lastline");
+        when(server.getAddress()).thenReturn("serveraddress");
+        when(error.getData()).thenReturn("DATA");
+        when(error.isUserError()).thenReturn(true);
+
+        final ErrorInfoListener listener = getCallback(ErrorInfoListener.class);
+        listener.onErrorInfo(parser, date, error);
+
+        final UserErrorEvent event = getAsyncEvent(UserErrorEvent.class);
+        assertEquals("DATA", event.getMessage());
+    }
+
+    @Test
+    public void testOnErrorInfoEmitsAppErrorEvent() {
+        final ParserError error = mock(ParserError.class);
+        when(parser.getServerInformationLines()).thenReturn(Lists.newArrayList("iline1", "iline2"));
+        when(error.getLastLine()).thenReturn("lastline");
+        when(server.getAddress()).thenReturn("serveraddress");
+        when(error.getData()).thenReturn("DATA");
+        when(error.isUserError()).thenReturn(false);
+
+        final ErrorInfoListener listener = getCallback(ErrorInfoListener.class);
+        listener.onErrorInfo(parser, date, error);
+
+        final AppErrorEvent event = getAsyncEvent(AppErrorEvent.class);
+        assertEquals("DATA", event.getMessage());
+    }
+
+    @Test
+    public void testOnErrorInfoIncludesConnectionDetails() {
+        final ParserError error = mock(ParserError.class);
+        when(parser.getServerInformationLines()).thenReturn(Lists.newArrayList("iline1", "iline2"));
+        when(error.getLastLine()).thenReturn("lastline");
+        when(server.getAddress()).thenReturn("serveraddress");
+        when(error.getData()).thenReturn("DATA");
+        when(error.isUserError()).thenReturn(false);
+
+        final ErrorInfoListener listener = getCallback(ErrorInfoListener.class);
+        listener.onErrorInfo(parser, date, error);
+
+        final AppErrorEvent event = getAsyncEvent(AppErrorEvent.class);
+        assertNotNull(event.getThrowable());
+        assertTrue(event.getThrowable().getMessage().contains("lastline"));
+        assertTrue(event.getThrowable().getMessage().contains("iline1"));
+        assertTrue(event.getThrowable().getMessage().contains("iline2"));
+        assertTrue(event.getThrowable().getMessage().contains("serveraddress"));
+    }
+
+    @Test
+    public void testOnErrorInfoIncludesException() {
+        final ParserError error = mock(ParserError.class);
+        final Exception exception = mock(Exception.class);
+        when(parser.getServerInformationLines()).thenReturn(Lists.newArrayList("iline1", "iline2"));
+        when(error.getLastLine()).thenReturn("lastline");
+        when(server.getAddress()).thenReturn("serveraddress");
+        when(error.getData()).thenReturn("DATA");
+        when(error.isException()).thenReturn(true);
+        when(error.getException()).thenReturn(exception);
+
+        final ErrorInfoListener listener = getCallback(ErrorInfoListener.class);
+        listener.onErrorInfo(parser, date, error);
+
+        final AppErrorEvent event = getAsyncEvent(AppErrorEvent.class);
+        assertNotNull(event.getThrowable());
+        assertEquals(exception, event.getThrowable());
+    }
+
+    @Test
+    public void testOnPrivateCTCPRaisesEvent() {
+        when(parser.getClient("host!na@me")).thenReturn(clientInfo);
+        when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
+
+        final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
+        listener.onPrivateCTCP(parser, date, "type", "message", "host!na@me");
+
+        final ServerCtcpEvent event = getEvent(ServerCtcpEvent.class);
+        assertEquals("type", event.getType());
+        assertEquals("message", event.getContent());
+        assertEquals(clientInfo, event.getClient());
+    }
+
+    @Test
+    public void testOnPrivateCTCPSendsReplyIfEventUnhandled() {
+        when(parser.getClient("host!na@me")).thenReturn(clientInfo);
+        when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
+
+        final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
+        listener.onPrivateCTCP(parser, date, "type", "message", "host!na@me");
+
+        verify(server).sendCTCPReply("host", "type", "message");
+    }
+
+    private <T extends CallbackInterface> T getCallback(final Class<T> type) {
+        final ArgumentCaptor<T> captor = ArgumentCaptor.forClass(type);
+        verify(callbackManager).addCallback(eq(type), captor.capture());
+        assertNotNull(captor.getValue());
+        return captor.getValue();
+    }
+
+    private <T extends DMDircEvent> T getAsyncEvent(final Class<T> type) {
+        final ArgumentCaptor<T> captor = ArgumentCaptor.forClass(type);
+        verify(eventBus).publishAsync(captor.capture());
+        assertNotNull(captor.getValue());
+        return captor.getValue();
+    }
+
+    private <T extends DMDircEvent> T getEvent(final Class<T> type) {
+        final ArgumentCaptor<T> captor = ArgumentCaptor.forClass(type);
+        verify(eventBus).publish(captor.capture());
+        assertNotNull(captor.getValue());
+        return captor.getValue();
+    }
+
+}
