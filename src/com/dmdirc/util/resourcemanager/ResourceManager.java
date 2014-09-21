@@ -22,6 +22,7 @@
 
 package com.dmdirc.util.resourcemanager;
 
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -30,7 +31,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,18 +54,16 @@ public abstract class ResourceManager {
      */
     public static synchronized ResourceManager getResourceManager() {
         if (me == null) {
-            final URL mainClassURL = Thread.currentThread()
-                    .getContextClassLoader()
-                    .getResource("com/dmdirc/Main.class");
             try {
-                if (DMDircResourceManager.isRunningFromJar(mainClassURL)) {
-                    me = new ZipResourceManager(DMDircResourceManager
-                            .getWorkingDirectoryString(mainClassURL));
+                final Path path = Paths.get(
+                        Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                if (path.getFileName().endsWith(".jar")) {
+                    me = new ZipResourceManager(path.toAbsolutePath().toString());
                 } else {
-                    me = new FileResourceManager(DMDircResourceManager
-                            .getWorkingDirectoryString(mainClassURL));
+                    me = new FileResourceManager(path.toAbsolutePath().toString());
+
                 }
-            } catch (IOException ex) {
+            } catch (URISyntaxException | IOException ex) {
                 Logger.appError(ErrorLevel.MEDIUM,
                         "Unable to determine how DMDirc has been executed", ex);
             }

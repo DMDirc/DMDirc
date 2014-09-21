@@ -27,9 +27,11 @@ import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
-import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.inject.Inject;
 
@@ -88,15 +90,24 @@ public class ClientComponent implements UpdateComponent {
                 + File.separator + ".DMDirc.jar");
 
         if (requiresManualInstall()) {
-            if (DMDircResourceManager.isRunningFromJar()) {
+            Path appPath;
+            String appDir;
+            try {
+                appPath = Paths.get(getClass().getProtectionDomain().getCodeSource()
+                        .getLocation().toURI());
+                appDir = appPath.toAbsolutePath().toString();
+            } catch (URISyntaxException e) {
+                appPath = null;
+                appDir = "[Error getting path]";
+            }
+            if (appPath != null && appPath.getFileName().endsWith(".jar")) {
                 return "A new version of DMDirc has been downloaded, but as you\n"
                         + "do not seem to be using the DMDirc launcher, it will\n"
                         + "not be installed automatically.\n\n"
                         + "To install this update manually, please replace the\n"
                         + "existing DMDirc.jar file, located at:\n"
-                        + " " + DMDircResourceManager.getApplicationDirectory() + "\n"
-                        + "with the following file:\n"
-                        + "  " + targetFile.getAbsolutePath();
+                        + " " + appDir + "\n with the following file:\n "
+                        + targetFile.getAbsolutePath();
             } else {
                 return "A new version of DMDirc has been downloaded, but as you\n"
                         + "do not seem to be using the DMDirc launcher, it will\n"
@@ -105,7 +116,7 @@ public class ClientComponent implements UpdateComponent {
                         + "new DMDirc.jar file, located at:\n"
                         + " " + targetFile.getAbsolutePath() + "\n"
                         + "over your existing DMDirc install located in:\n"
-                        + "  " + DMDircResourceManager.getApplicationDirectory();
+                        + "  " + appDir;
             }
         }
         return "";
