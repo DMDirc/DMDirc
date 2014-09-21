@@ -260,11 +260,9 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public boolean isSelectedProfileNameValid() {
-        if (getSelectedProfileName().isPresent()) {
-            return !getSelectedProfileNameValidator()
-                    .validate(getSelectedProfileName().get()).isFailure();
-        }
-        return true;
+        return !getSelectedProfileName().isPresent() ||
+                !getSelectedProfileNameValidator().validate(getSelectedProfileName().get())
+                        .isFailure();
     }
 
     @Override
@@ -291,11 +289,9 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public boolean isSelectedProfileRealnameValid() {
-        if (getSelectedProfileRealname().isPresent()) {
-            return !getSelectedProfileRealnameValidator()
-                    .validate(getSelectedProfileRealname().get()).isFailure();
-        }
-        return true;
+        return !getSelectedProfileRealname().isPresent() ||
+                !getSelectedProfileRealnameValidator().validate(getSelectedProfileRealname().get())
+                        .isFailure();
     }
 
     @Override
@@ -322,11 +318,9 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public boolean isSelectedProfileIdentValid() {
-        if (getSelectedProfileIdent().isPresent()) {
-            return !getSelectedProfileIdentValidator()
-                    .validate(getSelectedProfileIdent().get()).isFailure();
-        }
-        return true;
+        return !getSelectedProfileIdent().isPresent() ||
+                !getSelectedProfileIdentValidator().validate(getSelectedProfileIdent().get())
+                        .isFailure();
     }
 
     @Override
@@ -358,11 +352,8 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public boolean isSelectedProfileNicknamesValid() {
-        if (getSelectedProfileNicknames().isPresent()) {
-            return !getSelectedProfileNicknamesValidator()
-                    .validate(getSelectedProfileNicknames().get()).isFailure();
-        }
-        return true;
+        return !getSelectedProfileNicknames().isPresent() || !getSelectedProfileNicknamesValidator()
+                .validate(getSelectedProfileNicknames().get()).isFailure();
     }
 
     @Override
@@ -447,14 +438,9 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public boolean canSwitchProfiles() {
-        if (selectedProfile.isPresent()) {
-            return isSelectedProfileIdentValid()
-                    && isSelectedProfileNameValid()
-                    && isSelectedProfileNicknamesValid()
-                    && isSelectedProfileRealnameValid();
-        } else {
-            return true;
-        }
+        return !selectedProfile.isPresent() ||
+                isSelectedProfileIdentValid() && isSelectedProfileNameValid() &&
+                        isSelectedProfileNicknamesValid() && isSelectedProfileRealnameValid();
     }
 
     @Override

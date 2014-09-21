@@ -98,7 +98,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /** Map of exports. */
     private final Map<String, ExportInfo> exports = new HashMap<>();
     /** List of configuration providers. */
-    private final List<ConfigProvider> configProviders = new ArrayList<>();
+    private final Collection<ConfigProvider> configProviders = new ArrayList<>();
     /** Event bus to post plugin loaded events to. */
     private final DMDircMBassador eventBus;
     /** File system for the plugin's jar. */
@@ -196,7 +196,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return The injector used for this plugin
      */
     public SimpleInjector getInjector() {
-        final SimpleInjector injector;
         final SimpleInjector[] parents = new SimpleInjector[metaData.getParent() == null ? 0 : 1];
         final Plugin[] plugins = new Plugin[parents.length];
 
@@ -207,7 +206,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             plugins[0] = parent.getPlugin();
         }
 
-        injector = new SimpleInjector(parents);
+        final SimpleInjector injector = new SimpleInjector(parents);
 
         for (Plugin parentPlugin : plugins) {
             injector.addParameter(parentPlugin);
@@ -253,7 +252,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @throws IOException if there is an error with the ResourceManager.
      */
     public Map<String, InputStream> getLicenceStreams() throws IOException {
-        final TreeMap<String, InputStream> licences = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        final Map<String, InputStream> licences = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         if (!Files.exists(pluginFilesystem.getPath("/META-INF/licenses/"))) {
             return licences;
         }
@@ -333,13 +332,13 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     } catch (final InvalidIdentityFileException ex) {
                         eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
                                 "Error with identity file '" + name + "' in plugin '"
-                                + metaData.getName() + "'", ""));
+                                + metaData.getName() + '\'', ""));
                     }
                 }
             }
         } catch (final IOException ioe) {
             eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ioe,
-                    "Error finding identities in plugin '" + metaData.getName() + "'", ""));
+                    "Error finding identities in plugin '" + metaData.getName() + '\'', ""));
         }
     }
 
@@ -376,7 +375,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String name = bits[0];
                 final String type = bits.length > 1 ? bits[1] : "misc";
 
-                if (!name.equalsIgnoreCase("any") && !type.equalsIgnoreCase("export")) {
+                if (!"any".equalsIgnoreCase(name) && !"export".equalsIgnoreCase(type)) {
                     final Service service = metaData.getManager().getService(type, name, true);
                     synchronized (provides) {
                         service.addProvider(this);
@@ -446,7 +445,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     @Override
     public String getProviderName() {
         return "Plugin: " + metaData.getFriendlyName() + " ("
-                + metaData.getName() + " / " + getFilename() + ")";
+                + metaData.getName() + " / " + getFilename() + ')';
     }
 
     @Override
@@ -556,11 +555,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             }
         }
 
-        if (metaData.getParent() != null) {
-            return loadRequiredPlugin(metaData.getParent());
-        }
-
-        return true;
+        return metaData.getParent() == null || loadRequiredPlugin(metaData.getParent());
     }
 
     /**
@@ -594,7 +589,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public void loadPlugin() {
         if (isLoaded() || isLoading) {
-            lastError = "Not Loading: (" + isLoaded() + "||" + isLoading + ")";
+            lastError = "Not Loading: (" + isLoaded() + "||" + isLoading + ')';
             return;
         }
 
@@ -613,7 +608,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 plugin.load(this, getObjectGraph());
                 plugin.onLoad();
             } catch (LinkageError | Exception e) {
-                lastError = "Error in onLoad for " + metaData.getName() + ":"
+                lastError = "Error in onLoad for " + metaData.getName() + ':'
                         + e.getMessage();
                 eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
                 unloadPlugin();
@@ -741,7 +736,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     if (prerequisites.isFailure()) {
                         if (!tempLoaded) {
                             lastError = "Prerequisites for plugin not met. ('"
-                                    + filename + ":" + metaData.getMainClass()
+                                    + filename + ':' + metaData.getMainClass()
                                     + "' -> '" + prerequisites.getFailureReason() + "') ";
                             eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null, lastError, ""));
                         }
@@ -758,7 +753,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                                 plugin.onLoad();
                             } catch (LinkageError | Exception e) {
                                 lastError = "Error in onLoad for "
-                                        + metaData.getName() + ":" + e.getMessage();
+                                        + metaData.getName() + ':' + e.getMessage();
                                 eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM,
                                         e, lastError, ""));
                                 unloadPlugin();
@@ -768,19 +763,19 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 }
             }
         } catch (ClassNotFoundException cnfe) {
-            lastError = "Class not found ('" + filename + ":" + classname + ":"
+            lastError = "Class not found ('" + filename + ':' + classname + ':'
                     + classname.equals(metaData.getMainClass()) + "') - "
                     + cnfe.getMessage();
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, cnfe, lastError, ""));
         } catch (NoClassDefFoundError ncdf) {
-            lastError = "Unable to instantiate plugin ('" + filename + ":"
-                    + classname + ":"
+            lastError = "Unable to instantiate plugin ('" + filename + ':'
+                    + classname + ':'
                     + classname.equals(metaData.getMainClass())
                     + "') - Unable to find class: " + ncdf.getMessage();
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, ncdf, lastError, ""));
         } catch (VerifyError ve) {
-            lastError = "Unable to instantiate plugin ('" + filename + ":"
-                    + classname + ":"
+            lastError = "Unable to instantiate plugin ('" + filename + ':'
+                    + classname + ':'
                     + classname.equals(metaData.getMainClass())
                     + "') - Incompatible: " + ve.getMessage();
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, ve, lastError, ""));
@@ -846,7 +841,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     plugin.onUnload();
                 } catch (Exception | LinkageError e) {
                     lastError = "Error in onUnload for " + metaData.getName()
-                            + ":" + e + " - " + e.getMessage();
+                            + ':' + e + " - " + e.getMessage();
                     eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
                 }
 
