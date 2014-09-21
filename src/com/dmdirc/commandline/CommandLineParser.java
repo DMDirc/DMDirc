@@ -29,11 +29,13 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
-import com.dmdirc.util.resourcemanager.DMDircResourceManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -221,7 +223,7 @@ public class CommandLineParser {
                 doConnect(param);
                 break;
             case 'd':
-                doDirectory(param);
+                doDirectory(Paths.get(param));
                 break;
             case 'e':
                 doExisting();
@@ -236,7 +238,7 @@ public class CommandLineParser {
                 launcherVersion = param;
                 break;
             case 'p':
-                doDirectory(DMDircResourceManager.getWorkingDirectory());
+                doDirectory(Paths.get(System.getProperty("user.dir")));
                 break;
             case 'r':
                 disablereporting = true;
@@ -318,17 +320,18 @@ public class CommandLineParser {
      *
      * @param dir The new config directory
      */
-    private void doDirectory(final String dir) {
-        try {
-            final File file = new File(dir);
-            if (!file.exists() && !file.mkdirs()) {
+    private void doDirectory(final Path dir) {
+        if (!Files.exists(dir)) {
+            try {
+                Files.createDirectories(dir);
+            } catch (IOException ex) {
                 System.err.println("Unable to create directory " + dir);
                 System.exit(1);
             }
-            configDirectory = file.getCanonicalPath() + File.separator;
-        } catch (IOException ex) {
-            System.err.println("Unable to resolve directory " + dir + ": ");
-            System.err.println("\t" + ex.getMessage());
+        }
+        configDirectory = dir.toAbsolutePath().toString() + File.separator;
+        if (!Files.exists(Paths.get(configDirectory))) {
+            System.err.println("Unable to resolve directory " + dir);
             System.exit(1);
         }
     }

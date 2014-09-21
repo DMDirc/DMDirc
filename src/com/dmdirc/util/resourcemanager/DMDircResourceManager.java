@@ -22,18 +22,15 @@
 
 package com.dmdirc.util.resourcemanager;
 
-import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.security.CodeSource;
 
 /**
  * Provides utility methods for working with resources from the DMDirc distribution.
@@ -42,28 +39,6 @@ public final class DMDircResourceManager {
 
     private DMDircResourceManager() {
         //Prevent instantiation
-    }
-
-    /**
-     * Returns the working directory for the application.
-     *
-     * @return Current working directory
-     */
-    public static synchronized String getWorkingDirectory() {
-        final CodeSource codeSource = Main.class.getProtectionDomain().getCodeSource();
-        try {
-            final File jarFile = new File(codeSource.getLocation().toURI().getPath());
-            final String jarDir;
-            if (isRunningFromJar()) {
-                jarDir = jarFile.getParentFile().getPath();
-            } else {
-                jarDir = jarFile.getPath();
-            }
-            return URLDecoder.decode(jarDir, "UTF-8");
-        } catch (URISyntaxException | UnsupportedEncodingException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to find working directory", ex);
-            return null;
-        }
     }
 
     /**
