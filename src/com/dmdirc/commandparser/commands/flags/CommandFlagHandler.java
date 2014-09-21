@@ -26,10 +26,13 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * Utility class for commands which allow the user to specify shell-like flags (
@@ -70,6 +73,7 @@ public class CommandFlagHandler {
      * @return A corresponding {@link CommandFlagResult} object, or null if some problem was
      *         encountered.
      */
+    @Nullable
     public CommandFlagResult process(final FrameContainer origin,
             final CommandArguments arguments) {
         final Map<CommandFlag, Integer> results = parse(origin, arguments);
@@ -87,6 +91,7 @@ public class CommandFlagHandler {
      * @return A map of discovered command flags to the offset of the flag's first argument within
      *         the <code>arguments</code> object. If an error occurs, null is returned.
      */
+    @Nullable
     protected Map<CommandFlag, Integer> parse(final FrameContainer origin,
             final CommandArguments arguments) {
         enabledFlags.clear();
@@ -98,7 +103,7 @@ public class CommandFlagHandler {
         }
 
         final Map<CommandFlag, Integer> results = new HashMap<>();
-        final List<CommandFlag> delayedFlags = new ArrayList<>(flags.size());
+        final Collection<CommandFlag> delayedFlags = new ArrayList<>(flags.size());
 
         int offset;
         for (offset = 0; offset < arguments.getArguments().length; offset++) {

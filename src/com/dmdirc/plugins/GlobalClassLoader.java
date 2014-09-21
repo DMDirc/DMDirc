@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 /**
  * This classloader knows about plugins and is used to store persistent classes.
  */
@@ -108,7 +110,7 @@ public final class GlobalClassLoader extends ClassLoader {
      *
      * @return The resulting {@link Class} object
      */
-    public Class<?> defineClass(final String classname, final byte[] data) {
+    public Class<?> defineClass(final String classname, final byte... data) {
         return defineClass(classname, data, 0, data.length);
     }
 
@@ -117,6 +119,7 @@ public final class GlobalClassLoader extends ClassLoader {
      *
      * @param classname Class to look for.
      */
+    @Nullable
     private byte[] getClassData(final String classname) {
         try {
             final String jarname = resourcesList.get(classname);

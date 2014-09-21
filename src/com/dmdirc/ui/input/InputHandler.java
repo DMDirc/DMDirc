@@ -540,8 +540,8 @@ public abstract class InputHandler implements ConfigChangeListener {
     private void doCommandTabCompletion(final String text, final int start,
             final int end, final boolean shiftPressed) {
         doNormalTabCompletion(text, start, end, shiftPressed,
-                TabCompleterUtils.getIntelligentResults(parentWindow, text.substring(0, start),
-                        text.substring(start, end)));
+                TabCompleterUtils.getIntelligentResults(parentWindow, commandController,
+                        text.substring(0, start), text.substring(start, end)));
     }
 
     /**

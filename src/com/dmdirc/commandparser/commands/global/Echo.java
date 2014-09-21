@@ -46,6 +46,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -84,7 +85,7 @@ public class Echo extends Command implements IntelligentCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final CommandFlagResult results = handler.process(origin, args);
+        @Nullable final CommandFlagResult results = handler.process(origin, args);
 
         if (results == null) {
             return;

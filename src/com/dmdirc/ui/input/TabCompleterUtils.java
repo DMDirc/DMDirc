@@ -28,9 +28,12 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.interfaces.CommandController;
 
 import java.util.Arrays;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * Utilities relating to {@link TabCompleter}s.
@@ -49,6 +52,7 @@ public final class TabCompleterUtils {
      *
      * @return Additional tab targets for the text, or null if none are available
      */
+    @Nullable
     public static AdditionalTabTargets getIntelligentResults(final int arg,
             final IntelligentCommand.IntelligentCommandContext context, final int offset) {
         if (arg == offset) {
@@ -74,6 +78,7 @@ public final class TabCompleterUtils {
      *
      * @since 0.6.4
      */
+    @Nullable
     private static AdditionalTabTargets getIntelligentResults(
             final FrameContainer window,
             final CommandArguments args, final String partial) {
@@ -117,10 +122,11 @@ public final class TabCompleterUtils {
      *
      * @since 0.6.4
      */
+    @Nullable
     public static AdditionalTabTargets getIntelligentResults(
-            final FrameContainer window, final String text,
-            final String partial) {
+            final FrameContainer window, final CommandController commandController,
+            final String text, final String partial) {
         return getIntelligentResults(window,
-                new CommandArguments(window.getCommandParser().getCommandManager(), text), partial);
+                new CommandArguments(commandController, text), partial);
     }
 }
