@@ -41,11 +41,14 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.updater.components.ActionGroupComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.collections.MapList;
-import com.dmdirc.util.resourcemanager.ZipResourceManager;
+import com.dmdirc.util.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -678,14 +681,10 @@ public class ActionManager implements ActionController {
      *
      * @throws IOException If the zip cannot be extracted
      */
-    public static void installActionPack(final String path) throws IOException {
-        final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
-
-        ziprm.extractResources("", getActionManager().directory);
-
+    public static void installActionPack(final Path path) throws IOException {
+        FileUtils.copyRecursively(path, Paths.get(getActionManager().directory));
         getActionManager().loadUserActions();
-
-        new File(path).delete();
+        Files.delete(path);
     }
 
     @Override
