@@ -7,3 +7,7 @@ dependencies:
 test:
   override:
     - ./gradlew --refresh-dependencies check -x findbugsMain -x findbugsTest
+
+general:
+  artifacts:
+    - "build/reports/tests"
