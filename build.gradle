@@ -1,3 +1,11 @@
+def jgit = new org.mdonoughe.JGitDescribeTask()
+jgit.dir = new File(projectDir, '.git')
+project.version = jgit.getDescription() + '-SNAPSHOT'
+
+apply plugin: 'maven-publish'
+
+group = 'com.dmdirc'
+
 configurations {
     bundle
     plugin
@@ -23,6 +31,23 @@ dependencies {
     plugin group: 'com.dmdirc', name: 'parser_irc', version: '+', changing: true
     plugin group: 'com.dmdirc', name: 'tabcompleter_bash', version: '+', changing: true
     plugin group: 'com.dmdirc', name: 'tabcompleter_mirc', version: '+', changing: true
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'com.dmdirc'
+            artifactId 'client'
+
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            name 'snapshots'
+            url 'http://nexus.dmdirc.com/nexus/content/repositories/snapshots/'
+        }
+    }
 }
 
 allprojects {
@@ -87,13 +112,25 @@ allprojects {
     }
 }
 
+task getCredentials << {
+    def target = file('nexus-teamcity.gradle')
+    if (!target.exists()) {
+        new URL('http://www.dmdirc.com/private/nexus-teamcity.gradle').withInputStream{
+            i -> target.withOutputStream { it << i }
+        }
+    }
+
+    apply from: 'nexus-teamcity.gradle'
+    project.publishing.repositories[0].credentials {
+        username "$nexusUser"
+        password "$nexusPass"
+    }
+}
+
+task publishSnapshot(dependsOn: ['getCredentials', 'publishMavenJavaPublicationToSnapshotsRepository']) << {
+}
+
 task createVersionConfig << {
-    def gitDir = new File(projectDir, '.git')
-
-    def jgit = new org.mdonoughe.JGitDescribeTask()
-    jgit.dir = gitDir
-
-    version = jgit.getDescription()
     def targetFile = new File(buildDir, 'version.config')
 
     targetFile.text = ''

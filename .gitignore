@@ -50,3 +50,4 @@ __history
 /etc/nexus-teamcity.properties
 /.idea/libraries
 /.idea/dictionaries
+/nexus-teamcity.gradle
