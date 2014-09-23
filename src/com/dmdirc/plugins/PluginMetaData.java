@@ -130,7 +130,7 @@ public class PluginMetaData {
      */
     public void load() {
         errors.clear();
-        try (final InputStream stream = getStream()) {
+        try (final InputStream stream = url.openStream()) {
             final ConfigFile configFile = new ConfigFile(stream);
             configFile.read();
             readMetaData(configFile.getKeyDomain("metadata"));
@@ -147,15 +147,6 @@ public class PluginMetaData {
         } catch (IOException | InvalidConfigFileException ex) {
             errors.add("Unable to read config file: " + ex.getMessage());
         }
-    }
-
-    /**
-     * Get the InputStream for this PluginMetaData
-     *
-     * @return The InputStream for this PluginMetaData
-     */
-    private InputStream getStream() throws IOException {
-        return url.openStream();
     }
 
     @Override
