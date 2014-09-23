@@ -136,10 +136,30 @@ public class LinePosition {
         this.startPos = startPos;
     }
 
+    /**
+     * Gets a new, normalised version of this position. Start and end lines and positions are
+     * normalised such that the same range of lines and positions are included, but the start
+     * line and position comes before the end line and position.
+     *
+     * @return A normalised copy of this position.
+     */
+    public LinePosition getNormalised() {
+        if (startLine > endLine) {
+            // Multi-line "backwards" selection; swap both lines and positions.
+            return new LinePosition(endLine, endPos, startLine, startPos);
+        } else if (startLine == endLine && startPos > endPos) {
+            // Single-line "backwards" selection; just swap the positions.
+            return new LinePosition(startLine, endPos, endLine, startPos);
+        } else {
+            // Single- or multi-line "forward" selection; swap nothing.
+            return new LinePosition(startLine, startPos, endLine, endPos);
+        }
+    }
+
     @Override
     public String toString() {
         return "Position[" + startLine + ", " + startPos + ", " + endLine
-                + ", " + endPos + "]";
+                + ", " + endPos + ']';
     }
 
 }
