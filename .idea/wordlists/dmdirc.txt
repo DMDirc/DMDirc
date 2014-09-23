@@ -1,9 +1,0 @@
-dmdirc
-addons
-ctcp
-completers
-plugin's
-ident
-substitutor
-unregister
-migrator
