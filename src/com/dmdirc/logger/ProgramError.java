@@ -22,12 +22,12 @@
 
 package com.dmdirc.logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,7 +45,7 @@ public final class ProgramError implements Serializable {
     /** A version number for this class. */
     private static final long serialVersionUID = 3;
     /** Directory used to store errors. */
-    private static File errorDir;
+    private static Path errorDir;
     /** Semaphore used to serialise write access. */
     private static final Semaphore WRITING_SEM = new Semaphore(1);
     /** The reporter to use to send this error. */
@@ -208,7 +208,7 @@ public final class ProgramError implements Serializable {
      *
      * @param directory The directory to save the error in.
      */
-    public void save(final String directory) {
+    public void save(final Path directory) {
         try (PrintWriter out = new PrintWriter(getErrorFile(directory), true)) {
             out.println("Date:" + getDate());
             out.println("Level: " + getLevel());
@@ -229,30 +229,39 @@ public final class ProgramError implements Serializable {
      * @return BufferedOutputStream to write to the error file
      */
     @SuppressWarnings("PMD.SystemPrintln")
-    private OutputStream getErrorFile(final String directory) {
+    private OutputStream getErrorFile(final Path directory) {
         WRITING_SEM.acquireUninterruptibly();
 
-        if (errorDir == null || !errorDir.exists()) {
-            errorDir = new File(directory);
-            if (!errorDir.exists()) {
-                errorDir.mkdirs();
-            }
-        }
-
-        final String logName = getDate().getTime() + "-" + getLevel();
-
-        final File errorFile = new File(errorDir, logName + ".log");
-
-        if (errorFile.exists()) {
-            boolean rename = false;
-            for (int i = 0; !rename; i++) {
-                rename = errorFile.renameTo(new File(errorDir, logName + '-' + i + ".log"));
-            }
-        }
-
         try {
-            errorFile.createNewFile();
-            return new FileOutputStream(errorFile);
+            if (errorDir == null || !Files.exists(errorDir)) {
+                errorDir = directory;
+                if (!Files.exists(errorDir)) {
+                    Files.createDirectories(errorDir);
+                }
+            }
+
+            final String logName = getDate().getTime() + "-" + getLevel();
+
+            final Path errorFile = errorDir.resolve(logName + ".log");
+
+            if (Files.exists(errorFile)) {
+                boolean rename = false;
+                for (int i = 0; !rename; i++) {
+                    try {
+                        Files.move(errorFile, errorDir.resolve(logName + '-' + i + ".log"));
+                        rename = true;
+                    } catch (IOException ex) {
+                        rename = false;
+                        if (i > 20) {
+                            // Something's probably catestrophically wrong. Give up.
+                            throw ex;
+                        }
+                    }
+                }
+            }
+
+            Files.createFile(errorFile);
+            return Files.newOutputStream(errorFile);
         } catch (IOException ex) {
             System.err.println("Error creating new file: ");
             ex.printStackTrace();

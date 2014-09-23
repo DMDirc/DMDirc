@@ -31,6 +31,7 @@ import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.collections.ListenerList;
 
 import java.awt.GraphicsEnvironment;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class ErrorManager implements ConfigChangeListener {
     /** Config to read settings from. */
     private AggregateConfigProvider config;
     /** Directory to store errors in. */
-    private String errorsDirectory;
+    private Path errorsDirectory;
 
     /** Creates a new instance of ErrorListDialog. */
     public ErrorManager() {
@@ -87,7 +88,7 @@ public class ErrorManager implements ConfigChangeListener {
      * @param directory    The directory to store errors in, if enabled.
      * @param eventBus     The event bus to listen for error events on.
      */
-    public void initialise(final AggregateConfigProvider globalConfig, final String directory,
+    public void initialise(final AggregateConfigProvider globalConfig, final Path directory,
             final DMDircMBassador eventBus) {
         eventBus.subscribe(this);
         RavenFactory.registerFactory(new DefaultRavenFactory());

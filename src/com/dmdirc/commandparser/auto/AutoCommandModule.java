@@ -25,7 +25,7 @@ package com.dmdirc.commandparser.auto;
 import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import javax.inject.Singleton;
 
@@ -44,8 +44,8 @@ public class AutoCommandModule {
     @Provides
     @Singleton
     public AutoCommandStore getAutoCommandStore(
-            @Directory(DirectoryType.BASE) final String directory) {
-        return new YamlAutoCommandStore(Paths.get(directory, "auto-commands.yml"));
+            @Directory(DirectoryType.BASE) final Path directory) {
+        return new YamlAutoCommandStore(directory.resolve("auto-commands.yml"));
     }
 
     @Provides(type = Provides.Type.SET)
