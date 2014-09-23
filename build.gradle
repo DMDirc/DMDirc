@@ -170,6 +170,15 @@ jar {
     }
 }
 
+jar.doLast {
+    copy {
+        from jar.archivePath
+        into "dist/"
+        rename ".*", "DMDirc.jar"
+    }
+}
+jar.outputs.file "dist/DMDirc.jar"
+
 buildscript {
     repositories {
         mavenCentral()
