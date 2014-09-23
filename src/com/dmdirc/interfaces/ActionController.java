@@ -193,14 +193,6 @@ public interface ActionController {
     void registerComponents(final ActionComponent[] comps);
 
     /**
-     * Adds a new listener for the specified action type.
-     *
-     * @param types    The action types that are to be listened for
-     * @param listener The listener to be added
-     */
-    void registerListener(final ActionListener listener, final ActionType... types);
-
-    /**
      * Registers the specified default setting for actions.
      *
      * @param name  The name of the setting to be registered
@@ -252,20 +244,5 @@ public interface ActionController {
             "The length of the arguments array equals the arity of the ActionType's " +
                     "ActionMetaType"})
     boolean triggerEvent(final ActionType type, final StringBuffer format, final Object... arguments);
-
-    /**
-     * Removes a listener for the specified action type.
-     *
-     * @param types    The action types that were being listened for
-     * @param listener The listener to be removed
-     */
-    void unregisterListener(final ActionListener listener, final ActionType... types);
-
-    /**
-     * Removes a listener for all action types.
-     *
-     * @param listener The listener to be removed
-     */
-    void unregisterListener(final ActionListener listener);
 
 }
