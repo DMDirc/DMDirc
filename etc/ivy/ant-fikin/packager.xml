@@ -1,9 +1,0 @@
-<packager-module version="1.0">
-    <property name="name" value="${ivy.packager.module}"/>
-    <property name="version" value="${ivy.packager.revision}"/>
-
-    <resource dest="archive" url="http://sourceforge.net/projects/fikin-ant-tasks/files/fikin-ant-tasks/${version}%20release/fikin-ant-${version}-bin.tar.gz/download" sha1="e7677de1feae55d8d4bd27cb562f9d84d7386204" type="tar.gz"/>
-    <build>
-        <move file="archive/fikin-ant-${version}/fikin-ant-${version}.jar" tofile="artifacts/jars/${name}.jar"/>
-    </build>
-</packager-module>
