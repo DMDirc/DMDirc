@@ -2,9 +2,12 @@ def jgit = new org.mdonoughe.JGitDescribeTask()
 jgit.dir = new File(projectDir, '.git')
 project.version = jgit.getDescription() + '-SNAPSHOT'
 
-apply plugin: 'maven-publish'
-
 group = 'com.dmdirc'
+
+apply plugin: 'maven-publish'
+apply plugin: 'java'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
 
 configurations {
     bundle
@@ -12,6 +15,11 @@ configurations {
     compile {
         extendsFrom bundle
     }
+}
+
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 2, 'minutes'
+    resolutionStrategy.cacheChangingModulesFor 2, 'minutes'
 }
 
 dependencies {
@@ -31,6 +39,10 @@ dependencies {
     plugin group: 'com.dmdirc', name: 'parser_irc', version: '+', changing: true
     plugin group: 'com.dmdirc', name: 'tabcompleter_bash', version: '+', changing: true
     plugin group: 'com.dmdirc', name: 'tabcompleter_mirc', version: '+', changing: true
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    testCompile group: 'com.google.jimfs', name: 'jimfs', version: '1.0'
 }
 
 publishing {
@@ -50,66 +62,54 @@ publishing {
     }
 }
 
-allprojects {
-    apply plugin: 'java'
-    apply plugin: 'findbugs'
-    apply plugin: 'pmd'
-
-    sourceSets {
-        main {
-            java {
-                srcDir 'src'
-            }
-            resources {
-                srcDir 'res'
-            }
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
         }
-        test {
-            java {
-                 srcDir 'test'
-            }
-            resources {
-                srcDir 'test-res'
-            }
+        resources {
+            srcDir 'res'
         }
     }
-
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-
-    repositories {
-        mavenCentral()
-        maven {
-            url 'http://nexus.dmdirc.com/nexus/content/repositories/thirdparty/'
+    test {
+        java {
+             srcDir 'test'
         }
-        maven {
-            url 'http://nexus.dmdirc.com/nexus/content/repositories/snapshots/'
+        resources {
+            srcDir 'test-res'
         }
     }
+}
 
-    dependencies {
-        testCompile group: 'junit', name: 'junit', version: '4.11'
-        testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
-        testCompile group: 'com.google.jimfs', name: 'jimfs', version: '1.0'
-    }
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
-    pmd {
-        ruleSets = []
-        ruleSetFiles = files("$rootDir/etc/pmd/full.xml")
+repositories {
+    mavenCentral()
+    maven {
+        url 'http://nexus.dmdirc.com/nexus/content/repositories/thirdparty/'
     }
+    maven {
+        url 'http://nexus.dmdirc.com/nexus/content/repositories/snapshots/'
+    }
+}
 
-    tasks.withType(FindBugs) {
-        reports {
-            html.enabled = true
-            xml.enabled = false
-        }
-    }
+pmd {
+    ruleSets = []
+    ruleSetFiles = files("$rootDir/etc/pmd/full.xml")
+}
 
-    findbugs {
-        reportLevel = 'low'
-        effort = 'max'
-        ignoreFailures = true
+tasks.withType(FindBugs) {
+    reports {
+        html.enabled = true
+        xml.enabled = false
     }
+}
+
+findbugs {
+    reportLevel = 'low'
+    effort = 'max'
+    ignoreFailures = true
 }
 
 task getCredentials << {
