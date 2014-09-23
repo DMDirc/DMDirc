@@ -63,7 +63,7 @@ public class ConfigModule {
     public IdentityManager getIdentityManager(
             @Directory(DirectoryType.BASE) final Path baseDirectory,
             @Directory(DirectoryType.IDENTITIES) final Path identitiesDirectory,
-            @Directory(DirectoryType.ERRORS) final String errorsDirectory,
+            @Directory(DirectoryType.ERRORS) final Path errorsDirectory,
             final CommandLineParser commandLineParser,
             final DMDircMBassador eventBus) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,

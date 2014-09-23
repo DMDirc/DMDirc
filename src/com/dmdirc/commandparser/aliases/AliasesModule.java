@@ -27,7 +27,7 @@ import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import javax.inject.Singleton;
 
@@ -43,9 +43,9 @@ public class AliasesModule {
     @Provides
     @Singleton
     public AliasStore getAliasStore(
-            @Directory(DirectoryType.BASE) final String directory,
+            @Directory(DirectoryType.BASE) final Path directory,
             final AliasFactory factory) {
-        return new YamlAliasStore(Paths.get(directory, "aliases.yml"), factory);
+        return new YamlAliasStore(directory.resolve("aliases.yml"), factory);
     }
 
     @Provides(type = Provides.Type.SET)
@@ -59,8 +59,8 @@ public class AliasesModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    public Migrator getDefaultsMigrator(@Directory(DirectoryType.BASE) final String directory) {
-        return new DefaultAliasInstaller(Paths.get(directory, "aliases.yml"));
+    public Migrator getDefaultsMigrator(@Directory(DirectoryType.BASE) final Path directory) {
+        return new DefaultAliasInstaller(directory.resolve("aliases.yml"));
     }
 
 }
