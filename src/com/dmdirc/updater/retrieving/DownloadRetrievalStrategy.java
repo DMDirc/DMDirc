@@ -29,12 +29,13 @@ import com.dmdirc.updater.checking.DownloadableUpdate;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.io.DownloadListener;
 import com.dmdirc.util.io.Downloader;
-import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.file.Path;
 
 import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
+
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@link UpdateRetrievalStrategy} that downloads a file specified in a
@@ -47,7 +48,7 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
     /** The directory to put temporary update files in. */
-    private final String directory;
+    private final Path directory;
     /** Downloader to download files. */
     private final Downloader downloader;
 
@@ -59,7 +60,7 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
      * @param downloader Used to download files
      */
     @Inject
-    public DownloadRetrievalStrategy(@Directory(DirectoryType.BASE) final String directory,
+    public DownloadRetrievalStrategy(@Directory(DirectoryType.BASE) final Path directory,
             final Downloader downloader) {
         super(DownloadableUpdate.class);
 
@@ -70,19 +71,19 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
     @Override
     protected UpdateRetrievalResult retrieveImpl(final DownloadableUpdate checkResult) {
         try {
-            final String file = getFileName();
+            final Path file = getFile();
 
             listenerList.getCallable(UpdateRetrievalListener.class)
                     .retrievalProgressChanged(checkResult.getComponent(), 0);
 
             LOG.debug("Downloading file from {} to {}", checkResult.getUrl(), file);
-            downloader.downloadPage(checkResult.getUrl().toString(), Paths.get(file),
+            downloader.downloadPage(checkResult.getUrl().toString(), file,
                     new DownloadProgressListener(checkResult.getComponent()));
 
             listenerList.getCallable(UpdateRetrievalListener.class)
                     .retrievalCompleted(checkResult.getComponent());
 
-            return new BaseSingleFileResult(checkResult, new File(file));
+            return new BaseSingleFileResult(checkResult, file);
         } catch (IOException ex) {
             LOG.warn("I/O exception downloading update from {}", checkResult.getUrl(), ex);
             listenerList.getCallable(UpdateRetrievalListener.class)
@@ -97,9 +98,8 @@ public class DownloadRetrievalStrategy extends TypeSensitiveRetrievalStrategy<Do
      *
      * @return The full, local path to download the remote file to
      */
-    private String getFileName() {
-        return directory + File.separator + "update."
-                + Math.round(10000 * Math.random()) + ".tmp";
+    private Path getFile() {
+        return directory.resolve("update." + Math.round(10000 * Math.random()) + ".tmp");
     }
 
     @Override

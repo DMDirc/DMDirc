@@ -23,6 +23,8 @@
 package com.dmdirc.updater.components;
 
 import com.dmdirc.Main;
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.core.components.StatusBarManager;
@@ -30,7 +32,9 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.FileUtils;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.inject.Inject;
 
@@ -43,6 +47,8 @@ public class ClientComponent implements UpdateComponent {
     private final IdentityController identityController;
     /** The manager to add status bar messages to. */
     private final StatusBarManager statusBarManager;
+    /** Base directory to move updates to. */
+    private final Path baseDirectory;
 
     /**
      * Creates a new instance of {@link ClientComponent}.
@@ -53,9 +59,11 @@ public class ClientComponent implements UpdateComponent {
     @Inject
     public ClientComponent(
             final IdentityController identityController,
-            final StatusBarManager statusBarManager) {
+            final StatusBarManager statusBarManager,
+            @Directory(DirectoryType.BASE) final Path baseDirectory) {
         this.identityController = identityController;
         this.statusBarManager = statusBarManager;
+        this.baseDirectory = baseDirectory;
     }
 
     @Override
@@ -84,9 +92,8 @@ public class ClientComponent implements UpdateComponent {
     }
 
     @Override
-    public String getManualInstructions(final String path) {
-        final File targetFile = new File(new File(path).getParent()
-                + File.separator + ".DMDirc.jar");
+    public String getManualInstructions(final Path path) {
+        final Path targetFile = baseDirectory.resolve(".DMDirc.jar");
 
         if (requiresManualInstall()) {
             if (FileUtils.isRunningFromJar(Main.class)) {
@@ -95,16 +102,16 @@ public class ClientComponent implements UpdateComponent {
                         + "not be installed automatically.\n\n"
                         + "To install this update manually, please replace the\n"
                         + "existing DMDirc.jar file, located at:\n"
-                        + " " + FileUtils.getApplicationPath(Main.class)
+                        + ' ' + FileUtils.getApplicationPath(Main.class)
                         + "\n with the following file:\n "
-                        + targetFile.getAbsolutePath();
+                        + targetFile.toAbsolutePath();
             } else {
                 return "A new version of DMDirc has been downloaded, but as you\n"
                         + "do not seem to be using the DMDirc launcher, it will\n"
                         + "not be installed automatically.\n\n"
                         + "To install this update manually, please extract the\n"
                         + "new DMDirc.jar file, located at:\n"
-                        + " " + targetFile.getAbsolutePath() + "\n"
+                        + ' ' + targetFile.toAbsolutePath() + '\n'
                         + "over your existing DMDirc install located in:\n"
                         + "  " + FileUtils.getApplicationPath(Main.class);
             }
@@ -118,21 +125,16 @@ public class ClientComponent implements UpdateComponent {
     }
 
     @Override
-    public boolean doInstall(final String path) {
-        final File tmpFile = new File(path);
-        final File targetFile = new File(tmpFile.getParent() + File.separator
-                + ".DMDirc.jar");
+    public boolean doInstall(final Path path) throws IOException {
+        final Path targetFile = baseDirectory.resolve(".DMDirc.jar");
 
-        if (targetFile.exists()) {
-            targetFile.delete();
-        }
-
-        tmpFile.renameTo(targetFile);
+        Files.deleteIfExists(targetFile);
+        Files.move(path, targetFile);
 
         if (requiresManualInstall()) {
             // @deprecated Should be removed when updater UI changes are
             // implemented.
-            final String message = this.getManualInstructions(path);
+            final String message = getManualInstructions(path);
             statusBarManager.setMessage(new StatusMessage(message,
                     identityController.getGlobalConfiguration()));
         }

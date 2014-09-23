@@ -29,6 +29,7 @@ import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Component for updates of DMDirc's launcher.
@@ -104,13 +105,13 @@ public class LauncherComponent implements UpdateComponent {
     }
 
     @Override
-    public String getManualInstructions(final String path) {
+    public String getManualInstructions(final Path path) {
         return "";
     }
 
     @Override
-    public boolean doInstall(final String path) throws IOException {
-        final File tmpFile = new File(path);
+    public boolean doInstall(final Path path) throws IOException {
+        final File tmpFile = path.toFile();
         if (platform.equalsIgnoreCase("Linux")
                 || platform.equalsIgnoreCase("unix")) {
             final File targetFile = new File(tmpFile.getParent()
@@ -124,9 +125,9 @@ public class LauncherComponent implements UpdateComponent {
             targetFile.setExecutable(true);
 
         } else {
-            ZipResourceManager.getInstance(path).extractResources("",
-                    tmpFile.getParent() + File.separator);
-            new File(path).delete();
+            ZipResourceManager.getInstance(path.toAbsolutePath().toString())
+                    .extractResources("", tmpFile.getParent() + File.separator);
+            path.toFile().delete();
         }
         return true;
     }

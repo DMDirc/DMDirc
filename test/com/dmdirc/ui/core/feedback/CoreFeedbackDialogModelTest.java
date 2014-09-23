@@ -28,6 +28,8 @@ import com.dmdirc.interfaces.ui.FeedbackDialogModelListener;
 
 import com.google.common.base.Optional;
 
+import java.nio.file.Path;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -43,6 +45,7 @@ public class CoreFeedbackDialogModelTest {
     @Mock private ConnectionManager connectionManager;
     @Mock private FeedbackSenderFactory feedbackSenderFactory;
     @Mock private FeedbackDialogModelListener listener;
+    @Mock private Path path;
     private static final String NAME = "Bob Dole";
     private static final String EMAIL = "bob@dole.com";
     private static final String FEEDBACK = "DMDirc Rocks.";
@@ -51,7 +54,7 @@ public class CoreFeedbackDialogModelTest {
     public void testName() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         assertEquals("testName", Optional.absent(), instance.getName());
         instance.setName(Optional.fromNullable(NAME));
         assertEquals("testName", Optional.fromNullable(NAME), instance.getName());
@@ -61,7 +64,7 @@ public class CoreFeedbackDialogModelTest {
     public void testEmail() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         assertEquals("testEmail", Optional.absent(), instance.getEmail());
         instance.setEmail(Optional.fromNullable(EMAIL));
         assertEquals("testEmail", Optional.fromNullable(EMAIL), instance.getEmail());
@@ -71,7 +74,7 @@ public class CoreFeedbackDialogModelTest {
     public void testFeedback() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         assertEquals("testFeedback", Optional.absent(), instance.getFeedback());
         instance.setFeedback(Optional.fromNullable(FEEDBACK));
         assertEquals("testFeedback", Optional.fromNullable(FEEDBACK), instance.getFeedback());
@@ -81,7 +84,7 @@ public class CoreFeedbackDialogModelTest {
     public void testServerInfo() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         assertEquals("testServerInfo", false, instance.getIncludeServerInfo());
         instance.setIncludeServerInfo(true);
         assertEquals("testServerInfo", true, instance.getIncludeServerInfo());
@@ -91,7 +94,7 @@ public class CoreFeedbackDialogModelTest {
     public void testDMDircInfo() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         assertEquals("testDMDircInfo", false, instance.getIncludeDMDircInfo());
         instance.setIncludeDMDircInfo(true);
         assertEquals("testDMDircInfo", true, instance.getIncludeDMDircInfo());
@@ -106,7 +109,7 @@ public class CoreFeedbackDialogModelTest {
     public void testNameListener() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         instance.addListener(listener);
         instance.setName(Optional.fromNullable("Bob Dole"));
         verify(listener).nameChanged(Optional.fromNullable("Bob Dole"));
@@ -116,7 +119,7 @@ public class CoreFeedbackDialogModelTest {
     public void testEmailListener() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         instance.addListener(listener);
         instance.setEmail(Optional.fromNullable("bob@dole.com"));
         verify(listener).emailChanged(Optional.fromNullable("bob@dole.com"));
@@ -126,7 +129,7 @@ public class CoreFeedbackDialogModelTest {
     public void testFeedbackListener() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         instance.addListener(listener);
         instance.setFeedback(Optional.fromNullable("DMDirc Rocks."));
         verify(listener).feedbackChanged(Optional.fromNullable("DMDirc Rocks."));
@@ -136,7 +139,7 @@ public class CoreFeedbackDialogModelTest {
     public void testServerInfoListener() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         instance.addListener(listener);
         instance.setIncludeServerInfo(true);
         verify(listener).includeServerInfoChanged(true);
@@ -146,7 +149,7 @@ public class CoreFeedbackDialogModelTest {
     public void testDMDircInfoListener() {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
-                feedbackSenderFactory, "configDirectory");
+                feedbackSenderFactory, path);
         instance.addListener(listener);
         instance.setIncludeDMDircInfo(true);
         verify(listener).includeDMDircInfoChanged(true);

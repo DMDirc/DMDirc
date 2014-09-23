@@ -28,7 +28,7 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 /**
  * Update component for action groups.
@@ -72,13 +72,13 @@ public class ActionGroupComponent implements UpdateComponent {
     }
 
     @Override
-    public String getManualInstructions(final String path) {
+    public String getManualInstructions(final Path path) {
         return "";
     }
 
     @Override
-    public boolean doInstall(final String path) throws IOException {
-        ActionManager.installActionPack(Paths.get(path));
+    public boolean doInstall(final Path path) throws IOException {
+        ActionManager.installActionPack(path);
         return false;
     }
 

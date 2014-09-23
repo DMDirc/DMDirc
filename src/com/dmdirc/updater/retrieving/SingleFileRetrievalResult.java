@@ -35,6 +35,6 @@ public interface SingleFileRetrievalResult extends UpdateRetrievalResult {
      *
      * @return The file containing the retrieved update
      */
-    File getFile();
+    java.nio.file.Path getFile();
 
 }

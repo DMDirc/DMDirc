@@ -24,7 +24,7 @@ package com.dmdirc.updater.retrieving;
 
 import com.dmdirc.updater.checking.UpdateCheckResult;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * Simple implementation of a {@link SingleFileRetrievalResult}.
@@ -33,21 +33,20 @@ public class BaseSingleFileResult extends BaseRetrievalResult
         implements SingleFileRetrievalResult {
 
     /** The file where the update is located. */
-    private final File file;
+    private final Path file;
 
     /**
      * Creates a new instance of {@link BaseSingleFileResult}.
-     *
-     * @param checkResult The check result that triggered this retrieval
+     *  @param checkResult The check result that triggered this retrieval
      * @param file        The file containing the update
      */
-    public BaseSingleFileResult(final UpdateCheckResult checkResult, final File file) {
+    public BaseSingleFileResult(final UpdateCheckResult checkResult, final Path file) {
         super(checkResult, true);
 
         this.file = file;
     }
 
-    public File getFile() {
+    public Path getFile() {
         return file;
     }
 

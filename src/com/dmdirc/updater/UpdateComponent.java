@@ -22,6 +22,8 @@
 
 package com.dmdirc.updater;
 
+import java.nio.file.Path;
+
 /**
  * The update component interface defines the methods needed to be implemented by updatable
  * components. The components handle determining the current version and installing updated files.
@@ -62,7 +64,7 @@ public interface UpdateComponent {
 
     /**
      * Provisionally indicates if this component will require a client restart. The result of
-     * {@link #doInstall(java.lang.String)} ultimately decides if the client requires a restart.
+     * {@link #doInstall(Path)} ultimately decides if the client requires a restart.
      *
      * @return True if the client requires a restart
      *
@@ -89,7 +91,7 @@ public interface UpdateComponent {
      *
      * @since 0.6.4
      */
-    String getManualInstructions(final String path);
+    String getManualInstructions(final Path path);
 
     /**
      * Installs the updated version of this component. After the update has been installed, the
@@ -101,6 +103,6 @@ public interface UpdateComponent {
      *
      * @throws java.lang.Exception If any error occurred
      */
-    boolean doInstall(String path) throws Exception; //NOPMD
+    boolean doInstall(Path path) throws Exception; //NOPMD
 
 }
