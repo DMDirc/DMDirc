@@ -32,7 +32,6 @@ import com.dmdirc.events.DMDircEvent;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.ActionController;
-import com.dmdirc.interfaces.ActionListener;
 import com.dmdirc.interfaces.actions.ActionComparison;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
@@ -50,6 +49,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +58,7 @@ import java.util.Set;
 
 import javax.inject.Provider;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.engio.mbassy.listener.Handler;
@@ -70,7 +71,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ActionManager implements ActionController {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ActionManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ActionManager.class);
     /** The ActionManager Instance. */
     private static ActionManager me;
     /** The identity manager to load configuration from. */
@@ -82,11 +83,11 @@ public class ActionManager implements ActionController {
     /** Provider of an update manager. */
     private final Provider<UpdateManager> updateManagerProvider;
     /** A list of registered action types. */
-    private final List<ActionType> types = new ArrayList<>();
+    private final Collection<ActionType> types = new ArrayList<>();
     /** A list of registered action components. */
-    private final List<ActionComponent> components = new ArrayList<>();
+    private final Collection<ActionComponent> components = new ArrayList<>();
     /** A list of registered action comparisons. */
-    private final List<ActionComparison> comparisons = new ArrayList<>();
+    private final Collection<ActionComparison> comparisons = new ArrayList<>();
     /** A map linking types and a list of actions that're registered for them. */
     private final MapList<ActionType, Action> actions = new MapList<>();
     /** A map linking groups and a list of actions that're in them. */
@@ -95,8 +96,6 @@ public class ActionManager implements ActionController {
     private final Map<String, Object> locks = new HashMap<>();
     /** A map of the action type groups to the action types within. */
     private final MapList<String, ActionType> typeGroups = new MapList<>();
-    /** The listeners that we have registered. */
-    private final MapList<ActionType, ActionListener> listeners = new MapList<>();
     /** The global event bus to monitor. */
     private final DMDircMBassador eventBus;
     /** The directory to load and save actions in. */
@@ -367,24 +366,7 @@ public class ActionManager implements ActionController {
 
         LOG.trace("Calling listeners for event of type {}", type);
 
-        boolean res = false;
-
-        if (listeners.containsKey(type)) {
-            for (ActionListener listener : new ArrayList<>(listeners.get(type))) {
-                try {
-                    listener.processEvent(type, format, arguments);
-                } catch (Exception e) {
-                    eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e,
-                            "Error processing action: " + e.getMessage(), ""));
-                }
-            }
-        }
-
-        if (!killSwitch) {
-            res = triggerActions(type, format, arguments);
-        }
-
-        return !res;
+        return killSwitch || !triggerActions(type, format, arguments);
     }
 
     /**
@@ -402,10 +384,9 @@ public class ActionManager implements ActionController {
             final StringBuffer format, final Object... arguments) {
         checkNotNull(type);
 
-        boolean res = false;
-
         LOG.trace("Executing actions for event of type {}", type);
 
+        boolean res = false;
         if (actions.containsKey(type)) {
             for (Action action : new ArrayList<>(actions.get(type))) {
                 try {
@@ -495,7 +476,7 @@ public class ActionManager implements ActionController {
                 final Method method = methods[j];
                 if (method.getParameterTypes().length == 0
                         && method.getName().startsWith("get")
-                        && !method.getName().equals("getDisplayFormat")
+                        && !"getDisplayFormat".equals(method.getName())
                         && method.getReturnType().equals(target)
                         && Math.abs(j - i) < bestDistance) {
                     bestDistance = Math.abs(j - i);
@@ -685,25 +666,6 @@ public class ActionManager implements ActionController {
         FileUtils.copyRecursively(path, Paths.get(getActionManager().directory));
         getActionManager().loadUserActions();
         Files.delete(path);
-    }
-
-    @Override
-    public void registerListener(final ActionListener listener, final ActionType... types) {
-        for (ActionType type : types) {
-            listeners.add(type, listener);
-        }
-    }
-
-    @Override
-    public void unregisterListener(final ActionListener listener, final ActionType... types) {
-        for (ActionType type : types) {
-            listeners.remove(type, listener);
-        }
-    }
-
-    @Override
-    public void unregisterListener(final ActionListener listener) {
-        listeners.removeFromAll(listener);
     }
 
 }
