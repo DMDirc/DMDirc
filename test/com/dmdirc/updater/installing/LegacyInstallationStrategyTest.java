@@ -25,13 +25,16 @@ package com.dmdirc.updater.installing;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.retrieving.SingleFileRetrievalResult;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class LegacyInstallationStrategyTest {
 
@@ -53,17 +56,23 @@ public class LegacyInstallationStrategyTest {
 
     @Test
     public void testCallsInstallWithCorrectPath() throws Exception { // NOPMD
-        final File file = mock(File.class);
-        when(file.getAbsolutePath()).thenReturn("/my/path");
+        final Path file = mock(Path.class);
+        final Path absoluteFile = mock(Path.class);
+        when(file.toString()).thenReturn("path");
+        when(file.toAbsolutePath()).thenReturn(absoluteFile);
+        when(absoluteFile.toString()).thenReturn("/my/path");
         when(result.getFile()).thenReturn(file);
         strategy.installImpl(component, result);
-        verify(component).doInstall("/my/path");
+        verify(component).doInstall(file);
     }
 
     @Test
     public void testRaisesCompletedEvent() throws Exception { // NOPMD
-        final File file = mock(File.class);
-        when(result.getFile()).thenReturn(file);
+        final Path file = mock(Path.class);
+        final Path absoluteFile = mock(Path.class);
+        when(file.toString()).thenReturn("path");
+        when(file.toAbsolutePath()).thenReturn(absoluteFile);
+        when(absoluteFile.toString()).thenReturn("/my/path");
         strategy.addUpdateInstallationListener(listener);
         strategy.installImpl(component, result);
         verify(listener).installCompleted(component);
@@ -71,9 +80,12 @@ public class LegacyInstallationStrategyTest {
 
     @Test
     public void testRaisesFailedEvent() throws Exception { // NOPMD
-        final File file = mock(File.class);
-        when(result.getFile()).thenReturn(file);
-        when(component.doInstall(anyString())).thenThrow(new IOException());
+        final Path file = mock(Path.class);
+        final Path absoluteFile = mock(Path.class);
+        when(file.toString()).thenReturn("path");
+        when(file.toAbsolutePath()).thenReturn(absoluteFile);
+        when(absoluteFile.toString()).thenReturn("/my/path");
+        when(component.doInstall(Matchers.<Path>anyObject())).thenThrow(new IOException());
         strategy.addUpdateInstallationListener(listener);
         strategy.installImpl(component, result);
         verify(listener).installFailed(component);

@@ -30,8 +30,9 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.resourcemanager.ZipResourceManager;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.inject.Inject;
 
@@ -97,19 +98,20 @@ public class ModeAliasesComponent implements UpdateComponent {
     }
 
     @Override
-    public String getManualInstructions(final String path) {
+    public String getManualInstructions(final Path path) {
         return "";
     }
 
     @Override
-    public boolean doInstall(final String path) throws IOException {
-        final ZipResourceManager ziprm = ZipResourceManager.getInstance(path);
+    public boolean doInstall(final Path path) throws IOException {
+        final ZipResourceManager ziprm =
+                ZipResourceManager.getInstance(path.toAbsolutePath().toString());
 
         ziprm.extractResources("", directory);
 
         identityController.loadUserIdentities();
 
-        new File(path).delete();
+        Files.delete(path);
 
         return false;
     }

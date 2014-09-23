@@ -30,6 +30,7 @@ import com.dmdirc.updater.Version;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.zip.ZipFile;
 
 /**
@@ -83,12 +84,12 @@ public class PluginComponent implements UpdateComponent {
     }
 
     @Override
-    public String getManualInstructions(final String path) {
+    public String getManualInstructions(final Path path) {
         return "";
     }
 
     @Override
-    public boolean doInstall(final String path) {
+    public boolean doInstall(final Path path) {
         final File target = new File(plugin.getMetaData().getPluginUrl().getPath());
 
         boolean returnCode = false;
@@ -101,7 +102,7 @@ public class PluginComponent implements UpdateComponent {
         // Try and move the downloaded plugin to the new location.
         // If it doesn't work then keep the plugin in a .update file until the next restart.
         // If it does, update the metadata.
-        final File newPlugin = new File(path);
+        final File newPlugin = path.toFile();
         if (!isValid(newPlugin)) {
             return false;
         }
@@ -114,7 +115,7 @@ public class PluginComponent implements UpdateComponent {
                 newTarget.delete();
             }
 
-            new File(path).renameTo(newTarget);
+            path.toFile().renameTo(newTarget);
             returnCode = true;
         } else {
             try {

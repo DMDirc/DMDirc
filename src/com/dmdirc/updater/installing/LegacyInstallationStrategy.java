@@ -28,15 +28,16 @@ import com.dmdirc.util.collections.ListenerList;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * An {@link UpdateInstallationStrategy} which uses the old
- * {@link UpdateComponent#doInstall(java.lang.String)} methods to perform installation.
+ * {@link UpdateComponent#doInstall(java.nio.file.Path)} methods to perform installation.
  */
 public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrategy<UpdateComponent, SingleFileRetrievalResult> {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(
+    private static final Logger LOG = LoggerFactory.getLogger(
             LegacyInstallationStrategy.class);
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
@@ -56,7 +57,7 @@ public class LegacyInstallationStrategy extends TypeSensitiveInstallationStrateg
                 retrievalResult.getFile(), component.getName());
 
         try {
-            component.doInstall(retrievalResult.getFile().getAbsolutePath());
+            component.doInstall(retrievalResult.getFile());
             listenerList.getCallable(UpdateInstallationListener.class).installCompleted(component);
         } catch (Exception ex) {
             LOG.warn("Error installing update for {}", component.getName(), ex);

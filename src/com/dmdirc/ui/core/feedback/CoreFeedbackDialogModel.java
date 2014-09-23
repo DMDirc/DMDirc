@@ -39,6 +39,8 @@ import com.dmdirc.util.validators.Validator;
 
 import com.google.common.base.Optional;
 
+import java.nio.file.Path;
+
 import javax.inject.Inject;
 
 /**
@@ -50,7 +52,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
     private final ListenerList listeners;
     private final AggregateConfigProvider config;
     private final ConnectionManager connectionManager;
-    private final String configDirectory;
+    private final Path configDirectory;
     private Optional<String> name;
     private Optional<String> email;
     private Optional<String> feedback;
@@ -60,7 +62,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
     @Inject
     public CoreFeedbackDialogModel(@ClientModule.GlobalConfig final AggregateConfigProvider config,
             final ConnectionManager connectionManager, final FeedbackSenderFactory feedbackSenderFactory,
-            @Directory(DirectoryType.BASE) final String configDirectory) {
+            @Directory(DirectoryType.BASE) final Path configDirectory) {
         this.connectionManager = connectionManager;
         this.configDirectory = configDirectory;
         this.feedbackSenderFactory = feedbackSenderFactory;
