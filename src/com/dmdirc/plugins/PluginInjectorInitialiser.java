@@ -27,7 +27,6 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionSubstitutorFactory;
-import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ConnectionManager;
@@ -62,7 +61,6 @@ public class PluginInjectorInitialiser {
     private final WindowManager windowManager;
     private final StatusBarManager statusBarManager;
     private final PreferencesManager preferencesManager;
-    private final PerformWrapper performWrapper;
     private final LifecycleController lifecycleController;
     private final CorePluginExtractor corePluginExtractor;
     private final URLBuilder urlBuilder;
@@ -83,7 +81,6 @@ public class PluginInjectorInitialiser {
             final WindowManager windowManager,
             final StatusBarManager statusBarManager,
             final PreferencesManager preferencesManager,
-            final PerformWrapper performWrapper,
             final LifecycleController lifecycleController,
             final CorePluginExtractor corePluginExtractor,
             final URLBuilder urlBuilder,
@@ -102,7 +99,6 @@ public class PluginInjectorInitialiser {
         this.windowManager = windowManager;
         this.statusBarManager = statusBarManager;
         this.preferencesManager = preferencesManager;
-        this.performWrapper = performWrapper;
         this.lifecycleController = lifecycleController;
         this.corePluginExtractor = corePluginExtractor;
         this.urlBuilder = urlBuilder;
@@ -127,7 +123,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(WindowManager.class, windowManager);
         injector.addParameter(statusBarManager);
         injector.addParameter(PreferencesManager.class, preferencesManager);
-        injector.addParameter(PerformWrapper.class, performWrapper);
         injector.addParameter(LifecycleController.class, lifecycleController);
         injector.addParameter(corePluginExtractor);
         injector.addParameter(actionFactory);

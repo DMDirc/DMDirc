@@ -22,7 +22,6 @@
 
 package com.dmdirc.actions.wrappers;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionComponentChain;
 import com.dmdirc.actions.ActionCondition;
@@ -33,11 +32,11 @@ import com.dmdirc.actions.ConditionTree;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.commandparser.auto.AutoCommand;
+import com.dmdirc.commandparser.auto.AutoCommandManager;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.actions.ActionType;
-import com.dmdirc.logger.ErrorLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,61 +46,28 @@ import javax.inject.Singleton;
 
 /**
  * An action wrapper for performs.
+ *
+ * @deprecated Use {@link AutoCommandManager}
  */
 @Singleton
+@Deprecated
 public class PerformWrapper extends ActionGroup {
 
     /** The component name for per-profile perform conditions. */
     private static final String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
     /** Factory to use for actions. */
     private final ActionFactory actionFactory;
-    /** The event bus to post events to. */
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of PerformWrapper.
      *
      * @param actionFactory Factory to use to create actions.
-     * @param eventBus      The event bus to post events to.
      */
     @Inject
-    public PerformWrapper(final ActionFactory actionFactory,
-            final DMDircMBassador eventBus) {
+    public PerformWrapper(final ActionFactory actionFactory) {
         super("performs");
 
         this.actionFactory = actionFactory;
-        this.eventBus = eventBus;
-    }
-
-    @Override
-    public void add(final Action action) {
-        if (action.getTriggers().length != 1) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Invalid perform action: " + action.getName(),
-                    "Perform actions may only have one trigger"));
-        } else if (action.getTriggers()[0] != CoreActionType.SERVER_CONNECTED) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Invalid perform action: " + action.getName(),
-                    "Perform actions must be triggered when a server connects"));
-        } else if (!checkConditions(action.getConditions())) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Invalid perform action: " + action.getName(),
-                    "Perform actions must have exactly one or two conditions, "
-                    + "one may target the server's name or network, and one may "
-                    + "target the server's profile name. No other targets are "
-                    + "allowed."));
-        } else {
-            synchronized (this) {
-                super.add(action);
-            }
-        }
-    }
-
-    @Override
-    public void deleteAction(final Action action) {
-        synchronized (this) {
-            super.deleteAction(action);
-        }
     }
 
     /**
@@ -185,35 +151,6 @@ public class PerformWrapper extends ActionGroup {
         }
 
         return true;
-    }
-
-    /**
-     * Checks that the specified conditions are valid for a perform action.
-     *
-     * @param conditions The conditions to be checked
-     *
-     * @since 0.6.3m2
-     * @return True if the conditions are valid, false otherwise
-     */
-    protected boolean checkConditions(final Iterable<ActionCondition> conditions) {
-        boolean target = false;
-        boolean profile = false;
-
-        for (ActionCondition condition : conditions) {
-            if ((condition.getComponent() == CoreActionComponent.SERVER_NETWORK
-                    || condition.getComponent() == CoreActionComponent.SERVER_NAME)
-                    && !target) {
-                target = true;
-            } else if (condition.getComponent() instanceof ActionComponentChain
-                    && PP_COMP_NAME.equals(condition.getComponent().toString())
-                    && !profile) {
-                profile = true;
-            } else {
-                return false;
-            }
-        }
-
-        return target || profile;
     }
 
     /**
@@ -304,7 +241,9 @@ public class PerformWrapper extends ActionGroup {
      * Describes one specific perform.
      *
      * @since 0.6.4
+     * @deprecated See {@link AutoCommand}
      */
+    @Deprecated
     public static class PerformDescription {
 
         /** The type of the perform being described. */

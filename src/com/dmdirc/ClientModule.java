@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
@@ -169,12 +168,6 @@ public class ClientModule {
         final ThemeManager manager = new ThemeManager(eventBus, controller, directory);
         manager.refreshAndLoadThemes();
         return manager;
-    }
-
-    @Provides(type = Provides.Type.SET)
-    @Singleton
-    public ActionGroup getPerformWrapper(final PerformWrapper wrapper) {
-        return wrapper;
     }
 
     @Provides
