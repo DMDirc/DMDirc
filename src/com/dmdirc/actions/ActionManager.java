@@ -54,7 +54,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Provider;
 
@@ -78,8 +77,6 @@ public class ActionManager implements ActionController {
     private final IdentityController identityManager;
     /** The factory to use to create actions. */
     private final ActionFactory factory;
-    /** Provider for action wrappers. */
-    private final Provider<Set<ActionGroup>> actionWrappersProvider;
     /** Provider of an update manager. */
     private final Provider<UpdateManager> updateManagerProvider;
     /** A list of registered action types. */
@@ -109,7 +106,6 @@ public class ActionManager implements ActionController {
      *
      * @param identityManager        The IdentityManager to load configuration from.
      * @param factory                The factory to use to create new actions.
-     * @param actionWrappersProvider Provider of action wrappers.
      * @param updateManagerProvider  Provider of an update manager, to register components.
      * @param eventBus               The global event bus to monitor.
      * @param directory              The directory to load and save actions in.
@@ -117,13 +113,11 @@ public class ActionManager implements ActionController {
     public ActionManager(
             final IdentityController identityManager,
             final ActionFactory factory,
-            final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
             final DMDircMBassador eventBus,
             final String directory) {
         this.identityManager = identityManager;
         this.factory = factory;
-        this.actionWrappersProvider = actionWrappersProvider;
         this.updateManagerProvider = updateManagerProvider;
         this.eventBus = eventBus;
         this.directory = directory;
@@ -165,10 +159,6 @@ public class ActionManager implements ActionController {
         registerComparisons(CoreActionComparison.values());
         registerComparisons(colourComparisons.getComparisons());
         registerComponents(CoreActionComponent.values());
-
-        for (ActionGroup wrapper : actionWrappersProvider.get()) {
-            addGroup(wrapper);
-        }
 
         new WhoisNumericFormatter(identityManager.getAddonSettings(), eventBus).register();
 

@@ -124,12 +124,11 @@ public class ClientModule {
     public ActionManager getActionManager(
             final IdentityController identityController,
             final ActionFactory actionFactory,
-            final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
             final DMDircMBassador eventBus,
             @Directory(DirectoryType.ACTIONS) final String directory) {
         final ActionManager actionManager = new ActionManager(identityController,
-                actionFactory, actionWrappersProvider, updateManagerProvider, eventBus, directory);
+                actionFactory, updateManagerProvider, eventBus, directory);
         ActionManager.setActionManager(actionManager);
         return actionManager;
     }
