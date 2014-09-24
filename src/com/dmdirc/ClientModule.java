@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
@@ -125,12 +124,11 @@ public class ClientModule {
     public ActionManager getActionManager(
             final IdentityController identityController,
             final ActionFactory actionFactory,
-            final Provider<Set<ActionGroup>> actionWrappersProvider,
             final Provider<UpdateManager> updateManagerProvider,
             final DMDircMBassador eventBus,
             @Directory(DirectoryType.ACTIONS) final String directory) {
         final ActionManager actionManager = new ActionManager(identityController,
-                actionFactory, actionWrappersProvider, updateManagerProvider, eventBus, directory);
+                actionFactory, updateManagerProvider, eventBus, directory);
         ActionManager.setActionManager(actionManager);
         return actionManager;
     }
@@ -169,12 +167,6 @@ public class ClientModule {
         final ThemeManager manager = new ThemeManager(eventBus, controller, directory);
         manager.refreshAndLoadThemes();
         return manager;
-    }
-
-    @Provides(type = Provides.Type.SET)
-    @Singleton
-    public ActionGroup getPerformWrapper(final PerformWrapper wrapper) {
-        return wrapper;
     }
 
     @Provides
