@@ -41,6 +41,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * The styliser applies IRC styles to text. Styles are indicated by various control codes which are
  * a de-facto IRC standard.
@@ -255,7 +257,13 @@ public class Styliser implements ConfigChangeListener {
      * @since 0.6.3
      */
     public static String getStyledText(final String styled, final int from, final int to) {
+        checkArgument(from < to, "'from' must be less than 'to'");
+        checkArgument(from >= 0, "'from' must be non-negative");
+
         final String unstyled = stipControlCodes(styled);
+
+        checkArgument(to < unstyled.length(), "'to' must be less than the unstyled length");
+
         final String startBit = unstyled.substring(0, from);
         final String middleBit = unstyled.substring(from, to);
         final String sanitised = stipInternalControlCodes(styled);
