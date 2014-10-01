@@ -25,6 +25,7 @@ package com.dmdirc.logger;
 import java.util.Date;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -43,20 +44,27 @@ import net.kencochrane.raven.event.interfaces.SentryInterface;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ErrorReporterTest {
 
-    @Mock private RavenFactory ravenFactory;
+    private static RavenFactory ravenFactory;
     @Mock private Raven raven;
     @Captor private ArgumentCaptor<Event> eventCaptor;
     private ErrorReporter errorReporter;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUpClass() {
+        // Static calls are horrible.
+        ravenFactory = mock(RavenFactory.class);
         RavenFactory.registerFactory(ravenFactory);
+    }
+
+    @Before
+    public void setUp() {
         when(ravenFactory.createRavenInstance(Matchers.<Dsn>anyObject())).thenReturn(raven);
         errorReporter = new ErrorReporter();
     }
