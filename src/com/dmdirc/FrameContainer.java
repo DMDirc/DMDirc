@@ -449,11 +449,9 @@ public abstract class FrameContainer {
      *
      * @since 0.6.4
      */
-    public void addLine(final String type, final Date timestamp,
-            final Object... args) {
+    public void addLine(final String type, final Date timestamp, final Object... args) {
         if (type != null && !type.isEmpty()) {
-            addLine(Formatter.formatMessage(getConfigManager(), type, args),
-                    timestamp);
+            addLine(Formatter.formatMessage(getConfigManager(), type, args), timestamp);
         }
     }
 
@@ -478,8 +476,7 @@ public abstract class FrameContainer {
      *
      * @since 0.6.4
      */
-    public void addLine(final StringBuffer type, final Date timestamp,
-            final Object... args) {
+    public void addLine(final StringBuffer type, final Date timestamp, final Object... args) {
         if (type != null) {
             addLine(type.toString(), timestamp, args);
         }
@@ -518,13 +515,13 @@ public abstract class FrameContainer {
     public void addLine(final String line, final Date timestamp) {
         final List<String[]> lines = new LinkedList<>();
         for (final String myLine : line.split("\n")) {
-            if (timestamp != null) {
-                lines.add(new String[]{
-                    Formatter.formatMessage(getConfigManager(), "timestamp",
-                    timestamp),
-                    myLine,});
-            } else {
+            if (timestamp == null) {
                 lines.add(new String[]{myLine});
+            } else {
+                lines.add(new String[]{
+                        Formatter.formatMessage(getConfigManager(), "timestamp", timestamp),
+                        myLine,
+                });
             }
 
             eventBus.publishAsync(new ClientLineAddedEvent(this, myLine));
