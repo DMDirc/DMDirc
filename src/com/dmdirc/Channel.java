@@ -303,7 +303,7 @@ public class Channel extends MessageTarget implements GroupChat {
         }
 
         // Trigger any actions neccessary
-        if (isOnChannel) {
+        if (isOnChannel && server.getState() != ServerState.CLOSING) {
             part(getConfigManager().getOption("general", "partmessage"));
         }
 
