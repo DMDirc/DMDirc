@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionFactory;
-import com.dmdirc.actions.ActionGroup;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
@@ -51,8 +50,6 @@ import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.io.Downloader;
-
-import java.util.Set;
 
 import javax.inject.Provider;
 import javax.inject.Qualifier;
@@ -147,8 +144,9 @@ public class ClientModule {
     @Singleton
     public CommandManager getCommandManager(
             final ConnectionManager connectionManager,
+            final Provider<GlobalWindow> globalWindowProvider,
             @GlobalConfig final AggregateConfigProvider globalConfig) {
-        final CommandManager manager = new CommandManager(connectionManager);
+        final CommandManager manager = new CommandManager(connectionManager, globalWindowProvider);
         manager.initialise(globalConfig);
         return manager;
     }

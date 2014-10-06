@@ -33,6 +33,8 @@ import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
 
+import javax.inject.Provider;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -50,6 +52,7 @@ public class WritableFrameContainerTest {
     @Mock private URLBuilder urlBuilder;
     @Mock private DMDircMBassador eventBus;
     @Mock private ColourManagerFactory colourManagerFactory;
+    @Mock private Provider<GlobalWindow> globalWindowProvider;
     private CommandManager commands;
 
     @Before
@@ -59,7 +62,7 @@ public class WritableFrameContainerTest {
         when(acp.getOption("general", "commandchar")).thenReturn("/");
         final ConfigBinder binder = new ConfigBinder(acp);
         when(acp.getBinder()).thenReturn(binder);
-        commands = new CommandManager(connectionManager);
+        commands = new CommandManager(connectionManager, globalWindowProvider);
         commands.initialise(acp);
     }
 
