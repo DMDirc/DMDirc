@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.GlobalWindow;
 import com.dmdirc.Query;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.CommandParser;
@@ -39,6 +40,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Provider;
+
 /**
  * The command manager creates and manages a single instance of all commands, and provides methods
  * to load each group of commands into a parser instance.
@@ -51,6 +54,8 @@ public class CommandManager implements CommandController {
     private final MapList<CommandType, CommandParser> parsers = new MapList<>();
     /** The manager to use to iterate servers. */
     private final ConnectionManager connectionManager;
+    /** Provider to use to retrieve the global window. */
+    private final Provider<GlobalWindow> globalWindowProvider;
     /** The command char we're using. */
     @ConfigBinding(domain = "general", key = "commandchar")
     private char commandChar;
@@ -62,9 +67,12 @@ public class CommandManager implements CommandController {
      * Creates a new instance of the Command Manager.
      *
      * @param connectionManager the manager to use to iterate servers.
+     * @param globalWindowProvider provider to use to retrieve the global window.
      */
-    public CommandManager(final ConnectionManager connectionManager) {
+    public CommandManager(final ConnectionManager connectionManager,
+            final Provider<GlobalWindow> globalWindowProvider) {
         this.connectionManager = connectionManager;
+        this.globalWindowProvider = globalWindowProvider;
     }
 
     @Override
@@ -153,6 +161,11 @@ public class CommandManager implements CommandController {
             final boolean register) {
         // Do tab completion
         final String commandName = getCommandChar() + command.getName();
+
+        if (command.getType() == CommandType.TYPE_GLOBAL) {
+            registerCommandName(globalWindowProvider.get().getTabCompleter(),
+                    commandName, register);
+        }
 
         // TODO: This logic is probably in two places. Abstract it.
         for (Connection server : connectionManager.getConnections()) {
