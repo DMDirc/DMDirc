@@ -37,6 +37,7 @@ import com.dmdirc.util.collections.MapList;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -252,7 +253,7 @@ public class PluginManager implements ServiceManager {
             final PluginMetaData metadata = new PluginMetaData(this,
                     new URL("jar:file:" + directory + filename
                             + "!/META-INF/plugin.config"),
-                    new URL("file:" + directory + filename));
+                    Paths.get(directory, filename));
             metadata.load();
             final PluginInfo pluginInfo = new PluginInfo(directory, metadata,
                     initialiserProvider, eventBus,
@@ -494,7 +495,7 @@ public class PluginManager implements ServiceManager {
                 final PluginMetaData targetMetaData = new PluginMetaData(this,
                         new URL("jar:file:" + directory + target
                                 + "!/META-INF/plugin.config"),
-                        new URL("file:" + directory + target));
+                        Paths.get(directory, target));
                 targetMetaData.load();
 
                 if (targetMetaData.hasErrors()) {

@@ -73,7 +73,7 @@ public class URLBuilder {
      * @return An URL corresponding to the specified path, or null on failure
      */
     public URL getUrlForFile(final String path) {
-        final String prefix = path.startsWith("file://") ? "" : "file://";
+        final String prefix = path.startsWith("file:/") ? "" : "file://";
 
         try {
             return new URL(prefix + path);
@@ -143,7 +143,7 @@ public class URLBuilder {
     public URL getUrlForPluginResource(final String plugin, final String path) {
         return getUrlForJarFile(
                 pluginManagerProvider.get().getPluginInfoByName(plugin)
-                .getMetaData().getPluginUrl().getPath(), path);
+                .getMetaData().getPluginPath().toString(), path);
     }
 
     /**

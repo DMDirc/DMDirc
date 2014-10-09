@@ -26,39 +26,40 @@ import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Reads metadata for a plugin. Plugin metadata is defined in a DMDirc {@link ConfigFile} which is
  * typically found inside plugin jars as <code>META-INF/plugin.config</code>. The following sections
  * are read from the config file:
  * <ul>
- * <li><code>metadata</code> - generic plugin information. See {@link #readMetaData(java.util.Map)}.
- * <li><code>version</code> - versioning information. See {@link #readVersion(java.util.Map)}.
+ * <li><code>metadata</code> - generic plugin information. See {@link #readMetaData(Map)}.
+ * <li><code>version</code> - versioning information. See {@link #readVersion(Map)}.
  * <li><code>defaults</code> - optional default settings to add to the configuration
  * <li><code>formatters</code> - optional default formatters to add to the configuration
  * <li><code>icons</code> - optional default icons to add to the configuration
  * <li><code>requires</code> - optional generic requirements. See
- * {@link #readRequirements(java.util.Map, java.util.List)}.
+ * {@link #readRequirements(Map, Collection)}.
  * <li><code>required-services</code> - optional service requirements. See
- * {@link #readRequirements(java.util.Map, java.util.List)}.
+ * {@link #readRequirements(Map, Collection)}.
  * <li><code>updates</code> - optional information for automated updates. See
- * {@link #readUpdates(java.util.Map)}.
+ * {@link #readUpdates(Map)}.
  * <li><code>provides</code> - optional list of services provided by the plugin. See
- * {@link #readProvides(java.util.List)}.
+ * {@link #readProvides(Collection)}.
  * <li><code>exports</code> - optional list of methods exported by the plugin. See
- * {@link #readExports(java.util.List)}.
+ * {@link #readExports(Collection)}.
  * <li><code>persistent</code> - optional list of persistent classes within the plugin. See
- * {@link #readPersistent(java.util.List)}.
+ * {@link #readPersistent(Collection)}.
  * </ul>
  * A collection of errors that occurred when attempting to read the metadata is available via the
  * {@link #getErrors()} method.
@@ -106,7 +107,7 @@ public class PluginMetaData {
     /** Whether or not the plugin is marked as unloadable. */
     private boolean unloadable;
     /** The URL to the plugin. */
-    private final URL pluginUrl;
+    private final Path pluginPath;
     /** The URL to load the metadata from. */
     private final URL url;
     /** The parent plugin manager. */
@@ -117,11 +118,11 @@ public class PluginMetaData {
      *
      * @param manager   Plugin manager
      * @param url       The URL to load the config file from
-     * @param pluginUrl The URL to the plugin that this data corresponds to
+     * @param pluginPath The path to the plugin that this data corresponds to
      */
-    public PluginMetaData(final PluginManager manager, final URL url, final URL pluginUrl) {
+    public PluginMetaData(final PluginManager manager, final URL url, final Path pluginPath) {
         this.manager = manager;
-        this.pluginUrl = pluginUrl;
+        this.pluginPath = pluginPath;
         this.url = url;
     }
 
@@ -156,13 +157,12 @@ public class PluginMetaData {
         }
 
         final PluginMetaData other = (PluginMetaData) obj;
-        return pluginUrl == other.getPluginUrl() || (pluginUrl != null
-                && pluginUrl.equals(other.getPluginUrl()));
+        return Objects.equals(other.getPluginPath(), pluginPath);
     }
 
     @Override
     public int hashCode() {
-        return pluginUrl == null ? 0 : pluginUrl.hashCode();
+        return pluginPath == null ? 0 : pluginPath.hashCode();
     }
 
     // <editor-fold desc="Read methods">
@@ -284,7 +284,7 @@ public class PluginMetaData {
      * @param requiredServices The specified required services
      */
     protected void readRequirements(final Map<String, String> data,
-            final List<String> requiredServices) {
+            final Collection<String> requiredServices) {
         readSettings(requirements, data);
 
         if (requirements.containsKey("parent")) {
@@ -307,7 +307,7 @@ public class PluginMetaData {
      *
      * @param services The services to be added
      */
-    protected void readProvides(final List<String> services) {
+    protected void readProvides(final Collection<String> services) {
         this.services.clear();
 
         if (services != null) {
@@ -321,11 +321,11 @@ public class PluginMetaData {
      *
      * @param classes The services to be added
      */
-    protected void readPersistent(final List<String> classes) {
-        this.persistentClasses.clear();
+    protected void readPersistent(final Collection<String> classes) {
+        persistentClasses.clear();
 
         if (classes != null) {
-            this.persistentClasses.addAll(classes);
+            persistentClasses.addAll(classes);
         }
     }
 
@@ -337,7 +337,7 @@ public class PluginMetaData {
      *
      * @param exports The exported methods for this plugin
      */
-    protected void readExports(final List<String> exports) {
+    protected void readExports(final Collection<String> exports) {
         this.exports.clear();
 
         if (exports != null) {
@@ -350,15 +350,11 @@ public class PluginMetaData {
      * Calculates the relative path of this plugin in relation to the main plugin directory.
      *
      * @return The plugin's relative path, or absolute path if not within the plugins directory
+     * @deprecated Should be calculated by callers as-needed.
      */
+    @Deprecated
     public String getRelativeFilename() {
-        // Yuck...
-        final String filename = getPluginUrl().getPath();
-        final String dir = new File(manager.getDirectory())
-                .getAbsolutePath() + File.separator;
-        final String file = new File(filename).getAbsolutePath();
-
-        return file.startsWith(dir) ? filename.substring(dir.length()) : filename;
+        return Paths.get(manager.getDirectory()).relativize(pluginPath).toString();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters">
@@ -366,7 +362,9 @@ public class PluginMetaData {
      * What plugin manager owns this metadata?
      *
      * @return The pluginmanager that created this metadata.
+     * @deprecated Callers should obtain a reference to the PluginManager independently.
      */
+    @Deprecated
     public PluginManager getManager() {
         return manager;
     }
@@ -376,8 +374,8 @@ public class PluginMetaData {
      *
      * @return The plugin's URL
      */
-    public URL getPluginUrl() {
-        return pluginUrl;
+    public Path getPluginPath() {
+        return pluginPath;
     }
 
     /**
@@ -520,7 +518,7 @@ public class PluginMetaData {
     /**
      * Retrieves the collection of required services.
      *
-     * @see #readRequirements(java.util.Map, java.util.List)
+     * @see #readRequirements(Map, Collection)
      * @return A collection of plugin-defined service requirements
      */
     public Collection<String> getRequiredServices() {
@@ -530,7 +528,7 @@ public class PluginMetaData {
     /**
      * Retrieves the collection of plugin requirements.
      *
-     * @see #readRequirements(java.util.Map, java.util.List)
+     * @see #readRequirements(Map, Collection)
      * @return A collection of plugin-defined requirements
      */
     public Map<String, String> getRequirements() {
