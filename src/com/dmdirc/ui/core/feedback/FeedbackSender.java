@@ -86,7 +86,7 @@ public class FeedbackSender implements Runnable {
     private String sendData(final Map<String, String> postData) {
         try {
             final List<String> response = downloader.getPage(
-                    "https://feedback.dmdirc.com/dialog", postData);
+                    "https://feedback.dmdirc.com/dialog/", postData);
             if (response.size() >= 1) {
                 return "Feedback sent successfully";
             } else {
