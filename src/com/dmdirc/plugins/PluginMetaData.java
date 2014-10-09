@@ -26,11 +26,11 @@ import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -350,15 +350,11 @@ public class PluginMetaData {
      * Calculates the relative path of this plugin in relation to the main plugin directory.
      *
      * @return The plugin's relative path, or absolute path if not within the plugins directory
+     * @deprecated Should be calculated by callers as-needed.
      */
+    @Deprecated
     public String getRelativeFilename() {
-        // Yuck...
-        final String filename = getPluginPath().toAbsolutePath().toString();
-        final String dir = new File(manager.getDirectory())
-                .getAbsolutePath() + File.separator;
-        final String file = new File(filename).getAbsolutePath();
-
-        return file.startsWith(dir) ? filename.substring(dir.length()) : filename;
+        return Paths.get(manager.getDirectory()).relativize(pluginPath).toString();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters">
@@ -366,7 +362,9 @@ public class PluginMetaData {
      * What plugin manager owns this metadata?
      *
      * @return The pluginmanager that created this metadata.
+     * @deprecated Callers should obtain a reference to the PluginManager independently.
      */
+    @Deprecated
     public PluginManager getManager() {
         return manager;
     }
