@@ -30,6 +30,7 @@ import com.dmdirc.ui.themes.ThemeManager;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 import javax.inject.Provider;
 
@@ -61,7 +62,7 @@ public class URLBuilderTest {
         when(pluginManager.getPluginInfoByName(Matchers.anyString())).thenReturn(pluginInfo);
         when(themeManager.getDirectory()).thenReturn("/themes/");
         when(pluginInfo.getMetaData()).thenReturn(pluginMetaData);
-        when(pluginMetaData.getPluginUrl()).thenReturn(new URL("file://url/testPlugin"));
+        when(pluginMetaData.getPluginPath()).thenReturn(Paths.get("file://testPlugin"));
     }
 
     @Test

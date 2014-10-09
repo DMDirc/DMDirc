@@ -90,7 +90,7 @@ public class PluginComponent implements UpdateComponent {
 
     @Override
     public boolean doInstall(final Path path) {
-        final File target = new File(plugin.getMetaData().getPluginUrl().getPath());
+        final File target = plugin.getMetaData().getPluginPath().toFile();
 
         boolean returnCode = false;
         final boolean wasLoaded = plugin.isLoaded();
@@ -108,7 +108,7 @@ public class PluginComponent implements UpdateComponent {
         }
         if (requiresRestart() || !newPlugin.renameTo(target)) {
             // Windows rocks!
-            final File newTarget = new File(plugin.getMetaData().getPluginUrl().getPath()
+            final File newTarget = new File(plugin.getMetaData().getPluginPath().toAbsolutePath()
                     + ".update");
 
             if (newTarget.exists()) {

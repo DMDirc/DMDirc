@@ -35,7 +35,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.validators.ValidationResponse;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
@@ -126,7 +125,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         this.objectGraph = objectGraph;
         this.eventBus = eventBus;
         this.identityController = identityController;
-        this.filename = new File(metadata.getPluginUrl().getPath()).getName();
+        this.filename = metadata.getPluginPath().getFileName().toString();
         this.metaData = metadata;
 
         try {
