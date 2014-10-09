@@ -88,7 +88,7 @@ public class FeedbackSender implements Runnable {
             final List<String> response = downloader.getPage(
                     "https://feedback.dmdirc.com/dialog/", postData);
             if (response.size() >= 1) {
-                return "Feedback sent successfully";
+                return response.get(0);
             } else {
                 return "Feedback failure: Unknown response from the server.";
             }
