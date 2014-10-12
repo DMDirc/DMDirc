@@ -43,7 +43,7 @@ import net.kencochrane.raven.event.interfaces.MessageInterface;
 public class ErrorReporter {
 
     /** DSN used to connect to Sentry. */
-    private static final String SENTRY_DSN = "http://d53a31a3c53c4a4f91c5ff503e612677:"
+    private static final String SENTRY_DSN = "https://d53a31a3c53c4a4f91c5ff503e612677:"
             + "e0a8aa1ecca14568a9f52d052ecf6a30@sentry.dmdirc.com/2?raven.async=false";
     /** Template to use when sending mode alias reports. */
     private static final String MODE_ALIAS_TEMPLATE = "%s\n\nConnection headers:\n%s";
