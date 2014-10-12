@@ -23,13 +23,13 @@
 package com.dmdirc.ui.core.util;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.events.UnknownURLEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.ui.StatusMessage;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.util.CommandUtils;
 
 import java.awt.Desktop;
@@ -52,8 +52,6 @@ public class URLHandler {
     private final AggregateConfigProvider config;
     /** Server manager to use to connect to servers. */
     private final ConnectionManager connectionManager;
-    /** Status bar manager to use to show messages. */
-    private final StatusBarManager statusBarManager;
     /** Desktop handler. */
     private final Desktop desktop;
 
@@ -63,18 +61,15 @@ public class URLHandler {
      * @param eventBus         Event bus to fire unknown protocol errors on.
      * @param globalConfig     Config to retrieve settings from
      * @param connectionManager    Server manager to connect to servers
-     * @param statusBarManager Status bar manager used to show messages
      */
     @Inject
     public URLHandler(
             final DMDircMBassador eventBus,
             final AggregateConfigProvider globalConfig,
-            final ConnectionManager connectionManager,
-            final StatusBarManager statusBarManager) {
+            final ConnectionManager connectionManager) {
         this.eventBus = eventBus;
         this.config = globalConfig;
         this.connectionManager = connectionManager;
-        this.statusBarManager = statusBarManager;
         this.desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
     }
 
@@ -136,7 +131,7 @@ public class URLHandler {
         try {
             uri = url.toURI();
             if (uri.getScheme() == null) {
-                uri = new URI("http://" + url.toString());
+                uri = new URI("http://" + url);
             }
         } catch (URISyntaxException ex) {
             eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
@@ -172,24 +167,21 @@ public class URLHandler {
         final String command = config.getOption("protocol", uri.getScheme().toLowerCase());
         switch (command) {
             case "DMDIRC":
-                statusBarManager.setMessage(
-                        new StatusMessage("Connecting to: " + uri.toString(),
-                                config));
+                eventBus.publishAsync(new StatusBarMessageEvent(
+                        new StatusMessage("Connecting to: " + uri, config)));
                 connectionManager.connectToAddress(uri);
                 break;
             case "BROWSER":
-                statusBarManager.setMessage(
-                        new StatusMessage("Opening: " + uri.toString(),
-                                config));
+                eventBus.publishAsync(new StatusBarMessageEvent(
+                        new StatusMessage("Opening: " + uri, config)));
                 execBrowser(uri);
                 break;
             case "MAIL":
                 execMail(uri);
                 break;
             default:
-                statusBarManager.setMessage(
-                        new StatusMessage("Opening: " + uri.toString(),
-                                config));
+                eventBus.publishAsync(new StatusBarMessageEvent(
+                        new StatusMessage("Opening: " + uri, config)));
                 execApp(substituteParams(uri, command));
                 break;
         }
