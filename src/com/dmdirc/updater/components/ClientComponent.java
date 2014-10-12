@@ -22,12 +22,13 @@
 
 package com.dmdirc.updater.components;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Main;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
+import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.ui.StatusMessage;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.FileUtils;
@@ -45,8 +46,8 @@ public class ClientComponent implements UpdateComponent {
 
     /** The controller to read settings from. */
     private final IdentityController identityController;
-    /** The manager to add status bar messages to. */
-    private final StatusBarManager statusBarManager;
+    /** The event bus to post messages to. */
+    private final DMDircMBassador eventBus;
     /** Base directory to move updates to. */
     private final Path baseDirectory;
 
@@ -54,15 +55,15 @@ public class ClientComponent implements UpdateComponent {
      * Creates a new instance of {@link ClientComponent}.
      *
      * @param identityController The controller to read settings from.
-     * @param statusBarManager   The manager to add status bar messages to.
+     * @param eventBus           The event bus to post messages to.
      */
     @Inject
     public ClientComponent(
             final IdentityController identityController,
-            final StatusBarManager statusBarManager,
+            final DMDircMBassador eventBus,
             @Directory(DirectoryType.BASE) final Path baseDirectory) {
         this.identityController = identityController;
-        this.statusBarManager = statusBarManager;
+        this.eventBus = eventBus;
         this.baseDirectory = baseDirectory;
     }
 
@@ -135,8 +136,8 @@ public class ClientComponent implements UpdateComponent {
             // @deprecated Should be removed when updater UI changes are
             // implemented.
             final String message = getManualInstructions(path);
-            statusBarManager.setMessage(new StatusMessage(message,
-                    identityController.getGlobalConfiguration()));
+            eventBus.publishAsync(new StatusBarMessageEvent(new StatusMessage(message,
+                    identityController.getGlobalConfiguration())));
         }
 
         return true;
