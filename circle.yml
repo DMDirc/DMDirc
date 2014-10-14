@@ -6,19 +6,29 @@ machine:
 
 checkout:
   override:
-    - git clone https://github.com/DMDirc/Meta.git DMDirc
-    - git submodule update --init --remote
-    - cd DMDirc/client
-    - git fetch origin $CIRCLE_BRANCH:circleci
-    - git fetch --tags
-    - git checkout circleci
-  post:
-    - git fetch --tags
+    - git clone https://github.com/DMDirc/Meta.git $HOME/meta
+    - git submodule update --init --remote:
+        pwd:
+          ../meta
+    - git fetch origin $CIRCLE_BRANCH:circleci:
+        pwd:
+          ../meta/client
+    - git fetch --tags:
+        pwd:
+          ../meta/client
+    - git checkout circleci:
+        pwd:
+          ../meta/client
 
 dependencies:
   override:
-    - ./gradlew --parallel client:dependencies plugins:dependencies
+    - ./gradlew --parallel client:dependencies plugins:dependencies:
+        pwd:
+          ../meta
 
 test:
   override:
-    - ./gradlew --stacktrace --parallel client:test
+    - ./gradlew --stacktrace --parallel client:test:
+        pwd:
+          ../meta
+
