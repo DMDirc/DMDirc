@@ -153,6 +153,7 @@ task createVersionConfig << {
        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 }
 
+createVersionConfig.dependsOn classes
 jar.dependsOn createVersionConfig
 test.dependsOn createVersionConfig
 
