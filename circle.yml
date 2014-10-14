@@ -5,14 +5,20 @@ machine:
     TERM: dumb
 
 checkout:
+  override:
+    - git clone https://github.com/DMDirc/Meta.git DMDirc
+    - git submodule update --init --remote
+    - cd DMDirc/client
+    - git fetch origin $CIRCLE_BRANCH:circleci
+    - git fetch --tags
+    - git checkout circleci
   post:
-    - "if [ -e .git/shallow ]; then git fetch --unshallow; fi"
     - git fetch --tags
 
 dependencies:
   override:
-    - ./gradlew --parallel assemble
+    - ./gradlew --parallel client:dependencies plugins:dependencies
 
 test:
   override:
-    - ./gradlew --stacktrace --parallel test
+    - ./gradlew --stacktrace --parallel client:test
