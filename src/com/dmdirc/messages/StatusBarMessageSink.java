@@ -22,9 +22,10 @@
 
 package com.dmdirc.messages;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.ui.StatusMessage;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.messages.Formatter;
 
 import java.util.Date;
@@ -39,17 +40,17 @@ public class StatusBarMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
     private static final Pattern PATTERN = Pattern.compile("statusbar");
-    /** The status bar manager to add messages to. */
-    private final StatusBarManager statusBarManager;
+    /** The event bus to post status messages to. */
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link StatusBarMessageSink}.
      *
-     * @param statusBarManager The status bar manager to add messages to.
+     * @param eventBus The event bus to post status messages to
      */
     @Inject
-    public StatusBarMessageSink(final StatusBarManager statusBarManager) {
-        this.statusBarManager = statusBarManager;
+    public StatusBarMessageSink(final DMDircMBassador eventBus) {
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -64,7 +65,8 @@ public class StatusBarMessageSink implements MessageSink {
             final String messageType, final Object... args) {
         final String message = Formatter.formatMessage(source.getConfigManager(),
                 messageType, args);
-        statusBarManager.setMessage(new StatusMessage(message, source.getConfigManager()));
+        eventBus.publishAsync(new StatusBarMessageEvent(new StatusMessage(message,
+                source.getConfigManager())));
     }
 
 }

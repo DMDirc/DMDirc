@@ -30,7 +30,6 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.ColourManagerFactory;
@@ -67,7 +66,6 @@ public class ServerTest {
     @Mock private ChannelFactory channelFactory;
     @Mock private QueryFactory queryFactory;
     @Mock private RawFactory rawFactory;
-    @Mock private StatusBarManager statusBarManager;
     @Mock private URLBuilder urlBuilder;
     @Mock private DMDircMBassador eventBus;
     @Mock private ScheduledExecutorService executorService;
@@ -92,7 +90,6 @@ public class ServerTest {
                 tabCompleterFactory,
                 identityFactory,
                 messageSinkManager,
-                statusBarManager,
                 windowManager,
                 channelFactory,
                 queryFactory,
