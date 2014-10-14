@@ -5,14 +5,33 @@ machine:
     TERM: dumb
 
 checkout:
-  post:
-    - "if [ -e .git/shallow ]; then git fetch --unshallow; fi"
-    - git fetch --tags
+  override:
+    - git clone https://github.com/DMDirc/Meta.git $HOME/meta
+    - git submodule update --init --remote:
+        pwd:
+          ../meta
+    - git fetch origin $CIRCLE_BRANCH:circleci:
+        pwd:
+          ../meta/client
+    - git fetch --tags:
+        pwd:
+          ../meta/client
+    - git checkout circleci:
+        pwd:
+          ../meta/client
 
 dependencies:
   override:
-    - ./gradlew --parallel assemble
+    - ./gradlew --parallel client:dependencies plugins:dependencies:
+        pwd:
+          ../meta
 
 test:
   override:
-    - ./gradlew --stacktrace --parallel test
+    - ./gradlew --stacktrace --parallel client:jar client:test:
+        pwd:
+          ../meta
+
+general:
+  artifacts:
+    - ../meta/client/build/libs/
