@@ -22,8 +22,9 @@
 
 package com.dmdirc.ui.core.feedback;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.ui.StatusBar;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.io.Downloader;
 
@@ -38,14 +39,14 @@ import java.util.Map;
 public class FeedbackSender implements Runnable {
 
     private final Map<String, String> postData;
-    private final StatusBar statusBar;
+    private final DMDircMBassador eventBus;
     private final AggregateConfigProvider config;
     private final Downloader downloader;
 
     public FeedbackSender(
             final AggregateConfigProvider config,
             final Downloader downloader,
-            final StatusBar statusBar,
+            final DMDircMBassador eventBus,
             final String name,
             final String email,
             final String feedback,
@@ -54,7 +55,7 @@ public class FeedbackSender implements Runnable {
             final String dmdircInfo) {
         this.downloader = downloader;
         this.config = config;
-        this.statusBar = statusBar;
+        this.eventBus = eventBus;
         this.postData = new HashMap<>(6);
 
         if (!name.isEmpty()) {
@@ -99,7 +100,8 @@ public class FeedbackSender implements Runnable {
 
     @Override
     public void run() {
-        statusBar.setMessage(new StatusMessage(sendData(postData), config));
+        eventBus.publishAsync(new StatusBarMessageEvent(
+                new StatusMessage(sendData(postData), config)));
     }
 
 }

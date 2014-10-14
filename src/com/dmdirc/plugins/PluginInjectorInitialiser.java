@@ -35,7 +35,6 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.SimpleInjector;
@@ -59,7 +58,6 @@ public class PluginInjectorInitialiser {
     private final CommandManager commandManager;
     private final MessageSinkManager messageSinkManager;
     private final WindowManager windowManager;
-    private final StatusBarManager statusBarManager;
     private final PreferencesManager preferencesManager;
     private final LifecycleController lifecycleController;
     private final CorePluginExtractor corePluginExtractor;
@@ -79,7 +77,6 @@ public class PluginInjectorInitialiser {
             final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
             final WindowManager windowManager,
-            final StatusBarManager statusBarManager,
             final PreferencesManager preferencesManager,
             final LifecycleController lifecycleController,
             final CorePluginExtractor corePluginExtractor,
@@ -97,7 +94,6 @@ public class PluginInjectorInitialiser {
         this.commandManager = commandManager;
         this.messageSinkManager = messageSinkManager;
         this.windowManager = windowManager;
-        this.statusBarManager = statusBarManager;
         this.preferencesManager = preferencesManager;
         this.lifecycleController = lifecycleController;
         this.corePluginExtractor = corePluginExtractor;
@@ -121,7 +117,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(commandManager);
         injector.addParameter(MessageSinkManager.class, messageSinkManager);
         injector.addParameter(WindowManager.class, windowManager);
-        injector.addParameter(statusBarManager);
         injector.addParameter(PreferencesManager.class, preferencesManager);
         injector.addParameter(LifecycleController.class, lifecycleController);
         injector.addParameter(corePluginExtractor);

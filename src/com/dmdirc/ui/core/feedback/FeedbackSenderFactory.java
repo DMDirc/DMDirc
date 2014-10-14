@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.core.feedback;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.ui.StatusBar;
 import com.dmdirc.util.io.Downloader;
 
 import javax.inject.Inject;
@@ -37,15 +37,15 @@ public class FeedbackSenderFactory {
 
     private final AggregateConfigProvider config;
     private final Downloader downloader;
-    private final StatusBar statusBar;
+    private final DMDircMBassador eventBus;
 
     @Inject
     public FeedbackSenderFactory(
             @GlobalConfig final AggregateConfigProvider config,
-            final Downloader downloader, final StatusBar statusBar) {
+            final Downloader downloader, final DMDircMBassador eventBus) {
         this.config = config;
         this.downloader = downloader;
-        this.statusBar = statusBar;
+        this.eventBus = eventBus;
     }
 
     public FeedbackSender getFeedbackSender(
@@ -55,7 +55,7 @@ public class FeedbackSenderFactory {
             final String version,
             final String serverInfo,
             final String dmdircInfo) {
-        return new FeedbackSender(config, downloader, statusBar, name, email, feedback, version,
+        return new FeedbackSender(config, downloader, eventBus, name, email, feedback, version,
                 serverInfo, dmdircInfo);
     }
 }
