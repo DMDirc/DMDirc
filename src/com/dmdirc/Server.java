@@ -32,6 +32,7 @@ import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
 import com.dmdirc.events.ServerNopingEvent;
 import com.dmdirc.events.ServerNumericEvent;
+import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
@@ -59,7 +60,6 @@ import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.tls.CertificateProblemListener;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -177,8 +177,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     private final RawFactory rawFactory;
     /** The config provider to write user settings to. */
     private final ConfigProvider userSettings;
-    /** The manager to use to add status bar messages. */
-    private final StatusBarManager statusBarManager;
     /** Executor service to use to schedule repeated events. */
     private final ScheduledExecutorService executorService;
     /** The message encoder factory to create a message encoder with. */
@@ -200,7 +198,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * @param tabCompleterFactory   The factory to use for tab completers.
      * @param identityFactory       The factory to use to create identities.
      * @param messageSinkManager    The sink manager to use to dispatch messages.
-     * @param statusBarManager      The manager to use to add status bar messages.
      * @param windowManager         Window Manager
      * @param channelFactory        The factory to use to create channels.
      * @param queryFactory          The factory to use to create queries.
@@ -221,7 +218,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
-            final StatusBarManager statusBarManager,
             final WindowManager windowManager,
             final ChannelFactory channelFactory,
             final QueryFactory queryFactory,
@@ -260,7 +256,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         this.rawFactory = rawFactory;
         this.executorService = executorService;
         this.userSettings = userSettings;
-        this.statusBarManager = statusBarManager;
         this.messageEncoderFactory = messageEncoderFactory;
 
         eventHandler = new ServerEventHandler(this, eventBus);
@@ -1326,10 +1321,10 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * Called when we fail to receive a ping reply within a set period of time.
      */
     public void onPingFailed() {
-        statusBarManager.setMessage(new StatusMessage(
+        getEventBus().publishAsync(new StatusBarMessageEvent(new StatusMessage(
                 "No ping reply from " + getName() + " for over "
-                + (int) Math.floor(parser.getPingTime() / 1000.0)
-                + " seconds.", getConfigManager()));
+                        + (int) Math.floor(parser.getPingTime() / 1000.0)
+                        + " seconds.", getConfigManager())));
 
         getEventBus().publishAsync(new ServerNopingEvent(this, parser.getPingTime()));
 

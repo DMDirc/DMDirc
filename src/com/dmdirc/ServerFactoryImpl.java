@@ -28,7 +28,6 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.core.components.StatusBarManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
@@ -51,7 +50,6 @@ public class ServerFactoryImpl {
     private final TabCompleterFactory tabCompleterFactory;
     private final IdentityFactory identityFactory;
     private final MessageSinkManager messageSinkManager;
-    private final StatusBarManager statusBarManager;
     private final WindowManager windowManager;
     private final Provider<ChannelFactory> channelFactory;
     private final Provider<QueryFactory> queryFactory;
@@ -69,7 +67,6 @@ public class ServerFactoryImpl {
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
-            final StatusBarManager statusBarManager,
             final WindowManager windowManager,
             final Provider<ChannelFactory> channelFactory,
             final Provider<QueryFactory> queryFactory,
@@ -84,7 +81,6 @@ public class ServerFactoryImpl {
         this.tabCompleterFactory = tabCompleterFactory;
         this.identityFactory = identityFactory;
         this.messageSinkManager = messageSinkManager;
-        this.statusBarManager = statusBarManager;
         this.windowManager = windowManager;
         this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
@@ -103,9 +99,9 @@ public class ServerFactoryImpl {
             final URI uri,
             final ConfigProvider profile) {
         return new Server(manager.get(), configMigrator, commandParser, parserFactory,
-                tabCompleterFactory, identityFactory, messageSinkManager, statusBarManager,
-                windowManager, channelFactory.get(), queryFactory.get(), rawFactory.get(),
-                urlBuilder, eventBus, messageEncoderFactory, userSettings, executorService, uri,
-                profile, colourManagerFactory);
+                tabCompleterFactory, identityFactory, messageSinkManager, windowManager,
+                channelFactory.get(), queryFactory.get(), rawFactory.get(),urlBuilder, eventBus,
+                messageEncoderFactory, userSettings, executorService, uri, profile,
+                colourManagerFactory);
     }
 }
