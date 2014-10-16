@@ -22,8 +22,10 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
+
+import java.util.Objects;
 
 /**
  * Describes a command that is executed automatically in response to either the client opening, or a
@@ -32,13 +34,13 @@ import com.google.common.base.Optional;
 public class AutoCommand {
 
     /** The name of the server for connection events. */
-    private final Optional<String> server;
+    protected Optional<String> server;
     /** The name of the network for connection events. */
-    private final Optional<String> network;
+    protected Optional<String> network;
     /** The name of the profile for connection events. */
-    private final Optional<String> profile;
+    protected Optional<String> profile;
     /** The commands to execute. */
-    private final String response;
+    protected String response;
 
     public AutoCommand(
             final Optional<String> server,
@@ -76,21 +78,21 @@ public class AutoCommand {
             return false;
         }
         final AutoCommand command = (AutoCommand) object;
-        return  Objects.equal(server, command.getServer())
-                && Objects.equal(network, command.getNetwork())
-                && Objects.equal(profile, command.getProfile())
-                && Objects.equal(response, command.getResponse());
+        return  Objects.equals(server, command.getServer())
+                && Objects.equals(network, command.getNetwork())
+                && Objects.equals(profile, command.getProfile())
+                && Objects.equals(response, command.getResponse());
 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(server, network, profile, response);
+        return Objects.hash(server, network, profile, response);
     }
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("Connection", server)
                 .add("Network", network)
                 .add("Profile", profile)
