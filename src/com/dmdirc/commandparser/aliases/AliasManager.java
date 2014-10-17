@@ -45,6 +45,8 @@ public class AliasManager {
     private final CommandController commandController;
     /** Map of known alias names to their corresponding aliases. */
     private final Map<String, Alias> aliases = new ConcurrentSkipListMap<>();
+    /** Whether or not changes have been made compared to the stored version. */
+    private boolean dirty;
 
     @Inject
     public AliasManager(final CommandController commandController) {
@@ -65,6 +67,7 @@ public class AliasManager {
 
         aliases.put(alias.getName(), alias);
         commandController.registerCommand(new AliasCommandHandler(commandController, alias), alias);
+        dirty = true;
     }
 
     /**
@@ -77,6 +80,7 @@ public class AliasManager {
     public void removeAlias(final Alias alias) {
         if (aliases.containsKey(alias.getName())) {
             commandController.unregisterCommand(aliases.remove(alias.getName()));
+            dirty = true;
         }
     }
 
@@ -90,6 +94,7 @@ public class AliasManager {
     public void removeAlias(final String name) {
         if (aliases.containsKey(name)) {
             removeAlias(aliases.get(name));
+            dirty = true;
         }
     }
 
@@ -122,4 +127,22 @@ public class AliasManager {
         return Optional.fromNullable(aliases.get(name));
     }
 
+    /**
+     * Gets the dirty state of the manager.
+     *
+     * @return True if the manager is dirty with respect to the store, false otherwise.
+     */
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    /**
+     * Manually sets the dirty state of the manager. This should be done after the manager's
+     * aliases are loaded or saved.
+     *
+     * @param dirty True if the manager is now dirty with respect to the store, false otherwise.
+     */
+    public void setDirty(final boolean dirty) {
+        this.dirty = dirty;
+    }
 }

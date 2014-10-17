@@ -42,16 +42,21 @@ public class AliasLoader {
      * Loads aliases from the store into the manager.
      */
     public void load() {
+        final boolean dirty = manager.isDirty();
         for (Alias alias : store.readAliases()) {
             manager.addAlias(alias);
         }
+        manager.setDirty(dirty);
     }
 
     /**
      * Saves aliases from the manager to the store.
      */
     public void save() {
-        store.writeAliases(manager.getAliases());
+        if (manager.isDirty()) {
+            store.writeAliases(manager.getAliases());
+            manager.setDirty(false);
+        }
     }
 
 }
