@@ -34,13 +34,13 @@ import java.util.Objects;
 public class AutoCommand {
 
     /** The name of the server for connection events. */
-    protected Optional<String> server;
+    private final Optional<String> server;
     /** The name of the network for connection events. */
-    protected Optional<String> network;
+    private final Optional<String> network;
     /** The name of the profile for connection events. */
-    protected Optional<String> profile;
+    private final Optional<String> profile;
     /** The commands to execute. */
-    protected String response;
+    private final String response;
 
     public AutoCommand(
             final Optional<String> server,
