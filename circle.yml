@@ -10,9 +10,16 @@ checkout:
     - git submodule update --init --remote:
         pwd:
           ../meta
-    - git fetch origin $CIRCLE_BRANCH:circleci:
+    - git remote set-url origin https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git:
         pwd:
           ../meta/client
+    - >
+      cd ../meta/client;
+      if [ -n "$CIRCLE_PR_NUMBER" ]; then
+          git fetch origin pull/$CIRCLE_PR_NUMBER/head:circleci;
+      else
+          git fetch origin $CIRCLE_BRANCH:circleci;
+      fi
     - git fetch --tags:
         pwd:
           ../meta/client
