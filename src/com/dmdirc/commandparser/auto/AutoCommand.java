@@ -22,8 +22,10 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
+
+import java.util.Objects;
 
 /**
  * Describes a command that is executed automatically in response to either the client opening, or a
@@ -76,21 +78,21 @@ public class AutoCommand {
             return false;
         }
         final AutoCommand command = (AutoCommand) object;
-        return  Objects.equal(server, command.getServer())
-                && Objects.equal(network, command.getNetwork())
-                && Objects.equal(profile, command.getProfile())
-                && Objects.equal(response, command.getResponse());
+        return  Objects.equals(server, command.getServer())
+                && Objects.equals(network, command.getNetwork())
+                && Objects.equals(profile, command.getProfile())
+                && Objects.equals(response, command.getResponse());
 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(server, network, profile, response);
+        return Objects.hash(server, network, profile, response);
     }
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("Connection", server)
                 .add("Network", network)
                 .add("Profile", profile)
