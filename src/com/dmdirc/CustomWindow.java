@@ -29,7 +29,6 @@ import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * A generic custom window implementation.
@@ -77,8 +76,7 @@ public class CustomWindow extends FrameContainer {
 
     @Override
     public Connection getConnection() {
-        final Optional<FrameContainer> parent = getParent();
-        return parent.isPresent() ? parent.get().getConnection() : null;
+        return getParent().map(FrameContainer::getConnection).orElse(null);
     }
 
 }
