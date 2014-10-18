@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
@@ -30,6 +29,7 @@ import com.google.common.jimfs.Jimfs;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
@@ -52,26 +52,25 @@ public class YamlAutoCommandStoreTest {
     @Before
     public void setup() throws IOException {
         fs = Jimfs.newFileSystem(Configuration.unix());
-        Files.copy(getClass().getResource("readtest.yml").openStream(), fs.getPath("readtest.yml"));
-        command = new AutoCommand(Optional.fromNullable("server"),
-                Optional.fromNullable("network"),
-                Optional.fromNullable("profile"),
+        Files.copy(getClass().getResource("readtest.yml").openStream(),
+                fs.getPath("readtest.yml"));
+        command = new AutoCommand(Optional.ofNullable("server"),
+                Optional.ofNullable("network"),
+                Optional.ofNullable("profile"),
                 "command");
-        command1 = new AutoCommand(Optional.fromNullable("server1"),
-                Optional.fromNullable("network1"),
-                Optional.fromNullable("profile1"),
-                "command1");
-        command2 = new AutoCommand(Optional.fromNullable("server2"),
-                Optional.fromNullable("network2"),
-                Optional.<String>absent(),
+        command1 = new AutoCommand(Optional.ofNullable("server1"),
+                Optional.ofNullable("network1"),
+                Optional.ofNullable("profile1"), "command1");
+        command2 = new AutoCommand(Optional.ofNullable("server2"),
+                Optional.ofNullable("network2"),
+                Optional.<String>empty(),
                 "command2");
-        command3 = new AutoCommand(Optional.<String>absent(),
-                Optional.fromNullable("network3"),
-                Optional.<String>absent(),
+        command3 = new AutoCommand(Optional.<String>empty(),
+                Optional.ofNullable("network3"), Optional.<String>empty(),
                 "command3");
-        command4 = new AutoCommand(Optional.<String>absent(),
-                Optional.<String>absent(),
-                Optional.<String>absent(),
+        command4 = new AutoCommand(Optional.<String>empty(),
+                Optional.<String>empty(),
+                Optional.<String>empty(),
                 "command4");
     }
 

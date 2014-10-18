@@ -24,7 +24,7 @@ package com.dmdirc.commandparser.auto;
 
 import com.dmdirc.DMDircMBassador;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,10 +53,10 @@ public class AutoCommandManagerTest {
     @Before
     public void setup() {
         autoCommandManager = new AutoCommandManager(eventBus, factory);
-        global = new AutoCommand(Optional.<String>absent(), Optional.<String>absent(),
-                Optional.<String>absent(), "");
-        connection = new AutoCommand(Optional.<String>absent(),
-                Optional.fromNullable("Quakenet"), Optional.<String>absent(), "");
+        global = new AutoCommand(Optional.<String>empty(), Optional.<String>empty(),
+                Optional.<String>empty(), "");
+        connection = new AutoCommand(Optional.<String>empty(),
+                Optional.ofNullable("Quakenet"), Optional.<String>empty(), "");
         when(factory.getAutoCommandHandler(global)).thenReturn(globalHandler);
         when(factory.getAutoCommandHandler(connection)).thenReturn(connectionHandler);
     }

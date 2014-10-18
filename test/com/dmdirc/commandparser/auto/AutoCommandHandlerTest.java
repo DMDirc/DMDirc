@@ -32,7 +32,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.ConfigProvider;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,10 +62,10 @@ public class AutoCommandHandlerTest {
 
     @Before
     public void setup() {
-        when(autoCommand.getProfile()).thenReturn(Optional.fromNullable("profile"));
+        when(autoCommand.getProfile()).thenReturn(Optional.ofNullable("profile"));
         when(autoCommand.getResponse()).thenReturn("Testing123");
-        when(autoCommand.getServer()).thenReturn(Optional.<String>absent());
-        when(autoCommand.getNetwork()).thenReturn(Optional.<String>absent());
+        when(autoCommand.getServer()).thenReturn(Optional.<String>empty());
+        when(autoCommand.getNetwork()).thenReturn(Optional.<String>empty());
         when(serverConnectedEvent.getConnection()).thenReturn(connection);
         when(connection.getProfile()).thenReturn(profile);
         when(connection.getWindowModel()).thenReturn(container);
@@ -86,7 +86,7 @@ public class AutoCommandHandlerTest {
 
     @Test
     public void testCheckAutoCommandWithoutGlobal() {
-        when(autoCommand.getNetwork()).thenReturn(Optional.fromNullable("Quakenet"));
+        when(autoCommand.getNetwork()).thenReturn(Optional.ofNullable("Quakenet"));
         autoCommandHandler.checkAutoCommand(clientOpenedEvent);
         verify(globalCommandParser, never()).parseCommand(globalWindow,
                 commandController.getCommandChar() + autoCommand.getResponse());
@@ -103,8 +103,8 @@ public class AutoCommandHandlerTest {
 
     @Test
     public void testCheckAutoCommandNoProfile() {
-        when(autoCommand.getNetwork()).thenReturn(Optional.fromNullable("Quakenet"));
-        when(autoCommand.getProfile()).thenReturn(Optional.fromNullable("profile1"));
+        when(autoCommand.getNetwork()).thenReturn(Optional.ofNullable("Quakenet"));
+        when(autoCommand.getProfile()).thenReturn(Optional.ofNullable("profile1"));
         autoCommandHandler.checkAutoCommand(serverConnectedEvent);
         verify(globalCommandParser, never()).parseCommand(globalWindow,
                 commandController.getCommandChar() + autoCommand.getResponse());
@@ -114,7 +114,7 @@ public class AutoCommandHandlerTest {
 
     @Test
     public void testCheckAutoCommandWithProfile() {
-        when(autoCommand.getNetwork()).thenReturn(Optional.fromNullable("Quakenet"));
+        when(autoCommand.getNetwork()).thenReturn(Optional.ofNullable("Quakenet"));
         autoCommandHandler.checkAutoCommand(serverConnectedEvent);
         verify(globalCommandParser, never()).parseCommand(globalWindow,
                 commandController.getCommandChar() + autoCommand.getResponse());
@@ -124,7 +124,7 @@ public class AutoCommandHandlerTest {
 
     @Test
     public void testCheckAutoCommandWithProfileNoServer() {
-        when(autoCommand.getServer()).thenReturn(Optional.fromNullable("server"));
+        when(autoCommand.getServer()).thenReturn(Optional.ofNullable("server"));
         autoCommandHandler.checkAutoCommand(serverConnectedEvent);
         verify(globalCommandParser, never()).parseCommand(globalWindow,
                 commandController.getCommandChar() + autoCommand.getResponse());
@@ -134,7 +134,7 @@ public class AutoCommandHandlerTest {
 
     @Test
     public void testCheckAutoCommandWithProfileNoServerOrNetwork() {
-        when(autoCommand.getNetwork()).thenReturn(Optional.fromNullable("network"));
+        when(autoCommand.getNetwork()).thenReturn(Optional.ofNullable("network"));
         autoCommandHandler.checkAutoCommand(serverConnectedEvent);
         verify(globalCommandParser, never()).parseCommand(globalWindow,
                 commandController.getCommandChar() + autoCommand.getResponse());
@@ -144,7 +144,7 @@ public class AutoCommandHandlerTest {
 
     @Test
     public void testCheckAutoCommandWithProfileWithServer() {
-        when(autoCommand.getNetwork()).thenReturn(Optional.fromNullable("Quakenet"));
+        when(autoCommand.getNetwork()).thenReturn(Optional.ofNullable("Quakenet"));
         autoCommandHandler.checkAutoCommand(serverConnectedEvent);
         verify(globalCommandParser, never()).parseCommand(globalWindow,
                 commandController.getCommandChar() + autoCommand.getResponse());

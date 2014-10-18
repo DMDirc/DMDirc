@@ -22,8 +22,6 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.google.common.base.Optional;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -126,11 +125,11 @@ public class YamlAutoCommandStore implements AutoCommandStore {
             try {
                 final Map<Object, Object> map = asMap(autoCommand);
                 final Optional<String> server =
-                        Optional.fromNullable(optionalString(map, "server"));
+                        Optional.ofNullable(optionalString(map, "server"));
                 final Optional<String> network =
-                        Optional.fromNullable(optionalString(map, "network"));
+                        Optional.ofNullable(optionalString(map, "network"));
                 final Optional<String> profile =
-                        Optional.fromNullable(optionalString(map, "profile"));
+                        Optional.ofNullable(optionalString(map, "profile"));
                 final String command = requiredString(map, "command");
                 res.add(new AutoCommand(server, network, profile, command));
             } catch (IllegalArgumentException ex) {

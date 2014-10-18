@@ -30,7 +30,7 @@ import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.interfaces.CommandController;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import net.engio.mbassy.listener.Handler;
 
