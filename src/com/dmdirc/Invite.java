@@ -67,7 +67,7 @@ public class Invite {
      *
      * @return This invite's source
      *
-     * @see Server#parseHostmask(java.lang.String)
+     * @see Server#parseHostmask(String)
      */
     public String[] getSource() {
         return connection.parseHostmask(source);

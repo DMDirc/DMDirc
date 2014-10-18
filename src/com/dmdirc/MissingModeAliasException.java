@@ -24,8 +24,6 @@ package com.dmdirc;
 
 import com.dmdirc.parser.interfaces.Parser;
 
-import java.util.List;
-
 /**
  * An exception detailing the missing modes aliases and supporting information.
  */
@@ -44,17 +42,17 @@ public class MissingModeAliasException extends Exception {
      */
     public MissingModeAliasException(final String network, final Parser parser,
             final String modeAliasesVersion, final String missingModes) {
-        super(missingModes + "\n"
-                + "Network: " + network + "\n"
-                + "IRCd: " + parser.getServerSoftware() + "\n"
+        super(missingModes + '\n'
+                + "Network: " + network + '\n'
+                + "IRCd: " + parser.getServerSoftware() + '\n'
                 + " (" + parser.getServerSoftwareType() + " )\n"
                 + "Mode alias version: "
-                + modeAliasesVersion + "\n"
+                + modeAliasesVersion + '\n'
                 + "Extra info: \n"
                 + arrayListToString(parser.getServerInformationLines()) + "\n\n");
     }
 
-    private static String arrayListToString(final List<String> lines) {
+    private static String arrayListToString(final Iterable<String> lines) {
         final StringBuilder sb = new StringBuilder();
 
         for (String line : lines) {

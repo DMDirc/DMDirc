@@ -55,7 +55,7 @@ public abstract class EventHandler implements CallbackInterface {
         final CallbackManager cbm = getConnection().getParser().getCallbackManager();
 
         try {
-            for (Class<?> iface : this.getClass().getInterfaces()) {
+            for (Class<?> iface : getClass().getInterfaces()) {
                 if (CallbackInterface.class.isAssignableFrom(iface)) {
                     addCallback(cbm, iface.asSubclass(CallbackInterface.class));
                 }

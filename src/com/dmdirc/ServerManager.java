@@ -42,6 +42,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
@@ -145,7 +146,7 @@ public class ServerManager implements ConnectionManager {
 
     @Override
     public List<Connection> getConnections() {
-        return new ArrayList<Connection>(servers);
+        return new ArrayList<>(servers);
     }
 
     @Override
@@ -184,21 +185,16 @@ public class ServerManager implements ConnectionManager {
     @Override
     public Connection connectToAddress(final URI uri, final ConfigProvider profile) {
         checkArgument(profile.isProfile());
-        Connection server = null;
+        final Optional<Server> existingServer = servers.stream()
+                .filter(s -> s.compareURI(uri)).findAny();
 
-        for (Server loopServer : servers) {
-            if (loopServer.compareURI(uri)) {
-                server = loopServer;
-                break;
-            }
-        }
-
-        if (server == null) {
-            server = createServer(uri, profile);
+        if (!existingServer.isPresent()) {
+            final Server server = createServer(uri, profile);
             server.connect();
             return server;
         }
 
+        final Server server = existingServer.get();
         if (server.getState().isDisconnected()) {
             server.connect(uri, profile);
         } else {

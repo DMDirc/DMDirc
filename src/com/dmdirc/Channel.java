@@ -58,6 +58,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -136,8 +137,7 @@ public class Channel extends MessageTarget implements GroupChat {
 
         getConfigManager().getBinder().bind(this, Channel.class);
 
-        topics = new RollingList<>(getConfigManager().getOptionInt("channel",
-                "topichistorysize"));
+        topics = new RollingList<>(getConfigManager().getOptionInt("channel", "topichistorysize"));
 
         eventHandler = new ChannelEventHandler(this, getEventBus());
 
@@ -359,10 +359,8 @@ public class Channel extends MessageTarget implements GroupChat {
 
         getTabCompleter().clear(TabCompletionType.CHANNEL_NICK);
 
-        for (ChannelClientInfo client : clients) {
-            getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK,
-                    client.getClient().getNickname());
-        }
+        getTabCompleter().addEntries(TabCompletionType.CHANNEL_NICK,
+            clients.stream().map(c -> c.getClient().getNickname()).collect(Collectors.toList()));
     }
 
     /**
@@ -498,14 +496,9 @@ public class Channel extends MessageTarget implements GroupChat {
         }
         updateTitle();
 
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                listenerList.getCallable(TopicChangeListener.class)
-                        .topicChanged(Channel.this, topic);
-            }
-        }, "Topic change listener runner").start();
+        new Thread(
+                () -> listenerList.getCallable(TopicChangeListener.class).topicChanged(this, topic),
+                "Topic change listener runner").start();
     }
 
     @Override

@@ -473,15 +473,12 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
             handleNotification("connectRetry", getAddress(), delay / 1000);
 
-            reconnectTimerFuture = executorService.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (myStateLock) {
-                        LOG.debug("Reconnect task executing, state: {}", myState.getState());
-                        if (myState.getState() == ServerState.RECONNECT_WAIT) {
-                            myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
-                            reconnect();
-                        }
+            reconnectTimerFuture = executorService.schedule(() -> {
+                synchronized (myStateLock) {
+                    LOG.debug("Reconnect task executing, state: {}", myState.getState());
+                    if (myState.getState() == ServerState.RECONNECT_WAIT) {
+                        myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
+                        reconnect();
                     }
                 }
             }, delay, TimeUnit.MILLISECONDS);
@@ -634,9 +631,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * Closes all open query windows associated with this server.
      */
     private void closeQueries() {
-        for (Query query : new ArrayList<>(queries.values())) {
-            query.close();
-        }
+        new ArrayList<>(queries.values()).forEach(Query::close);
     }
 
     /**
@@ -904,7 +899,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             parserLock.readLock().lock();
             if (parser == null) {
                 throw new IllegalStateException("getNetwork called when "
-                        + "parser is null (state: " + getState() + ")");
+                        + "parser is null (state: " + getState() + ')');
             } else if (parser.getNetworkName().isEmpty()) {
                 return getNetworkFromServerName(parser.getServerName());
             } else {
@@ -1552,20 +1547,12 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         awayMessage = message;
 
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                synchronized (listeners) {
-                    if (message == null) {
-                        for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
-                            listener.onBack();
-                        }
-                    } else {
-                        for (AwayStateListener listener : listeners.get(AwayStateListener.class)) {
-                            listener.onAway(message);
-                        }
-                    }
+        new Thread(() -> {
+            synchronized (listeners) {
+                if (message == null) {
+                    listeners.get(AwayStateListener.class).forEach(AwayStateListener::onBack);
+                } else {
+                    listeners.get(AwayStateListener.class).forEach(a -> a.onAway(message));
                 }
             }
         }, "Away state listener runner").start();
