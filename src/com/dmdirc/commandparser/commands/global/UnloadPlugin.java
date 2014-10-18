@@ -91,7 +91,7 @@ public class UnloadPlugin extends Command implements IntelligentCommand {
 
         if (arg == 0) {
             res.addAll(pluginManager.getPluginInfos().stream()
-                    .filter(possPlugin -> possPlugin.isLoaded())
+                    .filter(PluginInfo::isLoaded)
                     .map(possPlugin -> possPlugin.getMetaData().getName())
                     .collect(Collectors.toList()));
         }

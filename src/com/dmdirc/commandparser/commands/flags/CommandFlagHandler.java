@@ -227,7 +227,7 @@ public class CommandFlagHandler {
     protected String getEnablers(final CommandFlag flag) {
         final List<CommandFlag> enablers =
                 flags.values().stream().filter(target -> target.getEnables().contains(flag))
-                        .collect(Collectors.toCollection(() -> new LinkedList<>()));
+                        .collect(Collectors.toCollection(LinkedList::new));
 
         if (enablers.size() == 1) {
             return "--" + enablers.get(0).getName();

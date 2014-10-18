@@ -69,7 +69,7 @@ public class LegacyServiceLocator implements ServiceLocator {
             @Nullable final String implementation) {
         checkNotNull(serviceType);
         final Collection<T> services = new HashSet<>();
-        pluginManager.getPluginInfos().stream().filter(pluginInfo -> pluginInfo.isLoaded())
+        pluginManager.getPluginInfos().stream().filter(PluginInfo::isLoaded)
                 .forEach(pluginInfo -> {
                     final Plugin plugin = pluginInfo.getPlugin();
                     for (Method method : plugin.getClass().getMethods()) {

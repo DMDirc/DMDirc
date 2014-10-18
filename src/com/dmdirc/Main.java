@@ -175,7 +175,7 @@ public class Main {
      * Initialises the client.
      */
     public void init() {
-        migrators.stream().filter(migrator -> migrator.needsMigration()).forEach(migrator -> migrator.migrate());
+        migrators.stream().filter(Migrator::needsMigration).forEach(Migrator::migrate);
 
         for (CommandDetails command : commands) {
             commandManager.registerCommand(command.getCommand(), command.getInfo());
@@ -256,7 +256,7 @@ public class Main {
         final List<Service> uis = pm.getServicesByType("ui");
 
         // First try: go for our desired service type
-        uis.stream().filter(service -> service.activate()).forEach(service -> {
+        uis.stream().filter(Service::activate).forEach(service -> {
             final ServiceProvider provider = service.getActiveProvider();
 
             final Object export = provider.getExportedService("getController").execute();

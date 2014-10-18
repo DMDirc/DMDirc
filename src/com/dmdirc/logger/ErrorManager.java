@@ -394,7 +394,7 @@ public class ErrorManager implements ConfigChangeListener {
      * @param error Error that occurred
      */
     protected void fireErrorAdded(final ProgramError error) {
-        errorListeners.get(ErrorListener.class).stream().filter(listener -> listener.isReady())
+        errorListeners.get(ErrorListener.class).stream().filter(ErrorListener::isReady)
                 .forEach(listener -> {
                     error.setHandled();
                     listener.errorAdded(error);

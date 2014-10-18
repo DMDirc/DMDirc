@@ -507,7 +507,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
         synchronized (identities) {
             sources.addAll(identities.safeGet(null).stream()
-                    .filter(identity -> manager.identityApplies(identity))
+                    .filter(manager::identityApplies)
                     .collect(Collectors.toList()));
         }
 
