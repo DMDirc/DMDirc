@@ -78,9 +78,7 @@ public class UIAttachDialog extends JDialog implements ActionListener, ListSelec
         newList.setCellRenderer(new ServiceRenderer());
         newList.addListSelectionListener(this);
         final List<Service> services = serviceManager.getServicesByType("ui");
-        for (Service service : services) {
-            model.addElement(service);
-        }
+        services.forEach(model::addElement);
         newList.setSelectedIndex(0);
         return newList;
     }

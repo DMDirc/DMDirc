@@ -72,12 +72,12 @@ public final class GlobalClassLoader extends ClassLoader {
      * @throws ClassNotFoundException if the class to be loaded could not be found.
      */
     public Class<?> loadClass(final String name, final PluginInfo pi) throws ClassNotFoundException {
-        for (String classname : pi.getPersistentClasses()) {
-            if (!resourcesList.containsKey(classname)) {
-                resourcesList.put(classname,
-                        pi.getMetaData().getPluginPath().toAbsolutePath().toString());
-            }
-        }
+
+        pi.getPersistentClasses().stream()
+                .filter(classname -> !resourcesList.containsKey(classname)).forEach(classname -> {
+            resourcesList
+                    .put(classname, pi.getMetaData().getPluginPath().toAbsolutePath().toString());
+        });
         return loadClass(name);
     }
 

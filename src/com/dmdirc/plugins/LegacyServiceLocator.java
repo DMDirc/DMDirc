@@ -69,30 +69,29 @@ public class LegacyServiceLocator implements ServiceLocator {
             @Nullable final String implementation) {
         checkNotNull(serviceType);
         final Collection<T> services = new HashSet<>();
-        for (PluginInfo pluginInfo : pluginManager.getPluginInfos()) {
-            if (pluginInfo.isLoaded()) {
-                final Plugin plugin = pluginInfo.getPlugin();
-                for (Method method : plugin.getClass().getMethods()) {
-                    if (method.isAnnotationPresent(Exported.class) &&
-                            method.getParameterTypes().length == 0 &&
-                            serviceType.isAssignableFrom(method.getReturnType())) {
-                        try {
-                            method.setAccessible(true);
-                            final Object object = method.invoke(plugin);
-                            if (object != null && (implementation == null ||
-                                    implementation.equals(object.getClass().getName()))) {
-                                services.add((T) object);
+        pluginManager.getPluginInfos().stream().filter(pluginInfo -> pluginInfo.isLoaded())
+                .forEach(pluginInfo -> {
+                    final Plugin plugin = pluginInfo.getPlugin();
+                    for (Method method : plugin.getClass().getMethods()) {
+                        if (method.isAnnotationPresent(Exported.class) &&
+                                method.getParameterTypes().length == 0 &&
+                                serviceType.isAssignableFrom(method.getReturnType())) {
+                            try {
+                                method.setAccessible(true);
+                                final Object object = method.invoke(plugin);
+                                if (object != null && (implementation == null ||
+                                        implementation.equals(object.getClass().getName()))) {
+                                    services.add((T) object);
+                                }
+                            } catch (ReflectiveOperationException ex) {
+                                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
+                                        "Unable to execute exported method " + method.getName() +
+                                                " in plugin " + pluginInfo.getMetaData().getName(),
+                                        ""));
                             }
-                        } catch (ReflectiveOperationException ex) {
-                            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
-                                    "Unable to execute exported method " + method.getName() +
-                                            " in plugin " + pluginInfo.getMetaData().getName(),
-                                    ""));
                         }
                     }
-                }
-            }
-        }
+                });
 
         return services;
     }

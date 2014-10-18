@@ -63,10 +63,7 @@ public class PreferencesManager {
                 + " any settings specified here will overwrite global settings");
 
         // Copy all the channel ones
-        for (PreferencesSetting setting : getChannelSettings(manager, identity)
-                .getSettings()) {
-            category.addSetting(setting);
-        }
+        getChannelSettings(manager, identity).getSettings().forEach(category::addSetting);
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "general", "closechannelsonquit", "Close channels on quit",

@@ -346,9 +346,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     private void unloadIdentities() {
         synchronized (configProviders) {
-            for (ConfigProvider identity : configProviders) {
-                identityController.removeConfigProvider(identity);
-            }
+            configProviders.forEach(identityController::removeConfigProvider);
 
             configProviders.clear();
         }

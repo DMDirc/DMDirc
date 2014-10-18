@@ -45,6 +45,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -91,9 +92,8 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
     @Override
     public void loadModel() {
         controller.registerIdentityListener("profile", this);
-        for (ConfigProvider provider : controller.getProvidersByType("profile")) {
-            profiles.add(provider);
-        }
+        profiles.addAll(
+                controller.getProvidersByType("profile").stream().collect(Collectors.toList()));
         hostname = Optional.fromNullable(globalConfig.getOption("newserver", "hostname"));
         port = Optional.fromNullable(globalConfig.getOptionInt("newserver", "port"));
         password = Optional.fromNullable(globalConfig.getOption("newserver", "password"));

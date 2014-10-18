@@ -136,9 +136,7 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      * Unloads the commands loaded by this plugin.
      */
     private void unloadCommands() {
-        for (CommandInfo command : commands.keySet()) {
-            commandController.unregisterCommand(command);
-        }
+        commands.keySet().forEach(commandController::unregisterCommand);
     }
 
     /**

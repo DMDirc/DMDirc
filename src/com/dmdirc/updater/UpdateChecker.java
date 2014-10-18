@@ -98,17 +98,13 @@ public final class UpdateChecker implements Runnable {
         init(updateManager, identityController, eventBus);
 
         if (config.getOptionBool(DOMAIN, "autoupdate")) {
-            for (UpdateComponent component : updateManager.getComponents()) {
-                if (updateManager.getStatus(component) == UpdateStatus.UPDATE_PENDING) {
-                    updateManager.install(component);
-                }
-            }
+            updateManager.getComponents().stream()
+                    .filter(component -> updateManager.getStatus(component) ==
+                            UpdateStatus.UPDATE_PENDING).forEach(updateManager::install);
         } else if (config.getOptionBool(DOMAIN, "autodownload")) {
-            for (UpdateComponent component : updateManager.getComponents()) {
-                if (updateManager.getStatus(component) == UpdateStatus.UPDATE_PENDING) {
-                    updateManager.retrieve(component);
-                }
-            }
+            updateManager.getComponents().stream()
+                    .filter(component -> updateManager.getStatus(component) ==
+                            UpdateStatus.UPDATE_PENDING).forEach(updateManager::retrieve);
         }
     }
 

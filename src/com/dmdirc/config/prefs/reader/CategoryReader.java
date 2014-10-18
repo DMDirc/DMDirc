@@ -86,9 +86,7 @@ public class CategoryReader {
     public PreferencesCategory getCategory() {
         final PreferencesCategory category = new PreferencesCategory(title, description, icon);
 
-        for (PreferencesSetting item : items) {
-            category.addSetting(item);
-        }
+        items.forEach(category::addSetting);
 
         return category;
     }

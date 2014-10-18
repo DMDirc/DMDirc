@@ -41,6 +41,7 @@ import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
 
 import java.net.URI;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -111,9 +112,8 @@ public class NewServer extends Command implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets();
 
         if (arg == 0) {
-            for (Service parserType : pluginManager.getServicesByType("parser")) {
-                res.add(parserType.getName() + "://");
-            }
+            res.addAll(pluginManager.getServicesByType("parser").stream()
+                    .map(parserType -> parserType.getName() + "://").collect(Collectors.toList()));
         }
         res.excludeAll();
         return res;

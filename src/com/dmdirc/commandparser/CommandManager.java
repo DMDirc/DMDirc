@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Provider;
 
@@ -245,11 +246,8 @@ public class CommandManager implements CommandController {
 
     @Override
     public List<String> getCommandNames(final CommandType type) {
-        final List<String> res = new ArrayList<>();
-
-        for (CommandInfo command : getCommands(type).keySet()) {
-            res.add(getCommandChar() + command.getName());
-        }
+        final List<String> res = getCommands(type).keySet().stream()
+                .map(command -> getCommandChar() + command.getName()).collect(Collectors.toList());
 
         return res;
     }
@@ -273,12 +271,11 @@ public class CommandManager implements CommandController {
             final String name) {
         final Map<CommandInfo, Command> res = new HashMap<>();
 
-        for (Map.Entry<CommandInfo, Command> entry : commands.entrySet()) {
-            if ((type == null || type == entry.getKey().getType())
-                    && (name == null || name.equals(entry.getKey().getName()))) {
-                res.put(entry.getKey(), entry.getValue());
-            }
-        }
+        commands.entrySet().stream()
+                .filter(entry -> (type == null || type == entry.getKey().getType()) &&
+                        (name == null || name.equals(entry.getKey().getName()))).forEach(entry -> {
+            res.put(entry.getKey(), entry.getValue());
+        });
 
         return res;
     }

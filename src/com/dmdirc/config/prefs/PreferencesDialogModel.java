@@ -604,9 +604,7 @@ public class PreferencesDialogModel {
             iface.save();
         }
 
-        for (PreferencesCategory category : categories) {
-            fireSaveListener(category);
-        }
+        categories.forEach(this::fireSaveListener);
     }
 
     /**
@@ -619,9 +617,7 @@ public class PreferencesDialogModel {
             category.getObject().save();
         }
 
-        for (PreferencesCategory subcategory : category.getSubcats()) {
-            fireSaveListener(subcategory);
-        }
+        category.getSubcats().forEach(this::fireSaveListener);
     }
 
     /**

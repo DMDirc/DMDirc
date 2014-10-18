@@ -340,9 +340,7 @@ public class ErrorManager implements ConfigChangeListener {
      */
     public void deleteAll() {
         synchronized (errors) {
-            for (ProgramError error : errors) {
-                fireErrorDeleted(error);
-            }
+            errors.forEach(this::fireErrorDeleted);
 
             errors.clear();
         }
@@ -396,12 +394,11 @@ public class ErrorManager implements ConfigChangeListener {
      * @param error Error that occurred
      */
     protected void fireErrorAdded(final ProgramError error) {
-        for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
-            if (listener.isReady()) {
-                error.setHandled();
-                listener.errorAdded(error);
-            }
-        }
+        errorListeners.get(ErrorListener.class).stream().filter(listener -> listener.isReady())
+                .forEach(listener -> {
+                    error.setHandled();
+                    listener.errorAdded(error);
+                });
 
         if (!error.isHandled()) {
             System.err.println("An error has occurred: " + error.getLevel()

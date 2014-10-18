@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,9 +179,9 @@ public class UpdateManagerImpl implements UpdateManager {
                     .updateStatusChanged(component, UpdateStatus.CHECKING_NOT_PERMITTED, 0);
         }
 
-        for (UpdateCheckStrategy strategy : checkers) {
-            results.add(strategy.checkForUpdates(enabledComponents));
-        }
+        results.addAll(
+                checkers.stream().map(strategy -> strategy.checkForUpdates(enabledComponents))
+                        .collect(Collectors.toList()));
 
         checkResults.putAll(consolidator.consolidate(results));
 

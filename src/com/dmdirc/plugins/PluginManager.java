@@ -587,11 +587,9 @@ public class PluginManager implements ServiceManager {
 
     @Handler
     public void handlePrefsClosed(final ClientPrefsClosedEvent event) {
-        for (PluginInfo pi : getPluginInfos()) {
-            if (pi.isTempLoaded()) {
-                pi.unloadPlugin();
-            }
-        }
+        getPluginInfos().stream().filter(pi -> pi.isTempLoaded()).forEach(pi -> {
+            pi.unloadPlugin();
+        });
     }
 
 }

@@ -179,9 +179,7 @@ public class ActionGroup implements Iterable<Action> {
      * Removes all actions from this group, and removes all meta-data.
      */
     public void clear() {
-        for (Action action : new ArrayList<>(actions)) {
-            remove(action);
-        }
+        new ArrayList<>(actions).forEach(this::remove);
 
         settings.clear();
         description = null;

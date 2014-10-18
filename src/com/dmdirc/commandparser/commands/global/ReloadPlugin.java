@@ -35,6 +35,8 @@ import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import java.util.stream.Collectors;
+
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
@@ -87,9 +89,9 @@ public class ReloadPlugin extends Command implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets().excludeAll();
 
         if (arg == 0) {
-            for (PluginInfo possPlugin : pluginManager.getPluginInfos()) {
-                res.add(possPlugin.getMetaData().getName());
-            }
+            res.addAll(pluginManager.getPluginInfos().stream()
+                    .map(possPlugin -> possPlugin.getMetaData().getName())
+                    .collect(Collectors.toList()));
         }
 
         return res;

@@ -42,9 +42,7 @@ public class MessagesModule {
     public MessageSinkManager getMessageSinkManager(final DMDircMBassador eventBus,
             final Set<MessageSink> defaultSinks) {
         final MessageSinkManager messageSinkManager = new MessageSinkManager(eventBus);
-        for (MessageSink sink : defaultSinks) {
-            messageSinkManager.addSink(sink);
-        }
+        defaultSinks.forEach(messageSinkManager::addSink);
         return messageSinkManager;
     }
 

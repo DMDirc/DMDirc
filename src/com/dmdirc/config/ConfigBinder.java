@@ -218,9 +218,7 @@ public class ConfigBinder {
      */
     public void unbind(final Object instance) {
         synchronized (listeners) {
-            for (ConfigChangeListener listener : listeners.safeGet(instance)) {
-                manager.removeListener(listener);
-            }
+            listeners.safeGet(instance).forEach(manager::removeListener);
 
             listeners.remove(instance);
         }

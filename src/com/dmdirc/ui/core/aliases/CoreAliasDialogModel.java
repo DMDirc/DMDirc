@@ -156,12 +156,8 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     @Override
     public void save() {
         setSelectedAlias(Optional.<Alias>absent());
-        for (Alias alias : aliasManager.getAliases()) {
-            aliasManager.removeAlias(alias);
-        }
-        for (Alias alias : aliases.values()) {
-            aliasManager.addAlias(alias);
-        }
+        aliasManager.getAliases().forEach(aliasManager::removeAlias);
+        aliases.values().forEach(aliasManager::addAlias);
     }
 
     @Override

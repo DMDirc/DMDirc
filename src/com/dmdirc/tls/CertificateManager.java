@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.stream.Collectors;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
@@ -125,9 +126,9 @@ public class CertificateManager implements X509TrustManager {
             keystore.load(is, null);
 
             final PKIXParameters params = new PKIXParameters(keystore);
-            for (TrustAnchor anchor : params.getTrustAnchors()) {
-                globalTrustedCAs.add(anchor.getTrustedCert());
-            }
+            globalTrustedCAs
+                    .addAll(params.getTrustAnchors().stream().map(TrustAnchor::getTrustedCert)
+                            .collect(Collectors.toList()));
         } catch (CertificateException | IOException | InvalidAlgorithmParameterException |
                 KeyStoreException | NoSuchAlgorithmException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
