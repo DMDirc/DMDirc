@@ -145,11 +145,9 @@ public class ChannelMap {
      * @return A collection of join requests corresponding to channels in this map.
      */
     public Collection<ChannelJoinRequest> asJoinRequests() {
-        final Collection<ChannelJoinRequest> requests = new ArrayList<>(channels.size());
-        requests.addAll(
-                channels.values().stream().map(channel -> new ChannelJoinRequest(channel.getName()))
-                        .collect(Collectors.toList()));
-        return requests;
+        return channels.values().stream()
+                .map(channel -> new ChannelJoinRequest(channel.getName()))
+                .collect(Collectors.toList());
     }
 
     /**

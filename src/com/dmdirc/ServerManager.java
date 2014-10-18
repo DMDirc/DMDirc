@@ -170,10 +170,9 @@ public class ServerManager implements ConnectionManager {
 
     @Override
     public List<Connection> getConnectionsByNetwork(final String network) {
-        final List<Connection> res = servers.stream().filter(server -> server.isNetwork(network))
+        return servers.stream()
+                .filter(server -> server.isNetwork(network))
                 .collect(Collectors.toList());
-
-        return res;
     }
 
     @Override

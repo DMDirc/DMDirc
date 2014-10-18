@@ -192,11 +192,9 @@ public final class ZipResourceManager extends ResourceManager {
 
     @Override
     public List<String> getResourcesStartingWith(final String resourcesPrefix) {
-        final List<String> resources =
-                entries.stream().filter(entry -> entry.startsWith(resourcesPrefix))
-                        .collect(Collectors.toList());
-
-        return resources;
+        return entries.stream()
+                .filter(entry -> entry.startsWith(resourcesPrefix))
+                .collect(Collectors.toList());
     }
 
 }

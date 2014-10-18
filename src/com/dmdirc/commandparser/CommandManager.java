@@ -35,7 +35,6 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.util.collections.MapList;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -246,10 +245,9 @@ public class CommandManager implements CommandController {
 
     @Override
     public List<String> getCommandNames(final CommandType type) {
-        final List<String> res = getCommands(type).keySet().stream()
-                .map(command -> getCommandChar() + command.getName()).collect(Collectors.toList());
-
-        return res;
+        return getCommands(type).keySet().stream()
+                .map(command -> getCommandChar() + command.getName())
+                .collect(Collectors.toList());
     }
 
     @Override
