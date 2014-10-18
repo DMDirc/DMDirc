@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.auto;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.util.Optional;
 
@@ -45,72 +46,108 @@ public class AutoCommandManagerTest {
     @Mock private DMDircMBassador eventBus;
     @Mock private AutoCommandHandlerFactory factory;
     @Mock private AutoCommandHandler globalHandler;
-    @Mock private AutoCommandHandler connectionHandler;
+    @Mock private AutoCommandHandler ircquakenetHandler;
+    @Mock private AutoCommandHandler ukquakenetHandler;
+    @Mock private AutoCommandHandler testnetHandler;
+    @Mock private ConfigProvider testProfile;
     private AutoCommandManager autoCommandManager;
     private AutoCommand global;
-    private AutoCommand connection;
+    private AutoCommand ircquakenet;
+    private AutoCommand ukquakenet;
+    private AutoCommand testnet;
 
     @Before
     public void setup() {
         autoCommandManager = new AutoCommandManager(eventBus, factory);
         global = new AutoCommand(Optional.<String>empty(), Optional.<String>empty(),
                 Optional.<String>empty(), "");
-        connection = new AutoCommand(Optional.<String>empty(),
+        ircquakenet = new AutoCommand(Optional.ofNullable("irc.quakenet.org"),
                 Optional.ofNullable("Quakenet"), Optional.<String>empty(), "");
+        ukquakenet = new AutoCommand(Optional.ofNullable("uk.quakenet.org"),
+                Optional.ofNullable("Quakenet"), Optional.<String>empty(), "");
+        testnet = new AutoCommand(Optional.ofNullable("irc.testnet.org"),
+                Optional.ofNullable("Testnet"), Optional.ofNullable("profileName"), "");
+        when(testProfile.getName()).thenReturn("profileName");
         when(factory.getAutoCommandHandler(global)).thenReturn(globalHandler);
-        when(factory.getAutoCommandHandler(connection)).thenReturn(connectionHandler);
+        when(factory.getAutoCommandHandler(ircquakenet)).thenReturn(ircquakenetHandler);
+        when(factory.getAutoCommandHandler(ukquakenet)).thenReturn(ukquakenetHandler);
+        when(factory.getAutoCommandHandler(testnet)).thenReturn(testnetHandler);
+        autoCommandManager.addAutoCommand(global);
+        autoCommandManager.addAutoCommand(ircquakenet);
+        autoCommandManager.addAutoCommand(ukquakenet);
+        autoCommandManager.addAutoCommand(testnet);
     }
 
     @Test
     public void testRemoveAutoCommand() {
-        autoCommandManager.addAutoCommand(global);
-        autoCommandManager.addAutoCommand(connection);
-        assertEquals(2, autoCommandManager.getAutoCommands().size());
-        assertTrue(autoCommandManager.getAutoCommands().contains(connection));
-        autoCommandManager.removeAutoCommand(connection);
-        assertEquals(1, autoCommandManager.getAutoCommands().size());
-        assertFalse(autoCommandManager.getAutoCommands().contains(connection));
+        assertEquals(4, autoCommandManager.getAutoCommands().size());
+        assertTrue(autoCommandManager.getAutoCommands().contains(ircquakenet));
+        autoCommandManager.removeAutoCommand(ircquakenet);
+        assertEquals(3, autoCommandManager.getAutoCommands().size());
+        assertFalse(autoCommandManager.getAutoCommands().contains(ircquakenet));
     }
 
     @Test
     public void testGetAutoCommands() {
-        autoCommandManager.addAutoCommand(global);
-        autoCommandManager.addAutoCommand(connection);
-        assertEquals(2, autoCommandManager.getAutoCommands().size());
+        assertEquals(4, autoCommandManager.getAutoCommands().size());
     }
 
     @Test
     public void testGetGlobalAutoCommands() {
-        autoCommandManager.addAutoCommand(global);
-        autoCommandManager.addAutoCommand(connection);
         assertEquals(1, autoCommandManager.getGlobalAutoCommands().size());
         assertTrue(autoCommandManager.getGlobalAutoCommands().contains(global));
     }
 
     @Test
     public void testGetConnectionAutoCommands() {
-        autoCommandManager.addAutoCommand(global);
-        autoCommandManager.addAutoCommand(connection);
-        assertEquals(1, autoCommandManager.getConnectionAutoCommands().size());
-        assertTrue(autoCommandManager.getConnectionAutoCommands().contains(connection));
+        assertEquals(3, autoCommandManager.getConnectionAutoCommands().size());
+        assertFalse(autoCommandManager.getConnectionAutoCommands().contains(global));
+    }
+
+    @Test
+    public void testGetConnectionAutoCommands_WithServer() {
+        assertEquals(1, autoCommandManager.getConnectionAutoCommands("irc.quakenet.org").size());
+        assertTrue(autoCommandManager.getConnectionAutoCommands("irc.quakenet.org")
+                .contains(ircquakenet));
+        assertFalse(autoCommandManager.getConnectionAutoCommands("irc.quakenet.org")
+                .contains(ukquakenet));
+    }
+
+    @Test
+    public void testGetConnectionAutoCommands_WithServer_WithProfile() {
+        assertEquals(1, autoCommandManager.getConnectionAutoCommands("irc.testnet.org",
+                testProfile).size());
+        assertTrue(autoCommandManager.getConnectionAutoCommands().contains(ircquakenet));
+    }
+
+    @Test
+    public void testGetNetworkAutoCommands() {
+        assertEquals(2, autoCommandManager.getNetworkAutoCommands("Quakenet").size());
+        assertFalse(autoCommandManager.getNetworkAutoCommands("Quakenet").contains(testnet));
+    }
+
+    @Test
+    public void testGetNetworkAutoCommands_WithProfile() {
+        assertEquals(1, autoCommandManager.getNetworkAutoCommands("TestNet", testProfile).size());
+        assertTrue(
+                autoCommandManager.getNetworkAutoCommands("TestNet", testProfile).contains(testnet));
     }
 
     @Test
     public void testStart() {
-        autoCommandManager.addAutoCommand(global);
         autoCommandManager.start();
         verify(eventBus).subscribe(globalHandler);
     }
 
     @Test
     public void testStop() {
-        autoCommandManager.addAutoCommand(global);
         autoCommandManager.stop();
         verify(eventBus).unsubscribe(globalHandler);
     }
 
     @Test
     public void testAddWhenStarted() {
+        autoCommandManager.removeAutoCommand(global);
         autoCommandManager.start();
         autoCommandManager.addAutoCommand(global);
         verify(eventBus).subscribe(globalHandler);
@@ -118,14 +155,12 @@ public class AutoCommandManagerTest {
 
     @Test
     public void testAddWhenStopped() {
-        autoCommandManager.addAutoCommand(global);
         verify(eventBus, never()).subscribe(globalHandler);
     }
 
     @Test
     public void testRemoveWhenStarted() {
         autoCommandManager.start();
-        autoCommandManager.addAutoCommand(global);
         autoCommandManager.removeAutoCommand(global);
         verify(eventBus).subscribe(globalHandler);
         verify(eventBus).unsubscribe(globalHandler);

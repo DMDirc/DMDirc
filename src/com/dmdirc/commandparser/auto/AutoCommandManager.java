@@ -23,14 +23,13 @@
 package com.dmdirc.commandparser.auto;
 
 import com.dmdirc.DMDircMBassador;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Sets;
+import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -127,7 +126,10 @@ public class AutoCommandManager {
      * @return The set of all known global auto commands.
      */
     public Set<AutoCommand> getGlobalAutoCommands() {
-        return Sets.filter(getAutoCommands(), new GlobalCommandPredicate());
+        return getAutoCommands()
+                .parallelStream()
+                .filter(c -> !c.getServer().isPresent() && !c.getNetwork().isPresent())
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -136,29 +138,75 @@ public class AutoCommandManager {
      * @return The set of all known connection auto commands.
      */
     public Set<AutoCommand> getConnectionAutoCommands() {
-        return Sets.filter(getAutoCommands(), new ConnectionCommandPredicate());
+        return getAutoCommands().parallelStream()
+                .filter(c -> c.getServer().isPresent() || c.getNetwork().isPresent())
+                .collect(Collectors.toSet());
     }
 
     /**
-     * Predicate to check if an {@link AutoCommand} is global.
+     * Gets a set of all registered connection auto commands matching the specified connection name.
+     *
+     * @param server The server name to match
+     *
+     * @return The set of all known connection auto commands.
      */
-    private static class GlobalCommandPredicate implements Predicate<AutoCommand> {
-
-        @Override
-        public boolean apply(final AutoCommand autoCommand) {
-            return !autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent();
-        }
+    public Set<AutoCommand> getConnectionAutoCommands(final String server) {
+        return getAutoCommands().parallelStream()
+                .filter(c -> c.getServer().isPresent()
+                        && c.getServer().get().equalsIgnoreCase(server))
+                .collect(Collectors.toSet());
     }
 
     /**
-     * Predicate to check if an {@link AutoCommand} relates to a connection.
+     * Gets a set of all registered connection auto commands matching the spcified connection name
+     * and profile.
+     *
+     * @param server The server name to match
+     * @param profile The profile name to match
+     *
+     * @return The set of all known connection auto commands.
      */
-    private static class ConnectionCommandPredicate implements Predicate<AutoCommand> {
+    public Set<AutoCommand> getConnectionAutoCommands(final String server,
+            final ConfigProvider profile) {
+        return getAutoCommands().parallelStream()
+                .filter(c -> c.getServer().isPresent() &&
+                        c.getServer().get().equalsIgnoreCase(server))
+                .filter(c -> c.getProfile().isPresent() && c.getProfile().get().equalsIgnoreCase(
+                        profile.getName()))
+                .collect(Collectors.toSet());
+    }
 
-        @Override
-        public boolean apply(final AutoCommand autoCommand) {
-            return autoCommand.getServer().isPresent() || autoCommand.getNetwork().isPresent();
-        }
+    /**
+     * Gets a set of all registered connection auto commands matching the specified network.
+     *
+     * @param network The network name to match
+     *
+     * @return The set of all known connection auto commands.
+     */
+    public Set<AutoCommand> getNetworkAutoCommands(final String network) {
+        return getAutoCommands().parallelStream()
+                .filter(c -> c.getNetwork().isPresent() &&
+                        c.getNetwork().get().equalsIgnoreCase(network))
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Gets a set of all registered connection auto commands matching the spcified network and
+     * profile.
+     *
+     * @param network The network name to match
+     * @param profile The profile name to match
+     *
+     * @return The set of all known connection auto commands.
+     */
+    public Set<AutoCommand> getNetworkAutoCommands(final String network,
+            final ConfigProvider profile) {
+        return getAutoCommands().parallelStream()
+                .filter(c -> c.getNetwork().isPresent() &&
+                        c.getNetwork().get().equalsIgnoreCase(network))
+                .filter(c -> c.getProfile().isPresent() && c.getProfile().get().equalsIgnoreCase
+                        (profile.getName()))
+                .collect(Collectors.toSet());
     }
 
 }
