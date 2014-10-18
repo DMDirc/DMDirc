@@ -36,6 +36,8 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import java.util.stream.Collectors;
+
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
@@ -103,9 +105,9 @@ public class LoadPlugin extends Command implements IntelligentCommand {
         res.excludeAll();
 
         if (arg == 0) {
-            for (PluginMetaData possPlugin : pluginManager.getAllPlugins()) {
-                res.add(possPlugin.getRelativeFilename());
-            }
+            res.addAll(
+                    pluginManager.getAllPlugins().stream().map(PluginMetaData::getRelativeFilename)
+                            .collect(Collectors.toList()));
         }
 
         return res;

@@ -329,16 +329,14 @@ public class Styliser implements ConfigChangeListener {
 
         final StringBuilder smilies = new StringBuilder();
 
-        for (Map.Entry<String, String> icon
-                : configManager.getOptions("icon").entrySet()) {
-            if (icon.getKey().startsWith("smilie-")) {
-                if (smilies.length() > 0) {
-                    smilies.append('|');
-                }
-
-                smilies.append(Pattern.quote(icon.getKey().substring(7)));
+        configManager.getOptions("icon").entrySet().stream()
+                .filter(icon -> icon.getKey().startsWith("smilie-")).forEach(icon -> {
+            if (smilies.length() > 0) {
+                smilies.append('|');
             }
-        }
+
+            smilies.append(Pattern.quote(icon.getKey().substring(7)));
+        });
 
         return string.replaceAll("(\\s|^)(" + smilies + ")(?=\\s|$)",
                 "$1" + CODE_SMILIE + "$2" + CODE_SMILIE);

@@ -71,9 +71,7 @@ public class AutoCommandManager {
      */
     public void start() {
         started = true;
-        for (AutoCommandHandler handler : autoCommands.values()) {
-            eventBus.subscribe(handler);
-        }
+        autoCommands.values().forEach(eventBus::subscribe);
     }
 
     /**
@@ -81,9 +79,7 @@ public class AutoCommandManager {
      */
     public void stop() {
         started = false;
-        for (AutoCommandHandler handler : autoCommands.values()) {
-            eventBus.unsubscribe(handler);
-        }
+        autoCommands.values().forEach(eventBus::unsubscribe);
     }
 
     /**

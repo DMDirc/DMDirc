@@ -175,17 +175,15 @@ public class Channel extends MessageTarget implements GroupChat {
         final ClientInfo me = server.getParser().getLocalClient();
         final String[] details = getDetails(channelInfo.getChannelClient(me));
 
-        for (String part : splitLine(line)) {
-            if (!part.isEmpty()) {
-                final ChannelSelfMessageEvent event = new ChannelSelfMessageEvent(this,
-                        channelInfo.getChannelClient(me), part);
-                final String format = EventUtils.postDisplayable(getEventBus(), event,
-                        "channelSelfMessage");
-                addLine(format, details[0], details[1], details[2], details[3], part, channelInfo);
+        splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
+            final ChannelSelfMessageEvent event =
+                    new ChannelSelfMessageEvent(this, channelInfo.getChannelClient(me), part);
+            final String format =
+                    EventUtils.postDisplayable(getEventBus(), event, "channelSelfMessage");
+            addLine(format, details[0], details[1], details[2], details[3], part, channelInfo);
 
-                channelInfo.sendMessage(part);
-            }
-        }
+            channelInfo.sendMessage(part);
+        });
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -80,11 +81,11 @@ public class AliasFactory {
                 .omitEmptyStrings()
                 .splitToList(input);
         final List<String> trimmedLines = new ArrayList<>(lines.size());
-        for (String line : lines) {
-            trimmedLines.add(line.charAt(0) == commandController.getCommandChar()
-                    ? line.length() > 1 && line.charAt(1) == commandController.getSilenceChar()
-                    ? line.substring(2) : line.substring(1) : line);
-        }
+        trimmedLines.addAll(lines.stream()
+                .map(line -> line.charAt(0) == commandController.getCommandChar() ?
+                        line.length() > 1 && line.charAt(1) == commandController.getSilenceChar() ?
+                                line.substring(2) : line.substring(1) : line)
+                .collect(Collectors.toList()));
         return Joiner.on("\r\n").join(trimmedLines);
     }
 

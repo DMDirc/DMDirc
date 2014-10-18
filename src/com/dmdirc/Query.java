@@ -127,16 +127,14 @@ public class Query extends MessageTarget implements PrivateActionListener,
             return;
         }
 
-        for (String part : splitLine(line)) {
-            if (!part.isEmpty()) {
-                server.getParser().sendMessage(target, part);
+        splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
+            server.getParser().sendMessage(target, part);
 
-                final String format = EventUtils.postDisplayable(getEventBus(),
-                        new QuerySelfMessageEvent(this, server.getParser().getLocalClient(), part),
-                        "querySelfMessage");
-                doNotification(format, server.getParser().getLocalClient(), part);
-            }
-        }
+            final String format = EventUtils.postDisplayable(getEventBus(),
+                    new QuerySelfMessageEvent(this, server.getParser().getLocalClient(), part),
+                    "querySelfMessage");
+            doNotification(format, server.getParser().getLocalClient(), part);
+        });
     }
 
     @Override

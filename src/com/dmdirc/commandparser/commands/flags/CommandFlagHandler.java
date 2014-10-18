@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -199,21 +200,19 @@ public class CommandFlagHandler {
      * @param flag The flag whose enables/disables lists should be processed
      */
     protected void handleEnable(final CommandFlag flag) {
-        for (CommandFlag target : flag.getDisables()) {
-            if (enabledFlags.containsKey(target.getName())) {
-                enabledFlags.remove(target.getName());
-                disabledFlags.put(target.getName(), target);
-                disabledBy.put(target.getName(), flag);
-            }
-        }
+        flag.getDisables().stream().filter(target -> enabledFlags.containsKey(target.getName()))
+                .forEach(target -> {
+                    enabledFlags.remove(target.getName());
+                    disabledFlags.put(target.getName(), target);
+                    disabledBy.put(target.getName(), flag);
+                });
 
-        for (CommandFlag target : flag.getEnables()) {
-            if (disabledFlags.containsKey(target.getName())) {
-                disabledFlags.remove(target.getName());
-                enabledFlags.put(target.getName(), target);
-                disabledBy.remove(target.getName());
-            }
-        }
+        flag.getEnables().stream().filter(target -> disabledFlags.containsKey(target.getName()))
+                .forEach(target -> {
+                    disabledFlags.remove(target.getName());
+                    enabledFlags.put(target.getName(), target);
+                    disabledBy.remove(target.getName());
+                });
     }
 
     /**
@@ -226,13 +225,9 @@ public class CommandFlagHandler {
      * @return A user-friendly string describing flags which enable the specified flag.
      */
     protected String getEnablers(final CommandFlag flag) {
-        final List<CommandFlag> enablers = new LinkedList<>();
-
-        for (CommandFlag target : flags.values()) {
-            if (target.getEnables().contains(flag)) {
-                enablers.add(target);
-            }
-        }
+        final List<CommandFlag> enablers =
+                flags.values().stream().filter(target -> target.getEnables().contains(flag))
+                        .collect(Collectors.toCollection(LinkedList::new));
 
         if (enablers.size() == 1) {
             return "--" + enablers.get(0).getName();

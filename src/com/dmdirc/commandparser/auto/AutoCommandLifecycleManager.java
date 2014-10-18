@@ -46,9 +46,7 @@ public class AutoCommandLifecycleManager implements SystemLifecycleComponent {
 
     @Override
     public void startUp() {
-        for (AutoCommand command : store.readAutoCommands()) {
-            manager.addAutoCommand(command);
-        }
+        store.readAutoCommands().forEach(manager::addAutoCommand);
         manager.start();
     }
 

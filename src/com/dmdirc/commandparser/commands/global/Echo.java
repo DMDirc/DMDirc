@@ -44,6 +44,7 @@ import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -151,11 +152,9 @@ public class Echo extends Command implements IntelligentCommand {
 
             //Global Windows
             windowList.addAll(windowManager.getRootWindows());
-            for (FrameContainer customWindow : windowList) {
-                if (customWindow instanceof CustomWindow) {
-                    targets.add(customWindow.getName());
-                }
-            }
+            targets.addAll(
+                    windowList.stream().filter(customWindow -> customWindow instanceof CustomWindow)
+                            .map(FrameContainer::getName).collect(Collectors.toList()));
 
             targets.excludeAll();
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--ts")) {

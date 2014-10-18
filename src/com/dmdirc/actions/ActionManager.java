@@ -54,6 +54,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Provider;
 
@@ -279,11 +280,9 @@ public class ActionManager implements ActionController {
      * @param updateManager The update manager to register components with
      */
     private void registerComponents(final UpdateManager updateManager) {
-        for (ActionGroup group : groups.values()) {
-            if (group.getComponent() != -1 && group.getVersion() != null) {
-                updateManager.addComponent(new ActionGroupComponent(group));
-            }
-        }
+        groups.values().stream()
+                .filter(group -> group.getComponent() != -1 && group.getVersion() != null)
+                .forEach(group -> updateManager.addComponent(new ActionGroupComponent(group)));
     }
 
     /**
@@ -514,9 +513,7 @@ public class ActionManager implements ActionController {
         checkArgument(!group.isEmpty());
         checkArgument(groups.containsKey(group));
 
-        for (Action action : groups.get(group).getActions()) {
-            removeAction(action);
-        }
+        groups.get(group).getActions().forEach(this::removeAction);
 
         final File dir = new File(directory + group);
 
@@ -579,12 +576,9 @@ public class ActionManager implements ActionController {
     public List<ActionType> findCompatibleTypes(final ActionType type) {
         checkNotNull(type);
 
-        final List<ActionType> res = new ArrayList<>();
-        for (ActionType target : types) {
-            if (!target.equals(type) && target.getType().equals(type.getType())) {
-                res.add(target);
-            }
-        }
+        final List<ActionType> res = types.stream()
+                .filter(target -> !target.equals(type) && target.getType().equals(type.getType()))
+                .collect(Collectors.toList());
 
         return res;
     }
@@ -593,12 +587,9 @@ public class ActionManager implements ActionController {
     public List<ActionComponent> findCompatibleComponents(final Class<?> target) {
         checkNotNull(target);
 
-        final List<ActionComponent> res = new ArrayList<>();
-        for (ActionComponent subject : components) {
-            if (subject.appliesTo().equals(target)) {
-                res.add(subject);
-            }
-        }
+        final List<ActionComponent> res =
+                components.stream().filter(subject -> subject.appliesTo().equals(target))
+                        .collect(Collectors.toList());
 
         return res;
     }
@@ -607,12 +598,9 @@ public class ActionManager implements ActionController {
     public List<ActionComparison> findCompatibleComparisons(final Class<?> target) {
         checkNotNull(target);
 
-        final List<ActionComparison> res = new ArrayList<>();
-        for (ActionComparison subject : comparisons) {
-            if (subject.appliesTo().equals(target)) {
-                res.add(subject);
-            }
-        }
+        final List<ActionComparison> res =
+                comparisons.stream().filter(subject -> subject.appliesTo().equals(target))
+                        .collect(Collectors.toList());
 
         return res;
     }

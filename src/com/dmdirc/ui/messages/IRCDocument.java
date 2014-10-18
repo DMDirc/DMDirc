@@ -34,6 +34,7 @@ import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.UIManager;
 
@@ -134,9 +135,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         final int start;
         synchronized (lines) {
             start = lines.size();
-            for (String[] string : text) {
-                lines.add(new Line(styliser, string, fontSize, fontName));
-            }
+            lines.addAll(text.stream().map(string -> new Line(styliser, string, fontSize, fontName))
+                    .collect(Collectors.toList()));
         }
         fireLinesAdded(start, text.size());
     }

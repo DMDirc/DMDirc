@@ -175,11 +175,7 @@ public class Main {
      * Initialises the client.
      */
     public void init() {
-        for (Migrator migrator : migrators) {
-            if (migrator.needsMigration()) {
-                migrator.migrate();
-            }
-        }
+        migrators.stream().filter(Migrator::needsMigration).forEach(Migrator::migrate);
 
         for (CommandDetails command : commands) {
             commandManager.registerCommand(command.getCommand(), command.getInfo());
@@ -260,17 +256,15 @@ public class Main {
         final List<Service> uis = pm.getServicesByType("ui");
 
         // First try: go for our desired service type
-        for (Service service : uis) {
-            if (service.activate()) {
-                final ServiceProvider provider = service.getActiveProvider();
+        uis.stream().filter(Service::activate).forEach(service -> {
+            final ServiceProvider provider = service.getActiveProvider();
 
-                final Object export = provider.getExportedService("getController").execute();
+            final Object export = provider.getExportedService("getController").execute();
 
-                if (export != null) {
-                    CONTROLLERS.add((UIController) export);
-                }
+            if (export != null) {
+                CONTROLLERS.add((UIController) export);
             }
-        }
+        });
 
         if (CONTROLLERS.isEmpty()) {
             handleMissingUI();

@@ -51,6 +51,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -505,11 +506,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final List<ConfigProvider> sources = new ArrayList<>();
 
         synchronized (identities) {
-            for (ConfigProvider identity : identities.safeGet(null)) {
-                if (manager.identityApplies(identity)) {
-                    sources.add(identity);
-                }
-            }
+            sources.addAll(identities.safeGet(null).stream()
+                    .filter(manager::identityApplies)
+                    .collect(Collectors.toList()));
         }
 
         Collections.sort(sources, new ConfigProviderTargetComparator());

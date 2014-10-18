@@ -70,17 +70,16 @@ public class CorePluginHelper {
             final CorePluginExtractor corePluginExtractor,
             final PluginManager pm,
             final AggregateConfigProvider config) {
-        for (PluginMetaData plugin : pm.getAllPlugins()) {
-            if (config.hasOptionString("bundledplugins_versions", plugin.getName())) {
-                final Version bundled = new Version(config.getOption("bundledplugins_versions",
-                        plugin.getName()));
-                final Version installed = plugin.getVersion();
+        pm.getAllPlugins().stream().filter(plugin -> config
+                .hasOptionString("bundledplugins_versions", plugin.getName())).forEach(plugin -> {
+            final Version bundled =
+                    new Version(config.getOption("bundledplugins_versions", plugin.getName()));
+            final Version installed = plugin.getVersion();
 
-                if (installed.compareTo(bundled) < 0) {
-                    corePluginExtractor.extractCorePlugins(plugin.getName());
-                }
+            if (installed.compareTo(bundled) < 0) {
+                corePluginExtractor.extractCorePlugins(plugin.getName());
             }
-        }
+        });
     }
 
 }

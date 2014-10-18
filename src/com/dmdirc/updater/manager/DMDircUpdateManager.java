@@ -70,21 +70,13 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
                 new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory()),
                 consolidator, updatePolicy);
 
-        for (UpdateCheckStrategy checkStrategy : checkStrategies) {
-            addCheckStrategy(checkStrategy);
-        }
+        checkStrategies.forEach(DMDircUpdateManager.this::addCheckStrategy);
 
-        for (UpdateRetrievalStrategy retrievalStrategy : retrievalStrategies) {
-            addRetrievalStrategy(retrievalStrategy);
-        }
+        retrievalStrategies.forEach(DMDircUpdateManager.this::addRetrievalStrategy);
 
-        for (UpdateInstallationStrategy installationStrategy : installationStrategies) {
-            addInstallationStrategy(installationStrategy);
-        }
+        installationStrategies.forEach(DMDircUpdateManager.this::addInstallationStrategy);
 
-        for (UpdateComponent component : components) {
-            addComponent(component);
-        }
+        components.forEach(DMDircUpdateManager.this::addComponent);
     }
 
     /**

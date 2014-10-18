@@ -40,6 +40,7 @@ import com.dmdirc.ui.input.TabCompletionType;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -187,13 +188,9 @@ public class Ignore extends Command implements IntelligentCommand {
             final IgnoreList ignoreList = context.getWindow().getConnection()
                     .getIgnoreList();
             if (ignoreList.canConvert()) {
-                for (String entry : ignoreList.getSimpleList()) {
-                    targets.add(entry);
-                }
+                targets.addAll(ignoreList.getSimpleList().stream().collect(Collectors.toList()));
             }
-            for (String entry : ignoreList.getRegexList()) {
-                targets.add(entry);
-            }
+            targets.addAll(ignoreList.getRegexList().stream().collect(Collectors.toList()));
 
         } else if (arg == 1 && "--regex".equals(context.getPreviousArgs().get(0))) {
             targets.include(TabCompletionType.CHANNEL_NICK);

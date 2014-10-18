@@ -197,11 +197,9 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
 
         // Determine which settings will have changed
         for (String domain : identity.getDomains()) {
-            for (String option : identity.getOptions(domain).keySet()) {
-                if (identity.equals(getScope(domain, option))) {
-                    changed.add(new String[]{domain, option});
-                }
-            }
+            identity.getOptions(domain).keySet().stream()
+                    .filter(option -> identity.equals(getScope(domain, option)))
+                    .forEach(option -> changed.add(new String[]{domain, option}));
         }
 
         synchronized (sources) {
@@ -316,11 +314,9 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
 
             // Determine which settings will have changed
             for (String domain : identity.getDomains()) {
-                for (String option : identity.getOptions(domain).keySet()) {
-                    if (identity.equals(getScope(domain, option))) {
-                        configChanged(domain, option);
-                    }
-                }
+                identity.getOptions(domain).keySet().stream()
+                        .filter(option -> identity.equals(getScope(domain, option)))
+                        .forEach(option -> configChanged(domain, option));
             }
         }
     }
@@ -370,12 +366,11 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         this.server = server;
         this.channel = channel + "@" + network;
 
-        for (ConfigProvider identity : new ArrayList<>(sources)) {
-            if (!identityApplies(identity)) {
-                LOG.debug("Removing identity that no longer applies: {}", identity);
-                removeIdentity(identity);
-            }
-        }
+        new ArrayList<>(sources).stream().filter(identity -> !identityApplies(identity))
+                .forEach(identity -> {
+                    LOG.debug("Removing identity that no longer applies: {}", identity);
+                    removeIdentity(identity);
+                });
 
         final List<ConfigProvider> newSources = manager.getIdentitiesForManager(this);
         for (ConfigProvider identity : newSources) {

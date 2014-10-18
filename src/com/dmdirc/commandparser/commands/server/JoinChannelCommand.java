@@ -44,6 +44,7 @@ import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -138,12 +139,9 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
                 .getOptionBool("commands", "join-tabexistingchannels");
 
         if (!showExisting) {
-            for (String result : results) {
-                // Only tab complete channels we're not already on
-                if (!connection.hasChannel(result)) {
-                    targets.add(prefix + result);
-                }
-            }
+            // Only tab complete channels we're not already on
+            targets.addAll(results.stream().filter(result -> !connection.hasChannel(result))
+                    .map(result -> prefix + result).collect(Collectors.toList()));
         }
 
         for (char chPrefix : connection.getChannelPrefixes().toCharArray()) {

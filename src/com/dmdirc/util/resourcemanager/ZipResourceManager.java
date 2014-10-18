@@ -33,6 +33,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -158,11 +159,8 @@ public final class ZipResourceManager extends ResourceManager {
             final String resourcesSuffix) {
         final Map<String, byte[]> resources = new HashMap<>();
 
-        for (String entry : entries) {
-            if (entry.endsWith(resourcesSuffix)) {
-                resources.put(entry, getResourceBytes(entry));
-            }
-        }
+        entries.stream().filter(entry -> entry.endsWith(resourcesSuffix))
+                .forEach(entry -> resources.put(entry, getResourceBytes(entry)));
 
         return resources;
     }
@@ -172,11 +170,8 @@ public final class ZipResourceManager extends ResourceManager {
             final String resourcesPrefix) {
         final Map<String, byte[]> resources = new HashMap<>();
 
-        for (String entry : entries) {
-            if (entry.startsWith(resourcesPrefix)) {
-                resources.put(entry, getResourceBytes(entry));
-            }
-        }
+        entries.stream().filter(entry -> entry.startsWith(resourcesPrefix))
+                .forEach(entry -> resources.put(entry, getResourceBytes(entry)));
 
         return resources;
     }
@@ -186,26 +181,17 @@ public final class ZipResourceManager extends ResourceManager {
             final String resourcesPrefix) {
         final Map<String, InputStream> resources = new HashMap<>();
 
-        for (String entry : entries) {
-            if (entry.startsWith(resourcesPrefix)) {
-                resources.put(entry, getResourceInputStream(entry));
-            }
-        }
+        entries.stream().filter(entry -> entry.startsWith(resourcesPrefix))
+                .forEach(entry -> resources.put(entry, getResourceInputStream(entry)));
 
         return resources;
     }
 
     @Override
     public List<String> getResourcesStartingWith(final String resourcesPrefix) {
-        final List<String> resources = new ArrayList<>();
-
-        for (String entry : entries) {
-            if (entry.startsWith(resourcesPrefix)) {
-                resources.add(entry);
-            }
-        }
-
-        return resources;
+        return entries.stream()
+                .filter(entry -> entry.startsWith(resourcesPrefix))
+                .collect(Collectors.toList());
     }
 
 }

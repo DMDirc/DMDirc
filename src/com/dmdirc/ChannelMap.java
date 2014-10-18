@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -144,11 +145,9 @@ public class ChannelMap {
      * @return A collection of join requests corresponding to channels in this map.
      */
     public Collection<ChannelJoinRequest> asJoinRequests() {
-        final Collection<ChannelJoinRequest> requests = new ArrayList<>(channels.size());
-        for (Channel channel : channels.values()) {
-            requests.add(new ChannelJoinRequest(channel.getName()));
-        }
-        return requests;
+        return channels.values().stream()
+                .map(channel -> new ChannelJoinRequest(channel.getName()))
+                .collect(Collectors.toList());
     }
 
     /**

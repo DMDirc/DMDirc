@@ -43,9 +43,7 @@ public class AliasLoader {
      */
     public void load() {
         final boolean dirty = manager.isDirty();
-        for (Alias alias : store.readAliases()) {
-            manager.addAlias(alias);
-        }
+        store.readAliases().forEach(manager::addAlias);
         manager.setDirty(dirty);
     }
 

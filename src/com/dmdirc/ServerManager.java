@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -169,15 +170,9 @@ public class ServerManager implements ConnectionManager {
 
     @Override
     public List<Connection> getConnectionsByNetwork(final String network) {
-        final List<Connection> res = new ArrayList<>();
-
-        for (Server server : servers) {
-            if (server.isNetwork(network)) {
-                res.add(server);
-            }
-        }
-
-        return res;
+        return servers.stream()
+                .filter(server -> server.isNetwork(network))
+                .collect(Collectors.toList());
     }
 
     @Override

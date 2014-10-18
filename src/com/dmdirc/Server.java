@@ -1468,11 +1468,9 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     @Override
     public void addInvite(final Invite invite) {
         synchronized (invites) {
-            for (Invite oldInvite : new ArrayList<>(invites)) {
-                if (oldInvite.getChannel().equals(invite.getChannel())) {
-                    removeInvite(oldInvite);
-                }
-            }
+            new ArrayList<>(invites).stream()
+                    .filter(oldInvite -> oldInvite.getChannel().equals(invite.getChannel()))
+                    .forEach(this::removeInvite);
 
             invites.add(invite);
 
@@ -1504,18 +1502,13 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public void removeInvites(final String channel) {
-        for (Invite invite : new ArrayList<>(invites)) {
-            if (invite.getChannel().equals(channel)) {
-                removeInvite(invite);
-            }
-        }
+        new ArrayList<>(invites).stream().filter(invite -> invite.getChannel().equals(channel))
+                .forEach(this::removeInvite);
     }
 
     @Override
     public void removeInvites() {
-        for (Invite invite : new ArrayList<>(invites)) {
-            removeInvite(invite);
-        }
+        new ArrayList<>(invites).forEach(this::removeInvite);
     }
 
     @Override

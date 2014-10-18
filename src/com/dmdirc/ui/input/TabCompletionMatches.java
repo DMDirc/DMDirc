@@ -62,11 +62,8 @@ public class TabCompletionMatches {
      * @param additional The results to merge
      */
     public void merge(final TabCompletionMatches additional) {
-        for (String result : additional.getResults()) {
-            if (!hasResult(result)) {
-                addResult(result);
-            }
-        }
+        additional.getResults().stream().filter(result -> !hasResult(result))
+                .forEach(this::addResult);
     }
 
     /**

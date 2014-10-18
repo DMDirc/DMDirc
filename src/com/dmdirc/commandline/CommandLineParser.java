@@ -423,9 +423,7 @@ public class CommandLineParser {
      * @param connectionManager The server manager to use to connect servers.
      */
     public void processArguments(final ConnectionManager connectionManager) {
-        for (URI address : addresses) {
-            connectionManager.connectToAddress(address);
-        }
+        addresses.forEach(connectionManager::connectToAddress);
     }
 
 }
