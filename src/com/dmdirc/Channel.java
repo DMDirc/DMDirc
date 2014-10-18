@@ -50,14 +50,13 @@ import com.dmdirc.util.collections.RollingList;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.colours.ColourUtils;
 
-import com.google.common.base.Optional;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -512,7 +511,7 @@ public class Channel extends MessageTarget implements GroupChat {
     public Optional<Topic> getCurrentTopic() {
         synchronized (topics) {
             if (topics.getList().isEmpty()) {
-                return Optional.absent();
+                return Optional.empty();
             } else {
                 return Optional.of(topics.get(topics.getList().size() - 1));
             }

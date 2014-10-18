@@ -25,9 +25,8 @@ package com.dmdirc.ui.core.newserver;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.ui.NewServerDialogModelListener;
 
-import com.google.common.base.Optional;
-
 import java.util.List;
+import java.util.Optional;
 
 /**
  * An abstract adapter class for receiving new server dialog model events. The methods in this class

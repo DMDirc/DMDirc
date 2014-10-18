@@ -70,10 +70,10 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelUserModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
 import com.dmdirc.util.EventUtils;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 

@@ -37,7 +37,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;

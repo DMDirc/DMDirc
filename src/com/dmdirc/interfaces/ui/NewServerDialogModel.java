@@ -25,9 +25,8 @@ package com.dmdirc.interfaces.ui;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.Validator;
 
-import com.google.common.base.Optional;
-
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Model representing a dialog containing the details required to open a new connection.

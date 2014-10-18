@@ -25,7 +25,7 @@ package com.dmdirc.ui.messages;
 import com.dmdirc.Channel;
 import com.dmdirc.events.ChannelMessageEvent;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,14 +51,14 @@ public class EventFormatterTest {
         messageEvent = new ChannelMessageEvent(channel, null, null);
 
         when(templateProvider.getTemplate(ChannelMessageEvent.class))
-                .thenReturn(Optional.fromNullable("Template {{channel}} meep"));
+                .thenReturn(Optional.ofNullable("Template {{channel}} meep"));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn("MONKEY");
     }
 
     @Test
     public void testBasicFormat() {
-        assertEquals("Template MONKEY meep", formatter.format(messageEvent).orNull());
+        assertEquals("Template MONKEY meep", formatter.format(messageEvent).orElse(null));
     }
 
 }

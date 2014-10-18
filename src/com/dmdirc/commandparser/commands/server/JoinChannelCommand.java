@@ -40,10 +40,9 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.collections.MapList;
 
-import com.google.common.base.Optional;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;

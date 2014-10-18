@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * Describes an event which is rendered in the client to the user.

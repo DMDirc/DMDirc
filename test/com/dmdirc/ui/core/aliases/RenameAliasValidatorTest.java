@@ -25,8 +25,9 @@ package com.dmdirc.ui.core.aliases;
 import com.dmdirc.commandparser.aliases.Alias;
 import com.dmdirc.interfaces.ui.AliasDialogModel;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class RenameAliasValidatorTest {
 
     @Test
     public void testRenameSelected() {
-        when(model.getSelectedAlias()).thenReturn(Optional.fromNullable(alias1));
+        when(model.getSelectedAlias()).thenReturn(Optional.ofNullable(alias1));
         when(model.getSelectedAliasName()).thenReturn("alias1");
         final RenameAliasValidator instance = new RenameAliasValidator(model);
         assertFalse(instance.validate("alias1").isFailure());
@@ -65,7 +66,7 @@ public class RenameAliasValidatorTest {
 
     @Test
     public void testRenameNonSelected() {
-        when(model.getSelectedAlias()).thenReturn(Optional.<Alias>absent());
+        when(model.getSelectedAlias()).thenReturn(Optional.<Alias>empty());
         when(model.getSelectedAliasName()).thenReturn(null);
         final RenameAliasValidator instance = new RenameAliasValidator(model);
         assertTrue(instance.validate("alias1").isFailure());

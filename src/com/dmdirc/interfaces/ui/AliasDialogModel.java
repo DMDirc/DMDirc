@@ -25,9 +25,8 @@ package com.dmdirc.interfaces.ui;
 import com.dmdirc.commandparser.aliases.Alias;
 import com.dmdirc.util.validators.Validator;
 
-import com.google.common.base.Optional;
-
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Model representing a list of aliases in a dialog.

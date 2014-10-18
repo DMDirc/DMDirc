@@ -26,13 +26,12 @@ import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.interfaces.StringConverter;
 
-import com.google.common.base.Optional;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.Collectors;
 
@@ -77,7 +76,7 @@ public class ChannelMap {
      * @return An optional channel.
      */
     public Optional<Channel> get(final String channel) {
-        return Optional.fromNullable(channels.get(converter.toLowerCase(channel)));
+        return Optional.ofNullable(channels.get(converter.toLowerCase(channel)));
     }
 
     /**

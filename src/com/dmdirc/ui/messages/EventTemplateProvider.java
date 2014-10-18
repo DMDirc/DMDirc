@@ -24,7 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.DisplayableEvent;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * Provides templates to be used for displayable events.

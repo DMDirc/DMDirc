@@ -38,13 +38,13 @@ import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.ServerNameValidator;
 import com.dmdirc.util.validators.Validator;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -81,10 +81,10 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
         this.connectionManager = connectionManager;
         listeners = new ListenerList();
         profiles = new ArrayList<>(5);
-        selectedProfile = Optional.absent();
-        hostname = Optional.absent();
-        port = Optional.absent();
-        password = Optional.absent();
+        selectedProfile = Optional.empty();
+        hostname = Optional.empty();
+        port = Optional.empty();
+        password = Optional.empty();
         ssl = false;
         saveAsDefault = false;
     }
@@ -94,9 +94,9 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
         controller.registerIdentityListener("profile", this);
         profiles.addAll(
                 controller.getProvidersByType("profile").stream().collect(Collectors.toList()));
-        hostname = Optional.fromNullable(globalConfig.getOption("newserver", "hostname"));
-        port = Optional.fromNullable(globalConfig.getOptionInt("newserver", "port"));
-        password = Optional.fromNullable(globalConfig.getOption("newserver", "password"));
+        hostname = Optional.ofNullable(globalConfig.getOption("newserver", "hostname"));
+        port = Optional.ofNullable(globalConfig.getOptionInt("newserver", "port"));
+        password = Optional.ofNullable(globalConfig.getOption("newserver", "password"));
         ssl = globalConfig.getOptionBool("newserver", "ssl");
         saveAsDefault = false;
         listeners.getCallable(NewServerDialogModelListener.class).serverDetailsChanged(hostname,
@@ -281,11 +281,11 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
     @Override
     public void configProviderRemoved(final ConfigProvider configProvider) {
         checkNotNull(configProvider);
-        if (Optional.fromNullable(configProvider).equals(selectedProfile)) {
+        if (Optional.ofNullable(configProvider).equals(selectedProfile)) {
             final Optional<ConfigProvider> oldSelectedProfile = selectedProfile;
-            selectedProfile = Optional.absent();
+            selectedProfile = Optional.empty();
             listeners.getCallable(NewServerDialogModelListener.class).selectedProfileChanged(
-                    oldSelectedProfile, Optional.<ConfigProvider>absent());
+                    oldSelectedProfile, Optional.<ConfigProvider>empty());
 
         }
         profiles.remove(configProvider);

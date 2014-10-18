@@ -24,7 +24,7 @@ package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.util.validators.Validator;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * Dialog to connect to send feedback to the developers.

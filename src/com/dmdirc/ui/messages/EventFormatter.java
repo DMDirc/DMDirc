@@ -24,7 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.DisplayableEvent;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * Formats an event into a text string, based on a user-defined template.
@@ -61,10 +61,10 @@ public class EventFormatter {
                 builder.replace(tagStart, tagEnd + 2, getReplacement(event, tag));
                 tagStart = builder.indexOf("{{");
             }
-            return Optional.fromNullable(builder.toString());
+            return Optional.ofNullable(builder.toString());
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private String getReplacement(final DisplayableEvent event, final String tag) {

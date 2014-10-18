@@ -30,11 +30,10 @@ import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.util.collections.ListenerList;
 
-import com.google.common.base.Optional;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;

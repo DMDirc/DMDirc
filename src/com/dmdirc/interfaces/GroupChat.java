@@ -25,9 +25,8 @@ package com.dmdirc.interfaces;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Topic;
 
-import com.google.common.base.Optional;
-
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A chat containing multiple participants.

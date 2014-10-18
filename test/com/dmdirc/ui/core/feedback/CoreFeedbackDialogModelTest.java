@@ -26,9 +26,8 @@ import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.FeedbackDialogModelListener;
 
-import com.google.common.base.Optional;
-
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,9 +54,9 @@ public class CoreFeedbackDialogModelTest {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
                 feedbackSenderFactory, path);
-        assertEquals("testName", Optional.absent(), instance.getName());
-        instance.setName(Optional.fromNullable(NAME));
-        assertEquals("testName", Optional.fromNullable(NAME), instance.getName());
+        assertEquals("testName", Optional.empty(), instance.getName());
+        instance.setName(Optional.ofNullable(NAME));
+        assertEquals("testName", Optional.ofNullable(NAME), instance.getName());
     }
 
     @Test
@@ -65,9 +64,9 @@ public class CoreFeedbackDialogModelTest {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
                 feedbackSenderFactory, path);
-        assertEquals("testEmail", Optional.absent(), instance.getEmail());
-        instance.setEmail(Optional.fromNullable(EMAIL));
-        assertEquals("testEmail", Optional.fromNullable(EMAIL), instance.getEmail());
+        assertEquals("testEmail", Optional.empty(), instance.getEmail());
+        instance.setEmail(Optional.ofNullable(EMAIL));
+        assertEquals("testEmail", Optional.ofNullable(EMAIL), instance.getEmail());
     }
 
     @Test
@@ -75,9 +74,9 @@ public class CoreFeedbackDialogModelTest {
         final CoreFeedbackDialogModel instance = new CoreFeedbackDialogModel(config,
                 connectionManager,
                 feedbackSenderFactory, path);
-        assertEquals("testFeedback", Optional.absent(), instance.getFeedback());
-        instance.setFeedback(Optional.fromNullable(FEEDBACK));
-        assertEquals("testFeedback", Optional.fromNullable(FEEDBACK), instance.getFeedback());
+        assertEquals("testFeedback", Optional.empty(), instance.getFeedback());
+        instance.setFeedback(Optional.ofNullable(FEEDBACK));
+        assertEquals("testFeedback", Optional.ofNullable(FEEDBACK), instance.getFeedback());
     }
 
     @Test
@@ -111,8 +110,8 @@ public class CoreFeedbackDialogModelTest {
                 connectionManager,
                 feedbackSenderFactory, path);
         instance.addListener(listener);
-        instance.setName(Optional.fromNullable("Bob Dole"));
-        verify(listener).nameChanged(Optional.fromNullable("Bob Dole"));
+        instance.setName(Optional.ofNullable("Bob Dole"));
+        verify(listener).nameChanged(Optional.ofNullable("Bob Dole"));
     }
 
     @Test
@@ -121,8 +120,8 @@ public class CoreFeedbackDialogModelTest {
                 connectionManager,
                 feedbackSenderFactory, path);
         instance.addListener(listener);
-        instance.setEmail(Optional.fromNullable("bob@dole.com"));
-        verify(listener).emailChanged(Optional.fromNullable("bob@dole.com"));
+        instance.setEmail(Optional.ofNullable("bob@dole.com"));
+        verify(listener).emailChanged(Optional.ofNullable("bob@dole.com"));
     }
 
     @Test
@@ -131,8 +130,8 @@ public class CoreFeedbackDialogModelTest {
                 connectionManager,
                 feedbackSenderFactory, path);
         instance.addListener(listener);
-        instance.setFeedback(Optional.fromNullable("DMDirc Rocks."));
-        verify(listener).feedbackChanged(Optional.fromNullable("DMDirc Rocks."));
+        instance.setFeedback(Optional.ofNullable("DMDirc Rocks."));
+        verify(listener).feedbackChanged(Optional.ofNullable("DMDirc Rocks."));
     }
 
     @Test

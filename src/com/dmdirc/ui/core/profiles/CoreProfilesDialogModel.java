@@ -34,7 +34,6 @@ import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -42,6 +41,8 @@ import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -54,13 +55,13 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     private final ListenerList listeners;
     private final IdentityFactory identityFactory;
     private final IdentityController identityController;
-    private final HashMap<String, Profile> profiles;
-    private Optional<Profile> selectedProfile = Optional.absent();
-    private Optional<String> name = Optional.absent();
-    private Optional<List<String>> nicknames = Optional.absent();
-    private Optional<String> selectedNickname = Optional.absent();
-    private Optional<String> realname = Optional.absent();
-    private Optional<String> ident = Optional.absent();
+    private final Map<String, Profile> profiles;
+    private Optional<Profile> selectedProfile = Optional.empty();
+    private Optional<String> name = Optional.empty();
+    private Optional<List<String>> nicknames = Optional.empty();
+    private Optional<String> selectedNickname = Optional.empty();
+    private Optional<String> realname = Optional.empty();
+    private Optional<String> ident = Optional.empty();
 
     @Inject
     public CoreProfilesDialogModel(final IdentityController identityController,
@@ -69,7 +70,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         this.identityController = identityController;
         listeners = new ListenerList();
         profiles = new HashMap<>(0);
-        selectedProfile = Optional.absent();
+        selectedProfile = Optional.empty();
     }
 
     @Override
@@ -81,7 +82,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
             profiles.put(identity.getName(), profile);
             listeners.getCallable(ProfilesDialogModelListener.class).profileAdded(profile);
         }
-        setSelectedProfile(Optional.fromNullable(Iterables.getFirst(profiles.values(), null)));
+        setSelectedProfile(Optional.ofNullable(Iterables.getFirst(profiles.values(), null)));
     }
 
     private Profile getProfile(final ConfigProvider configProvider) {
@@ -90,10 +91,10 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         newProfile.setRealname(configProvider.getOption("profile", "realname"));
         newProfile.setIdent(configProvider.getOption("profile", "ident"));
         newProfile.setNicknames(configProvider.getOptionList("profile", "nicknames"));
-        this.name = Optional.fromNullable(configProvider.getOption("identity", "name"));
-        this.nicknames = Optional.fromNullable(configProvider.getOptionList("profile", "nicknames"));
-        this.realname = Optional.fromNullable(configProvider.getOption("profile", "realname"));
-        this.ident = Optional.fromNullable(configProvider.getOption("profile", "ident"));
+        this.name = Optional.ofNullable(configProvider.getOption("identity", "name"));
+        this.nicknames = Optional.ofNullable(configProvider.getOptionList("profile", "nicknames"));
+        this.realname = Optional.ofNullable(configProvider.getOption("profile", "realname"));
+        this.ident = Optional.ofNullable(configProvider.getOption("profile", "ident"));
         return newProfile;
     }
 
@@ -105,7 +106,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     @Override
     public Optional<Profile> getProfile(final String name) {
         checkNotNull(name, "Name cannot be null");
-        return Optional.fromNullable(profiles.get(name));
+        return Optional.ofNullable(profiles.get(name));
     }
 
     @Override
@@ -170,14 +171,14 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         checkArgument(profiles.containsKey(name), "profile must exist in list");
         final Profile profile = profiles.remove(name);
         if (getSelectedProfile().isPresent() && getSelectedProfile().get().equals(profile)) {
-            setSelectedProfile(Optional.<Profile>absent());
+            setSelectedProfile(Optional.<Profile>empty());
         }
         listeners.getCallable(ProfilesDialogModelListener.class).profileRemoved(profile);
     }
 
     @Override
     public void save() {
-        setSelectedProfile(Optional.<Profile>absent());
+        setSelectedProfile(Optional.<Profile>empty());
         final List<ConfigProvider> identities = Lists.newArrayList(
                 identityController.getProvidersByType("profile"));
         for (ConfigProvider identity : identities) {
@@ -199,29 +200,28 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
             checkArgument(profiles.containsValue(profile.get()), "Profile must exist in list");
         }
         if (selectedProfile.isPresent()) {
-            if (!Optional.fromNullable(selectedProfile.get().getRealname()).equals(realname)
-                    || !Optional.fromNullable(selectedProfile.get()
-                            .getIdent()).equals(ident)
-                    || !Optional.fromNullable(selectedProfile.get()
-                            .getNicknames()).equals(nicknames)) {
+            if (!Optional.ofNullable(selectedProfile.get().getRealname()).equals(realname)
+                    || !Optional.ofNullable(selectedProfile.get().getIdent()).equals(ident)
+                    || !Optional.ofNullable(selectedProfile.get().getNicknames()).equals
+                    (nicknames)) {
                 editProfile(selectedProfile.get().getName(), realname.get(),
                         ident.get(), nicknames.get());
             }
-            if (!Optional.fromNullable(selectedProfile.get().getName()).equals(name)) {
+            if (!Optional.ofNullable(selectedProfile.get().getName()).equals(name)) {
                 renameProfile(selectedProfile.get().getName(), name.get(), true);
             }
         }
         selectedProfile = profile;
         if (selectedProfile.isPresent()) {
-            name = Optional.fromNullable(selectedProfile.get().getName());
-            realname = Optional.fromNullable(selectedProfile.get().getRealname());
-            ident = Optional.fromNullable(selectedProfile.get().getIdent());
-            nicknames = Optional.fromNullable(selectedProfile.get().getNicknames());
+            name = Optional.ofNullable(selectedProfile.get().getName());
+            realname = Optional.ofNullable(selectedProfile.get().getRealname());
+            ident = Optional.ofNullable(selectedProfile.get().getIdent());
+            nicknames = Optional.ofNullable(selectedProfile.get().getNicknames());
         } else {
-            name = Optional.absent();
-            realname = Optional.absent();
-            ident = Optional.absent();
-            nicknames = Optional.absent();
+            name = Optional.empty();
+            realname = Optional.empty();
+            ident = Optional.empty();
+            nicknames = Optional.empty();
         }
         listeners.getCallable(ProfilesDialogModelListener.class).profileSelectionChanged(profile);
     }
@@ -236,7 +236,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         if (selectedProfile.isPresent()) {
             return name;
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override
@@ -270,7 +270,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         if (selectedProfile.isPresent()) {
             return realname;
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override
@@ -299,7 +299,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         if (selectedProfile.isPresent()) {
             return ident;
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override
@@ -328,7 +328,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         if (selectedProfile.isPresent()) {
             return nicknames;
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override
@@ -338,7 +338,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         if (nicknames.isPresent()) {
             this.nicknames = nicknames;
         } else {
-            this.nicknames = Optional.fromNullable((List<String>) Lists.
+            this.nicknames = Optional.ofNullable((List<String>) Lists.
                     newArrayList(nicknames.get()));
         }
         listeners.getCallable(ProfilesDialogModelListener.class)
@@ -407,7 +407,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         if (selectedProfile.isPresent()) {
             return selectedNickname;
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override

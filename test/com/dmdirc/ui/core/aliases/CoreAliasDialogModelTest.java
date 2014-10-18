@@ -29,9 +29,8 @@ import com.dmdirc.commandparser.aliases.AliasManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ui.AliasDialogModelListener;
 
-import com.google.common.base.Optional;
-
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
@@ -244,7 +243,7 @@ public class CoreAliasDialogModelTest {
         model.loadModel();
         assertEquals(2, model.getAliases().size());
         assertTrue(model.getSelectedAlias().isPresent());
-        model.setSelectedAlias(Optional.fromNullable(alias2));
+        model.setSelectedAlias(Optional.ofNullable(alias2));
         assertEquals(model.getSelectedAlias().get(), alias2);
     }
 
@@ -258,9 +257,9 @@ public class CoreAliasDialogModelTest {
         model.loadModel();
         assertEquals(2, model.getAliases().size());
         assertTrue(model.getSelectedAlias().isPresent());
-        model.setSelectedAlias(Optional.fromNullable(alias2));
+        model.setSelectedAlias(Optional.ofNullable(alias2));
         assertEquals(model.getSelectedAlias().get(), alias2);
-        model.setSelectedAlias(Optional.<Alias>absent());
+        model.setSelectedAlias(Optional.<Alias>empty());
         assertFalse(model.getSelectedAlias().isPresent());
     }
 
@@ -287,11 +286,11 @@ public class CoreAliasDialogModelTest {
         model.loadModel();
         assertEquals(1, model.getAliases().size());
         assertEquals(model.getAlias(alias1.getName()).get(), alias1);
-        model.setSelectedAlias(Optional.fromNullable(alias1));
+        model.setSelectedAlias(Optional.ofNullable(alias1));
         model.setSelectedAliasName(alias1Edited.getName());
         model.setSelectedAliasMinimumArguments(alias1Edited.getMinArguments());
         model.setSelectedAliasSubstitution(alias1Edited.getSubstitution());
-        model.setSelectedAlias(Optional.<Alias>absent());
+        model.setSelectedAlias(Optional.<Alias>empty());
         assertEquals(model.getAlias(alias1Edited.getName()).get(), alias2);
     }
 
@@ -304,10 +303,10 @@ public class CoreAliasDialogModelTest {
         model.loadModel();
         assertEquals(1, model.getAliases().size());
         assertEquals(model.getAlias(alias1.getName()).get(), alias1);
-        model.setSelectedAlias(Optional.fromNullable(alias1));
+        model.setSelectedAlias(Optional.ofNullable(alias1));
         model.setSelectedAliasMinimumArguments(alias2Edited.getMinArguments());
         model.setSelectedAliasSubstitution(alias2Edited.getSubstitution());
-        model.setSelectedAlias(Optional.<Alias>absent());
+        model.setSelectedAlias(Optional.<Alias>empty());
         final Alias alias = model.getAlias(alias1.getName()).get();
         assertEquals(alias.getName(), alias2Edited.getName());
         assertEquals(alias.getMinArguments(), alias2Edited.getMinArguments());

@@ -25,10 +25,10 @@ package com.dmdirc.ui.core.profiles;
 import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.ui.ProfilesDialogModel;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,11 +51,11 @@ public class EditSelectedNicknameValidatorTest {
     public void setupModel() {
         nicknames = Lists.newArrayList("nickname1", "nickname2", "nickname3");
         when(model.getSelectedProfile())
-                .thenReturn(Optional.fromNullable(profile));
+                .thenReturn(Optional.ofNullable(profile));
         when(model.getSelectedProfileNicknames())
-                .thenReturn(Optional.fromNullable(nicknames));
+                .thenReturn(Optional.ofNullable(nicknames));
         when(model.getSelectedProfileSelectedNickname())
-                .thenReturn(Optional.fromNullable("nickname2"));
+                .thenReturn(Optional.ofNullable("nickname2"));
     }
 
     @Test
