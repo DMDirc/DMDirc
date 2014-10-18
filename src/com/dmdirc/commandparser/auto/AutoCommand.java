@@ -22,10 +22,11 @@
 
 package com.dmdirc.commandparser.auto;
 
+
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Optional;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Describes a command that is executed automatically in response to either the client opening, or a

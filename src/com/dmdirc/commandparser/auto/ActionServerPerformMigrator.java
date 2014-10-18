@@ -32,8 +32,8 @@ import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 
+import java.util.Optional;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -112,10 +112,10 @@ public class ActionServerPerformMigrator implements Migrator {
         for (Map.Entry<String, Map<String, String>> section : configFile.getKeyDomains().entrySet()) {
             if (section.getKey().startsWith("condition")
                     && component.equals(section.getValue().get("component"))) {
-                return Optional.fromNullable(section.getValue().get("target"));
+                return Optional.ofNullable(section.getValue().get("target"));
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
 }
