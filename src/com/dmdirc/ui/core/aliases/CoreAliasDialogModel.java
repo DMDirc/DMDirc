@@ -175,15 +175,11 @@ public class CoreAliasDialogModel implements AliasDialogModel {
             }
         }
         selectedAlias = alias;
-        if (alias.isPresent()) {
-            name = alias.get().getName();
-            minArgs = alias.get().getMinArguments();
-            substitution = alias.get().getSubstitution();
-        } else {
-            name = null;
-            minArgs = -1;
-            substitution = null;
-        }
+
+        name = alias.map(Alias::getName).orElse(null);
+        minArgs = alias.map(Alias::getMinArguments).orElse(-1);
+        substitution = alias.map(Alias::getSubstitution).orElse(null);
+
         listeners.getCallable(AliasDialogModelListener.class).aliasSelectionChanged(selectedAlias);
     }
 

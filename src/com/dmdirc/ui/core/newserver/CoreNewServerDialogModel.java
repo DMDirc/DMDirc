@@ -302,9 +302,9 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
      */
     private URI getServerURI() throws URISyntaxException {
         return new URI("irc" + (ssl ? "s" : ""),
-                password.isPresent() ? password.get() : "",
-                hostname.isPresent() ? hostname.get() : "",
-                port.isPresent() ? port.get() : 6667,
+                password.orElse(""),
+                hostname.orElse(""),
+                port.orElse(6667),
                 null, null, null);
     }
 

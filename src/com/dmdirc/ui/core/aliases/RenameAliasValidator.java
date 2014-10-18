@@ -41,15 +41,9 @@ public class RenameAliasValidator implements Validator<String> {
     @Override
     public ValidationResponse validate(final String object) {
         for (Alias targetAlias : model.getAliases()) {
-            if (model.getSelectedAlias().isPresent()) {
-                if (targetAlias != model.getSelectedAlias().get()
-                        && targetAlias.getName().equalsIgnoreCase(object)) {
-                    return new ValidationResponse("Alias names must be unique");
-                }
-            } else {
-                if (targetAlias.getName().equalsIgnoreCase(object)) {
-                    return new ValidationResponse("Alias names must be unique");
-                }
+            if (targetAlias != model.getSelectedAlias().orElse(null)
+                    && targetAlias.getName().equalsIgnoreCase(object)) {
+                return new ValidationResponse("Alias names must be unique");
             }
         }
         return new ValidationResponse();
