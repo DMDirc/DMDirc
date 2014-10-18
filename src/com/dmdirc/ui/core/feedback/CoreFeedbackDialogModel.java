@@ -37,9 +37,8 @@ import com.dmdirc.util.validators.OptionalEmailAddressValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
 
-import com.google.common.base.Optional;
-
 import java.nio.file.Path;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -68,9 +67,9 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
         this.feedbackSenderFactory = feedbackSenderFactory;
         this.config = config;
         this.listeners = new ListenerList();
-        name = Optional.absent();
-        email = Optional.absent();
-        feedback = Optional.absent();
+        name = Optional.empty();
+        email = Optional.empty();
+        feedback = Optional.empty();
         includeServerInfo = false;
         includeDMDircInfo = false;
     }
@@ -88,7 +87,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
 
     @Override
     public boolean isNameValid() {
-        return !getNameValidator().validate(name.or("")).isFailure();
+        return !getNameValidator().validate(name.orElse("")).isFailure();
     }
 
     @Override
@@ -109,7 +108,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
 
     @Override
     public boolean isEmailValid() {
-        return !getEmailValidator().validate(email.or("")).isFailure();
+        return !getEmailValidator().validate(email.orElse("")).isFailure();
     }
 
     @Override
@@ -130,7 +129,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
 
     @Override
     public boolean isFeedbackValid() {
-        return !getFeedbackValidator().validate(feedback.or("")).isFailure();
+        return !getFeedbackValidator().validate(feedback.orElse("")).isFailure();
     }
 
     @Override
@@ -203,7 +202,8 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
             dmdircInfo.append("OS Version: ").append(ClientInfo.getOperatingSystemInformation());
         }
         final FeedbackSender sender = feedbackSenderFactory.getFeedbackSender(
-                name.or(""), email.or(""), feedback.or(""), config.getOption("version", "version"),
+                name.orElse(""), email.orElse(""), feedback.orElse(""),
+                config.getOption("version", "version"),
                 serverInfo.toString(), dmdircInfo.toString());
         new Thread(sender, "Feedback Sender").start();
     }

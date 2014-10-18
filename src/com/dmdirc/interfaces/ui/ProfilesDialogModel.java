@@ -25,10 +25,9 @@ package com.dmdirc.interfaces.ui;
 import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.util.validators.Validator;
 
-import com.google.common.base.Optional;
-
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Dialog to edit the user profiles.

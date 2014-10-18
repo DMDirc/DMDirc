@@ -25,10 +25,10 @@ package com.dmdirc.ui.core.profiles;
 import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.ui.ProfilesDialogModel;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class NewProfileNameValidatorTest {
         when(profile2.getName()).thenReturn("profile2");
         when(profile3.getName()).thenReturn("profile3");
         when(model.getProfileList()).thenReturn(profiles);
-        when(model.getSelectedProfile()).thenReturn(Optional.fromNullable(profile2));
+        when(model.getSelectedProfile()).thenReturn(Optional.ofNullable(profile2));
     }
 
     @Test

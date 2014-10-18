@@ -25,7 +25,7 @@ package com.dmdirc.ui.core.aliases;
 import com.dmdirc.commandparser.aliases.Alias;
 import com.dmdirc.interfaces.ui.AliasDialogModelListener;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * An abstract adapter class for receiving alias dialog model events. The methods in this class are

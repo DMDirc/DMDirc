@@ -37,18 +37,16 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.messages.MessageSinkManager;
 import com.dmdirc.parser.common.CompositionState;
-import com.dmdirc.ui.messages.ColourManagerFactory;
-import com.dmdirc.util.colours.Colour;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
-
-import com.google.common.base.Optional;
+import com.dmdirc.util.colours.Colour;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,6 +55,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -73,7 +72,7 @@ public abstract class FrameContainer {
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
     /** The colour of our frame's notifications. */
-    private Optional<Colour> notification = Optional.absent();
+    private Optional<Colour> notification = Optional.empty();
     /** The document used to store this container's content. */
     private IRCDocument document;
     /** The children of this frame. */
@@ -152,16 +151,16 @@ public abstract class FrameContainer {
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
-        this.parent = Optional.fromNullable(parent);
+        this.parent = Optional.ofNullable(parent);
         this.configManager = config;
         this.name = name;
         this.title = title;
         this.components = new HashSet<>(components);
         this.iconManager = new IconManager(configManager, urlBuilder);
         this.writable = false;
-        this.commandParser = Optional.absent();
-        this.tabCompleter = Optional.absent();
-        this.messageSinkManager = Optional.absent();
+        this.commandParser = Optional.empty();
+        this.tabCompleter = Optional.empty();
+        this.messageSinkManager = Optional.empty();
         this.colourManagerFactory = colourManagerFactory;
 
         this.eventBusManager = new ChildEventBusManager(eventBus);
@@ -201,7 +200,7 @@ public abstract class FrameContainer {
             final MessageSinkManager messageSinkManager,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
-        this.parent = Optional.fromNullable(parent);
+        this.parent = Optional.ofNullable(parent);
         this.configManager = config;
         this.name = name;
         this.title = title;
@@ -423,7 +422,7 @@ public abstract class FrameContainer {
      * Clears any outstanding notifications this frame has set.
      */
     public void clearNotification() {
-        notification = Optional.absent();
+        notification = Optional.empty();
         eventBus.publishAsync(new NotificationClearedEvent(this));
     }
 

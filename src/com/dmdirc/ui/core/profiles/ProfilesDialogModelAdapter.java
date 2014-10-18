@@ -25,9 +25,8 @@ package com.dmdirc.ui.core.profiles;
 import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.ui.ProfilesDialogModelListener;
 
-import com.google.common.base.Optional;
-
 import java.util.List;
+import java.util.Optional;
 
 
 public class ProfilesDialogModelAdapter implements ProfilesDialogModelListener {

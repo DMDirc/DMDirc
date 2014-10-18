@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * Listener for various events in a feedback dialog.

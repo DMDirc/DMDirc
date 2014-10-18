@@ -28,9 +28,8 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
-import com.google.common.base.Optional;
-
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * A generic custom window implementation.

@@ -24,9 +24,8 @@ package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.interfaces.config.ConfigProvider;
 
-import com.google.common.base.Optional;
-
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Listener for various events in an new server dialog model.

@@ -28,11 +28,11 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.NewServerDialogModelListener;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -83,9 +83,9 @@ public class CoreNewServerDialogModelTest {
         final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
                 controller, connectionManager);
         instance.loadModel();
-        assertEquals("testSelectedProfile: ", Optional.absent(), instance.getSelectedProfile());
-        instance.setSelectedProfile(Optional.fromNullable(profile1));
-        assertEquals("testSelectedProfile", Optional.fromNullable(profile1),
+        assertEquals("testSelectedProfile: ", Optional.empty(), instance.getSelectedProfile());
+        instance.setSelectedProfile(Optional.ofNullable(profile1));
+        assertEquals("testSelectedProfile", Optional.ofNullable(profile1),
                 instance.getSelectedProfile());
     }
 
@@ -114,9 +114,9 @@ public class CoreNewServerDialogModelTest {
         final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
                 controller, connectionManager);
         instance.loadModel();
-        assertEquals("testHostname: ", Optional.fromNullable("hostname"), instance.getHostname());
-        instance.setHostname(Optional.fromNullable("test"));
-        assertEquals("testHostname: ", Optional.fromNullable("test"), instance.getHostname());
+        assertEquals("testHostname: ", Optional.ofNullable("hostname"), instance.getHostname());
+        instance.setHostname(Optional.ofNullable("test"));
+        assertEquals("testHostname: ", Optional.ofNullable("test"), instance.getHostname());
     }
 
     @Test
@@ -142,9 +142,9 @@ public class CoreNewServerDialogModelTest {
         final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
                 controller, connectionManager);
         instance.loadModel();
-        assertEquals("testPort: ", Optional.fromNullable(1111), instance.getPort());
-        instance.setPort(Optional.fromNullable(5678));
-        assertEquals("testPort: ", Optional.fromNullable(5678), instance.getPort());
+        assertEquals("testPort: ", Optional.ofNullable(1111), instance.getPort());
+        instance.setPort(Optional.ofNullable(5678));
+        assertEquals("testPort: ", Optional.ofNullable(5678), instance.getPort());
     }
 
     @Test
@@ -179,9 +179,9 @@ public class CoreNewServerDialogModelTest {
         final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
                 controller, connectionManager);
         instance.loadModel();
-        assertEquals("testPassword: ", Optional.fromNullable("password"), instance.getPassword());
-        instance.setPassword(Optional.fromNullable("test"));
-        assertEquals("testPassword: ", Optional.fromNullable("test"), instance.getPassword());
+        assertEquals("testPassword: ", Optional.ofNullable("password"), instance.getPassword());
+        instance.setPassword(Optional.ofNullable("test"));
+        assertEquals("testPassword: ", Optional.ofNullable("test"), instance.getPassword());
     }
 
     @Test
@@ -281,7 +281,7 @@ public class CoreNewServerDialogModelTest {
         final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
                 controller, connectionManager);
         instance.loadModel();
-        instance.setSelectedProfile(Optional.fromNullable(profile1));
+        instance.setSelectedProfile(Optional.ofNullable(profile1));
         instance.save();
         verify(connectionManager, never()).connectToAddress(any(URI.class));
         verify(connectionManager).connectToAddress(new URI("ircs://password@hostname:1111"), profile1);
@@ -321,16 +321,16 @@ public class CoreNewServerDialogModelTest {
         final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
                 controller, connectionManager);
         instance.loadModel();
-        instance.setSelectedProfile(Optional.fromNullable(profile2));
+        instance.setSelectedProfile(Optional.ofNullable(profile2));
         assertEquals("testRemoveConfigProviderSelectedProfile:",
                 Lists.newArrayList(profile1, profile2),
                 instance.getProfileList());
-        assertEquals("testRemoveConfigProviderSelectedProfile:", Optional.fromNullable(profile2),
+        assertEquals("testRemoveConfigProviderSelectedProfile:", Optional.ofNullable(profile2),
                 instance.getSelectedProfile());
         instance.configProviderRemoved(profile2);
         assertEquals("testRemoveConfigProviderSelectedProfile:", Lists.newArrayList(profile1),
                 instance.getProfileList());
-        assertEquals("testRemoveConfigProviderSelectedProfile:", Optional.absent(),
+        assertEquals("testRemoveConfigProviderSelectedProfile:", Optional.empty(),
                 instance.getSelectedProfile());
     }
 
@@ -339,14 +339,14 @@ public class CoreNewServerDialogModelTest {
         final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
                 controller, connectionManager);
         instance.loadModel();
-        assertEquals("testListenerSelectedProfileChanged: ", Optional.<ConfigProvider>absent(),
+        assertEquals("testListenerSelectedProfileChanged: ", Optional.<ConfigProvider>empty(),
                 instance.getSelectedProfile());
         instance.addListener(listener);
-        instance.setSelectedProfile(Optional.fromNullable(profile1));
-        assertEquals("testListenerSelectedProfileChanged: ", Optional.fromNullable(profile1),
+        instance.setSelectedProfile(Optional.ofNullable(profile1));
+        assertEquals("testListenerSelectedProfileChanged: ", Optional.ofNullable(profile1),
                 instance.getSelectedProfile());
-        verify(listener).selectedProfileChanged(Optional.<ConfigProvider>absent(),
-                Optional.fromNullable(profile1));
+        verify(listener).selectedProfileChanged(Optional.<ConfigProvider>empty(),
+                Optional.ofNullable(profile1));
     }
 
     @Test
@@ -385,9 +385,9 @@ public class CoreNewServerDialogModelTest {
                 controller, connectionManager);
         instance.loadModel();
         instance.addListener(listener);
-        instance.setPort(Optional.fromNullable(9999));
-        verify(listener).serverDetailsChanged(Optional.fromNullable("hostname"),
-                Optional.fromNullable(9999), Optional.fromNullable("password"), true, false);
+        instance.setPort(Optional.ofNullable(9999));
+        verify(listener).serverDetailsChanged(Optional.ofNullable("hostname"),
+                Optional.ofNullable(9999), Optional.ofNullable("password"), true, false);
     }
 
     @Test
@@ -396,9 +396,9 @@ public class CoreNewServerDialogModelTest {
                 controller, connectionManager);
         instance.loadModel();
         instance.addListener(listener);
-        instance.setPassword(Optional.fromNullable("password-test"));
-        verify(listener).serverDetailsChanged(Optional.fromNullable("hostname"),
-                Optional.fromNullable(1111), Optional.fromNullable("password-test"), true, false);
+        instance.setPassword(Optional.ofNullable("password-test"));
+        verify(listener).serverDetailsChanged(Optional.ofNullable("hostname"),
+                Optional.ofNullable(1111), Optional.ofNullable("password-test"), true, false);
     }
 
     @Test
@@ -408,8 +408,8 @@ public class CoreNewServerDialogModelTest {
         instance.loadModel();
         instance.addListener(listener);
         instance.setSSL(false);
-        verify(listener).serverDetailsChanged(Optional.fromNullable("hostname"),
-                Optional.fromNullable(1111), Optional.fromNullable("password"), false, false);
+        verify(listener).serverDetailsChanged(Optional.ofNullable("hostname"),
+                Optional.ofNullable(1111), Optional.ofNullable("password"), false, false);
     }
 
     @Test
@@ -419,8 +419,8 @@ public class CoreNewServerDialogModelTest {
         instance.loadModel();
         instance.addListener(listener);
         instance.setSaveAsDefault(true);
-        verify(listener).serverDetailsChanged(Optional.fromNullable("hostname"),
-                Optional.fromNullable(1111), Optional.fromNullable("password"), true, true);
+        verify(listener).serverDetailsChanged(Optional.ofNullable("hostname"),
+                Optional.ofNullable(1111), Optional.ofNullable("password"), true, true);
     }
 
     @Test
@@ -430,12 +430,12 @@ public class CoreNewServerDialogModelTest {
         instance.loadModel();
         instance.addListener(listener);
         instance.setSaveAsDefault(true);
-        verify(listener).serverDetailsChanged(Optional.fromNullable("hostname"),
-                Optional.fromNullable(1111), Optional.fromNullable("password"), true, true);
+        verify(listener).serverDetailsChanged(Optional.ofNullable("hostname"),
+                Optional.ofNullable(1111), Optional.ofNullable("password"), true, true);
         instance.removeListener(listener);
-        instance.setHostname(Optional.fromNullable("test"));
-        verify(listener, never()).serverDetailsChanged(Optional.fromNullable("test"),
-                Optional.fromNullable(1111), Optional.fromNullable("password"), true, false);
+        instance.setHostname(Optional.ofNullable("test"));
+        verify(listener, never()).serverDetailsChanged(Optional.ofNullable("test"),
+                Optional.ofNullable(1111), Optional.ofNullable("password"), true, false);
     }
 
     @Test
@@ -443,7 +443,7 @@ public class CoreNewServerDialogModelTest {
         final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
                 controller, connectionManager);
         instance.loadModel();
-        instance.setSelectedProfile(Optional.fromNullable(profile1));
+        instance.setSelectedProfile(Optional.ofNullable(profile1));
         instance.setSaveAsDefault(true);
         instance.save();
         verify(userConfig).setOption("newserver", "hostname", "hostname");
@@ -457,7 +457,7 @@ public class CoreNewServerDialogModelTest {
         final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
                 controller, connectionManager);
         instance.loadModel();
-        instance.setSelectedProfile(Optional.fromNullable(profile1));
+        instance.setSelectedProfile(Optional.ofNullable(profile1));
         instance.setSaveAsDefault(false);
         instance.save();
         verify(userConfig, never()).setOption("newserver", "hostname", "hostname");

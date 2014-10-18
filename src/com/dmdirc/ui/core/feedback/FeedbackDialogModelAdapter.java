@@ -24,7 +24,7 @@ package com.dmdirc.ui.core.feedback;
 
 import com.dmdirc.interfaces.ui.FeedbackDialogModelListener;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * An abstract adapter class for receiving feedback dialog model events. The methods in this class

@@ -24,11 +24,11 @@ package com.dmdirc.commandparser.aliases;
 
 import com.dmdirc.interfaces.CommandController;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -124,7 +124,7 @@ public class AliasManager {
      * @return The alias, if found.
      */
     public Optional<Alias> getAlias(final String name) {
-        return Optional.fromNullable(aliases.get(name));
+        return Optional.ofNullable(aliases.get(name));
     }
 
     /**

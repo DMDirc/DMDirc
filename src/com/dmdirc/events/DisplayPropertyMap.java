@@ -22,9 +22,8 @@
 
 package com.dmdirc.events;
 
-import com.google.common.base.Optional;
-
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -43,7 +42,7 @@ public class DisplayPropertyMap {
      */
     @SuppressWarnings("unchecked")
     public <T> Optional<T> get(final DisplayProperty<T> property) {
-        return Optional.fromNullable((T) properties.get(property));
+        return Optional.ofNullable((T) properties.get(property));
     }
 
     /**

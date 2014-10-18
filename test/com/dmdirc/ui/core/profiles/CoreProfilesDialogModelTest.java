@@ -28,10 +28,10 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.interfaces.ui.ProfilesDialogModelListener;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -189,20 +189,20 @@ public class CoreProfilesDialogModelTest {
     public void testSetSelectedProfileSelectedNickname() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testSetSelectedProfileSelectedNickname",
-                Optional.absent(), instance.getSelectedProfileSelectedNickname());
-        instance.setSelectedProfileSelectedNickname(Optional.fromNullable("nickname2"));
+                Optional.empty(), instance.getSelectedProfileSelectedNickname());
+        instance.setSelectedProfileSelectedNickname(Optional.ofNullable("nickname2"));
         assertEquals("testSetSelectedProfileSelectedNickname",
-                Optional.fromNullable("nickname2"),
+                Optional.ofNullable("nickname2"),
                 instance.getSelectedProfileSelectedNickname());
     }
 
     @Test
     public void testSetSelectedProfileDetails() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
-        instance.setSelectedProfileName(Optional.fromNullable("testName"));
-        instance.setSelectedProfileIdent(Optional.fromNullable("testIdent"));
-        instance.setSelectedProfileRealname(Optional.fromNullable("testRealname"));
-        instance.setSelectedProfileNicknames(Optional.fromNullable((List<String>) Lists.
+        instance.setSelectedProfileName(Optional.ofNullable("testName"));
+        instance.setSelectedProfileIdent(Optional.ofNullable("testIdent"));
+        instance.setSelectedProfileRealname(Optional.ofNullable("testRealname"));
+        instance.setSelectedProfileNicknames(Optional.ofNullable((List<String>) Lists.
                 newArrayList("testNickname")));
         assertEquals("testGetSelectedProfileDetails", "testName",
                 instance.getSelectedProfileName().get());
@@ -242,9 +242,9 @@ public class CoreProfilesDialogModelTest {
     @Test
     public void testEditSelectedProfileSelectedNickname() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
-        instance.setSelectedProfileSelectedNickname(Optional.fromNullable("nickname2"));
+        instance.setSelectedProfileSelectedNickname(Optional.ofNullable("nickname2"));
         assertEquals("testSetSelectedProfileSelectedNickname",
-                Optional.fromNullable("nickname2"),
+                Optional.ofNullable("nickname2"),
                 instance.getSelectedProfileSelectedNickname());
         instance.editSelectedProfileNickname("nickname2", "nickname4");
         assertEquals("testAddSelectedProfileNickname",
@@ -267,7 +267,7 @@ public class CoreProfilesDialogModelTest {
         final Profile profile4 = instance.getProfile("profile4").get();
         verify(listener).profileAdded(profile4);
         instance.removeListener(listener);
-        instance.setSelectedProfile(Optional.fromNullable(profile4));
+        instance.setSelectedProfile(Optional.ofNullable(profile4));
         verify(listener, never()).profileRemoved(profile4);
     }
 

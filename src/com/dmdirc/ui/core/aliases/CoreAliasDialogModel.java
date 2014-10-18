@@ -36,12 +36,12 @@ import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.Validator;
 import com.dmdirc.util.validators.ValidatorChain;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.inject.Inject;
@@ -69,7 +69,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         this.factory = factory;
         listeners = new ListenerList();
         aliases = new ConcurrentSkipListMap<>();
-        selectedAlias = Optional.absent();
+        selectedAlias = Optional.empty();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
             aliases.put(alias.getName(), alias);
             listeners.getCallable(AliasDialogModelListener.class).aliasAdded(alias);
         }
-        setSelectedAlias(Optional.fromNullable(Iterables.getFirst(aliasManager.getAliases(), null)));
+        setSelectedAlias(Optional.ofNullable(Iterables.getFirst(aliasManager.getAliases(), null)));
     }
 
     @Override
@@ -89,7 +89,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
     @Override
     public Optional<Alias> getAlias(final String name) {
         checkNotNull(name, "Name cannot be null");
-        return Optional.fromNullable(aliases.get(name));
+        return Optional.ofNullable(aliases.get(name));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         final Alias oldAlias = aliases.put(name, newAlias);
         listeners.getCallable(AliasDialogModelListener.class).aliasEdited(oldAlias, newAlias);
         if (!selection) {
-            setSelectedAlias(Optional.fromNullable(newAlias));
+            setSelectedAlias(Optional.ofNullable(newAlias));
         }
     }
 
@@ -135,7 +135,7 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         aliases.put(newName, newAlias);
         listeners.getCallable(AliasDialogModelListener.class).aliasRenamed(oldAlias, newAlias);
         if (!selection) {
-            setSelectedAlias(Optional.fromNullable(aliases.get(newName)));
+            setSelectedAlias(Optional.ofNullable(aliases.get(newName)));
         }
     }
 
@@ -148,14 +148,14 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         final Alias alias = aliases.get(name);
         aliases.remove(name);
         if (getSelectedAlias().isPresent() && getSelectedAlias().get().equals(alias)) {
-            setSelectedAlias(Optional.<Alias>absent());
+            setSelectedAlias(Optional.<Alias>empty());
         }
         listeners.getCallable(AliasDialogModelListener.class).aliasRemoved(alias);
     }
 
     @Override
     public void save() {
-        setSelectedAlias(Optional.<Alias>absent());
+        setSelectedAlias(Optional.<Alias>empty());
         aliasManager.getAliases().forEach(aliasManager::removeAlias);
         aliases.values().forEach(aliasManager::addAlias);
     }
