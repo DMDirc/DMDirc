@@ -112,18 +112,14 @@ public class ChannelMap {
      * Closes all channels in the map.
      */
     public void closeAll() {
-        for (Channel channel : channels.values()) {
-            channel.close();
-        }
+        channels.values().forEach(Channel::close);
     }
 
     /**
      * Resets the state of all channels in the map.
      */
     public void resetAll() {
-        for (Channel channel : channels.values()) {
-            channel.resetWindow();
-        }
+        channels.values().forEach(Channel::resetWindow);
     }
 
     /**
@@ -134,9 +130,7 @@ public class ChannelMap {
      * @param args        The arguments for the message.
      */
     public void addLineToAll(final String messageType, final Date date, final Object... args) {
-        for (Channel channel : channels.values()) {
-            channel.addLine(messageType, date, args);
-        }
+        channels.values().forEach(c -> c.addLine(messageType, date, args));
     }
 
     /**
@@ -157,14 +151,7 @@ public class ChannelMap {
      * @return A new runnable.
      */
     public Runnable getWhoRunnable() {
-        return new Runnable() {
-            @Override
-            public void run() {
-                for (Channel channel : channels.values()) {
-                    channel.checkWho();
-                }
-            }
-        };
+        return () -> channels.values().forEach(Channel::checkWho);
     }
 
 }

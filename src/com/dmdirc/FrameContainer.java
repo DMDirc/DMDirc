@@ -89,7 +89,7 @@ public abstract class FrameContainer {
     /** The config manager for this container. */
     private final AggregateConfigProvider configManager;
     /** The IconChanger for this container. */
-    private final IconChanger changer = new IconChanger();
+    private final ConfigChangeListener changer = (d, k) -> iconUpdated();
     /** The UI components that this frame requires. */
     private final Set<String> components;
     /** The styliser used by this container. */
@@ -725,18 +725,6 @@ public abstract class FrameContainer {
     public void setCompositionState(final CompositionState state) {
         // Default implementation does nothing. Subclasses that support
         // composition should override this.
-    }
-
-    /**
-     * Updates the icon of this frame if its config setting is changed.
-     */
-    private class IconChanger implements ConfigChangeListener {
-
-        @Override
-        public void configChanged(final String domain, final String key) {
-            iconUpdated();
-        }
-
     }
 
 }

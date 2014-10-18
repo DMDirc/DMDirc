@@ -43,6 +43,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.CorePluginExtractor;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
 
@@ -185,9 +186,7 @@ public class Main {
 
         doFirstRun();
 
-        for (SystemLifecycleComponent component : lifecycleComponents) {
-            component.startUp();
-        }
+        lifecycleComponents.forEach(SystemLifecycleComponent::startUp);
 
         actionManager.initialise(colourActionComparison);
         pluginManager.doAutoLoad();
@@ -198,18 +197,11 @@ public class Main {
 
         globalWindowManager.init();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                for (SystemLifecycleComponent component : lifecycleComponents) {
-                    component.shutDown();
-                }
-
-                eventBus.publishAsync(new ClientClosedEvent());
-                connectionManager.disconnectAll("Unexpected shutdown");
-                identityManager.saveAll();
-            }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            lifecycleComponents.forEach(SystemLifecycleComponent::shutDown);
+            eventBus.publishAsync(new ClientClosedEvent());
+            connectionManager.disconnectAll("Unexpected shutdown");
+            identityManager.saveAll();
         }, "Shutdown thread"));
     }
 
@@ -252,7 +244,7 @@ public class Main {
      *
      * @param pm The plugin manager to use to load plugins
      */
-    protected void loadUIs(final PluginManager pm) {
+    protected void loadUIs(final ServiceManager pm) {
         final List<Service> uis = pm.getServicesByType("ui");
 
         // First try: go for our desired service type
