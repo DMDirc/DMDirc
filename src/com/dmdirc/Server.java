@@ -497,7 +497,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public Channel getChannel(final String channel) {
-        return channels.get(channel).orNull();
+        return channels.get(channel).orElse(null);
     }
 
     @Override

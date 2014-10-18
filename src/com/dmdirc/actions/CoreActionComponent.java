@@ -250,7 +250,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public Object get(final Object arg) {
             // TODO: This should understand unset notifications
-            return ((FrameContainer) arg).getNotification().or(Colour.BLACK);
+            return ((FrameContainer) arg).getNotification().orElse(Colour.BLACK);
         }
 
         @Override
@@ -663,7 +663,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public Object get(final Object arg) {
             // TODO: This should understand unset notifications
-            return ((FrameContainer) arg).getNotification().or(Colour.BLACK);
+            return ((FrameContainer) arg).getNotification().orElse(Colour.BLACK);
         }
 
         @Override
@@ -710,7 +710,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public Object get(final Object arg) {
             // TODO: This should understand unset notifications
-            return ((FrameContainer) arg).getNotification().or(Colour.BLACK);
+            return ((FrameContainer) arg).getNotification().orElse(Colour.BLACK);
         }
 
         @Override
