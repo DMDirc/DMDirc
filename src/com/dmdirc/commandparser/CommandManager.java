@@ -271,9 +271,8 @@ public class CommandManager implements CommandController {
 
         commands.entrySet().stream()
                 .filter(entry -> (type == null || type == entry.getKey().getType()) &&
-                        (name == null || name.equals(entry.getKey().getName()))).forEach(entry -> {
-            res.put(entry.getKey(), entry.getValue());
-        });
+                        (name == null || name.equals(entry.getKey().getName())))
+                .forEach(entry -> res.put(entry.getKey(), entry.getValue()));
 
         return res;
     }

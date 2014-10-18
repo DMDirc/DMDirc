@@ -49,10 +49,10 @@ public class NaiveConsolidator implements CheckResultConsolidator {
         final Map<UpdateComponent, UpdateCheckResult> res = new HashMap<>();
 
         for (Map<UpdateComponent, UpdateCheckResult> set : results) {
-            set.entrySet().stream().filter(entry -> !res.containsKey(entry.getKey()) ||
-                    !res.get(entry.getKey()).isUpdateAvailable()).forEach(entry -> {
-                res.put(entry.getKey(), entry.getValue());
-            });
+            set.entrySet().stream()
+                    .filter(entry -> !res.containsKey(entry.getKey()) ||
+                            !res.get(entry.getKey()).isUpdateAvailable())
+                    .forEach(entry -> res.put(entry.getKey(), entry.getValue()));
         }
 
         return res;

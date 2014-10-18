@@ -282,9 +282,7 @@ public class ActionManager implements ActionController {
     private void registerComponents(final UpdateManager updateManager) {
         groups.values().stream()
                 .filter(group -> group.getComponent() != -1 && group.getVersion() != null)
-                .forEach(group -> {
-                    updateManager.addComponent(new ActionGroupComponent(group));
-                });
+                .forEach(group -> updateManager.addComponent(new ActionGroupComponent(group)));
     }
 
     /**

@@ -175,9 +175,7 @@ public class Main {
      * Initialises the client.
      */
     public void init() {
-        migrators.stream().filter(migrator -> migrator.needsMigration()).forEach(migrator -> {
-            migrator.migrate();
-        });
+        migrators.stream().filter(migrator -> migrator.needsMigration()).forEach(migrator -> migrator.migrate());
 
         for (CommandDetails command : commands) {
             commandManager.registerCommand(command.getCommand(), command.getInfo());

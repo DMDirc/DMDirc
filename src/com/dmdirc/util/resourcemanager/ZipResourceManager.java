@@ -159,9 +159,8 @@ public final class ZipResourceManager extends ResourceManager {
             final String resourcesSuffix) {
         final Map<String, byte[]> resources = new HashMap<>();
 
-        entries.stream().filter(entry -> entry.endsWith(resourcesSuffix)).forEach(entry -> {
-            resources.put(entry, getResourceBytes(entry));
-        });
+        entries.stream().filter(entry -> entry.endsWith(resourcesSuffix))
+                .forEach(entry -> resources.put(entry, getResourceBytes(entry)));
 
         return resources;
     }
@@ -171,9 +170,8 @@ public final class ZipResourceManager extends ResourceManager {
             final String resourcesPrefix) {
         final Map<String, byte[]> resources = new HashMap<>();
 
-        entries.stream().filter(entry -> entry.startsWith(resourcesPrefix)).forEach(entry -> {
-            resources.put(entry, getResourceBytes(entry));
-        });
+        entries.stream().filter(entry -> entry.startsWith(resourcesPrefix))
+                .forEach(entry -> resources.put(entry, getResourceBytes(entry)));
 
         return resources;
     }
@@ -183,9 +181,8 @@ public final class ZipResourceManager extends ResourceManager {
             final String resourcesPrefix) {
         final Map<String, InputStream> resources = new HashMap<>();
 
-        entries.stream().filter(entry -> entry.startsWith(resourcesPrefix)).forEach(entry -> {
-            resources.put(entry, getResourceInputStream(entry));
-        });
+        entries.stream().filter(entry -> entry.startsWith(resourcesPrefix))
+                .forEach(entry -> resources.put(entry, getResourceInputStream(entry)));
 
         return resources;
     }

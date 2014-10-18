@@ -198,9 +198,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         // Determine which settings will have changed
         for (String domain : identity.getDomains()) {
             identity.getOptions(domain).keySet().stream()
-                    .filter(option -> identity.equals(getScope(domain, option))).forEach(option -> {
-                changed.add(new String[]{domain, option});
-            });
+                    .filter(option -> identity.equals(getScope(domain, option)))
+                    .forEach(option -> changed.add(new String[]{domain, option}));
         }
 
         synchronized (sources) {
@@ -317,9 +316,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
             for (String domain : identity.getDomains()) {
                 identity.getOptions(domain).keySet().stream()
                         .filter(option -> identity.equals(getScope(domain, option)))
-                        .forEach(option -> {
-                            configChanged(domain, option);
-                        });
+                        .forEach(option -> configChanged(domain, option));
             }
         }
     }
