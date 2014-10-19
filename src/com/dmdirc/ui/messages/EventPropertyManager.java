@@ -22,15 +22,41 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.logger.ErrorLevel;
+
+import java.lang.reflect.Method;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
 public class EventPropertyManager {
 
-    public <S, T> T getProperty(final S object, final Class<? extends S> type,
-            final String property) {
-        return null;
+    private final DMDircMBassador eventBus;
+
+    @Inject
+    public EventPropertyManager(final DMDircMBassador eventBus) {
+        this.eventBus = eventBus;
     }
 
-    public String applyFunction(final String input, final String property) {
-        return null;
+    public <S> Optional<Object> getProperty(final S object, final Class<? extends S> type,
+            final String property) {
+        final String methodName = "get" + property.substring(0, 1).toUpperCase()
+                + property.substring(1);
+        try {
+            final Method method = type.getMethod(methodName);
+            return Optional.ofNullable(method.invoke(object));
+        } catch (ReflectiveOperationException ex) {
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to format event: could not retrieve property " + property,
+                    ex.getMessage()));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<String> applyFunction(final String input, final String function) {
+        return Optional.empty();
     }
 
 }

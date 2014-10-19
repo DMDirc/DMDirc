@@ -53,7 +53,7 @@ public class EventFormatterTest {
         when(templateProvider.getTemplate(ChannelMessageEvent.class))
                 .thenReturn(Optional.ofNullable("Template {{channel}} meep"));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
-                .thenReturn("MONKEY");
+                .thenReturn(Optional.of("MONKEY"));
     }
 
     @Test
