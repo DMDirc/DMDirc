@@ -101,7 +101,7 @@ public class ServerStatus {
     protected void addHistoryEntry(final ServerState fromState, final ServerState toState) {
         final StringBuilder builder = new StringBuilder();
         builder.append(fromState.name());
-        builder.append('→');
+        builder.append('\u2192');
         builder.append(toState.name());
         builder.append(' ');
         builder.append(Thread.currentThread().getStackTrace()[3]);
