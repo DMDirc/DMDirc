@@ -1,0 +1,9 @@
+---
+ChannelModeNoticeEvent: "-{{client}}:{{prefix}}{{channel}}- {{message}}"
+ChannelNoticeEvent: "-{{client}}:{{channel}}- {{message}}"
+ChannelMessageEvent: "<{{client}}> {{message}}"
+ChannelActionEvent: "* {{client}} {{message}}"
+ChannelSelfMessageEvent: "<{{client}}> {{message}}"
+ChannelSelfActionEvent: "* {{client}} {{message}}"
+ChannelSelfExternalMessageEvent: "<{{client}}> {{message}}"
+ChannelSelfExternalActionEvent: "* {{client}} {{message}}"
