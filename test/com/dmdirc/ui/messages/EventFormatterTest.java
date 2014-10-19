@@ -48,17 +48,31 @@ public class EventFormatterTest {
     @Before
     public void setup() {
         formatter = new EventFormatter(propertyManager, templateProvider);
+    }
+
+    @Test
+    public void testBasicFormat() {
         messageEvent = new ChannelMessageEvent(channel, null, null);
 
         when(templateProvider.getTemplate(ChannelMessageEvent.class))
                 .thenReturn(Optional.ofNullable("Template {{channel}} meep"));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn(Optional.of("MONKEY"));
+
+        assertEquals("Template MONKEY meep", formatter.format(messageEvent).orElse(null));
     }
 
     @Test
-    public void testBasicFormat() {
-        assertEquals("Template MONKEY meep", formatter.format(messageEvent).orElse(null));
+    public void testFormatWithFunction() {
+        messageEvent = new ChannelMessageEvent(channel, null, null);
+
+        when(templateProvider.getTemplate(ChannelMessageEvent.class))
+                .thenReturn(Optional.ofNullable("Template {{channel|lowercase}} meep"));
+        when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
+                .thenReturn(Optional.of("MONKEY"));
+        when(propertyManager.applyFunction("MONKEY", "lowercase")).thenReturn("monkey");
+
+        assertEquals("Template monkey meep", formatter.format(messageEvent).orElse(null));
     }
 
 }

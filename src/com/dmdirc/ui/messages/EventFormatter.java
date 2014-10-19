@@ -34,7 +34,7 @@ import java.util.Optional;
  * a <code>.</code> character, e.g. <code>{{user.hostname}}</code>. One or more functions can
  * be applied to the result of this, to change the appearance of the output. Functions are
  * separated from their argument with a <code>|</code> character,
- * e.g. <code>{{user.hostname|toCapitals}}</code>.
+ * e.g. <code>{{user.hostname|uppercase}}</code>.
  *
  * <p>Properties and functions are case-insensitive.
  */
@@ -86,12 +86,7 @@ public class EventFormatter {
 
         String value = target.toString();
         for (int i = 1; i < functionParts.length; i++) {
-            final Optional<String> result = propertyManager.applyFunction(value, functionParts[i]);
-            if (result.isPresent()) {
-                value = result.get();
-            } else {
-                return ERROR_STRING;
-            }
+            value = propertyManager.applyFunction(value, functionParts[i]);
         }
 
         return value;

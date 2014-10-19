@@ -27,17 +27,25 @@ import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
 public class EventPropertyManager {
 
     private final DMDircMBassador eventBus;
+    private final Map<String, Function<String, String>> functions = new HashMap<>();
 
     @Inject
     public EventPropertyManager(final DMDircMBassador eventBus) {
         this.eventBus = eventBus;
+
+        functions.put("uppercase", String::toUpperCase);
+        functions.put("lowercase", String::toLowerCase);
+        functions.put("trim", String::trim);
     }
 
     public <S> Optional<Object> getProperty(final S object, final Class<? extends S> type,
@@ -48,15 +56,20 @@ public class EventPropertyManager {
             final Method method = type.getMethod(methodName);
             return Optional.ofNullable(method.invoke(object));
         } catch (ReflectiveOperationException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
                     "Unable to format event: could not retrieve property " + property,
                     ex.getMessage()));
         }
         return Optional.empty();
     }
 
-    public Optional<String> applyFunction(final String input, final String function) {
-        return Optional.empty();
+    public String applyFunction(final String input, final String function) {
+        if (functions.containsKey(function)) {
+            return functions.get(function).apply(input);
+        }
+        eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, null,
+                "Unable to format event: no such function " + function, null));
+        return input;
     }
 
 }
