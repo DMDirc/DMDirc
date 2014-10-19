@@ -40,6 +40,8 @@ import java.util.Optional;
  */
 public class EventFormatter {
 
+    private static final String ERROR_STRING = "<FormatError>";
+
     private final EventPropertyManager propertyManager;
     private final EventTemplateProvider templateProvider;
 
@@ -73,12 +75,23 @@ public class EventFormatter {
 
         Object target = event;
         for (String part : dataParts) {
-            target = propertyManager.getProperty(target, target.getClass(), part);
+            final Optional<Object> result =
+                    propertyManager.getProperty(target, target.getClass(), part);
+            if (result.isPresent()) {
+                target = result.get();
+            } else {
+                return ERROR_STRING;
+            }
         }
 
         String value = target.toString();
         for (int i = 1; i < functionParts.length; i++) {
-            value = propertyManager.applyFunction(value, functionParts[i]);
+            final Optional<String> result = propertyManager.applyFunction(value, functionParts[i]);
+            if (result.isPresent()) {
+                value = result.get();
+            } else {
+                return ERROR_STRING;
+            }
         }
 
         return value;
