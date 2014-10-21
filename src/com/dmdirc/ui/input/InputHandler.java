@@ -115,19 +115,6 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** The event bus to use to dispatch input events. */
     private final DMDircMBassador eventBus;
 
-    /** Temporary ctor to allow plugins to specify a new one. */
-    @Deprecated
-    public InputHandler(
-            final ServiceManager serviceManager,
-            final InputField target,
-            final CommandController commandController,
-            final CommandParser commandParser,
-            final FrameContainer parentWindow,
-            final DMDircMBassador eventBus) {
-        this(serviceManager, target, commandController, commandParser, parentWindow,
-                new TabCompleterUtils(), eventBus);
-    }
-
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target that we need to operate.
      *

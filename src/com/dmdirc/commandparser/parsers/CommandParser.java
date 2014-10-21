@@ -85,16 +85,6 @@ public abstract class CommandParser implements Serializable {
     }
 
     /**
-     * @deprecated Callers should obtain their own instance of command controller.
-     *
-     * @return The command manager for this parser.
-     */
-    @Deprecated
-    public CommandController getCommandManager() {
-        return commandManager;
-    }
-
-    /**
      * Sets the owner of this command parser.
      *
      * @param owner The container which owns this parser
@@ -212,7 +202,7 @@ public abstract class CommandParser implements Serializable {
                 final String newCommandString = commandManager.getCommandChar()
                         + (silent ? String.valueOf(commandManager.getSilenceChar()) : "")
                         + args.getCommandName()
-                        + (cargs.length > 1 ? " " + args.getArgumentsAsString(1) : "");
+                        + (cargs.length > 1 ? ' ' + args.getArgumentsAsString(1) : "");
 
                 if (server.hasChannel(channel)) {
                     server.getChannel(channel).getCommandParser().parseCommand(origin,
