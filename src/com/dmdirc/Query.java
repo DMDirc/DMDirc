@@ -57,6 +57,7 @@ import java.awt.Toolkit;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -184,8 +185,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         final String[] parts = server.parseHostmask(host);
 
         final String format = EventUtils.postDisplayable(getEventBus(),
-                new QueryMessageEvent(this, parser.getClient(host), message),
-                "queryMessage");
+                new QueryMessageEvent(this, parser.getClient(host), message), "queryMessage");
         addLine(format, parts[0], parts[1], parts[2], message);
     }
 
@@ -271,8 +271,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final String format = EventUtils.postDisplayable(getEventBus(),
                     new QueryQuitEvent(this, reason),
                     reason.isEmpty() ? "queryQuit" : "queryQuitReason");
-            addLine(format, client.getNickname(),
-                    client.getUsername(), client.getHostname(), reason);
+            addLine(format, client.getNickname(), client.getUsername(), client.getHostname(),
+                    reason);
         }
     }
 
@@ -290,6 +290,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
     @Override
     public Connection getConnection() {
         return server;
+    }
+
+    @Override
+    public Optional<Connection> getOptionalConnection() {
+        return Optional.of(server);
     }
 
     @Override

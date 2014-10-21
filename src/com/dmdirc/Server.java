@@ -84,6 +84,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ScheduledExecutorService;
@@ -1064,6 +1065,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     @Override
     public Connection getConnection() {
         return this;
+    }
+
+    @Override
+    public Optional<Connection> getOptionalConnection() {
+        return Optional.of(this);
     }
 
     @Override

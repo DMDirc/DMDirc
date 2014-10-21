@@ -38,6 +38,7 @@ import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -120,6 +121,11 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
     @Override
     public Connection getConnection() {
         return server;
+    }
+
+    @Override
+    public Optional<Connection> getOptionalConnection() {
+        return Optional.of(server);
     }
 
     @Override
