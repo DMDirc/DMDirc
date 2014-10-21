@@ -555,4 +555,9 @@ public class Channel extends MessageTarget implements GroupChat {
         return server;
     }
 
+    @Override
+    public Optional<Connection> getOptionalConnection() {
+        return Optional.of(server);
+    }
+
 }

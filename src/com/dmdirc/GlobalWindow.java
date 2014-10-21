@@ -36,6 +36,7 @@ import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -72,6 +73,11 @@ public class GlobalWindow extends FrameContainer {
     @Override
     public Connection getConnection() {
         return null;
+    }
+
+    @Override
+    public Optional<Connection> getOptionalConnection() {
+        return Optional.empty();
     }
 
     @Override

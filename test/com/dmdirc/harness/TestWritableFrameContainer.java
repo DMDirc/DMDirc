@@ -36,6 +36,7 @@ import com.dmdirc.util.URLBuilder;
 import com.dmdirc.DMDircMBassador;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 
@@ -71,6 +72,11 @@ public class TestWritableFrameContainer extends FrameContainer {
     @Override
     public Connection getConnection() {
         return null;
+    }
+
+    @Override
+    public Optional<Connection> getOptionalConnection() {
+        return Optional.empty();
     }
 
 }
