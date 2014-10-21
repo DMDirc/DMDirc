@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.aliases.AliasFactory;
 import com.dmdirc.commandparser.aliases.AliasManager;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.ui.input.TabCompleterUtils;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,11 +48,12 @@ public class AliasCommandTest {
     @Mock private AliasFactory aliasFactory;
     @Mock private AliasManager aliasManager;
     @Mock private CommandController controller;
+    @Mock private TabCompleterUtils tabCompleterUtils;
     private AliasCommand command;
 
     @Before
     public void setup() {
-        command = new AliasCommand(controller, aliasFactory, aliasManager);
+        command = new AliasCommand(controller, aliasFactory, aliasManager, tabCompleterUtils);
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
     }
