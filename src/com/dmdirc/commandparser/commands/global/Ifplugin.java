@@ -59,6 +59,8 @@ public class Ifplugin extends Command implements IntelligentCommand {
     private final Provider<GlobalCommandParser> globalCommandParserProvider;
     /** Provider of global windows. */
     private final Provider<GlobalWindow> globalWindowProvider;
+    /** Tab-completer utilities. */
+    private final TabCompleterUtils tabCompleterUtils;
 
     /**
      * Creates a new instance of the {@link Ifplugin} command.
@@ -73,11 +75,13 @@ public class Ifplugin extends Command implements IntelligentCommand {
             final CommandController controller,
             final PluginManager pluginManager,
             final Provider<GlobalCommandParser> globalCommandParserProvider,
-            final Provider<GlobalWindow> globalWindowProvider) {
+            final Provider<GlobalWindow> globalWindowProvider,
+            final TabCompleterUtils tabCompleterUtils) {
         super(controller);
         this.pluginManager = pluginManager;
         this.globalCommandParserProvider = globalCommandParserProvider;
         this.globalWindowProvider = globalWindowProvider;
+        this.tabCompleterUtils = tabCompleterUtils;
     }
 
     @Override
@@ -101,11 +105,11 @@ public class Ifplugin extends Command implements IntelligentCommand {
         }
 
         if (result != negative) {
-            if (!origin.isWritable()) {
+            if (origin.isWritable()) {
+                origin.getCommandParser().parseCommand(origin, args.getArgumentsAsString(1));
+            } else {
                 globalCommandParserProvider.get()
                         .parseCommand(globalWindowProvider.get(), args.getArgumentsAsString(1));
-            } else {
-                origin.getCommandParser().parseCommand(origin, args.getArgumentsAsString(1));
             }
         }
     }
@@ -120,10 +124,10 @@ public class Ifplugin extends Command implements IntelligentCommand {
 
             for (PluginInfo possPlugin : pluginManager.getPluginInfos()) {
                 res.add(possPlugin.getMetaData().getName());
-                res.add("!" + possPlugin.getMetaData().getName());
+                res.add('!' + possPlugin.getMetaData().getName());
             }
         } else {
-            res = TabCompleterUtils.getIntelligentResults(arg, context, 1);
+            res = tabCompleterUtils.getIntelligentResults(arg, context, 1);
         }
 
         return res;

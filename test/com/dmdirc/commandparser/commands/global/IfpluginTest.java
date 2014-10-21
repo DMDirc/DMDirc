@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.input.TabCompleterUtils;
 
 import javax.inject.Provider;
 
@@ -47,6 +48,7 @@ public class IfpluginTest {
 
     @Mock private Provider<GlobalWindow> gwProvider;
     @Mock private Provider<GlobalCommandParser> gcpProvider;
+    @Mock private TabCompleterUtils tabCompleterUtils;
     @Mock private CommandController controller;
     @Mock private PluginManager pluginManager;
     @Mock private FrameContainer tiw;
@@ -54,7 +56,8 @@ public class IfpluginTest {
 
     @Before
     public void setUp() {
-        command = new Ifplugin(controller, pluginManager, gcpProvider, gwProvider);
+        command = new Ifplugin(controller, pluginManager, gcpProvider, gwProvider,
+                tabCompleterUtils);
     }
 
     @Test
