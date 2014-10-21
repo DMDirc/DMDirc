@@ -70,6 +70,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private static final Logger LOG = LoggerFactory.getLogger(PluginInfo.class);
     /** The metadata for this plugin. */
     private final PluginMetaData metaData;
+    /** The manager to use to look up other plugins. */
+    private final PluginManager pluginManager;
     /** The initialiser to use for the injector. */
     private final Provider<PluginInjectorInitialiser> injectorInitialiser;
     /** The object graph to pass to plugins for DI purposes. */
@@ -115,12 +117,14 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @throws PluginException if there is an error loading the Plugin
      */
     public PluginInfo(
+            final PluginManager pluginManager,
             final String pluginDirectory,
             final PluginMetaData metadata,
             final Provider<PluginInjectorInitialiser> injectorInitialiser,
             final DMDircMBassador eventBus,
             final IdentityController identityController,
             final ObjectGraph objectGraph) throws PluginException {
+        this.pluginManager = pluginManager;
         this.injectorInitialiser = injectorInitialiser;
         this.objectGraph = objectGraph;
         this.eventBus = eventBus;
@@ -199,8 +203,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         final Plugin[] plugins = new Plugin[parents.length];
 
         if (metaData.getParent() != null) {
-            final PluginInfo parent = metaData.getManager()
-                    .getPluginInfoByName(metaData.getParent());
+            final PluginInfo parent = pluginManager.getPluginInfoByName(metaData.getParent());
             parents[0] = parent.getInjector();
             plugins[0] = parent.getPlugin();
         }
@@ -231,8 +234,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     protected ObjectGraph getObjectGraph() {
         if (metaData.getParent() != null) {
-            final PluginInfo parentInfo = metaData.getManager()
-                    .getPluginInfoByName(metaData.getParent());
+            final PluginInfo parentInfo = pluginManager.getPluginInfoByName(metaData.getParent());
             final Plugin parent = parentInfo.getPlugin();
             final ObjectGraph parentGraph = parent.getObjectGraph();
             if (parentGraph != null) {
@@ -373,7 +375,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String type = bits.length > 1 ? bits[1] : "misc";
 
                 if (!"any".equalsIgnoreCase(name) && !"export".equalsIgnoreCase(type)) {
-                    final Service service = metaData.getManager().getService(type, name, true);
+                    final Service service = pluginManager.getService(type, name, true);
                     synchronized (provides) {
                         service.addProvider(this);
                         provides.add(service);
@@ -498,8 +500,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return True iff all required services were found and satisfied
      */
     protected boolean loadRequiredServices() {
-        final ServiceManager manager = metaData.getManager();
-
         for (String serviceInfo : metaData.getRequiredServices()) {
             final String[] parts = serviceInfo.split(" ", 2);
 
@@ -507,7 +507,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 Service best = null;
                 boolean found = false;
 
-                for (Service service : manager.getServicesByType(parts[1])) {
+                for (Service service : pluginManager.getServicesByType(parts[1])) {
                     if (service.isActive()) {
                         found = true;
                         break;
@@ -524,7 +524,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     return false;
                 }
             } else {
-                final Service service = manager.getService(parts[1], parts[0]);
+                final Service service = pluginManager.getService(parts[1], parts[0]);
 
                 if (service == null || !service.activate()) {
                     return false;
@@ -566,7 +566,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         LOG.info("Loading required plugin '{}' for plugin {}",
                 new Object[]{name, metaData.getName()});
 
-        final PluginInfo pi = metaData.getManager().getPluginInfoByName(name);
+        final PluginInfo pi = pluginManager.getPluginInfoByName(name);
 
         if (pi == null) {
             return false;
@@ -678,8 +678,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
             if (metaData.getParent() != null) {
                 final String parentName = metaData.getParent();
-                final PluginInfo parent = metaData.getManager()
-                        .getPluginInfoByName(parentName);
+                final PluginInfo parent = pluginManager.getPluginInfoByName(parentName);
                 parent.addChild(this);
                 loaders[0] = parent.getPluginClassLoader();
 
@@ -697,8 +696,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 }
             }
 
-            pluginClassLoader = new PluginClassLoader(this, metaData.getManager().
-                    getGlobalClassLoader(), loaders);
+            pluginClassLoader = new PluginClassLoader(this, pluginManager.getGlobalClassLoader(),
+                    loaders);
         }
     }
 
@@ -739,11 +738,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         }
                     } else {
                         plugin = (Plugin) temp;
-
-                        LOG.debug("{}: Setting domain '{}'",
-                                new Object[]{metaData.getName(), getDomain()});
-
-                        plugin.setDomain(getDomain());
                         if (!tempLoaded) {
                             try {
                                 plugin.load(this, getObjectGraph());
@@ -826,8 +820,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
 
                 // Delete ourself as a child of our parent.
                 if (!parentUnloading && metaData.getParent() != null) {
-                    final PluginInfo pi = metaData.getManager()
-                            .getPluginInfoByName(metaData.getParent());
+                    final PluginInfo pi = pluginManager.getPluginInfoByName(metaData.getParent());
                     if (pi != null) {
                         pi.delChild(this);
                     }
@@ -940,8 +933,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String serviceName = bits.length > 4 ? bits[4] : bits[0];
 
                 // Add a provides for this
-                final Service service = metaData.getManager().
-                        getService("export", serviceName, true);
+                final Service service = pluginManager.getService("export", serviceName, true);
                 synchronized (provides) {
                     service.addProvider(this);
                     provides.add(service);

@@ -42,15 +42,6 @@ public interface Plugin {
     ValidationResponse checkPrerequisites();
 
     /**
-     * Get the domain name settings for this plugin should be stored in.
-     *
-     * @deprecated Domain should be obtained from {@link PluginInfo}
-     * @return Domain name for plugin settings
-     */
-    @Deprecated
-    String getDomain();
-
-    /**
      * Called when the plugin is loaded.
      */
     void onLoad();
@@ -126,16 +117,6 @@ public interface Plugin {
      * @return A graph to be used by child plugins, or {@code null} for the default graph.
      */
     ObjectGraph getObjectGraph();
-
-    /**
-     * Called by PluginInfo to set the domain name. This can only be called once, all other attempts
-     * will be ignored.
-     *
-     * @deprecated Domain should be obtained from {@link PluginInfo}
-     * @param newDomain Domain name for plugin settings
-     */
-    @Deprecated
-    void setDomain(final String newDomain);
 
     /**
      * Called to allow plugins to add their configuration options to the manager.

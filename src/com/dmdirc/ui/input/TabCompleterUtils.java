@@ -43,8 +43,11 @@ import javax.inject.Singleton;
 @Singleton
 public class TabCompleterUtils {
 
+    private final CommandController commandController;
+
     @Inject
-    public TabCompleterUtils() {
+    public TabCompleterUtils(final CommandController commandController) {
+        this.commandController = commandController;
     }
 
     /**
@@ -57,7 +60,7 @@ public class TabCompleterUtils {
      * @return Additional tab targets for the text, or null if none are available
      */
     @Nullable
-    public static AdditionalTabTargets getIntelligentResults(final int arg,
+    public AdditionalTabTargets getIntelligentResults(final int arg,
             final IntelligentCommand.IntelligentCommandContext context, final int offset) {
         if (arg == offset) {
             final AdditionalTabTargets targets = new AdditionalTabTargets().excludeAll();
@@ -65,7 +68,7 @@ public class TabCompleterUtils {
             return targets;
         } else {
             return getIntelligentResults(context.getWindow(),
-                    new CommandArguments(context.getWindow().getCommandParser().getCommandManager(),
+                    new CommandArguments(commandController,
                             context.getPreviousArgs().subList(offset,
                                     context.getPreviousArgs().size())), context.getPartial());
         }
@@ -83,15 +86,15 @@ public class TabCompleterUtils {
      * @since 0.6.4
      */
     @Nullable
-    private static AdditionalTabTargets getIntelligentResults(
+    private AdditionalTabTargets getIntelligentResults(
             final FrameContainer window,
             final CommandArguments args, final String partial) {
         if (!args.isCommand()) {
             return null;
         }
 
-        final Map.Entry<CommandInfo, Command> command = window.getCommandParser().
-                getCommandManager().getCommand(args.getCommandName());
+        final Map.Entry<CommandInfo, Command> command =
+                commandController.getCommand(args.getCommandName());
 
         AdditionalTabTargets targets = null;
 
@@ -127,7 +130,7 @@ public class TabCompleterUtils {
      * @since 0.6.4
      */
     @Nullable
-    public static AdditionalTabTargets getIntelligentResults(
+    public AdditionalTabTargets getIntelligentResults(
             final FrameContainer window, final CommandController commandController,
             final String text, final String partial) {
         return getIntelligentResults(window,

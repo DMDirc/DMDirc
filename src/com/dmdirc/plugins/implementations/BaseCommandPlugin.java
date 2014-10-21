@@ -46,24 +46,6 @@ public abstract class BaseCommandPlugin extends BasePlugin {
      */
     private CommandController commandController;
 
-    /**
-     * Creates a new instance of this plugin
-     *
-     * @param commandController Command controller to register commands.
-     *
-     * @deprecated No longer required, use empty constructor.
-     */
-    @Deprecated
-    public BaseCommandPlugin(final CommandController commandController) {
-        this.commandController = commandController;
-    }
-
-    /**
-     * Creates a new instance of this plugin.
-     */
-    public BaseCommandPlugin() {
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
