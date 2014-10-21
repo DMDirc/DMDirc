@@ -255,7 +255,7 @@ public class PluginManager implements ServiceManager {
                             + "!/META-INF/plugin.config"),
                     Paths.get(directory, filename));
             metadata.load();
-            final PluginInfo pluginInfo = new PluginInfo(directory, metadata,
+            final PluginInfo pluginInfo = new PluginInfo(this, directory, metadata,
                     initialiserProvider, eventBus,
                     identityController, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
