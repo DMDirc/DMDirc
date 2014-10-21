@@ -55,6 +55,8 @@ public class AliasCommand extends Command implements IntelligentCommand {
     private final AliasFactory aliasFactory;
     /** Manager to use to modify aliases. */
     private final AliasManager aliasManager;
+    /** Tab-completer utilities. */
+    private final TabCompleterUtils tabCompleterUtils;
 
     /**
      * Creates a new instance of {@link AliasCommand}.
@@ -67,10 +69,12 @@ public class AliasCommand extends Command implements IntelligentCommand {
     public AliasCommand(
             final CommandController controller,
             final AliasFactory aliasFactory,
-            final AliasManager aliasManager) {
+            final AliasManager aliasManager,
+            final TabCompleterUtils tabCompleterUtils) {
         super(controller);
         this.aliasFactory = aliasFactory;
         this.aliasManager = aliasManager;
+        this.tabCompleterUtils = tabCompleterUtils;
     }
 
     @Override
@@ -135,7 +139,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
         } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
             res.addAll(aliasManager.getAliasNames());
         } else if (arg >= 1 && !context.getPreviousArgs().get(0).equals("--remove")) {
-            return TabCompleterUtils.getIntelligentResults(arg, context, 1);
+            return tabCompleterUtils.getIntelligentResults(arg, context, 1);
         }
 
         return res;

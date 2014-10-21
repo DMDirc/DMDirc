@@ -85,6 +85,8 @@ public abstract class InputHandler implements ConfigChangeListener {
      * been inserted.
      */
     private static final int POSITION_END = 1;
+    /** Tab-completer utilities. */
+    private final TabCompleterUtils tabCompleterUtils;
     /** The flags for this particular input handler. */
     protected int flags = HANDLE_TABCOMPLETION | HANDLE_BACKBUFFER
             | HANDLE_FORMATTING | HANDLE_RETURN;
@@ -113,6 +115,19 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** The event bus to use to dispatch input events. */
     private final DMDircMBassador eventBus;
 
+    /** Temporary ctor to allow plugins to specify a new one. */
+    @Deprecated
+    public InputHandler(
+            final ServiceManager serviceManager,
+            final InputField target,
+            final CommandController commandController,
+            final CommandParser commandParser,
+            final FrameContainer parentWindow,
+            final DMDircMBassador eventBus) {
+        this(serviceManager, target, commandController, commandParser, parentWindow,
+                new TabCompleterUtils(), eventBus);
+    }
+
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target that we need to operate.
      *
@@ -129,6 +144,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             final CommandController commandController,
             final CommandParser commandParser,
             final FrameContainer parentWindow,
+            final TabCompleterUtils tabCompleterUtils,
             final DMDircMBassador eventBus) {
         buffer = new RollingList<>(parentWindow.getConfigManager()
                 .getOptionInt("ui", "inputbuffersize"), "");
@@ -138,6 +154,7 @@ public abstract class InputHandler implements ConfigChangeListener {
         this.commandController = commandController;
         this.commandParser = commandParser;
         this.parentWindow = parentWindow;
+        this.tabCompleterUtils = tabCompleterUtils;
         this.eventBus = eventBus;
 
         setStyle();
@@ -540,7 +557,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     private void doCommandTabCompletion(final String text, final int start,
             final int end, final boolean shiftPressed) {
         doNormalTabCompletion(text, start, end, shiftPressed,
-                TabCompleterUtils.getIntelligentResults(parentWindow, commandController,
+                tabCompleterUtils.getIntelligentResults(parentWindow, commandController,
                         text.substring(0, start), text.substring(start, end)));
     }
 

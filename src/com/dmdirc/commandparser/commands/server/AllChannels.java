@@ -48,6 +48,8 @@ public class AllChannels extends Command implements IntelligentCommand {
     public static final CommandInfo INFO = new BaseCommandInfo("allchannels",
             "allchannels <command> - executes the command as though it had"
             + " been entered on all channels", CommandType.TYPE_SERVER);
+    /** Tab-completer utilities. */
+    private final TabCompleterUtils tabCompleterUtils;
 
     /**
      * Creates a new instance of this command.
@@ -55,8 +57,10 @@ public class AllChannels extends Command implements IntelligentCommand {
      * @param controller The controller to use for command information.
      */
     @Inject
-    public AllChannels(final CommandController controller) {
+    public AllChannels(final CommandController controller,
+            final TabCompleterUtils tabCompleterUtils) {
         super(controller);
+        this.tabCompleterUtils = tabCompleterUtils;
     }
 
     @Override
@@ -74,7 +78,7 @@ public class AllChannels extends Command implements IntelligentCommand {
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
-        return TabCompleterUtils.getIntelligentResults(arg, context, 0);
+        return tabCompleterUtils.getIntelligentResults(arg, context, 0);
     }
 
 }

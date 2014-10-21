@@ -50,6 +50,8 @@ public class AllServers extends Command implements IntelligentCommand {
             + " been entered on all servers", CommandType.TYPE_GLOBAL);
     /** Server manager to use to iterate servers. */
     private final ConnectionManager connectionManager;
+    /** Tab-completer utilities. */
+    private final TabCompleterUtils tabCompleterUtils;
 
     /**
      * Creates a new instance of the {@link AllServers} command.
@@ -58,9 +60,12 @@ public class AllServers extends Command implements IntelligentCommand {
      * @param connectionManager The server manager to use to iterate servers.
      */
     @Inject
-    public AllServers(final CommandController controller, final ConnectionManager connectionManager) {
+    public AllServers(final CommandController controller,
+            final ConnectionManager connectionManager,
+            final TabCompleterUtils tabCompleterUtils) {
         super(controller);
         this.connectionManager = connectionManager;
+        this.tabCompleterUtils = tabCompleterUtils;
     }
 
     @Override
@@ -77,7 +82,7 @@ public class AllServers extends Command implements IntelligentCommand {
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
-        return TabCompleterUtils.getIntelligentResults(arg, context, 0);
+        return tabCompleterUtils.getIntelligentResults(arg, context, 0);
     }
 
 }
