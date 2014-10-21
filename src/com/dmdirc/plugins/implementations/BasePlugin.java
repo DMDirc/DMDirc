@@ -34,21 +34,8 @@ import dagger.ObjectGraph;
  */
 public abstract class BasePlugin implements Plugin {
 
-    /** Domain name for the settings in this plugin. */
-    private String myDomain = "plugin-unknown";
-    /** Has the domain been set? */
-    private boolean domainSet;
     /** The object graph to return for subplugins, if any. */
     private ObjectGraph objectGraph;
-
-    @Override
-    @Deprecated
-    public void setDomain(final String newDomain) {
-        if (!domainSet) {
-            domainSet = true;
-            myDomain = newDomain;
-        }
-    }
 
     @Override
     public void load(final PluginInfo pluginInfo, final ObjectGraph graph) {
@@ -77,12 +64,6 @@ public abstract class BasePlugin implements Plugin {
     @Override
     public void onUnload() {
         //Define this here so only implementations that care have to override
-    }
-
-    @Override
-    @Deprecated
-    public String getDomain() {
-        return myDomain;
     }
 
     @Override

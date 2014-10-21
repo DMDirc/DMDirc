@@ -739,11 +739,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                         }
                     } else {
                         plugin = (Plugin) temp;
-
-                        LOG.debug("{}: Setting domain '{}'",
-                                new Object[]{metaData.getName(), getDomain()});
-
-                        plugin.setDomain(getDomain());
                         if (!tempLoaded) {
                             try {
                                 plugin.load(this, getObjectGraph());
