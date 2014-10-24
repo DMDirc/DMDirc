@@ -94,15 +94,21 @@ public class MutableAutoCommand {
         if (object == null) {
             return false;
         }
-        if (getClass() != object.getClass()) {
-            return false;
+        if (object instanceof AutoCommand) {
+            final AutoCommand command = (AutoCommand) object;
+            return Objects.equals(server, command.getServer()) &&
+                    Objects.equals(network, command.getNetwork()) &&
+                    Objects.equals(profile, command.getProfile()) &&
+                    Objects.equals(response, command.getResponse());
         }
-        final MutableAutoCommand command = (MutableAutoCommand) object;
-        return  Objects.equals(server, command.getServer())
-                && Objects.equals(network, command.getNetwork())
-                && Objects.equals(profile, command.getProfile())
-                && Objects.equals(response, command.getResponse());
-
+        if (object instanceof MutableAutoCommand) {
+            final MutableAutoCommand command = (MutableAutoCommand) object;
+            return Objects.equals(server, command.getServer()) &&
+                    Objects.equals(network, command.getNetwork()) &&
+                    Objects.equals(profile, command.getProfile()) &&
+                    Objects.equals(response, command.getResponse());
+        }
+        return false;
     }
 
     @Override

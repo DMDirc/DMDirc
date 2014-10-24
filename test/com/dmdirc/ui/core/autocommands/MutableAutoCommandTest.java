@@ -29,6 +29,7 @@ import java.util.Optional;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
 
 public class MutableAutoCommandTest {
 
@@ -102,5 +103,34 @@ public class MutableAutoCommandTest {
         assertEquals(command.getNetwork(), newCommand.getNetwork());
         assertEquals(command.getProfile(), newCommand.getProfile());
         assertEquals(command.getResponse(), newCommand.getResponse());
+    }
+
+    @Test
+    public void testEquals_AutoCommand() {
+        final MutableAutoCommand command1 = new MutableAutoCommand(server, network, profile,
+                response);
+        final AutoCommand command2 = new AutoCommand(server, network, profile, response);
+        assertEquals(command1, command2);
+    }
+
+    @Test
+    public void testEquals_MutableAutoCommand() {
+        final MutableAutoCommand command1 = new MutableAutoCommand(server, network, profile,
+                response);
+        final MutableAutoCommand command2 = new MutableAutoCommand(server, network, profile,
+                response);
+        assertEquals(command1, command2);
+    }
+
+    @Test
+    public void testEquals_Null() {
+        command = new MutableAutoCommand(server, network, profile, response);
+        assertFalse(command.equals(null));
+    }
+
+    @Test
+    public void testEquals_Random() {
+        command = new MutableAutoCommand(server, network, profile, response);
+        assertFalse(command.equals(new Object()));
     }
 }
