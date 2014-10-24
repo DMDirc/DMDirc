@@ -28,9 +28,12 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.ui.themes.ThemeManager;
 
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Paths;
+import java.nio.file.FileSystem;
 
 import javax.inject.Provider;
 
@@ -57,12 +60,13 @@ public class URLBuilderTest {
 
     @Before
     public void setup() throws MalformedURLException {
+        final FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
         when(pluginManagerProvider.get()).thenReturn(pluginManager);
         when(themeManagerProvider.get()).thenReturn(themeManager);
         when(pluginManager.getPluginInfoByName(Matchers.anyString())).thenReturn(pluginInfo);
         when(themeManager.getDirectory()).thenReturn("/themes/");
         when(pluginInfo.getMetaData()).thenReturn(pluginMetaData);
-        when(pluginMetaData.getPluginPath()).thenReturn(Paths.get("file://testPlugin"));
+        when(pluginMetaData.getPluginPath()).thenReturn(fs.getPath("file://testPlugin"));
     }
 
     @Test
