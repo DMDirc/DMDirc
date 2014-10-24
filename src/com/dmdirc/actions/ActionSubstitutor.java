@@ -37,6 +37,7 @@ import com.dmdirc.interfaces.ui.Window;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -277,13 +278,14 @@ public class ActionSubstitutor {
         }
 
         if (hasFrameContainer() && serverMatcher.matches()) {
-            final Connection connection = ((FrameContainer) args[0]).getConnection();
+            final Optional<Connection> connection =
+                    ((FrameContainer) args[0]).getOptionalConnection();
 
-            if (connection != null) {
+            if (connection.isPresent()) {
                 try {
                     final ActionComponentChain chain = new ActionComponentChain(
                             Connection.class, substitution, actionController);
-                    return escape(checkConnection(chain, args, connection));
+                    return escape(checkConnection(chain, args, connection.get()));
                 } catch (IllegalArgumentException ex) {
                     return ERR_ILLEGAL_COMPONENT;
                 }
@@ -309,7 +311,7 @@ public class ActionSubstitutor {
     protected String checkConnection(final ActionComponentChain chain,
             final Object[] args, final Object argument) {
         if ((chain.requiresConnection() && args[0] instanceof FrameContainer
-                && ((FrameContainer) args[0]).getConnection().getState()
+                && ((FrameContainer) args[0]).getOptionalConnection().get().getState()
                 == ServerState.CONNECTED) || !chain.requiresConnection()) {
             final Object res = chain.get(argument);
             return res == null ? ERR_NULL_CHAIN : res.toString();

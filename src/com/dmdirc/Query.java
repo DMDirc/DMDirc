@@ -325,7 +325,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Override
     public void setCompositionState(final CompositionState state) {
-        getConnection().getParser().setCompositionState(host, state);
+        server.getParser().setCompositionState(host, state);
     }
 
 }

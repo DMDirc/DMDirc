@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -75,6 +76,7 @@ public class ActionSubstitutorTest {
         final ChannelClientInfo clientInfo = mock(ChannelClientInfo.class);
 
         when(channel.getConnection()).thenReturn(server);
+        when(channel.getOptionalConnection()).thenReturn(Optional.of(server));
         when(channel.getConfigManager()).thenReturn(manager);
         when(server.getState()).thenReturn(ServerState.DISCONNECTED);
         when(server.getAwayMessage()).thenReturn("foo");
