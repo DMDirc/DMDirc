@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.auto;
+package com.dmdirc.ui.core.autocommands;
 
+import com.dmdirc.commandparser.auto.AutoCommand;
 
 import com.google.common.base.MoreObjects;
 
@@ -31,21 +32,16 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 /**
- * Describes a command that is executed automatically in response to either the client opening, or a
- * server connecting.
+ * Mutable version of an {@link AutoCommand}.
  */
-public class AutoCommand {
+public class MutableAutoCommand {
 
-    /** The name of the server for connection events. */
-    private final Optional<String> server;
-    /** The name of the network for connection events. */
-    private final Optional<String> network;
-    /** The name of the profile for connection events. */
-    private final Optional<String> profile;
-    /** The commands to execute. */
-    private final String response;
+    private Optional<String> server;
+    private Optional<String> network;
+    private Optional<String> profile;
+    private String response;
 
-    public AutoCommand(
+    public MutableAutoCommand(
             final Optional<String> server,
             final Optional<String> network,
             final Optional<String> profile,
@@ -60,17 +56,37 @@ public class AutoCommand {
         return server;
     }
 
+    public void setServer(final Optional<String> server) {
+        this.server = server;
+    }
+
     public Optional<String> getNetwork() {
         return network;
+    }
+
+    public void setNetwork(final Optional<String> network) {
+        this.network = network;
     }
 
     public Optional<String> getProfile() {
         return profile;
     }
 
+    public void setProfile(final Optional<String> profile) {
+        this.profile = profile;
+    }
+
     @Nonnull
     public String getResponse() {
         return response;
+    }
+
+    public void setResponse(@Nonnull final String response) {
+        this.response = response;
+    }
+
+    public AutoCommand getAutoCommand() {
+        return new AutoCommand(server, network, profile, response);
     }
 
     @Override
@@ -81,7 +97,7 @@ public class AutoCommand {
         if (getClass() != object.getClass()) {
             return false;
         }
-        final AutoCommand command = (AutoCommand) object;
+        final MutableAutoCommand command = (MutableAutoCommand) object;
         return  Objects.equals(server, command.getServer())
                 && Objects.equals(network, command.getNetwork())
                 && Objects.equals(profile, command.getProfile())
@@ -103,5 +119,4 @@ public class AutoCommand {
                 .add("Response", response)
                 .toString();
     }
-
 }
