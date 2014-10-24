@@ -82,7 +82,7 @@ public class CustomWindow extends FrameContainer {
 
     @Override
     public Optional<Connection> getOptionalConnection() {
-        return getParent().map(FrameContainer::getConnection);
+        return getParent().flatMap(FrameContainer::getOptionalConnection);
     }
 
 }

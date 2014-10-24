@@ -377,9 +377,11 @@ public abstract class FrameContainer {
     /**
      * Returns the connection that this container is associated with.
      *
+     * @deprecated Use {@link #getOptionalConnection()}
      * @return the associated connection, or {@code null}.
      */
     @Nullable
+    @Deprecated
     public abstract Connection getConnection();
 
     /**
@@ -418,7 +420,7 @@ public abstract class FrameContainer {
     public Styliser getStyliser() {
         synchronized (styliserSync) {
             if (styliser == null) {
-                styliser = new Styliser(getConnection(), getConfigManager(),
+                styliser = new Styliser(getOptionalConnection().orElse(null), getConfigManager(),
                         colourManagerFactory.getColourManager(getConfigManager()));
             }
             return styliser;

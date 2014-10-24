@@ -31,9 +31,9 @@ import com.dmdirc.util.colours.Colour;
 
 import java.awt.Color;
 import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
 import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
@@ -128,6 +128,7 @@ public class Styliser implements ConfigChangeListener {
     /** Colour to use for channel names. */
     private Colour channelColour;
     /** Connection to get channel prefixes from, or null if not applicable. */
+    @Nullable
     private final Connection connection;
     /** Config manager to retrieve settings from. */
     private final AggregateConfigProvider configManager;
@@ -143,7 +144,8 @@ public class Styliser implements ConfigChangeListener {
      *
      * @since 0.6.3
      */
-    public Styliser(final Connection connection, final AggregateConfigProvider configManager,
+    public Styliser(@Nullable final Connection connection,
+            final AggregateConfigProvider configManager,
             final ColourManager colourManager) {
         this.connection = connection;
         this.configManager = configManager;
