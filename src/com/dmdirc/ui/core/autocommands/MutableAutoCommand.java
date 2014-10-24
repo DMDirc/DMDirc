@@ -105,10 +105,7 @@ public class MutableAutoCommand {
     }
 
     public boolean equalsAutoCommand(final AutoCommand command) {
-        if (command == null) {
-            return false;
-        }
-        return Objects.equals(server, command.getServer()) &&
+        return command != null && Objects.equals(server, command.getServer()) &&
                 Objects.equals(network, command.getNetwork()) &&
                 Objects.equals(profile, command.getProfile()) &&
                 Objects.equals(response, command.getResponse());
