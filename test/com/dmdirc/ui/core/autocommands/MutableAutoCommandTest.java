@@ -30,6 +30,7 @@ import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 
 public class MutableAutoCommandTest {
 
@@ -106,15 +107,21 @@ public class MutableAutoCommandTest {
     }
 
     @Test
-    public void testEquals_AutoCommand() {
+    public void testEqualsAutoCommand() {
         final MutableAutoCommand command1 = new MutableAutoCommand(server, network, profile,
                 response);
         final AutoCommand command2 = new AutoCommand(server, network, profile, response);
-        assertEquals(command1, command2);
+        assertTrue(command1.equalsAutoCommand(command2));
     }
 
     @Test
-    public void testEquals_MutableAutoCommand() {
+    public void testEqualsAutoCommand_Null() {
+        command = new MutableAutoCommand(server, network, profile, response);
+        assertFalse(command.equalsAutoCommand(null));
+    }
+
+    @Test
+    public void testEquals() {
         final MutableAutoCommand command1 = new MutableAutoCommand(server, network, profile,
                 response);
         final MutableAutoCommand command2 = new MutableAutoCommand(server, network, profile,
