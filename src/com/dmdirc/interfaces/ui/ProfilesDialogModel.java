@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.util.validators.Validator;
 
 import java.util.Collection;

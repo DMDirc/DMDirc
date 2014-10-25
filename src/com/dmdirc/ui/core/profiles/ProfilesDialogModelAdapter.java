@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.core.profiles;
 
-import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.ui.ProfilesDialogModelListener;
 
 import java.util.List;
