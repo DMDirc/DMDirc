@@ -20,9 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -30,15 +31,15 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * A message sink which does nothing with the message.
+ * A message sink which adds the message to the container's server.
  */
-public class NullMessageSink implements MessageSink {
+public class ServerMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("none");
+    private static final Pattern PATTERN = Pattern.compile("server");
 
     @Inject
-    public NullMessageSink() {
+    public ServerMessageSink() {
     }
 
     @Override
@@ -51,7 +52,7 @@ public class NullMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        // Do nothing
+        ((Server) source.getConnection()).addLine(messageType, date, args);
     }
 
 }

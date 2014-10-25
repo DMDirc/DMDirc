@@ -34,7 +34,7 @@ import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
-import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;

@@ -20,40 +20,48 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.FrameContainer;
 
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
- * Represents a possible destination (sink) for a generic DMDirc message.
+ * A message sink which changes the sink to the value of a named configuration setting to allow
+ * grouping of sinks.
  */
-public interface MessageSink {
+public class GroupMessageSink implements MessageSink {
 
-    /**
-     * Returns a regular expression pattern that can be used to determine if this sink matches a
-     * given configuration entry. If the pattern contains groups, the values of the matched groups
-     * are passed into the handleMessage method.
-     *
-     * @return Pattern to matches a config entry
-     */
-    Pattern getPattern();
+    /** The pattern to use to match this sink. */
+    private static final Pattern PATTERN = Pattern.compile("group:(.*)");
 
-    /**
-     * Handles a message which has been directed to this sink.
-     *
-     * @param dispatcher     The manager that is dispatching the message
-     * @param source         The original source of the message
-     * @param patternMatches An array of groups matched from this sink's pattern
-     * @param date           The date at which the message occurred
-     * @param messageType    The type of the message (used for formatting)
-     * @param args           The message arguments
-     */
-    void handleMessage(final MessageSinkManager dispatcher,
+    @Inject
+    public GroupMessageSink() {
+    }
+
+    @Override
+    public Pattern getPattern() {
+        return PATTERN;
+    }
+
+    @Override
+    public void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,
             final String[] patternMatches, final Date date,
-            final String messageType, final Object... args);
+            final String messageType, final Object... args) {
+        final String target;
+        if (source.getConfigManager().hasOptionString(MessageSinkManager.CONFIG_DOMAIN,
+                patternMatches[0])) {
+            target = source.getConfigManager().getOption(MessageSinkManager.CONFIG_DOMAIN,
+                    patternMatches[0]);
+        } else {
+            target = MessageSinkManager.DEFAULT_SINK;
+        }
+
+        dispatcher.dispatchMessage(source, date, messageType, target, args);
+    }
 
 }

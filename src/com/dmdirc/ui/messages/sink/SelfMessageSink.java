@@ -20,13 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.events.StatusBarMessageEvent;
-import com.dmdirc.ui.StatusMessage;
-import com.dmdirc.ui.messages.Formatter;
 
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -34,23 +30,15 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * A message sink which adds the message to the status bar.
+ * A message sink which adds the message to the container that dispatched it.
  */
-public class StatusBarMessageSink implements MessageSink {
+public class SelfMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("statusbar");
-    /** The event bus to post status messages to. */
-    private final DMDircMBassador eventBus;
+    private static final Pattern PATTERN = Pattern.compile("self");
 
-    /**
-     * Creates a new instance of {@link StatusBarMessageSink}.
-     *
-     * @param eventBus The event bus to post status messages to
-     */
     @Inject
-    public StatusBarMessageSink(final DMDircMBassador eventBus) {
-        this.eventBus = eventBus;
+    public SelfMessageSink() {
     }
 
     @Override
@@ -63,10 +51,7 @@ public class StatusBarMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        final String message = Formatter.formatMessage(source.getConfigManager(),
-                messageType, args);
-        eventBus.publishAsync(new StatusBarMessageEvent(new StatusMessage(message,
-                source.getConfigManager())));
+        source.addLine(messageType, date, args);
     }
 
 }

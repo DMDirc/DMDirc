@@ -20,9 +20,8 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 
 import java.util.Date;
@@ -31,18 +30,15 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * A message sink which adds the message to all channels the local user has in common with a
- * specified remote user. An optional fallback may be specified for use if there are no common
- * channels with the user. If no fallback is specified and there are no common channels, the message
- * is dispatched to the source.
+ * A message sink which does nothing with the message.
  */
-public class CommonChannelsMessageSink implements MessageSink {
+public class NullMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("comchans:(.*?)(?:\\s(.*))?");
+    private static final Pattern PATTERN = Pattern.compile("none");
 
     @Inject
-    public CommonChannelsMessageSink() {
+    public NullMessageSink() {
     }
 
     @Override
@@ -55,26 +51,7 @@ public class CommonChannelsMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        final String user = String.format(patternMatches[0], args);
-        boolean found = false;
-
-        for (String channelName : source.getConnection().getChannels()) {
-            final Channel channel = source.getConnection().getChannel(channelName);
-            if (channel.getChannelInfo().getChannelClient(user) != null) {
-                channel.addLine(messageType, date, args);
-                found = true;
-            }
-        }
-
-        if (!found) {
-            if (patternMatches[1] == null) {
-                // No fallback specified
-                source.addLine(messageType, date, args);
-            } else {
-                // They specified a fallback
-                dispatcher.dispatchMessage(source, date, messageType, patternMatches[1], args);
-            }
-        }
+        // Do nothing
     }
 
 }

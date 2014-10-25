@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
