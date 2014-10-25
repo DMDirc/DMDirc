@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.profiles;
+package com.dmdirc.config.profiles;
 
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;

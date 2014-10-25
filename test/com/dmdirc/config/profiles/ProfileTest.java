@@ -19,11 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.dmdirc.actions.wrappers;
+package com.dmdirc.config.profiles;
 
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.profiles.Profile;
 
 import java.io.IOException;
 import java.util.ArrayList;
