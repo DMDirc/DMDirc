@@ -22,6 +22,7 @@
 
 package com.dmdirc.config.profiles;
 
+import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.IdentityController;
