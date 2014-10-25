@@ -210,6 +210,10 @@ public class Profile {
         return hash;
     }
 
+    public boolean equalsConfigProvider(final ConfigProvider configProvider) {
+        return this.configProvider != null && configProvider.equals(configProvider);
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (obj == null) {
