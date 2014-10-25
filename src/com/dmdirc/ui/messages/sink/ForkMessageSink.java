@@ -20,9 +20,8 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 
 import java.util.Date;
@@ -31,17 +30,15 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * A message sink which adds the message to a named channel. An optional fallback may be specified
- * for use if the channel does not exist. If no fallback is specified and the channel does not
- * exist, the message is dispatched to the source.
+ * A message sink which allows the message to be forked into multiple other sinks.
  */
-public class ChannelMessageSink implements MessageSink {
+public class ForkMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("channel:(.*?)(?:\\s(.*))?");
+    private static final Pattern PATTERN = Pattern.compile("fork:(.*)");
 
     @Inject
-    public ChannelMessageSink() {
+    public ForkMessageSink() {
     }
 
     @Override
@@ -54,25 +51,8 @@ public class ChannelMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        final String user = String.format(patternMatches[0], args);
-        boolean found = false;
-
-        for (String channelName : source.getConnection().getChannels()) {
-            final Channel channel = source.getConnection().getChannel(channelName);
-            if (channel.getChannelInfo().getChannelClient(user) != null) {
-                channel.addLine(messageType, date, args);
-                found = true;
-            }
-        }
-
-        if (!found) {
-            if (patternMatches[1] == null) {
-                // No fallback specified
-                source.addLine(messageType, date, args);
-            } else {
-                // They specified a fallback
-                dispatcher.dispatchMessage(source, date, messageType, patternMatches[1], args);
-            }
+        for (String target : patternMatches[0].split("\\|")) {
+            dispatcher.dispatchMessage(source, date, target, args);
         }
     }
 

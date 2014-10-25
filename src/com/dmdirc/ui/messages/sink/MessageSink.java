@@ -20,39 +20,40 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
-
 /**
- * A message sink which adds the message to the container's server.
+ * Represents a possible destination (sink) for a generic DMDirc message.
  */
-public class ServerMessageSink implements MessageSink {
+public interface MessageSink {
 
-    /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("server");
+    /**
+     * Returns a regular expression pattern that can be used to determine if this sink matches a
+     * given configuration entry. If the pattern contains groups, the values of the matched groups
+     * are passed into the handleMessage method.
+     *
+     * @return Pattern to matches a config entry
+     */
+    Pattern getPattern();
 
-    @Inject
-    public ServerMessageSink() {
-    }
-
-    @Override
-    public Pattern getPattern() {
-        return PATTERN;
-    }
-
-    @Override
-    public void handleMessage(final MessageSinkManager dispatcher,
+    /**
+     * Handles a message which has been directed to this sink.
+     *
+     * @param dispatcher     The manager that is dispatching the message
+     * @param source         The original source of the message
+     * @param patternMatches An array of groups matched from this sink's pattern
+     * @param date           The date at which the message occurred
+     * @param messageType    The type of the message (used for formatting)
+     * @param args           The message arguments
+     */
+    void handleMessage(final MessageSinkManager dispatcher,
             final FrameContainer source,
             final String[] patternMatches, final Date date,
-            final String messageType, final Object... args) {
-        ((Server) source.getConnection()).addLine(messageType, date, args);
-    }
+            final String messageType, final Object... args);
 
 }

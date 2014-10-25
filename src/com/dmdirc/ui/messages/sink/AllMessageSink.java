@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.FrameContainer;
 
@@ -30,15 +30,15 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * A message sink which allows the message to be forked into multiple other sinks.
+ * A message sink which adds the message to all of the container's server's children.
  */
-public class ForkMessageSink implements MessageSink {
+public class AllMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("fork:(.*)");
+    private static final Pattern PATTERN = Pattern.compile("all");
 
     @Inject
-    public ForkMessageSink() {
+    public AllMessageSink() {
     }
 
     @Override
@@ -51,9 +51,7 @@ public class ForkMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        for (String target : patternMatches[0].split("\\|")) {
-            dispatcher.dispatchMessage(source, date, target, args);
-        }
+        source.getConnection().addLineToAll(messageType, date, args);
     }
 
 }

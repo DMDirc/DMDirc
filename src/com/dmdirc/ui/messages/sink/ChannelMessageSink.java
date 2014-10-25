@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
+import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 
 import java.util.Date;
@@ -30,16 +31,17 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * A message sink which changes the sink to the value of a named configuration setting to allow
- * grouping of sinks.
+ * A message sink which adds the message to a named channel. An optional fallback may be specified
+ * for use if the channel does not exist. If no fallback is specified and the channel does not
+ * exist, the message is dispatched to the source.
  */
-public class GroupMessageSink implements MessageSink {
+public class ChannelMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("group:(.*)");
+    private static final Pattern PATTERN = Pattern.compile("channel:(.*?)(?:\\s(.*))?");
 
     @Inject
-    public GroupMessageSink() {
+    public ChannelMessageSink() {
     }
 
     @Override
@@ -52,16 +54,26 @@ public class GroupMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        final String target;
-        if (source.getConfigManager().hasOptionString(MessageSinkManager.CONFIG_DOMAIN,
-                patternMatches[0])) {
-            target = source.getConfigManager().getOption(MessageSinkManager.CONFIG_DOMAIN,
-                    patternMatches[0]);
-        } else {
-            target = MessageSinkManager.DEFAULT_SINK;
+        final String user = String.format(patternMatches[0], args);
+        boolean found = false;
+
+        for (String channelName : source.getConnection().getChannels()) {
+            final Channel channel = source.getConnection().getChannel(channelName);
+            if (channel.getChannelInfo().getChannelClient(user) != null) {
+                channel.addLine(messageType, date, args);
+                found = true;
+            }
         }
 
-        dispatcher.dispatchMessage(source, date, messageType, target, args);
+        if (!found) {
+            if (patternMatches[1] == null) {
+                // No fallback specified
+                source.addLine(messageType, date, args);
+            } else {
+                // They specified a fallback
+                dispatcher.dispatchMessage(source, date, messageType, patternMatches[1], args);
+            }
+        }
     }
 
 }

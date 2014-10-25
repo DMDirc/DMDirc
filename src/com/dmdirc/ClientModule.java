@@ -41,11 +41,12 @@ import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.messages.MessagesModule;
+import com.dmdirc.ui.messages.sink.MessagesModule;
 import com.dmdirc.plugins.PluginModule;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.UiMessagesModule;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.updater.manager.UpdateManager;
@@ -75,6 +76,7 @@ import dagger.Provides;
                 MessagesModule.class,
                 PluginModule.class,
                 ProfilesModule.class,
+                UiMessagesModule.class,
                 UpdaterModule.class
         },
         library = true)

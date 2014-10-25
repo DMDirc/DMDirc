@@ -20,48 +20,29 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.messages.ColourManagerFactory;
-import com.dmdirc.util.URLBuilder;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 /**
- * A message sink which adds the message to a custom window, creating it if necessary.
+ * A message sink which adds the message to the window where a command matching the provided regex
+ * was most recently executed. If no such window is found, falls back to the source.
  */
-public class CustomWindowMessageSink implements MessageSink {
+public class LastCommandMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("window:(.*)");
-    /** Window management. */
-    private final WindowManager windowManager;
-    /** The URL builder to use when finding icons. */
-    private final URLBuilder urlBuilder;
-    /** Colour Manager Factory. */
-    private final ColourManagerFactory colourManagerFactory;
+    private static final Pattern PATTERN = Pattern.compile("lastcommand:(.*)");
 
-    /**
-     * Creates a new custom window message sink.
-     *
-     * @param windowManager Window management
-     * @param urlBuilder    The URL builder to use when finding icons.
-     */
     @Inject
-    public CustomWindowMessageSink(
-            final WindowManager windowManager,
-            final URLBuilder urlBuilder,
-            final ColourManagerFactory colourManagerFactory) {
-        this.windowManager = windowManager;
-        this.urlBuilder = urlBuilder;
-        this.colourManagerFactory = colourManagerFactory;
+    public LastCommandMessageSink() {
     }
 
     @Override
@@ -74,16 +55,35 @@ public class CustomWindowMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        FrameContainer targetWindow = windowManager
-                .findCustomWindow((Server) source.getConnection(), patternMatches[0]);
+        final Object[] escapedargs = new Object[args.length];
 
-        if (targetWindow == null) {
-            targetWindow = new CustomWindow(patternMatches[0], patternMatches[0],
-                    (Server) source.getConnection(), urlBuilder, colourManagerFactory);
-            windowManager.addWindow((Server) source.getConnection(), targetWindow);
+        for (int i = 0; i < args.length; i++) {
+            escapedargs[i] = "\\Q" + args[i] + "\\E";
         }
 
-        targetWindow.addLine(messageType, date, args);
+        final String command = String.format(patternMatches[0], escapedargs);
+
+        FrameContainer best = source;
+        long besttime = 0;
+
+        final List<FrameContainer> containers = new ArrayList<>();
+
+        containers.add((Server) source.getConnection());
+        containers.addAll(((Server) source.getConnection()).getChildren());
+
+        for (FrameContainer container : containers) {
+            if (!container.isWritable()) {
+                continue;
+            }
+
+            final long time = container.getCommandParser().getCommandTime(command);
+            if (time > besttime) {
+                besttime = time;
+                best = container;
+            }
+        }
+
+        best.addLine(messageType, date, args);
     }
 
 }

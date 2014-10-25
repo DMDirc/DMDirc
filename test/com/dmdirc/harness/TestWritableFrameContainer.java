@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;

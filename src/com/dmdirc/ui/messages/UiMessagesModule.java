@@ -20,38 +20,34 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 
-import java.util.Date;
-import java.util.regex.Pattern;
+import java.nio.file.Path;
 
-import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+
+import static com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType.BASE;
 
 /**
- * A message sink which adds the message to all of the container's server's children.
+ * Dagger module for message related objects.
  */
-public class AllMessageSink implements MessageSink {
+@Module(library = true, complete = false)
+public class UiMessagesModule {
 
-    /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("all");
-
-    @Inject
-    public AllMessageSink() {
-    }
-
-    @Override
-    public Pattern getPattern() {
-        return PATTERN;
-    }
-
-    @Override
-    public void handleMessage(final MessageSinkManager dispatcher,
-            final FrameContainer source,
-            final String[] patternMatches, final Date date,
-            final String messageType, final Object... args) {
-        source.getConnection().addLineToAll(messageType, date, args);
+    @Provides
+    @Singleton
+    public EventTemplateProvider getTemplateProvider(@Directory(BASE) final Path directory,
+            final DMDircMBassador eventBus) {
+        final YamlEventTemplateProvider provider =
+                new YamlEventTemplateProvider(directory.resolve("format.yml"), eventBus);
+        provider.load();
+        return provider;
     }
 
 }

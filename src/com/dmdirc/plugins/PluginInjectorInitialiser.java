@@ -32,7 +32,7 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.ColourManager;

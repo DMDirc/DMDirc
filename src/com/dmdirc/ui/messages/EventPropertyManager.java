@@ -33,7 +33,9 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class EventPropertyManager {
 
     private final DMDircMBassador eventBus;

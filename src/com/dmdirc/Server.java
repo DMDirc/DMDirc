@@ -42,7 +42,7 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;

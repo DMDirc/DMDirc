@@ -26,6 +26,9 @@ import com.dmdirc.events.DisplayableEvent;
 
 import java.util.Optional;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Formats an event into a text string, based on a user-defined template.
  *
@@ -38,6 +41,7 @@ import java.util.Optional;
  *
  * <p>Properties and functions are case-insensitive.
  */
+@Singleton
 public class EventFormatter {
 
     private static final String ERROR_STRING = "<FormatError>";
@@ -45,6 +49,7 @@ public class EventFormatter {
     private final EventPropertyManager propertyManager;
     private final EventTemplateProvider templateProvider;
 
+    @Inject
     public EventFormatter(final EventPropertyManager propertyManager,
             final EventTemplateProvider templateProvider) {
         this.propertyManager = propertyManager;
