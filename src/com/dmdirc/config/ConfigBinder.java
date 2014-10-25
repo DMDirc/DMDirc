@@ -29,13 +29,16 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.MapList;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 /**
  * Facilitates automatically binding fields or methods annotated with a {@link ConfigBinding}
@@ -45,11 +48,19 @@ public class ConfigBinder {
 
     /** A map of instances to created listeners. */
     private final MapList<Object, ConfigChangeListener> listeners = new MapList<>();
+    /** The default domain to use. */
+    private final Optional<String> defaultDomain;
     /** The configuration manager to use to retrieve settings. */
     private final AggregateConfigProvider manager;
 
     public ConfigBinder(final AggregateConfigProvider manager) {
         this.manager = manager;
+        this.defaultDomain = Optional.empty();
+    }
+
+    public ConfigBinder(final AggregateConfigProvider manager, @Nonnull final String domain) {
+        this.manager = manager;
+        this.defaultDomain = Optional.of(domain);
     }
 
     /**
@@ -61,8 +72,8 @@ public class ConfigBinder {
      */
     @SuppressWarnings("unchecked")
     public void bind(final Object instance, final Class<?> clazz) {
-        final List<ConfigChangeListener> newListeners = new ArrayList<>();
-        final List<AccessibleObject> elements = new ArrayList<>();
+        final Collection<ConfigChangeListener> newListeners = new ArrayList<>();
+        final Collection<AccessibleObject> elements = new ArrayList<>();
 
         elements.addAll(Arrays.asList(clazz.getDeclaredMethods()));
         elements.addAll(Arrays.asList(clazz.getDeclaredFields()));
@@ -73,11 +84,11 @@ public class ConfigBinder {
                 final ConfigChangeListener listener = getListener(instance, element, binding);
                 newListeners.add(listener);
 
-                manager.addChangeListener(binding.domain(), binding.key(), listener);
+                manager.addChangeListener(getDomain(binding.domain()), binding.key(), listener);
 
                 for (int i = 0; i < binding.fallbacks().length - 1; i += 2) {
-                    manager.addChangeListener(binding.fallbacks()[i], binding.fallbacks()[i + 1],
-                            listener);
+                    manager.addChangeListener(getDomain(binding.fallbacks()[i]),
+                            binding.fallbacks()[i + 1], listener);
                 }
 
                 if (binding.applyInitially()) {
@@ -87,6 +98,13 @@ public class ConfigBinder {
         }
 
         addListeners(instance, newListeners);
+    }
+
+    /**
+     * Returns the default domain for this binder if the given annotation-specified domain is empty.
+     */
+    private String getDomain(final String annotationDomain) {
+        return annotationDomain.isEmpty() ? defaultDomain.get() : annotationDomain;
     }
 
     /**
@@ -101,13 +119,7 @@ public class ConfigBinder {
      */
     private ConfigChangeListener getListener(final Object instance,
             final AccessibleObject element, final ConfigBinding binding) {
-        return new ConfigChangeListener() {
-
-            @Override
-            public void configChanged(final String domain, final String key) {
-                updateBoundMember(instance, element, binding);
-            }
-        };
+        return (domain, key) -> updateBoundMember(instance, element, binding);
     }
 
     /**
@@ -160,19 +172,21 @@ public class ConfigBinder {
     private Object getValue(final ConfigBinding binding,
             final Class<?> targetClass) {
         if (targetClass.equals(String.class)) {
-            return manager.getOptionString(binding.domain(), binding.key(), binding.fallbacks());
+            return manager.getOptionString(getDomain(binding.domain()), binding.key(),
+                    binding.fallbacks());
         }
 
         if (targetClass.equals(Boolean.class) || targetClass.equals(Boolean.TYPE)) {
-            return manager.getOptionBool(binding.domain(), binding.key());
+            return manager.getOptionBool(getDomain(binding.domain()), binding.key());
         }
 
         if (targetClass.equals(Character.class) || targetClass.equals(Character.TYPE)) {
-            return manager.getOptionChar(binding.domain(), binding.key());
+            return manager.getOptionChar(getDomain(binding.domain()), binding.key());
         }
 
         if (targetClass.equals(Integer.class) || targetClass.equals(Integer.TYPE)) {
-            return manager.getOptionInt(binding.domain(), binding.key(), binding.fallbacks());
+            return manager.getOptionInt(getDomain(binding.domain()), binding.key(),
+                    binding.fallbacks());
         }
 
         return null;
@@ -191,8 +205,8 @@ public class ConfigBinder {
             return ((Field) element).getType();
         }
 
-        if (element instanceof Method) {
-            return ((Method) element).getParameterTypes()[0];
+        if (element instanceof Executable) {
+            return ((Executable) element).getParameterTypes()[0];
         }
 
         return String.class;
@@ -219,9 +233,18 @@ public class ConfigBinder {
     public void unbind(final Object instance) {
         synchronized (listeners) {
             listeners.safeGet(instance).forEach(manager::removeListener);
-
             listeners.remove(instance);
         }
+    }
+
+    /**
+     * Returns a new config binder with the specified default domain.
+     *
+     * @param domain The default domain to use if one is not specified
+     * @return A config binder with the specified default domain.
+     */
+    public ConfigBinder withDefaultDomain(@Nonnull final String domain) {
+        return new ConfigBinder(manager, domain);
     }
 
 }

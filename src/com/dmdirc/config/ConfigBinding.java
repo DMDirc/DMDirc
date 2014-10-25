@@ -40,7 +40,7 @@ public @interface ConfigBinding {
      *
      * @return The configuration setting's domain
      */
-    String domain();
+    String domain() default "";
 
     /**
      * The key of the configuration setting to bind to.
