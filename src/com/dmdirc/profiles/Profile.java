@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.wrappers;
+package com.dmdirc.profiles;
 
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;

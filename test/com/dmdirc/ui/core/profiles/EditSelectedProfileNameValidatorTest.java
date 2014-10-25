@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.core.profiles;
 
-import com.dmdirc.actions.wrappers.Profile;
+import com.dmdirc.profiles.Profile;
 import com.dmdirc.interfaces.ui.ProfilesDialogModel;
 
 import com.google.common.collect.Lists;

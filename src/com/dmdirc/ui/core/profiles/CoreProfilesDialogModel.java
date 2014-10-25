@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.core.profiles;
 
-import com.dmdirc.actions.wrappers.Profile;
+import com.dmdirc.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;

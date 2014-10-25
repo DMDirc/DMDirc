@@ -23,6 +23,7 @@ package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityFactory;
+import com.dmdirc.profiles.Profile;
 
 import java.io.IOException;
 import java.util.ArrayList;
