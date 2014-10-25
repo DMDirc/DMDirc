@@ -22,60 +22,25 @@
 
 package com.dmdirc.config.profiles;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.inject.Inject;
+import java.util.Set;
 
 /**
- * Manager for {@link Profile}s.
+ * A store of {@link Profile}s that can read and write them to some kind of persistent media.
  */
-public class ProfileManager {
-
-    private final Collection<Profile> profiles;
-
-    @Inject
-    public ProfileManager() {
-        profiles = new ArrayList<>();
-    }
+public interface ProfileStore {
 
     /**
-     * Starts this manager, registering listeners.
-     */
-    public void start() {
-    }
-
-    /**
-     * Stops this manager, unregistering listeners.
-     */
-    public void stop() {
-    }
-
-    /**
-     * Adds a profile to the manager.
+     * Reads and returns all profiles from within the store.
      *
-     * @param profile New profile to add
+     * @return A set of known profiles, or an empty set if the store is uninitialised.
      */
-    public void addProfile(final Profile profile) {
-        profiles.add(profile);
-    }
+    Set<Profile> readProfiles();
 
     /**
-     * Removes a profile from the manager.
+     * Writes all the given profiles to the store, replacing any existing commands.
      *
-     * @param profile Profile to be removed
+     * @param profiles The set of profiles to be written to the store.
      */
-    public void deleteProfile(final Profile profile) {
-        profiles.remove(profile);
-    }
+    void writeProfiles(Set<Profile> profiles);
 
-    /**
-     * Returns the available profiles in the client.
-     *
-     * @return Unmodifiable collection of profiles
-     */
-    public Collection<Profile> getProfiles() {
-        return Collections.unmodifiableCollection(profiles);
-    }
 }
