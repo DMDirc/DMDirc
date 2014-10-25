@@ -35,7 +35,7 @@ import com.dmdirc.events.NotificationSetEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.input.TabCompleter;

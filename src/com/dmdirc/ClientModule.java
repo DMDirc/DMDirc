@@ -40,7 +40,7 @@ import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.messages.MessagesModule;
+import com.dmdirc.ui.messages.sink.MessagesModule;
 import com.dmdirc.plugins.PluginModule;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.messages.ColourManager;

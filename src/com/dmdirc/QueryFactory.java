@@ -23,7 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.messages.MessageSinkManager;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.messages;
+package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
@@ -31,17 +31,18 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * A message sink which adds the message to a named channel. An optional fallback may be specified
- * for use if the channel does not exist. If no fallback is specified and the channel does not
- * exist, the message is dispatched to the source.
+ * A message sink which adds the message to all channels the local user has in common with a
+ * specified remote user. An optional fallback may be specified for use if there are no common
+ * channels with the user. If no fallback is specified and there are no common channels, the message
+ * is dispatched to the source.
  */
-public class ChannelMessageSink implements MessageSink {
+public class CommonChannelsMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("channel:(.*?)(?:\\s(.*))?");
+    private static final Pattern PATTERN = Pattern.compile("comchans:(.*?)(?:\\s(.*))?");
 
     @Inject
-    public ChannelMessageSink() {
+    public CommonChannelsMessageSink() {
     }
 
     @Override
