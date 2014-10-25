@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.aliases.AliasesModule;
 import com.dmdirc.commandparser.auto.AutoCommandModule;
 import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.ConfigModule;
+import com.dmdirc.config.profiles.ProfilesModule;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ConnectionFactory;
@@ -74,6 +75,7 @@ import dagger.Provides;
                 ConfigModule.class,
                 MessagesModule.class,
                 PluginModule.class,
+                ProfilesModule.class,
                 UiMessagesModule.class,
                 UpdaterModule.class
         },
