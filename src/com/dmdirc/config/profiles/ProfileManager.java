@@ -27,10 +27,12 @@ import java.util.Collection;
 import java.util.Collections;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Manager for {@link Profile}s.
  */
+@Singleton
 public class ProfileManager {
 
     private final Collection<Profile> profiles;
