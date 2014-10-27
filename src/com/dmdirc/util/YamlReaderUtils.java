@@ -63,8 +63,8 @@ public final class YamlReaderUtils {
      * @return A usable object list.
      */
     @SuppressWarnings("unchecked")
-    public static List<Object> uncheckedCast(final List<?> list) {
-        return (List<Object>) list;
+    public static <T> List<T> uncheckedCast(final List<?> list) {
+        return (List<T>) list;
     }
 
     /**

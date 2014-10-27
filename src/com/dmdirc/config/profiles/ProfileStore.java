@@ -22,32 +22,25 @@
 
 package com.dmdirc.config.profiles;
 
-import com.dmdirc.commandline.CommandLineOptionsModule;
-import com.dmdirc.interfaces.SystemLifecycleComponent;
-
-import java.nio.file.Path;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
+import java.util.Collection;
 
 /**
- * Dagger module for profiles.
+ * A store of {@link Profile}s that can read and write them to some kind of persistent media.
  */
-@Module(library = true, complete = false)
-public class ProfilesModule {
+public interface ProfileStore {
 
-    @Provides
-    @Singleton
-    public ProfileStore getProfileStore(
-            @CommandLineOptionsModule.Directory(CommandLineOptionsModule.DirectoryType.BASE) final Path directory) {
-        return new YamlProfileStore(directory.resolve("auto-commands.yml"));
-    }
+    /**
+     * Reads and returns all profiles from within the store.
+     *
+     * @return A set of known profiles, or an empty set if the store is uninitialised.
+     */
+    Collection<Profile> readProfiles();
 
-    @Provides(type = Provides.Type.SET)
-    public SystemLifecycleComponent getLifecycleComponent(
-            final ProfileManagerLifeCycleManager manager) {
-        return manager;
-    }
+    /**
+     * Writes all the given profiles to the store, replacing any existing commands.
+     *
+     * @param profiles The collection of profiles to be written to the store.
+     */
+    void writeProfiles(Collection<Profile> profiles);
+
 }

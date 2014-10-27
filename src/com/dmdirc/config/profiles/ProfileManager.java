@@ -22,53 +22,24 @@
 
 package com.dmdirc.config.profiles;
 
-import com.dmdirc.actions.wrappers.Profile;
-import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProviderListener;
-import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.interfaces.config.IdentityFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Manager for {@link Profile}s.
  */
-public class ProfileManager implements ConfigProviderListener {
+@Singleton
+public class ProfileManager {
 
-    private final IdentityFactory identityFactory;
-    private final IdentityController identityController;
     private final Collection<Profile> profiles;
 
     @Inject
-    public ProfileManager(final IdentityController identityController,
-            final IdentityFactory identityFactory) {
-        this.identityFactory = identityFactory;
-        this.identityController = identityController;
+    public ProfileManager() {
         profiles = new ArrayList<>();
-        final List<ConfigProvider> identities = identityController.getProvidersByType("profile");
-        profiles.addAll(identities.stream()
-                .map(identity -> new Profile(identityFactory, identity))
-                .collect(Collectors.toList()));
-    }
-
-    /**
-     * Starts this manager, registering listeners.
-     */
-    public void start() {
-        identityController.registerIdentityListener(this);
-    }
-
-    /**
-     * Stops this manager, unregistering listeners.
-     */
-    public void stop() {
-        identityController.unregisterIdentityListener(this);
     }
 
     /**
@@ -96,19 +67,5 @@ public class ProfileManager implements ConfigProviderListener {
      */
     public Collection<Profile> getProfiles() {
         return Collections.unmodifiableCollection(profiles);
-    }
-
-    @Override
-    public void configProviderAdded(final ConfigProvider configProvider) {
-        if (configProvider.isProfile()) {
-            profiles.removeIf(p-> p.equalsConfigProvider(configProvider));
-        }
-    }
-
-    @Override
-    public void configProviderRemoved(final ConfigProvider configProvider) {
-        if (configProvider.isProfile()) {
-            profiles.add(new Profile(identityFactory, configProvider));
-        }
     }
 }

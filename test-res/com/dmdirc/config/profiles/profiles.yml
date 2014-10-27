@@ -1,0 +1,15 @@
+- name: profile1
+  realname: realname1
+  nicknames:
+    - nickname1
+    - nickname2
+- name: profile2
+  realname: realname2
+  nicknames:
+    - nickname1
+    - nickname3
+  ident: ident2
+- name: profile3
+  realname: realname3
+  nicknames:
+    - nickname3
