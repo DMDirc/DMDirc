@@ -22,8 +22,6 @@
 
 package com.dmdirc.config.profiles;
 
-import com.google.common.base.Splitter;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,11 +32,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +71,7 @@ public class YamlProfileStore implements ProfileStore {
 
     @Override
     public Collection<Profile> readProfiles() {
-        final Set<Profile> profiles = new HashSet<>();
+        final Collection<Profile> profiles = new ArrayList<>();
         if (Files.exists(path)) {
             try (final InputStream stream = Files.newInputStream(path);
                     final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
