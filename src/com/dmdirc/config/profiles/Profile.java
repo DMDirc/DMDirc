@@ -46,7 +46,7 @@ public class Profile {
     private final List<String> nicknames;
 
     public Profile(final String name, final String realname, final Optional<String> ident,
-            final List<String> nicknames) {
+            final Iterable<String> nicknames) {
         this.name = name;
         this.realname = realname;
         this.ident = ident;

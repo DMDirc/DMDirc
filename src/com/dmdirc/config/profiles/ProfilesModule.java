@@ -23,8 +23,6 @@
 package com.dmdirc.config.profiles;
 
 import com.dmdirc.commandline.CommandLineOptionsModule;
-import com.dmdirc.commandparser.auto.AutoCommandStore;
-import com.dmdirc.commandparser.auto.YamlAutoCommandStore;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 
 import java.nio.file.Path;
