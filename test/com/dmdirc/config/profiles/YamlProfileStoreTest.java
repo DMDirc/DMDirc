@@ -35,14 +35,30 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class YamlProfileStoreTest {
+
+    private Profile profile1;
+    private Profile profile2;
+    private Profile profile3;
+
+    @Before
+    public void setup() {
+        profile1 = new Profile("profile1", "realname1", Optional.empty(),
+                Lists.newArrayList("nickname1", "nickname2"));
+        profile2 = new Profile("profile2", "realname2", Optional.of("ident2"),
+                Lists.newArrayList("nickname1", "nickname3"));
+        profile3 = new Profile("profile3", "realname3", Optional.empty(),
+                Lists.newArrayList("nickname3"));
+    }
 
     @Test
     public void testReadProfiles() throws Exception {
@@ -50,6 +66,10 @@ public class YamlProfileStoreTest {
                 .getResource("profiles.yml").toURI()));
         final Collection<Profile> profiles = store.readProfiles();
         assertEquals(3, profiles.size());
+        profiles.forEach(System.out::println);
+        assertTrue(profiles.contains(profile1));
+        assertTrue(profiles.contains(profile2));
+        assertTrue(profiles.contains(profile3));
     }
 
     @Test
@@ -57,12 +77,13 @@ public class YamlProfileStoreTest {
         try (FileSystem fs = Jimfs.newFileSystem(Configuration.unix())) {
             final ProfileStore store = new YamlProfileStore(fs.getPath("/")
                     .resolve("profiles.yml"));
-            final Profile profile1 = new Profile("name", "realname", Optional.of("ident"),
-                    Lists.newArrayList("nickname"));
-            final Set<Profile> profiles = Sets.newHashSet(profile1);
+            final List<Profile> profiles = Lists.newArrayList(profile1, profile2, profile3);
             store.writeProfiles(profiles);
-            final List<String> lines = Files.readAllLines(fs.getPath("/").resolve("profiles.yml"));
-            assertEquals(5, lines.size());
+            final Collection<Profile> readProfiles = store.readProfiles();
+            assertEquals(3, readProfiles.size());
+            assertTrue(readProfiles.contains(profile1));
+            assertTrue(readProfiles.contains(profile2));
+            assertTrue(readProfiles.contains(profile3));
         }
     }
 }

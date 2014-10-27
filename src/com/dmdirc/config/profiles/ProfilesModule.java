@@ -22,7 +22,14 @@
 
 package com.dmdirc.config.profiles;
 
+import com.dmdirc.commandline.CommandLineOptionsModule;
+import com.dmdirc.commandparser.auto.AutoCommandStore;
+import com.dmdirc.commandparser.auto.YamlAutoCommandStore;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
+
+import java.nio.file.Path;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,6 +39,13 @@ import dagger.Provides;
  */
 @Module(library = true, complete = false)
 public class ProfilesModule {
+
+    @Provides
+    @Singleton
+    public ProfileStore getProfileStore(
+            @CommandLineOptionsModule.Directory(CommandLineOptionsModule.DirectoryType.BASE) final Path directory) {
+        return new YamlProfileStore(directory.resolve("auto-commands.yml"));
+    }
 
     @Provides(type = Provides.Type.SET)
     public SystemLifecycleComponent getLifecycleComponent(

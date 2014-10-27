@@ -41,18 +41,6 @@ public class ProfileManager {
     }
 
     /**
-     * Starts this manager, registering listeners.
-     */
-    public void start() {
-    }
-
-    /**
-     * Stops this manager, unregistering listeners.
-     */
-    public void stop() {
-    }
-
-    /**
      * Adds a profile to the manager.
      *
      * @param profile New profile to add

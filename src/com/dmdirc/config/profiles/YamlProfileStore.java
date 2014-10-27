@@ -73,25 +73,25 @@ public class YamlProfileStore implements ProfileStore {
     }
 
     @Override
-    public Set<Profile> readProfiles() {
-        final Set<Profile> commands = new HashSet<>();
+    public Collection<Profile> readProfiles() {
+        final Set<Profile> profiles = new HashSet<>();
         if (Files.exists(path)) {
             try (final InputStream stream = Files.newInputStream(path);
                     final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
                 final YamlReader yamlReader = new YamlReader(reader);
                 final Object root = yamlReader.read();
-                commands.addAll(readProfilesFromYaml(asList(root)));
+                profiles.addAll(readProfilesFromYaml(asList(root)));
                 yamlReader.close();
             } catch (IOException | IllegalArgumentException ex) {
                 LOG.warn("Unable to read auto commands", ex);
             }
         }
 
-        return commands;
+        return profiles;
     }
 
     @Override
-    public void writeProfiles(final Set<Profile> profiles) {
+    public void writeProfiles(final Collection<Profile> profiles) {
         final List<Object> list = getProfilesForYaml(profiles);
         try (final OutputStream stream = Files.newOutputStream(path);
                 final OutputStreamWriter writer = new OutputStreamWriter(stream, CHARSET)) {
@@ -117,10 +117,9 @@ public class YamlProfileStore implements ProfileStore {
                 final Map<Object, Object> map = asMap(profile);
                 final String name = requiredString(map, "name");
                 final String realname = requiredString(map, "realname");
-                final Optional<String> ident =
-                        Optional.ofNullable(optionalString(map, "ident"));
-                final List<String> nicknames =
-                        Splitter.on('\n').splitToList(requiredString(map, "nicknames"));
+                final Optional<String> ident = Optional.ofNullable(optionalString(map, "ident"));
+                final List<String> nicknames = Splitter.on('\n')
+                        .splitToList(requiredString(map, "nicknames"));
                 res.add(new Profile(name, realname, ident, nicknames));
             } catch (IllegalArgumentException ex) {
                 LOG.info("Unable to read alias", ex);

@@ -34,19 +34,22 @@ import javax.inject.Singleton;
 public class ProfileManagerLifeCycleManager implements SystemLifecycleComponent {
 
     private final ProfileManager profileManager;
+    private final ProfileStore profileStore;
 
     @Inject
-    public ProfileManagerLifeCycleManager(final ProfileManager profileManager) {
+    public ProfileManagerLifeCycleManager(final ProfileManager profileManager,
+            final ProfileStore profileStore) {
         this.profileManager = profileManager;
+        this.profileStore = profileStore;
     }
 
     @Override
     public void startUp() {
-        profileManager.start();
+        profileStore.readProfiles().forEach(profileManager::addProfile);
     }
 
     @Override
     public void shutDown() {
-        profileManager.stop();
+        profileStore.writeProfiles(profileManager.getProfiles());
     }
 }

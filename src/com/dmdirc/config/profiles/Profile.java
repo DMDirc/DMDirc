@@ -46,7 +46,7 @@ public class Profile {
     private final List<String> nicknames;
 
     public Profile(final String name, final String realname, final Optional<String> ident,
-            final Iterable<String> nicknames) {
+            final List<String> nicknames) {
         this.name = name;
         this.realname = realname;
         this.ident = ident;
@@ -69,6 +69,7 @@ public class Profile {
         return Collections.unmodifiableList(nicknames);
     }
 
+    @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("name", name)
@@ -89,12 +90,12 @@ public class Profile {
         final Profile profile = (Profile) o;
         return Objects.equals(name, profile.getName())
                 && Objects.equals(realname, profile.getRealname())
-                && Objects.equals(nicknames, profile.getNicknames())
-                && Objects.equals(ident, profile.getIdent());
+                && Objects.equals(ident, profile.getIdent())
+                && Objects.equals(nicknames, profile.getNicknames());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, realname, ident, nicknames);
+        return Objects.hash(name, realname, ident);
     }
 }

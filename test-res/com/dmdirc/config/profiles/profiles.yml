@@ -3,7 +3,7 @@
   nicknames: nickname1, nickname2
 - name: profile2
   realname: realname2
-  nicknames: nickname1, nickname1
+  nicknames: nickname1, nickname3
   ident: ident2
 - name: profile3
   realname: profile3

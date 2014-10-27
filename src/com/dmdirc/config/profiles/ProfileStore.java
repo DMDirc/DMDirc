@@ -22,7 +22,7 @@
 
 package com.dmdirc.config.profiles;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * A store of {@link Profile}s that can read and write them to some kind of persistent media.
@@ -34,13 +34,13 @@ public interface ProfileStore {
      *
      * @return A set of known profiles, or an empty set if the store is uninitialised.
      */
-    Set<Profile> readProfiles();
+    Collection<Profile> readProfiles();
 
     /**
      * Writes all the given profiles to the store, replacing any existing commands.
      *
-     * @param profiles The set of profiles to be written to the store.
+     * @param profiles The collection of profiles to be written to the store.
      */
-    void writeProfiles(Set<Profile> profiles);
+    void writeProfiles(Collection<Profile> profiles);
 
 }
