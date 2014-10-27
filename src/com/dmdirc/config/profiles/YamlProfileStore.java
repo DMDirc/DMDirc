@@ -50,6 +50,7 @@ import static com.dmdirc.util.YamlReaderUtils.asList;
 import static com.dmdirc.util.YamlReaderUtils.asMap;
 import static com.dmdirc.util.YamlReaderUtils.optionalString;
 import static com.dmdirc.util.YamlReaderUtils.requiredString;
+import static com.dmdirc.util.YamlReaderUtils.uncheckedCast;
 
 /**
  * Store that reads and writes profiles from a YAML file on disk.
@@ -118,8 +119,7 @@ public class YamlProfileStore implements ProfileStore {
                 final String name = requiredString(map, "name");
                 final String realname = requiredString(map, "realname");
                 final Optional<String> ident = Optional.ofNullable(optionalString(map, "ident"));
-                final List<String> nicknames = Splitter.on('\n')
-                        .splitToList(requiredString(map, "nicknames"));
+                final List<String> nicknames = uncheckedCast(asList(map.get("nicknames")));
                 res.add(new Profile(name, realname, ident, nicknames));
             } catch (IllegalArgumentException ex) {
                 LOG.info("Unable to read alias", ex);
@@ -144,7 +144,7 @@ public class YamlProfileStore implements ProfileStore {
             if (profile.getIdent().isPresent()) {
                 map.put("ident", profile.getIdent().get());
             }
-            map.put("nicknames", profile.getNicknames());
+            map.put("nicknames", profile.getNicknames().toArray());
             res.add(map);
         }
         return res;

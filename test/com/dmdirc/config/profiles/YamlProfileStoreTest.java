@@ -27,6 +27,8 @@ import com.google.common.collect.Sets;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -61,7 +63,7 @@ public class YamlProfileStoreTest {
     }
 
     @Test
-    public void testReadProfiles() throws Exception {
+    public void testReadProfiles() throws URISyntaxException {
         final ProfileStore store = new YamlProfileStore(Paths.get(getClass()
                 .getResource("profiles.yml").toURI()));
         final Collection<Profile> profiles = store.readProfiles();
@@ -73,12 +75,14 @@ public class YamlProfileStoreTest {
     }
 
     @Test
-    public void testWriteProfiles() throws Exception {
+    public void testWriteProfiles() throws IOException {
         try (FileSystem fs = Jimfs.newFileSystem(Configuration.unix())) {
             final ProfileStore store = new YamlProfileStore(fs.getPath("/")
                     .resolve("profiles.yml"));
             final List<Profile> profiles = Lists.newArrayList(profile1, profile2, profile3);
             store.writeProfiles(profiles);
+            System.out.println(Files.readAllLines(fs.getPath("/")
+                    .resolve("profiles.yml")));
             final Collection<Profile> readProfiles = store.readProfiles();
             assertEquals(3, readProfiles.size());
             assertTrue(readProfiles.contains(profile1));
