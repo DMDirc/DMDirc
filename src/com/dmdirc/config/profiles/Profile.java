@@ -96,6 +96,6 @@ public class Profile {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, realname, ident);
+        return Objects.hash(name, realname, ident, nicknames);
     }
 }
