@@ -46,7 +46,6 @@ import static com.dmdirc.util.YamlReaderUtils.asList;
 import static com.dmdirc.util.YamlReaderUtils.asMap;
 import static com.dmdirc.util.YamlReaderUtils.optionalString;
 import static com.dmdirc.util.YamlReaderUtils.requiredString;
-import static com.dmdirc.util.YamlReaderUtils.uncheckedCast;
 
 /**
  * Store that reads and writes profiles from a YAML file on disk.
@@ -76,8 +75,7 @@ public class YamlProfileStore implements ProfileStore {
             try (final InputStream stream = Files.newInputStream(path);
                     final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
                 final YamlReader yamlReader = new YamlReader(reader);
-                final Object root = yamlReader.read();
-                profiles.addAll(readProfilesFromYaml(asList(root)));
+                profiles.addAll(asList(yamlReader.read(), this::readProfileFromYaml));
                 yamlReader.close();
             } catch (IOException | IllegalArgumentException ex) {
                 LOG.warn("Unable to read auto commands", ex);
@@ -101,27 +99,24 @@ public class YamlProfileStore implements ProfileStore {
     }
 
     /**
-     * Builds a set of auto commands from the given YAML representations.
+     * Builds a profile from the given YAML representation.
      *
-     * @param objects The raw objects read from the YAML file.
+     * @param profile The raw object read from the YAML file.
      *
-     * @return A list of corresponding auto commands.
+     * @return A corresponding profile.
      */
-    private Collection<Profile> readProfilesFromYaml(final Collection<Object> objects) {
-        final Collection<Profile> res = new ArrayList<>(objects.size());
-        for (Object profile : objects) {
-            try {
-                final Map<Object, Object> map = asMap(profile);
-                final String name = requiredString(map, "name");
-                final String realname = requiredString(map, "realname");
-                final Optional<String> ident = Optional.ofNullable(optionalString(map, "ident"));
-                final List<String> nicknames = uncheckedCast(asList(map.get("nicknames")));
-                res.add(new Profile(name, realname, ident, nicknames));
-            } catch (IllegalArgumentException ex) {
-                LOG.info("Unable to read alias", ex);
-            }
+    private Optional<Profile> readProfileFromYaml(final Object profile) {
+        try {
+            final Map<Object, Object> map = asMap(profile);
+            final String name = requiredString(map, "name");
+            final String realname = requiredString(map, "realname");
+            final Optional<String> ident = Optional.ofNullable(optionalString(map, "ident"));
+            final List<String> nicknames = asList(map.get("nicknames"), s -> Optional.of(s.toString()));
+            return Optional.of(new Profile(name, realname, ident, nicknames));
+        } catch (IllegalArgumentException ex) {
+            LOG.info("Unable to read profile", ex);
+            return Optional.empty();
         }
-        return res;
     }
 
     /**

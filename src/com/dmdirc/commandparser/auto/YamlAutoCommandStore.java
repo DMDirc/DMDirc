@@ -30,6 +30,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -87,8 +88,7 @@ public class YamlAutoCommandStore implements AutoCommandStore {
             try (final InputStream stream = Files.newInputStream(path);
                     final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
                 final YamlReader yamlReader = new YamlReader(reader);
-                final Object root = yamlReader.read();
-                commands.addAll(getCommands(asList(root)));
+                commands.addAll(asList(yamlReader.read(), this::getCommand));
                 yamlReader.close();
             } catch (IOException | IllegalArgumentException ex) {
                 LOG.warn("Unable to read auto commands", ex);
@@ -113,30 +113,27 @@ public class YamlAutoCommandStore implements AutoCommandStore {
     }
 
     /**
-     * Builds a set of auto commands from the given YAML representations.
+     * Builds an of auto command from the given YAML representation.
      *
-     * @param objects The raw objects read from the YAML file.
+     * @param autoCommand The raw object read from the YAML file.
      *
-     * @return A list of corresponding auto commands.
+     * @return The corresponding auto command.
      */
-    private List<AutoCommand> getCommands(final List<Object> objects) {
-        final List<AutoCommand> res = new ArrayList<>(objects.size());
-        for (Object autoCommand : objects) {
-            try {
-                final Map<Object, Object> map = asMap(autoCommand);
-                final Optional<String> server =
-                        Optional.ofNullable(optionalString(map, "server"));
-                final Optional<String> network =
-                        Optional.ofNullable(optionalString(map, "network"));
-                final Optional<String> profile =
-                        Optional.ofNullable(optionalString(map, "profile"));
-                final String command = requiredString(map, "command");
-                res.add(new AutoCommand(server, network, profile, command));
-            } catch (IllegalArgumentException ex) {
-                LOG.info("Unable to read alias", ex);
-            }
+    private Optional<AutoCommand> getCommand(final Object autoCommand) {
+        try {
+            final Map<Object, Object> map = asMap(autoCommand);
+            final Optional<String> server =
+                    Optional.ofNullable(optionalString(map, "server"));
+            final Optional<String> network =
+                    Optional.ofNullable(optionalString(map, "network"));
+            final Optional<String> profile =
+                    Optional.ofNullable(optionalString(map, "profile"));
+            final String command = requiredString(map, "command");
+            return Optional.of(new AutoCommand(server, network, profile, command));
+        } catch (IllegalArgumentException ex) {
+            LOG.info("Unable to read auto command", ex);
+            return Optional.empty();
         }
-        return res;
     }
 
     /**
@@ -146,7 +143,7 @@ public class YamlAutoCommandStore implements AutoCommandStore {
      *
      * @return A list of corresponding maps.
      */
-    private List<Object> getCommands(final Set<AutoCommand> commands) {
+    private List<Object> getCommands(final Collection<AutoCommand> commands) {
         final List<Object> res = new ArrayList<>(commands.size());
         for (AutoCommand command : commands) {
             final Map<Object, Object> map = new HashMap<>();

@@ -30,10 +30,12 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -88,8 +90,7 @@ public class YamlAliasStore implements AliasStore {
             try (final InputStream stream = Files.newInputStream(path);
                     final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
                 final YamlReader yamlReader = new YamlReader(reader);
-                final Object root = yamlReader.read();
-                aliases.addAll(getAliases(asList(root)));
+                aliases.addAll(asList(yamlReader.read(), this::getAlias));
                 yamlReader.close();
             } catch (IOException | IllegalArgumentException ex) {
                 LOG.warn("Unable to read aliases", ex);
@@ -114,26 +115,23 @@ public class YamlAliasStore implements AliasStore {
     }
 
     /**
-     * Builds a set of aliases from the given YAML representations.
+     * Builds an alias from the given YAML representations.
      *
-     * @param objects The raw objects read from the YAML file.
+     * @param alias The raw object read from the YAML file.
      *
-     * @return A list of corresponding aliases.
+     * @return The corresponding aliases.
      */
-    private List<Alias> getAliases(final List<Object> objects) {
-        final List<Alias> res = new ArrayList<>(objects.size());
-        for (Object alias : objects) {
-            try {
-                final Map<Object, Object> map = asMap(alias);
-                final String name = requiredString(map, "name");
-                final int minArguments = Integer.parseInt(requiredString(map, "min_arguments"));
-                final String substitution = requiredString(map, "substitution");
-                res.add(factory.createAlias(name, minArguments, substitution));
-            } catch (IllegalArgumentException ex) {
-                LOG.info("Unable to read alias", ex);
-            }
+    private Optional<Alias> getAlias(final Object alias) {
+        try {
+            final Map<Object, Object> map = asMap(alias);
+            final String name = requiredString(map, "name");
+            final int minArguments = Integer.parseInt(requiredString(map, "min_arguments"));
+            final String substitution = requiredString(map, "substitution");
+            return Optional.of(factory.createAlias(name, minArguments, substitution));
+        } catch (IllegalArgumentException ex) {
+            LOG.info("Unable to read alias", ex);
+            return Optional.empty();
         }
-        return res;
     }
 
     /**
@@ -143,7 +141,7 @@ public class YamlAliasStore implements AliasStore {
      *
      * @return A list of corresponding maps.
      */
-    private List<Object> getAliases(final Set<Alias> aliases) {
+    private List<Object> getAliases(final Collection<Alias> aliases) {
         final List<Object> res = new ArrayList<>(aliases.size());
         for (Alias alias : aliases) {
             final Map<Object, Object> map = new HashMap<>();
