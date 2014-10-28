@@ -22,9 +22,8 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.actions.wrappers.Profile;
+import com.dmdirc.ui.core.profiles.MutableProfile;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,37 +36,28 @@ public interface ProfilesDialogModelListener {
      *
      * @param profile New profile
      */
-    void profileAdded(Profile profile);
+    void profileAdded(MutableProfile profile);
 
     /**
      * Called when a profile is removed from the model.
      *
      * @param profile Old profile
      */
-    void profileRemoved(Profile profile);
+    void profileRemoved(MutableProfile profile);
 
     /**
      * Called when a profile in the model is edited.
      *
-     * @param oldProfile Old profile
-     * @param newProfile New profile
+     * @param profile Profile that was edited
      */
-    void profileEdited(Profile oldProfile, Profile newProfile);
-
-    /**
-     * Called when a profile in the model is renamed.
-     *
-     * @param oldProfile Old profile
-     * @param newProfile New profile
-     */
-    void profileRenamed(Profile oldProfile, Profile newProfile);
+    void profileEdited(MutableProfile profile);
 
     /**
      * Called when the selected profile in the model changes.
      *
      * @param profile New selected profile
      */
-    void profileSelectionChanged(Optional<Profile> profile);
+    void profileSelectionChanged(Optional<MutableProfile> profile);
 
     /**
      * Called when the selected profile's selected nickname is changed
@@ -75,17 +65,6 @@ public interface ProfilesDialogModelListener {
      * @param nickname Optional selected profile's selected nickname
      */
     void selectedNicknameChanged(Optional<String> nickname);
-
-    /**
-     * Called when the selected profile in the model is edited.
-     *
-     * @param name      Name of the profile being edited
-     * @param realname  New realname
-     * @param ident     New ident
-     * @param nicknames New nicknames
-     */
-    void selectedProfileEdited(Optional<String> name, Optional<String> realname,
-            Optional<String> ident, Optional<List<String>> nicknames);
 
     /**
      * Called when a nickname in the selected profile is changed.

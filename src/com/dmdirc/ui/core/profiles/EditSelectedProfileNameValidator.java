@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.core.profiles;
 
-import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.ui.ProfilesDialogModel;
 import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.util.validators.Validator;
@@ -40,7 +39,7 @@ public class EditSelectedProfileNameValidator implements Validator<String> {
 
     @Override
     public ValidationResponse validate(final String object) {
-        for (Profile nickname : model.getProfileList()) {
+        for (MutableProfile nickname : model.getProfileList()) {
             if (model.getSelectedProfile().isPresent()
                     && model.getSelectedProfile().get().getName().equals(object)) {
                 continue;
