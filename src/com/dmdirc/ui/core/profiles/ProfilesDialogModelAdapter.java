@@ -22,38 +22,27 @@
 
 package com.dmdirc.ui.core.profiles;
 
-import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.ui.ProfilesDialogModelListener;
 
-import java.util.List;
 import java.util.Optional;
 
 
 public class ProfilesDialogModelAdapter implements ProfilesDialogModelListener {
 
     @Override
-    public void profileAdded(final Profile profile) {
+    public void profileAdded(final MutableProfile profile) {
     }
 
     @Override
-    public void profileRemoved(final Profile profile) {
+    public void profileRemoved(final MutableProfile profile) {
     }
 
     @Override
-    public void profileEdited(final Profile oldProfile, final Profile newProfile) {
+    public void profileEdited(final MutableProfile profile) {
     }
 
     @Override
-    public void profileRenamed(final Profile oldProfile, final Profile newProfile) {
-    }
-
-    @Override
-    public void profileSelectionChanged(final Optional<Profile> profile) {
-    }
-
-    @Override
-    public void selectedProfileEdited(final Optional<String> name, final Optional<String> realname,
-            final Optional<String> ident, final Optional<List<String>> nicknames) {
+    public void profileSelectionChanged(final Optional<MutableProfile> profile) {
     }
 
     @Override

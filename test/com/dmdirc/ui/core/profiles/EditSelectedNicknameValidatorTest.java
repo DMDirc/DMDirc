@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.core.profiles;
 
-import com.dmdirc.actions.wrappers.Profile;
 import com.dmdirc.interfaces.ui.ProfilesDialogModel;
+import com.dmdirc.util.validators.Validator;
 
 import com.google.common.collect.Lists;
 
@@ -44,12 +44,11 @@ import static org.mockito.Mockito.when;
 public class EditSelectedNicknameValidatorTest {
 
     @Mock private ProfilesDialogModel model;
-    @Mock private Profile profile;
-    private List<String> nicknames;
+    @Mock private MutableProfile profile;
 
     @Before
     public void setupModel() {
-        nicknames = Lists.newArrayList("nickname1", "nickname2", "nickname3");
+        final List<String> nicknames = Lists.newArrayList("nickname1", "nickname2", "nickname3");
         when(model.getSelectedProfile())
                 .thenReturn(Optional.ofNullable(profile));
         when(model.getSelectedProfileNicknames())
@@ -60,19 +59,19 @@ public class EditSelectedNicknameValidatorTest {
 
     @Test
     public void testDuplicateName() {
-        final EditSelectedNicknameValidator instance = new EditSelectedNicknameValidator(model);
+        final Validator<String> instance = new EditSelectedNicknameValidator(model);
         assertTrue("testDuplicateName", instance.validate("nickname1").isFailure());
     }
 
     @Test
     public void testNonDuplicateName() {
-        final EditSelectedNicknameValidator instance = new EditSelectedNicknameValidator(model);
+        final Validator<String> instance = new EditSelectedNicknameValidator(model);
         assertFalse("testNonDuplicateName", instance.validate("nickname4").isFailure());
     }
 
     @Test
     public void testSelectedName() {
-        final EditSelectedNicknameValidator instance = new EditSelectedNicknameValidator(model);
+        final Validator<String> instance = new EditSelectedNicknameValidator(model);
         assertFalse("testSelectedName", instance.validate("nickname2").isFailure());
     }
 

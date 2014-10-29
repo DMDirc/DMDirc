@@ -22,14 +22,13 @@
 
 package com.dmdirc.ui.core.profiles;
 
-import com.dmdirc.actions.wrappers.Profile;
-import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.interfaces.config.IdentityFactory;
+import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.interfaces.ui.ProfilesDialogModelListener;
 
 import com.google.common.collect.Lists;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,51 +38,56 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static java.util.Comparator.comparing;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CoreProfilesDialogModelTest {
 
-    @Mock private IdentityController identityController;
     @Mock private ProfilesDialogModelListener listener;
-    @Mock private IdentityFactory identityFactory;
-    @Mock private ConfigProvider profileProvider1;
-    @Mock private ConfigProvider profileProvider2;
-    @Mock private ConfigProvider profileProvider3;
-    private List<ConfigProvider> profiles;
+    @Mock private ProfileManager profileManager;
+    private MutableProfile mutableProfile1;
+    private MutableProfile mutableProfile2;
+    private MutableProfile mutableProfile3;
+    private List<MutableProfile> mutableProfiles;
     private CoreProfilesDialogModel instance;
+    private Profile profile1;
+    private Profile profile2;
+    private Profile profile3;
 
     @Before
     public void setupMocks() {
-        mockProfile("profile1", profileProvider1);
-        mockProfile("profile2", profileProvider2);
-        mockProfile("profile3", profileProvider3);
-        profiles = Lists.newArrayList(profileProvider1, profileProvider2, profileProvider3);
-        when(identityController.getProvidersByType(anyString())).thenReturn(profiles);
-        instance = new CoreProfilesDialogModel(identityController, identityFactory);
+        profile1 = getProfile(1);
+        profile2 = getProfile(2);
+        profile3 = getProfile(3);
+        final List<Profile> profiles = Lists.newArrayList(profile3, profile1, profile2);
+        Collections.sort(profiles, comparing(Profile::getName));
+        mutableProfile1 = new MutableProfile(profile1);
+        mutableProfile2 = new MutableProfile(profile2);
+        mutableProfile3 = new MutableProfile(profile3);
+        mutableProfiles = Lists.newArrayList(mutableProfile1, mutableProfile2, mutableProfile3);
+        Collections.sort(mutableProfiles, comparing(MutableProfile::getName));
+        when(profileManager.getProfiles()).thenReturn(profiles);
+        instance = new CoreProfilesDialogModel(profileManager);
         instance.loadModel();
     }
 
-    private void mockProfile(final String name, final ConfigProvider mock) {
-        when(mock.getName()).thenReturn(name);
-        when(mock.getOption("identity", "name")).thenReturn(name);
-        when(mock.getOptionList("profile", "nicknames"))
-                .thenReturn(Lists.newArrayList("nickname1", "nickname2", "nickname3"));
-        when(mock.getOption("profile", "realname")).thenReturn("realname");
-        when(mock.getOption("profile", "ident")).thenReturn("ident");
-        when(mock.toString()).thenReturn("Identity: " + name);
+    private Profile getProfile(final int name) {
+        return new Profile("profile" + name, "realname" + name, Optional.of("ident" + name),
+                Lists.newArrayList("nickname" + name + '1', "nickname" + name + '2',
+                        "nickname" + name + '3'));
     }
 
     @Test
     public void testGetProfileList() {
-        assertEquals("testGetProfileList", profiles.size(), instance.getProfileList().size());
+        assertEquals(mutableProfiles, instance.getProfileList());
     }
 
     @Test
@@ -98,8 +102,7 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testIsProfileListValidEmptyList() {
-        when(identityController.getProvidersByType(anyString()))
-                .thenReturn(Lists.<ConfigProvider>newArrayList());
+        when(profileManager.getProfiles()).thenReturn(Lists.newArrayList());
         instance.loadModel();
         assertFalse("testIsProfileListValidEmptyList", instance.isProfileListValid());
     }
@@ -111,8 +114,7 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testAddProfile() {
-        when(identityController.getProvidersByType(anyString()))
-                .thenReturn(Lists.<ConfigProvider>newArrayList());
+        when(profileManager.getProfiles()).thenReturn(Lists.newArrayList());
         instance.loadModel();
         assertFalse("testAddProfile", instance.getProfile("profile4").isPresent());
         instance.addProfile("profile4", "realname", "ident", Lists.newArrayList("nickname"));
@@ -121,17 +123,18 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testEditProfile() {
-        final Profile preEdit = instance.getProfile("profile1").get();
+        final MutableProfile preEdit = instance.getProfile("profile1").get();
         assertEquals("testEditProfile", "profile1", preEdit.getName());
-        assertEquals("testEditProfile", "realname", preEdit.getRealname());
-        assertEquals("testEditProfile", "ident", preEdit.getIdent());
-        assertEquals("testEditProfile", Lists.newArrayList("nickname1", "nickname2", "nickname3"),
-                preEdit.getNicknames());
-        instance.editProfile("profile1", "newRealname", "newIdent", Lists.newArrayList("nickname"));
-        final Profile postEdit = instance.getProfile("profile1").get();
+        assertEquals("testEditProfile", "realname1", preEdit.getRealname());
+        assertEquals("testEditProfile", "ident1", preEdit.getIdent().get());
+        assertEquals("testEditProfile", Lists.newArrayList("nickname11", "nickname12",
+                        "nickname13"), preEdit.getNicknames());
+        instance.editProfile(preEdit, "profile1", "newRealname", "newIdent",
+                Lists.newArrayList("nickname"));
+        final MutableProfile postEdit = instance.getProfile("profile1").get();
         assertEquals("testEditProfile", "profile1", postEdit.getName());
         assertEquals("testEditProfile", "newRealname", postEdit.getRealname());
-        assertEquals("testEditProfile", "newIdent", postEdit.getIdent());
+        assertEquals("testEditProfile", "newIdent", postEdit.getIdent().get());
         assertEquals("testEditProfile", Lists.newArrayList("nickname"),
                 postEdit.getNicknames());
     }
@@ -140,7 +143,9 @@ public class CoreProfilesDialogModelTest {
     public void testRenameProfile() {
         assertTrue("testRenameProfile", instance.getProfile("profile1").isPresent());
         assertFalse("testRenameProfile", instance.getProfile("profile4").isPresent());
-        instance.renameProfile("profile1", "profile4");
+        final MutableProfile preEdit = instance.getProfile("profile1").get();
+        instance.editProfile(preEdit, "profile4", preEdit.getRealname(),
+                preEdit.getIdent().get(), preEdit.getNicknames());
         assertFalse("testRenameProfile", instance.getProfile("profile1").isPresent());
         assertTrue("testRenameProfile", instance.getProfile("profile4").isPresent());
     }
@@ -152,15 +157,6 @@ public class CoreProfilesDialogModelTest {
         instance.removeProfile("profile3");
         assertEquals("testRemoveProfile", 2, instance.getProfileList().size());
         assertFalse("testRemoveProfile", instance.getProfile("profile3").isPresent());
-    }
-
-    @Test
-    public void testSave() {
-
-    }
-
-    @Test
-    public void testSetSelectedProfile() {
     }
 
     @Test
@@ -176,12 +172,12 @@ public class CoreProfilesDialogModelTest {
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testGetSelectedProfileDetails", "profile1",
                 instance.getSelectedProfileName().get());
-        assertEquals("testGetSelectedProfileDetails", "ident",
+        assertEquals("testGetSelectedProfileDetails", "ident1",
                 instance.getSelectedProfileIdent().get());
-        assertEquals("testGetSelectedProfileDetails", "realname",
+        assertEquals("testGetSelectedProfileDetails", "realname1",
                 instance.getSelectedProfileRealname().get());
         assertEquals("testGetSelectedProfileDetails",
-                Lists.newArrayList("nickname1", "nickname2", "nickname3"),
+                Lists.newArrayList("nickname11", "nickname12", "nickname13"),
                 instance.getSelectedProfileNicknames().get());
     }
 
@@ -189,10 +185,10 @@ public class CoreProfilesDialogModelTest {
     public void testSetSelectedProfileSelectedNickname() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testSetSelectedProfileSelectedNickname",
-                Optional.empty(), instance.getSelectedProfileSelectedNickname());
-        instance.setSelectedProfileSelectedNickname(Optional.ofNullable("nickname2"));
+                Optional.<String>empty(), instance.getSelectedProfileSelectedNickname());
+        instance.setSelectedProfileSelectedNickname(Optional.ofNullable("nickname12"));
         assertEquals("testSetSelectedProfileSelectedNickname",
-                Optional.ofNullable("nickname2"),
+                Optional.ofNullable("nickname12"),
                 instance.getSelectedProfileSelectedNickname());
     }
 
@@ -219,11 +215,11 @@ public class CoreProfilesDialogModelTest {
     public void testAddSelectedProfileNickname() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testAddSelectedProfileNickname",
-                Lists.newArrayList("nickname1", "nickname2", "nickname3"),
+                Lists.newArrayList("nickname11", "nickname12", "nickname13"),
                 instance.getSelectedProfileNicknames().get());
         instance.addSelectedProfileNickname("nickname4");
         assertEquals("testAddSelectedProfileNickname",
-                Lists.newArrayList("nickname1", "nickname2", "nickname3", "nickname4"),
+                Lists.newArrayList("nickname11", "nickname12", "nickname13", "nickname4"),
                 instance.getSelectedProfileNicknames().get());
     }
 
@@ -231,24 +227,24 @@ public class CoreProfilesDialogModelTest {
     public void testRemoveSelectedProfileNickname() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testRemoveSelectedProfileNickname",
-                Lists.newArrayList("nickname1", "nickname2", "nickname3"),
+                Lists.newArrayList("nickname11", "nickname12", "nickname13"),
                 instance.getSelectedProfileNicknames().get());
-        instance.removeSelectedProfileNickname("nickname3");
+        instance.removeSelectedProfileNickname("nickname13");
         assertEquals("testRemoveSelectedProfileNickname",
-                Lists.newArrayList("nickname1", "nickname2"),
+                Lists.newArrayList("nickname11", "nickname12"),
                 instance.getSelectedProfileNicknames().get());
     }
 
     @Test
     public void testEditSelectedProfileSelectedNickname() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
-        instance.setSelectedProfileSelectedNickname(Optional.ofNullable("nickname2"));
+        instance.setSelectedProfileSelectedNickname(Optional.ofNullable("nickname12"));
         assertEquals("testSetSelectedProfileSelectedNickname",
-                Optional.ofNullable("nickname2"),
+                Optional.ofNullable("nickname12"),
                 instance.getSelectedProfileSelectedNickname());
-        instance.editSelectedProfileNickname("nickname2", "nickname4");
+        instance.editSelectedProfileNickname("nickname12", "nickname4");
         assertEquals("testAddSelectedProfileNickname",
-                Lists.newArrayList("nickname1", "nickname4", "nickname3"),
+                Lists.newArrayList("nickname11", "nickname4", "nickname13"),
                 instance.getSelectedProfileNicknames().get());
     }
 
@@ -256,7 +252,7 @@ public class CoreProfilesDialogModelTest {
     public void testAddListener() {
         instance.addListener(listener);
         instance.addProfile("profile4", "realname", "ident", Lists.newArrayList("nickname"));
-        verify(listener).profileAdded(any(Profile.class));
+        verify(listener).profileAdded(any(MutableProfile.class));
     }
 
     @Test
@@ -264,11 +260,28 @@ public class CoreProfilesDialogModelTest {
         instance.addListener(listener);
         instance.addProfile("profile4", "realname", "ident", Lists.newArrayList("nickname"));
         assertTrue(instance.getProfile("profile4").isPresent());
-        final Profile profile4 = instance.getProfile("profile4").get();
+        final MutableProfile profile4 = instance.getProfile("profile4").get();
         verify(listener).profileAdded(profile4);
         instance.removeListener(listener);
         instance.setSelectedProfile(Optional.ofNullable(profile4));
         verify(listener, never()).profileRemoved(profile4);
+    }
+
+    @Test
+    public void testSave() {
+        final Profile editedProfile = new Profile("newName", "realName", Optional.of("newIdent"),
+                Lists.newArrayList("newNickname"));
+        instance.editProfile(mutableProfile1, editedProfile.getName(), editedProfile.getRealname(),
+                editedProfile.getIdent().get(), editedProfile.getNicknames());
+        instance.save();
+
+        verify(profileManager).deleteProfile(profile1);
+        verify(profileManager).deleteProfile(profile2);
+        verify(profileManager).deleteProfile(profile3);
+
+        verify(profileManager).addProfile(editedProfile);
+        verify(profileManager).addProfile(profile2);
+        verify(profileManager).addProfile(profile3);
     }
 
 }

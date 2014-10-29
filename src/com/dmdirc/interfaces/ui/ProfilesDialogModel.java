@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.actions.wrappers.Profile;
+import com.dmdirc.ui.core.profiles.MutableProfile;
 import com.dmdirc.util.validators.Validator;
 
 import java.util.Collection;
@@ -59,7 +59,8 @@ public interface ProfilesDialogModel {
      * @param ident     New ident
      * @param nicknames New nicknames
      */
-    void editProfile(String name, String realname, String ident, List<String> nicknames);
+    void editProfile(MutableProfile profile, String name, String realname, String ident,
+            List<String> nicknames);
 
     /**
      * Retrieves a profile from the model.
@@ -68,28 +69,28 @@ public interface ProfilesDialogModel {
      *
      * @return Optional profile from the model
      */
-    Optional<Profile> getProfile(String name);
+    Optional<MutableProfile> getProfile(String name);
 
     /**
      * Gets the list of profiles from the model.
      *
      * @return Collection of profiles
      */
-    Collection<Profile> getProfileList();
+    Collection<MutableProfile> getProfileList();
 
     /**
      * Gets the profile list validator.
      *
      * @return Profile list validator
      */
-    Validator<List<Profile>> getProfileListValidator();
+    Validator<List<MutableProfile>> getProfileListValidator();
 
     /**
      * Gets the selected profile in the model.
      *
      * @return Optional selected profile
      */
-    Optional<Profile> getSelectedProfile();
+    Optional<MutableProfile> getSelectedProfile();
 
     /**
      * Gets the selected profile's ident
@@ -211,14 +212,6 @@ public interface ProfilesDialogModel {
     void removeProfile(String name);
 
     /**
-     * Renames a profile in this model.
-     *
-     * @param oldName Name of the profile to rename
-     * @param newName New name for the profile
-     */
-    void renameProfile(String oldName, String newName);
-
-    /**
      * Saves the profiles in the model, deleting as appropriate.
      */
     void save();
@@ -228,7 +221,7 @@ public interface ProfilesDialogModel {
      *
      * @param profile New selected profile
      */
-    void setSelectedProfile(Optional<Profile> profile);
+    void setSelectedProfile(Optional<MutableProfile> profile);
 
     /**
      * Sets the selected profile's ident.
