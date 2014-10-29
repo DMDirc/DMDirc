@@ -71,10 +71,8 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     @Override
     public void loadModel() {
         profiles.clear();
-        profileManager.getProfiles().forEach(p -> {
-            final MutableProfile mp = new MutableProfile(p.getName(), p.getRealname(),
-                    p.getIdent(), p.getNicknames());
-            profiles.put(p.getName(), mp);
+        profileManager.getProfiles().stream().map(MutableProfile::new).forEach(mp -> {
+            profiles.put(mp.getName(), mp);
             listeners.getCallable(ProfilesDialogModelListener.class).profileAdded(mp);
         });
         setSelectedProfile(Optional.ofNullable(Iterables.getFirst(profiles.values(), null)));
@@ -154,11 +152,9 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
             checkArgument(profiles.containsValue(profile.get()), "Profile must exist in list");
         }
         if (selectedProfile.isPresent()) {
-            if (!Optional.ofNullable(selectedProfile.get().getRealname())
-                    .equals(realname)
+            if (!Optional.ofNullable(selectedProfile.get().getRealname()).equals(realname)
                     || !selectedProfile.get().getIdent().equals(ident)
-                    || !Optional.ofNullable(selectedProfile.get().getNicknames())
-                    .equals(nicknames)) {
+                    || !Optional.ofNullable(selectedProfile.get().getNicknames()).equals(nicknames)) {
                 editProfile(selectedProfile.get(), selectedProfile.get().getName(), realname.get(),
                         ident.get(), nicknames.get());
             }
