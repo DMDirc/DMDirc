@@ -25,6 +25,9 @@ package com.dmdirc.util;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -49,7 +52,7 @@ public final class YamlReaderUtils {
      * @return A usable object-to-object map.
      */
     @SuppressWarnings("unchecked")
-    public static Map<Object, Object> uncheckedCast(final Map<?, ?> map) {
+    private static Map<Object, Object> uncheckedCast(final Map<?, ?> map) {
         return (Map<Object, Object>) map;
     }
 
@@ -63,7 +66,7 @@ public final class YamlReaderUtils {
      * @return A usable object list.
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> uncheckedCast(final List<?> list) {
+    private static <T> List<T> uncheckedCast(final List<?> list) {
         return (List<T>) list;
     }
 
@@ -103,6 +106,23 @@ public final class YamlReaderUtils {
 
         throw new IllegalArgumentException("Unexpected element. Found "
                 + simpleName(object) + ", expected List");
+    }
+
+    /**
+     * Checks that the specified object is a list, and casts it.
+     *
+     * @param object The object to be cast.
+     * @param convertor The function to use to convert each list member to the desired type.
+     *
+     * @return The given object cast as a list.
+     *
+     * @throws IllegalArgumentException If the specified object is not a list.
+     */
+    public static <T> List<T> asList(@Nullable final Object object,
+            final Function<Object, Optional<T>> convertor) throws IllegalArgumentException {
+        return asList(object).parallelStream()
+                .map(convertor).filter(Optional::isPresent)
+                .map(Optional::get).collect(Collectors.toList());
     }
 
     /**
