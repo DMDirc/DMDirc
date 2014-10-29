@@ -22,18 +22,11 @@
 
 package com.dmdirc.commandparser.auto;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
+import com.dmdirc.util.BaseYamlStore;
+
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -41,10 +34,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.yamlbeans.YamlReader;
-import com.esotericsoftware.yamlbeans.YamlWriter;
-
-import static com.dmdirc.util.YamlReaderUtils.asList;
 import static com.dmdirc.util.YamlReaderUtils.asMap;
 import static com.dmdirc.util.YamlReaderUtils.optionalString;
 import static com.dmdirc.util.YamlReaderUtils.requiredString;
@@ -61,10 +50,7 @@ import static com.dmdirc.util.YamlReaderUtils.requiredString;
  *   command: msg Q@Cserve.quakenet.org ...
  * </code></pre>
  */
-public class YamlAutoCommandStore implements AutoCommandStore {
-
-    /** The charset to use when reading and writing files. */
-    private static final String CHARSET = "UTF-8";
+public class YamlAutoCommandStore extends BaseYamlStore<AutoCommand> implements AutoCommandStore {
 
     private static final Logger LOG = LoggerFactory.getLogger(YamlAutoCommandStore.class);
 
@@ -82,46 +68,18 @@ public class YamlAutoCommandStore implements AutoCommandStore {
 
     @Override
     public Set<AutoCommand> readAutoCommands() {
-        final Set<AutoCommand> commands = new HashSet<>();
-
-        if (Files.exists(path)) {
-            try (final InputStream stream = Files.newInputStream(path);
-                    final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
-                final YamlReader yamlReader = new YamlReader(reader);
-                commands.addAll(asList(yamlReader.read(), this::getCommand));
-                yamlReader.close();
-            } catch (IOException | IllegalArgumentException ex) {
-                LOG.warn("Unable to read auto commands", ex);
-            }
-        }
-
-        return commands;
+        return new HashSet<>(read(path));
     }
 
     @Override
     public void writeAutoCommands(final Set<AutoCommand> commands) {
-        final List<Object> list = getCommands(commands);
-
-        try (final OutputStream stream = Files.newOutputStream(path);
-                final OutputStreamWriter writer = new OutputStreamWriter(stream, CHARSET)) {
-            final YamlWriter yamlWriter = new YamlWriter(writer);
-            yamlWriter.write(list);
-            yamlWriter.close();
-        } catch (IOException ex) {
-            LOG.error("Unable to write auto commands", ex);
-        }
+        write(path, commands);
     }
 
-    /**
-     * Builds an of auto command from the given YAML representation.
-     *
-     * @param autoCommand The raw object read from the YAML file.
-     *
-     * @return The corresponding auto command.
-     */
-    private Optional<AutoCommand> getCommand(final Object autoCommand) {
+    @Override
+    protected Optional<AutoCommand> convertFromYaml(final Object object) {
         try {
-            final Map<Object, Object> map = asMap(autoCommand);
+            final Map<Object, Object> map = asMap(object);
             final Optional<String> server =
                     Optional.ofNullable(optionalString(map, "server"));
             final Optional<String> network =
@@ -136,34 +94,14 @@ public class YamlAutoCommandStore implements AutoCommandStore {
         }
     }
 
-    /**
-     * Gets a set of maps that can be written to a YAML file.
-     *
-     * @param commands The auto commands to be stored.
-     *
-     * @return A list of corresponding maps.
-     */
-    private List<Object> getCommands(final Collection<AutoCommand> commands) {
-        final List<Object> res = new ArrayList<>(commands.size());
-        for (AutoCommand command : commands) {
-            final Map<Object, Object> map = new HashMap<>();
-
-            if (command.getServer().isPresent()) {
-                map.put("server", command.getServer().get());
-            }
-
-            if (command.getNetwork().isPresent()) {
-                map.put("network", command.getNetwork().get());
-            }
-
-            if (command.getProfile().isPresent()) {
-                map.put("profile", command.getProfile().get());
-            }
-
-            map.put("command", command.getResponse());
-            res.add(map);
-        }
-        return res;
+    @Override
+    protected Object convertToYaml(final AutoCommand object) {
+        final Map<Object, Object> map = new HashMap<>();
+        object.getServer().ifPresent(v -> map.put("server", v));
+        object.getNetwork().ifPresent(v -> map.put("network", v));
+        object.getProfile().ifPresent(v -> map.put("profile", v));
+        map.put("command", object.getResponse());
+        return map;
     }
 
 }

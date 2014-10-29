@@ -22,18 +22,11 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
+import com.dmdirc.util.BaseYamlStore;
+
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -41,10 +34,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.yamlbeans.YamlReader;
-import com.esotericsoftware.yamlbeans.YamlWriter;
-
-import static com.dmdirc.util.YamlReaderUtils.asList;
 import static com.dmdirc.util.YamlReaderUtils.asMap;
 import static com.dmdirc.util.YamlReaderUtils.requiredString;
 
@@ -59,10 +48,7 @@ import static com.dmdirc.util.YamlReaderUtils.requiredString;
  *   substitution: exit $1-
  * </code></pre>
  */
-public class YamlAliasStore implements AliasStore {
-
-    /** The charset to use when reading and writing files. */
-    private static final String CHARSET = "UTF-8";
+public class YamlAliasStore extends BaseYamlStore<Alias> implements AliasStore {
 
     private static final Logger LOG = LoggerFactory.getLogger(YamlAliasStore.class);
 
@@ -84,46 +70,18 @@ public class YamlAliasStore implements AliasStore {
 
     @Override
     public Set<Alias> readAliases() {
-        final Set<Alias> aliases = new HashSet<>();
-
-        if (Files.exists(path)) {
-            try (final InputStream stream = Files.newInputStream(path);
-                    final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
-                final YamlReader yamlReader = new YamlReader(reader);
-                aliases.addAll(asList(yamlReader.read(), this::getAlias));
-                yamlReader.close();
-            } catch (IOException | IllegalArgumentException ex) {
-                LOG.warn("Unable to read aliases", ex);
-            }
-        }
-
-        return aliases;
+        return new HashSet<>(read(path));
     }
 
     @Override
     public void writeAliases(final Set<Alias> aliases) {
-        final List<Object> list = getAliases(aliases);
-
-        try (final OutputStream stream = Files.newOutputStream(path);
-                final OutputStreamWriter writer = new OutputStreamWriter(stream, CHARSET)) {
-            final YamlWriter yamlWriter = new YamlWriter(writer);
-            yamlWriter.write(list);
-            yamlWriter.close();
-        } catch (IOException ex) {
-            LOG.error("Unable to write aliases", ex);
-        }
+        write(path, aliases);
     }
 
-    /**
-     * Builds an alias from the given YAML representations.
-     *
-     * @param alias The raw object read from the YAML file.
-     *
-     * @return The corresponding aliases.
-     */
-    private Optional<Alias> getAlias(final Object alias) {
+    @Override
+    protected Optional<Alias> convertFromYaml(final Object object) {
         try {
-            final Map<Object, Object> map = asMap(alias);
+            final Map<Object, Object> map = asMap(object);
             final String name = requiredString(map, "name");
             final int minArguments = Integer.parseInt(requiredString(map, "min_arguments"));
             final String substitution = requiredString(map, "substitution");
@@ -134,23 +92,13 @@ public class YamlAliasStore implements AliasStore {
         }
     }
 
-    /**
-     * Gets a set of maps that can be written to a YAML file.
-     *
-     * @param aliases The aliases to be stored.
-     *
-     * @return A list of corresponding maps.
-     */
-    private List<Object> getAliases(final Collection<Alias> aliases) {
-        final List<Object> res = new ArrayList<>(aliases.size());
-        for (Alias alias : aliases) {
-            final Map<Object, Object> map = new HashMap<>();
-            map.put("name", alias.getName());
-            map.put("min_arguments", String.valueOf(alias.getMinArguments()));
-            map.put("substitution", alias.getSubstitution());
-            res.add(map);
-        }
-        return res;
+    @Override
+    protected Object convertToYaml(final Alias object) {
+        final Map<Object, Object> map = new HashMap<>();
+        map.put("name", object.getName());
+        map.put("min_arguments", String.valueOf(object.getMinArguments()));
+        map.put("substitution", object.getSubstitution());
+        return map;
     }
 
 }
