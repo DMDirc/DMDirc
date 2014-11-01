@@ -27,8 +27,8 @@ import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,7 +40,7 @@ import javax.inject.Singleton;
 public class ProfileManager {
 
     private final DMDircMBassador eventBus;
-    private final Collection<Profile> profiles;
+    private final List<Profile> profiles;
 
     @Inject
     public ProfileManager(final DMDircMBassador eventBus) {
@@ -73,7 +73,7 @@ public class ProfileManager {
      *
      * @return Unmodifiable collection of profiles
      */
-    public Collection<Profile> getProfiles() {
-        return Collections.unmodifiableCollection(profiles);
+    public List<Profile> getProfiles() {
+        return Collections.unmodifiableList(profiles);
     }
 }
