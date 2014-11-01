@@ -269,19 +269,14 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testSave() {
-        final Profile editedProfile = new Profile("newName", "realName", Optional.of("newIdent"),
-                Lists.newArrayList("newNickname"));
+        final MutableProfile editedProfile = new MutableProfile("newName", "realName",
+                Optional.of("newIdent"), Lists.newArrayList("newNickname"));
         instance.editProfile(mutableProfile1, editedProfile.getName(), editedProfile.getRealname(),
                 editedProfile.getIdent().get(), editedProfile.getNicknames());
+        final List<MutableProfile> profiles = Lists.newArrayList(editedProfile, mutableProfile2,
+                mutableProfile3);
         instance.save();
-
-        verify(profileManager).deleteProfile(profile1);
-        verify(profileManager).deleteProfile(profile2);
-        verify(profileManager).deleteProfile(profile3);
-
-        verify(profileManager).addProfile(editedProfile);
-        verify(profileManager).addProfile(profile2);
-        verify(profileManager).addProfile(profile3);
+        assertEquals(profiles, instance.getProfileList());
     }
 
 }

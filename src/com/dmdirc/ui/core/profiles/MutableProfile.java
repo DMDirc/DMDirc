@@ -27,7 +27,6 @@ import com.dmdirc.config.profiles.Profile;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -79,11 +78,23 @@ public class MutableProfile {
     }
 
     public List<String> getNicknames() {
-        return Collections.unmodifiableList(nicknames);
+        return Lists.newArrayList(nicknames);
     }
 
     public void setNicknames(final Iterable<String> nicknames) {
         this.nicknames = Lists.newArrayList(nicknames);
+    }
+
+    public void setNickname(final int index, final String newNickname) {
+        nicknames.set(index, newNickname);
+    }
+
+    public void removeNickname(final String nickname) {
+        nicknames.remove(nickname);
+    }
+
+    public void addNickname(final String nickname) {
+        nicknames.add(nickname);
     }
 
     @Override

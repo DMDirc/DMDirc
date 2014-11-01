@@ -41,7 +41,7 @@ public class EditSelectedProfileNameValidator implements Validator<String> {
     public ValidationResponse validate(final String object) {
         for (MutableProfile nickname : model.getProfileList()) {
             if (model.getSelectedProfile().isPresent()
-                    && model.getSelectedProfile().get().getName().equals(object)) {
+                    && nickname == model.getSelectedProfile().get()) {
                 continue;
             }
             if (nickname.getName().equals(object)) {
