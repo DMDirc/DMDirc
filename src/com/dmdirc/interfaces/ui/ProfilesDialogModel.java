@@ -313,4 +313,11 @@ public interface ProfilesDialogModel {
      */
     boolean isSaveAllowed();
 
+    Validator<String> getNameValidator();
+
+    Validator<List<String>> getNicknamesValidator();
+
+    Validator<String> getRealnameValidator();
+
+    Validator<String> getIdentValidator();
 }

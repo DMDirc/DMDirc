@@ -27,6 +27,8 @@ import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.interfaces.ui.ProfilesDialogModel;
 import com.dmdirc.interfaces.ui.ProfilesDialogModelListener;
 import com.dmdirc.util.collections.ListenerList;
+import com.dmdirc.util.validators.FileNameValidator;
+import com.dmdirc.util.validators.IdentValidator;
 import com.dmdirc.util.validators.ListNotEmptyValidator;
 import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
@@ -54,18 +56,13 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     private final ProfileManager profileManager;
     private final SortedMap<String, MutableProfile> profiles;
     private Optional<MutableProfile> selectedProfile = Optional.empty();
-    private Optional<String> name = Optional.empty();
-    private Optional<List<String>> nicknames = Optional.empty();
     private Optional<String> selectedNickname = Optional.empty();
-    private Optional<String> realname = Optional.empty();
-    private Optional<String> ident = Optional.empty();
 
     @Inject
     public CoreProfilesDialogModel(final ProfileManager profileManager) {
         this.profileManager = profileManager;
         listeners = new ListenerList();
         profiles = new ConcurrentSkipListMap<>(Comparator.naturalOrder());
-        selectedProfile = Optional.empty();
     }
 
     @Override
@@ -90,23 +87,14 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     }
 
     @Override
-    public boolean isProfileListValid() {
-        return !getProfileListValidator().validate(getProfileList()).isFailure();
-    }
-
-    @Override
-    public Validator<List<MutableProfile>> getProfileListValidator() {
-        return new ListNotEmptyValidator<>();
-    }
-
-    @Override
     public void addProfile(final String name, final String realname, final String ident,
             final List<String> nicknames) {
         checkNotNull(name, "Name cannot be null");
         checkArgument(!profiles.containsKey(name), "Name cannot already exist");
-        final MutableProfile profile = new MutableProfile(name, realname, Optional.of(ident),
-                nicknames);
+        final MutableProfile profile =
+                new MutableProfile(name, realname, Optional.of(ident), nicknames);
         profiles.put(name, profile);
+        setSelectedProfile(Optional.of(profile));
         listeners.getCallable(ProfilesDialogModelListener.class).profileAdded(profile);
     }
 
@@ -140,9 +128,10 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     @Override
     public void save() {
         setSelectedProfile(Optional.empty());
-        profileManager.getProfiles().forEach(profileManager::deleteProfile);
-        profiles.values().forEach(p -> profileManager.addProfile(new Profile(p.getName(),
-                p.getRealname(), p.getIdent(), p.getNicknames())));
+        final List<Profile> profileList = Lists.newArrayList(profileManager.getProfiles());
+        profileList.forEach(profileManager::deleteProfile);
+        profiles.values().forEach(p -> profileManager.addProfile(
+                new Profile(p.getName(), p.getRealname(), p.getIdent(), p.getNicknames())));
     }
 
     @Override
@@ -151,27 +140,11 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         if (profile.isPresent()) {
             checkArgument(profiles.containsValue(profile.get()), "Profile must exist in list");
         }
-        if (selectedProfile.isPresent()) {
-            if (!Optional.ofNullable(selectedProfile.get().getRealname()).equals(realname)
-                    || !selectedProfile.get().getIdent().equals(ident)
-                    || !Optional.ofNullable(selectedProfile.get().getNicknames()).equals(nicknames)) {
-                editProfile(selectedProfile.get(), selectedProfile.get().getName(), realname.get(),
-                        ident.get(), nicknames.get());
-            }
+        if (!selectedProfile.equals(profile)) {
+            selectedProfile = profile;
+            listeners.getCallable(ProfilesDialogModelListener.class)
+                    .profileSelectionChanged(profile);
         }
-        selectedProfile = profile;
-        if (selectedProfile.isPresent()) {
-            name = Optional.ofNullable(selectedProfile.get().getName());
-            realname = Optional.ofNullable(selectedProfile.get().getRealname());
-            ident = selectedProfile.get().getIdent();
-            nicknames = Optional.of(Lists.newArrayList(selectedProfile.get().getNicknames()));
-        } else {
-            name = Optional.empty();
-            realname = Optional.empty();
-            ident = Optional.empty();
-            nicknames = Optional.empty();
-        }
-        listeners.getCallable(ProfilesDialogModelListener.class).profileSelectionChanged(profile);
     }
 
     @Override
@@ -182,40 +155,25 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     @Override
     public Optional<String> getSelectedProfileName() {
         if (selectedProfile.isPresent()) {
-            return name;
+            return Optional.of(selectedProfile.get().getName());
         }
         return Optional.empty();
     }
 
     @Override
     public void setSelectedProfileName(final Optional<String> name) {
+        // TODO: should probably handle name being empty
         checkNotNull(name, "Name cannot be null");
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
-        this.name = name;
-        listeners.getCallable(ProfilesDialogModelListener.class).profileEdited(selectedProfile.get());
-    }
-
-    @Override
-    public Validator<String> getSelectedProfileNameValidator() {
-        return new EditSelectedProfileNameValidator(this);
-    }
-
-    @Override
-    public Validator<String> getNewProfileNameValidator() {
-        return new NewProfileNameValidator(this);
-    }
-
-    @Override
-    public boolean isSelectedProfileNameValid() {
-        return !getSelectedProfileName().isPresent() ||
-                !getSelectedProfileNameValidator().validate(getSelectedProfileName().get())
-                        .isFailure();
+        selectedProfile.get().setName(name.orElse(""));
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .profileEdited(selectedProfile.get());
     }
 
     @Override
     public Optional<String> getSelectedProfileRealname() {
         if (selectedProfile.isPresent()) {
-            return realname;
+            return Optional.of(selectedProfile.get().getRealname());
         }
         return Optional.empty();
     }
@@ -224,26 +182,15 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     public void setSelectedProfileRealname(final Optional<String> realname) {
         checkNotNull(realname, "Realname cannot be null");
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
-        this.realname = realname;
-        listeners.getCallable(ProfilesDialogModelListener.class).profileEdited(selectedProfile.get());
-    }
-
-    @Override
-    public Validator<String> getSelectedProfileRealnameValidator() {
-        return new NotEmptyValidator();
-    }
-
-    @Override
-    public boolean isSelectedProfileRealnameValid() {
-        return !getSelectedProfileRealname().isPresent() ||
-                !getSelectedProfileRealnameValidator().validate(getSelectedProfileRealname().get())
-                        .isFailure();
+        selectedProfile.get().setRealname(realname.orElse(""));
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .profileEdited(selectedProfile.get());
     }
 
     @Override
     public Optional<String> getSelectedProfileIdent() {
         if (selectedProfile.isPresent()) {
-            return ident;
+            return selectedProfile.get().getIdent();
         }
         return Optional.empty();
     }
@@ -252,26 +199,15 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     public void setSelectedProfileIdent(final Optional<String> ident) {
         checkNotNull(ident, "Ident cannot be null");
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
-        this.ident = ident;
-        listeners.getCallable(ProfilesDialogModelListener.class).profileEdited(selectedProfile.get());
-    }
-
-    @Override
-    public Validator<String> getSelectedProfileIdentValidator() {
-        return new PermissiveValidator<>();
-    }
-
-    @Override
-    public boolean isSelectedProfileIdentValid() {
-        return !getSelectedProfileIdent().isPresent() ||
-                !getSelectedProfileIdentValidator().validate(getSelectedProfileIdent().get())
-                        .isFailure();
+        selectedProfile.get().setIdent(ident);
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .profileEdited(selectedProfile.get());
     }
 
     @Override
     public Optional<List<String>> getSelectedProfileNicknames() {
         if (selectedProfile.isPresent()) {
-            return nicknames;
+            return Optional.of(selectedProfile.get().getNicknames());
         }
         return Optional.empty();
     }
@@ -281,50 +217,33 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         checkNotNull(nicknames, "nicknames cannot be null");
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
         if (nicknames.isPresent()) {
-            this.nicknames = nicknames;
+            selectedProfile.get().setNicknames(nicknames.get());
         } else {
-            this.nicknames = Optional.ofNullable((List<String>) Lists.
-                    newArrayList(nicknames.get()));
+            selectedProfile.get().setNicknames(Lists.newArrayList());
         }
-        listeners.getCallable(ProfilesDialogModelListener.class).profileEdited(selectedProfile.get());
-    }
-
-    @Override
-    public Validator<List<String>> getSelectedProfileNicknamesValidator() {
-        return new ListNotEmptyValidator<>();
-    }
-
-    @Override
-    public boolean isSelectedProfileNicknamesValid() {
-        return !getSelectedProfileNicknames().isPresent() || !getSelectedProfileNicknamesValidator()
-                .validate(getSelectedProfileNicknames().get()).isFailure();
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .profileEdited(selectedProfile.get());
     }
 
     @Override
     public void addSelectedProfileNickname(final String nickname) {
         checkNotNull(nickname, "Nickname cannot be null");
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
-        checkState(nicknames.isPresent(), "There must be nicknames present");
-        checkArgument(!nicknames.get().contains(nickname), "New nickname must not exist");
-        nicknames.get().add(nickname);
-        listeners.getCallable(ProfilesDialogModelListener.class).selectedProfileNicknameAdded(
-                nickname);
+        checkArgument(!selectedProfile.get().getNicknames().contains(nickname),
+                "New nickname must not exist");
+        selectedProfile.get().addNickname(nickname);
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .selectedProfileNicknameAdded(nickname);
     }
 
     @Override
     public void removeSelectedProfileNickname(final String nickname) {
         checkNotNull(nickname, "Nickname cannot be null");
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
-        checkState(nicknames.isPresent(), "There must be nicknames present");
-        checkArgument(nicknames.get().contains(nickname), "Nickname must exist");
-        nicknames.get().remove(nickname);
-        listeners.getCallable(ProfilesDialogModelListener.class).selectedProfileNicknameRemoved(
-                nickname);
-    }
-
-    @Override
-    public Validator<String> getSelectedProfileAddNicknameValidator() {
-        return new AddNicknameValidator(this);
+        checkArgument(selectedProfile.get().getNicknames().contains(nickname), "Nickname must exist");
+        selectedProfile.get().removeNickname(nickname);
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .selectedProfileNicknameRemoved(nickname);
     }
 
     @Override
@@ -332,35 +251,27 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         checkNotNull(oldName, "Nickname cannot be null");
         checkNotNull(newName, "Nickname cannot be null");
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
-        checkState(nicknames.isPresent(), "There must be nicknames present");
-        checkArgument(nicknames.get().contains(oldName), "Old nickname must exist");
-        checkArgument(!nicknames.get().contains(newName), "New nickname must not exist");
-        final int index = nicknames.get().indexOf(oldName);
-        nicknames.get().set(index, newName);
-        listeners.getCallable(ProfilesDialogModelListener.class).selectedProfileNicknameEdited(
-                oldName, newName);
-    }
-
-    @Override
-    public Validator<String> getSelectedProfileEditNicknameValidator() {
-        return new EditSelectedNicknameValidator(this);
+        checkArgument(selectedProfile.get().getNicknames().contains(oldName),
+                "Old nickname must exist");
+        checkArgument(!selectedProfile.get().getNicknames().contains(newName),
+                "New nickname must not exist");
+        final int index = selectedProfile.get().getNicknames().indexOf(oldName);
+        selectedProfile.get().setNickname(index, newName);
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .selectedProfileNicknameEdited(oldName, newName);
     }
 
     @Override
     public Optional<String> getSelectedProfileSelectedNickname() {
-        if (selectedProfile.isPresent()) {
-            return selectedNickname;
-        }
-        return Optional.empty();
+        return selectedNickname;
     }
 
     @Override
     public void setSelectedProfileSelectedNickname(final Optional<String> selectedNickname) {
         checkNotNull(selectedNickname, "Nickname cannot be null");
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
-        checkState(nicknames.isPresent(), "There must be nicknames present");
         if (selectedNickname.isPresent()) {
-            checkArgument(nicknames.get().contains(selectedNickname.get()),
+            checkArgument(selectedProfile.get().getNicknames().contains(selectedNickname.get()),
                     "Nickname must exist in nicknames list");
         }
         this.selectedNickname = selectedNickname;
@@ -382,20 +293,108 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public boolean canSwitchProfiles() {
-        return !selectedProfile.isPresent()
-                || isSelectedProfileIdentValid()
-                && isSelectedProfileNameValid()
-                && isSelectedProfileNicknamesValid()
-                && isSelectedProfileRealnameValid();
+        return !selectedProfile.isPresent() ||
+                isSelectedProfileIdentValid() && isSelectedProfileNameValid() &&
+                        isSelectedProfileNicknamesValid() && isSelectedProfileRealnameValid();
     }
 
     @Override
     public boolean isSaveAllowed() {
-        return isProfileListValid()
-                && isSelectedProfileIdentValid()
-                && isSelectedProfileNameValid()
-                && isSelectedProfileNicknamesValid()
-                && isSelectedProfileRealnameValid();
+        return isProfileListValid() && isSelectedProfileIdentValid() &&
+                isSelectedProfileNameValid() && isSelectedProfileNicknamesValid() &&
+                isSelectedProfileRealnameValid();
+    }
+
+    @Override
+    public boolean isSelectedProfileNicknamesValid() {
+        return !getSelectedProfileNicknames().isPresent() || !getSelectedProfileNicknamesValidator()
+                .validate(getSelectedProfileNicknames().get()).isFailure();
+    }
+
+    @Override
+    public boolean isSelectedProfileIdentValid() {
+        return !getSelectedProfileIdent().isPresent() ||
+                !getSelectedProfileIdentValidator().validate(getSelectedProfileIdent().get())
+                        .isFailure();
+    }
+
+    @Override
+    public boolean isSelectedProfileRealnameValid() {
+        return getSelectedProfileRealname().isPresent() ||
+                !getSelectedProfileRealnameValidator().validate(getSelectedProfileRealname().get())
+                        .isFailure();
+    }
+
+    @Override
+    public boolean isSelectedProfileNameValid() {
+        return getSelectedProfileName().isPresent() &&
+                !getSelectedProfileNameValidator().validate(getSelectedProfileName().get())
+                        .isFailure();
+    }
+
+    @Override
+    public boolean isProfileListValid() {
+        return !getProfileListValidator().validate(getProfileList()).isFailure();
+    }
+
+    @Override
+    public Validator<List<MutableProfile>> getProfileListValidator() {
+        return new ListNotEmptyValidator<>();
+    }
+
+    @Override
+    public Validator<String> getSelectedProfileNameValidator() {
+        return new EditSelectedProfileNameValidator(this);
+    }
+
+    @Override
+    public Validator<String> getNewProfileNameValidator() {
+        return new NewProfileNameValidator(this);
+    }
+
+    @Override
+    public Validator<String> getSelectedProfileIdentValidator() {
+        return new PermissiveValidator<>();
+    }
+
+    @Override
+    public Validator<String> getSelectedProfileRealnameValidator() {
+        return new NotEmptyValidator();
+    }
+
+    @Override
+    public Validator<List<String>> getSelectedProfileNicknamesValidator() {
+        return new ListNotEmptyValidator<>();
+    }
+
+    @Override
+    public Validator<String> getSelectedProfileAddNicknameValidator() {
+        return new AddNicknameValidator(this);
+    }
+
+    @Override
+    public Validator<String> getSelectedProfileEditNicknameValidator() {
+        return new EditSelectedNicknameValidator(this);
+    }
+
+    @Override
+    public Validator<String> getNameValidator() {
+        return new FileNameValidator();
+    }
+
+    @Override
+    public Validator<List<String>> getNicknamesValidator() {
+        return new ListNotEmptyValidator<>();
+    }
+
+    @Override
+    public Validator<String> getRealnameValidator() {
+        return new NotEmptyValidator();
+    }
+
+    @Override
+    public Validator<String> getIdentValidator() {
+        return new IdentValidator();
     }
 
 }

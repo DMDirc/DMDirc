@@ -22,6 +22,8 @@
 
 package com.dmdirc.config.profiles;
 
+import com.dmdirc.util.validators.Validator;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
