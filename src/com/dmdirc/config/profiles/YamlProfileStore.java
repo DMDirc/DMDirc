@@ -22,14 +22,9 @@
 
 package com.dmdirc.config.profiles;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
+import com.dmdirc.util.BaseYamlStore;
+
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -39,9 +34,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.yamlbeans.YamlReader;
-import com.esotericsoftware.yamlbeans.YamlWriter;
-
 import static com.dmdirc.util.YamlReaderUtils.asList;
 import static com.dmdirc.util.YamlReaderUtils.asMap;
 import static com.dmdirc.util.YamlReaderUtils.optionalString;
@@ -50,11 +42,9 @@ import static com.dmdirc.util.YamlReaderUtils.requiredString;
 /**
  * Store that reads and writes profiles from a YAML file on disk.
  */
-public class YamlProfileStore implements ProfileStore {
+public class YamlProfileStore extends BaseYamlStore<Profile> implements ProfileStore {
 
     private static final Logger LOG = LoggerFactory.getLogger(YamlProfileStore.class);
-    /** The charset to use when reading and writing files. */
-    private static final String CHARSET = "UTF-8";
 
     /** The path to the file to read and write auto commands in. */
     private final Path path;
@@ -70,44 +60,18 @@ public class YamlProfileStore implements ProfileStore {
 
     @Override
     public Collection<Profile> readProfiles() {
-        final Collection<Profile> profiles = new ArrayList<>();
-        if (Files.exists(path)) {
-            try (final InputStream stream = Files.newInputStream(path);
-                    final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
-                final YamlReader yamlReader = new YamlReader(reader);
-                profiles.addAll(asList(yamlReader.read(), this::readProfileFromYaml));
-                yamlReader.close();
-            } catch (IOException | IllegalArgumentException ex) {
-                LOG.warn("Unable to read auto commands", ex);
-            }
-        }
-
-        return profiles;
+        return read(path);
     }
 
     @Override
     public void writeProfiles(final Collection<Profile> profiles) {
-        final List<Object> list = getProfilesForYaml(profiles);
-        try (final OutputStream stream = Files.newOutputStream(path);
-                final OutputStreamWriter writer = new OutputStreamWriter(stream, CHARSET)) {
-            final YamlWriter yamlWriter = new YamlWriter(writer);
-            yamlWriter.write(list);
-            yamlWriter.close();
-        } catch (IOException ex) {
-            LOG.error("Unable to write auto commands", ex);
-        }
+        write(path, profiles);
     }
 
-    /**
-     * Builds a profile from the given YAML representation.
-     *
-     * @param profile The raw object read from the YAML file.
-     *
-     * @return A corresponding profile.
-     */
-    private Optional<Profile> readProfileFromYaml(final Object profile) {
+    @Override
+    protected Optional<Profile> convertFromYaml(final Object object) {
         try {
-            final Map<Object, Object> map = asMap(profile);
+            final Map<Object, Object> map = asMap(object);
             final String name = requiredString(map, "name");
             final String realname = requiredString(map, "realname");
             final Optional<String> ident = Optional.ofNullable(optionalString(map, "ident"));
@@ -119,25 +83,14 @@ public class YamlProfileStore implements ProfileStore {
         }
     }
 
-    /**
-     * Gets a set of maps that can be written to a YAML file.
-     *
-     * @param profiles The profiles to be stored.
-     *
-     * @return A list of corresponding maps.
-     */
-    private List<Object> getProfilesForYaml(final Collection<Profile> profiles) {
-        final List<Object> res = new ArrayList<>(profiles.size());
-        for (Profile profile : profiles) {
-            final Map<Object, Object> map = new HashMap<>();
-            map.put("name", profile.getName());
-            map.put("realname", profile.getRealname());
-            if (profile.getIdent().isPresent()) {
-                map.put("ident", profile.getIdent().get());
-            }
-            map.put("nicknames", profile.getNicknames().toArray());
-            res.add(map);
-        }
-        return res;
+    @Override
+    protected Object convertToYaml(final Profile object) {
+        final Map<Object, Object> map = new HashMap<>();
+        map.put("name", object.getName());
+        map.put("realname", object.getRealname());
+        map.put("nicknames", object.getNicknames().toArray());
+        object.getIdent().ifPresent(v -> map.put("ident", v));
+        return map;
     }
+
 }
