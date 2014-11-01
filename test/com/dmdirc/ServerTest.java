@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.when;
 public class ServerTest {
 
     @Mock private ServerManager serverManager;
-    @Mock private ConfigProvider profile;
+    @Mock private Profile profile;
     @Mock private AggregateConfigProvider configManager;
     @Mock private ConfigProvider userConfig;
     @Mock private ConfigProviderMigrator configMigrator;

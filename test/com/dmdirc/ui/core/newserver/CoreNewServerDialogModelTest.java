@@ -22,10 +22,14 @@
 
 package com.dmdirc.ui.core.newserver;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.config.profiles.ProfileManager;
+import com.dmdirc.events.ProfileAddedEvent;
+import com.dmdirc.events.ProfileDeletedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.NewServerDialogModelListener;
 
 import com.google.common.collect.Lists;
@@ -53,26 +57,30 @@ public class CoreNewServerDialogModelTest {
 
     @Mock private AggregateConfigProvider globalConfig;
     @Mock private ConfigProvider userConfig;
-    @Mock private IdentityController controller;
+    @Mock private ProfileManager profileManager;
     @Mock private ConnectionManager connectionManager;
-    @Mock private ConfigProvider profile1;
-    @Mock private ConfigProvider profile2;
+    @Mock private DMDircMBassador eventBus;
+    @Mock private Profile profile1;
+    @Mock private Profile profile2;
     @Mock private NewServerDialogModelListener listener;
+
+    private CoreNewServerDialogModel instance;
 
     @Before
     public void setupMocks() {
-        when(controller.getProvidersByType("profile")).thenReturn(
+        when(profileManager.getProfiles()).thenReturn(
                 Lists.newArrayList(profile1, profile2));
         when(globalConfig.getOption("newserver", "hostname")).thenReturn("hostname");
         when(globalConfig.getOptionInt("newserver", "port")).thenReturn(1111);
         when(globalConfig.getOption("newserver", "password")).thenReturn("password");
         when(globalConfig.getOptionBool("newserver", "ssl")).thenReturn(true);
+
+        instance = new CoreNewServerDialogModel(globalConfig, userConfig, profileManager,
+                connectionManager, eventBus);
     }
 
     @Test
     public void testGetProfiles() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertEquals("loadModel: ", Lists.newArrayList(profile1, profile2), instance.
                 getProfileList());
@@ -80,10 +88,9 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testSelectedProfile() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
-        assertEquals("testSelectedProfile: ", Optional.empty(), instance.getSelectedProfile());
+        assertEquals("testSelectedProfile: ",
+                Optional.<Profile>empty(), instance.getSelectedProfile());
         instance.setSelectedProfile(Optional.ofNullable(profile1));
         assertEquals("testSelectedProfile", Optional.ofNullable(profile1),
                 instance.getSelectedProfile());
@@ -91,28 +98,20 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testProfileValidatorEmpty() {
-        when(controller.getProvidersByType("profile")).thenReturn(
-                Lists.<ConfigProvider>newArrayList());
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
+        when(profileManager.getProfiles()).thenReturn(Lists.<Profile>newArrayList());
         instance.loadModel();
         assertFalse("testProfileValidatorEmpty: ", instance.isProfileListValid());
     }
 
     @Test
     public void testProfileValidatorNotEmpty() {
-        when(controller.getProvidersByType("profile")).thenReturn(
-                Lists.newArrayList(profile1, profile2));
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
+        when(profileManager.getProfiles()).thenReturn(Lists.newArrayList(profile1, profile2));
         instance.loadModel();
         assertTrue("testProfileValidatorNotEmpty: ", instance.isProfileListValid());
     }
 
     @Test
     public void testHostname() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertEquals("testHostname: ", Optional.ofNullable("hostname"), instance.getHostname());
         instance.setHostname(Optional.ofNullable("test"));
@@ -122,8 +121,6 @@ public class CoreNewServerDialogModelTest {
     @Test
     public void testHostnameValidatorValid() {
         when(globalConfig.getOption("newserver", "hostname")).thenReturn("hostname");
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertTrue("testHostnameValidatorValid: ", instance.isHostnameValid());
     }
@@ -131,16 +128,12 @@ public class CoreNewServerDialogModelTest {
     @Test
     public void testHostnameValidatorInvalid() {
         when(globalConfig.getOption("newserver", "hostname")).thenReturn("~!£$^£$%^&");
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertFalse("testHostnameValidatorInvalid: ", instance.isHostnameValid());
     }
 
     @Test
     public void testPort() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertEquals("testPort: ", Optional.ofNullable(1111), instance.getPort());
         instance.setPort(Optional.ofNullable(5678));
@@ -150,8 +143,6 @@ public class CoreNewServerDialogModelTest {
     @Test
     public void testPortValidatorValid() {
         when(globalConfig.getOptionInt("newserver", "port")).thenReturn(1111);
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertTrue("testPortValidatorValid: ", instance.isPortValid());
     }
@@ -159,8 +150,6 @@ public class CoreNewServerDialogModelTest {
     @Test
     public void testPortValidatorTooLow() {
         when(globalConfig.getOptionInt("newserver", "port")).thenReturn(-1);
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertFalse("testPortValidatorTooLow: ", instance.isPortValid());
     }
@@ -168,16 +157,12 @@ public class CoreNewServerDialogModelTest {
     @Test
     public void testPortValidatorTooHigh() {
         when(globalConfig.getOptionInt("newserver", "port")).thenReturn(65536);
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertFalse("testPortValidatorTooHigh: ", instance.isPortValid());
     }
 
     @Test
     public void testPassword() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertEquals("testPassword: ", Optional.ofNullable("password"), instance.getPassword());
         instance.setPassword(Optional.ofNullable("test"));
@@ -187,16 +172,12 @@ public class CoreNewServerDialogModelTest {
     @Test
     public void testPasswordValidatorValid() {
         when(globalConfig.getOption("newserver", "password")).thenReturn("password");
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertTrue("testPasswordValidatorValid: ", instance.isPortValid());
     }
 
     @Test
     public void testSSL() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertTrue("testSSL: ", instance.getSSL());
         instance.setSSL(false);
@@ -205,8 +186,6 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testSaveAsDefault() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertFalse("testSaveAsDefault:", instance.getSaveAsDefault());
         instance.setSaveAsDefault(true);
@@ -216,8 +195,6 @@ public class CoreNewServerDialogModelTest {
     @Test
     public void testIsSaveAllowedValid() {
         when(globalConfig.getOption("newserver", "hostname")).thenReturn("hostname");
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertTrue("testIsSaveAllowedValid: ", instance.isSaveAllowed());
     }
@@ -225,8 +202,6 @@ public class CoreNewServerDialogModelTest {
     @Test
     public void testIsSaveAllowedInvalidHostname() {
         when(globalConfig.getOption("newserver", "hostname")).thenReturn("~!£$^£$%^&");
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertFalse("testIsSaveAllowedInvalidHostname: ", instance.isSaveAllowed());
     }
@@ -234,16 +209,12 @@ public class CoreNewServerDialogModelTest {
     @Test
     public void testIsSaveAllowedInvalidPort() {
         when(globalConfig.getOption("newserver", "hostname")).thenReturn("-1");
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         assertFalse("testIsSaveAllowedInvalidPort: ", instance.isSaveAllowed());
     }
 
     @Test
     public void testSaveSaveDefaults() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.setSaveAsDefault(true);
         instance.save();
@@ -255,8 +226,6 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testSaveNotDefaults() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.setSaveAsDefault(false);
         instance.save();
@@ -268,58 +237,47 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testSaveConnectWithoutProfile() throws URISyntaxException {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.save();
         verify(connectionManager).connectToAddress(new URI("ircs://password@hostname:1111"));
-        verify(connectionManager, never()).connectToAddress(any(URI.class), any(ConfigProvider.class));
+        verify(connectionManager, never()).connectToAddress(any(URI.class), any(Profile.class));
     }
 
     @Test
     public void testSaveConnectWithProfile() throws URISyntaxException {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.setSelectedProfile(Optional.ofNullable(profile1));
         instance.save();
         verify(connectionManager, never()).connectToAddress(any(URI.class));
-        verify(connectionManager).connectToAddress(new URI("ircs://password@hostname:1111"), profile1);
+        verify(connectionManager).connectToAddress(new URI("ircs://password@hostname:1111"),
+                profile1);
     }
 
     @Test
     public void testAddConfigProvider() {
-        when(controller.getProvidersByType("profile")).thenReturn(Lists.newArrayList(profile1));
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
+        when(profileManager.getProfiles()).thenReturn(Lists.newArrayList(profile1));
         instance.loadModel();
         assertEquals("testAddConfigProvider:", Lists.newArrayList(profile1),
                 instance.getProfileList());
-        instance.configProviderAdded(profile2);
+        instance.profileAdded(new ProfileAddedEvent(profile2));
         assertEquals("testAddConfigProvider:", Lists.newArrayList(profile1, profile2),
                 instance.getProfileList());
     }
 
     @Test
     public void testRemoveConfigProvider() {
-        when(controller.getProvidersByType("profile")).thenReturn(
-                Lists.newArrayList(profile1, profile2));
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
+        when(profileManager.getProfiles()).thenReturn(Lists.newArrayList(profile1, profile2));
         instance.loadModel();
         assertEquals("testRemoveConfigProvider:", Lists.newArrayList(profile1, profile2),
                 instance.getProfileList());
-        instance.configProviderRemoved(profile2);
+        instance.profileDeleted(new ProfileDeletedEvent(profile2));
         assertEquals("testRemoveConfigProvider:", Lists.newArrayList(profile1),
                 instance.getProfileList());
     }
 
     @Test
     public void testRemoveConfigProviderSelectedProfile() {
-        when(controller.getProvidersByType("profile")).thenReturn(
-                Lists.newArrayList(profile1, profile2));
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
+        when(profileManager.getProfiles()).thenReturn(Lists.newArrayList(profile1, profile2));
         instance.loadModel();
         instance.setSelectedProfile(Optional.ofNullable(profile2));
         assertEquals("testRemoveConfigProviderSelectedProfile:",
@@ -327,37 +285,33 @@ public class CoreNewServerDialogModelTest {
                 instance.getProfileList());
         assertEquals("testRemoveConfigProviderSelectedProfile:", Optional.ofNullable(profile2),
                 instance.getSelectedProfile());
-        instance.configProviderRemoved(profile2);
+        instance.profileDeleted(new ProfileDeletedEvent(profile2));
         assertEquals("testRemoveConfigProviderSelectedProfile:", Lists.newArrayList(profile1),
                 instance.getProfileList());
-        assertEquals("testRemoveConfigProviderSelectedProfile:", Optional.empty(),
+        assertEquals("testRemoveConfigProviderSelectedProfile:", Optional.<Profile>empty(),
                 instance.getSelectedProfile());
     }
 
     @Test
     public void testListenerSelectedProfileChanged() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
-        assertEquals("testListenerSelectedProfileChanged: ", Optional.<ConfigProvider>empty(),
+        assertEquals("testListenerSelectedProfileChanged: ", Optional.<Profile>empty(),
                 instance.getSelectedProfile());
         instance.addListener(listener);
         instance.setSelectedProfile(Optional.ofNullable(profile1));
         assertEquals("testListenerSelectedProfileChanged: ", Optional.ofNullable(profile1),
                 instance.getSelectedProfile());
-        verify(listener).selectedProfileChanged(Optional.<ConfigProvider>empty(),
+        verify(listener).selectedProfileChanged(Optional.<Profile>empty(),
                 Optional.ofNullable(profile1));
     }
 
     @Test
     public void testListenerProfileListChangedRemoved() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.addListener(listener);
         assertEquals("testListenerProfileListChangedRemoved: ",
                 Lists.newArrayList(profile1, profile2), instance.getProfileList());
-        instance.configProviderRemoved(profile2);
+        instance.profileDeleted(new ProfileDeletedEvent(profile2));
         assertEquals("testListenerProfileListChangedRemoved:", Lists.newArrayList(profile1),
                 instance.getProfileList());
         verify(listener).profileListChanged(Lists.newArrayList(profile1));
@@ -365,15 +319,12 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testListenerProfileListChangedAdded() {
-        when(controller.getProvidersByType("profile"))
-                .thenReturn(Lists.newArrayList(profile1));
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
+        when(profileManager.getProfiles()).thenReturn(Lists.newArrayList(profile1));
         instance.loadModel();
         instance.addListener(listener);
         assertEquals("testListenerProfileListChangedAdded: ", Lists.newArrayList(profile1),
                 instance.getProfileList());
-        instance.configProviderAdded(profile2);
+        instance.profileDeleted(new ProfileDeletedEvent(profile2));
         assertEquals("testListenerProfileListChangedAdded:", Lists.newArrayList(profile1, profile2),
                 instance.getProfileList());
         verify(listener).profileListChanged(Lists.newArrayList(profile1, profile2));
@@ -381,8 +332,6 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testListenerServerDetailsChangedPort() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.addListener(listener);
         instance.setPort(Optional.ofNullable(9999));
@@ -392,8 +341,6 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testListenerServerDetailsChangedPassword() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.addListener(listener);
         instance.setPassword(Optional.ofNullable("password-test"));
@@ -403,8 +350,6 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testListenerServerDetailsChangedSSL() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.addListener(listener);
         instance.setSSL(false);
@@ -414,8 +359,6 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testListenerServerDetailsChangedSaveAsDefault() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.addListener(listener);
         instance.setSaveAsDefault(true);
@@ -425,8 +368,6 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testRemoveListener() {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.addListener(listener);
         instance.setSaveAsDefault(true);
@@ -440,8 +381,6 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testSaveDefaults() throws URISyntaxException {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.setSelectedProfile(Optional.ofNullable(profile1));
         instance.setSaveAsDefault(true);
@@ -454,8 +393,6 @@ public class CoreNewServerDialogModelTest {
 
     @Test
     public void testNoSaveDefaults() throws URISyntaxException {
-        final CoreNewServerDialogModel instance = new CoreNewServerDialogModel(globalConfig, userConfig,
-                controller, connectionManager);
         instance.loadModel();
         instance.setSelectedProfile(Optional.ofNullable(profile1));
         instance.setSaveAsDefault(false);

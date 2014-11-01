@@ -23,13 +23,14 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
 import java.net.URI;
@@ -97,7 +98,7 @@ public class ServerFactoryImpl {
             final CommandParser commandParser,
             final ScheduledExecutorService executorService,
             final URI uri,
-            final ConfigProvider profile) {
+            final Profile profile) {
         return new Server(manager.get(), configMigrator, commandParser, parserFactory,
                 tabCompleterFactory, identityFactory, messageSinkManager, windowManager,
                 channelFactory.get(), queryFactory.get(), rawFactory.get(),urlBuilder, eventBus,

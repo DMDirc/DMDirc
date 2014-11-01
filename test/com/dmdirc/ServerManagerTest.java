@@ -23,11 +23,11 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
@@ -58,10 +58,10 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ServerManagerTest {
 
-    @Mock private IdentityController identityController;
+    @Mock private ProfileManager profileManager;
     @Mock private IdentityFactory identityFactory;
     @Mock private ConfigProviderMigrator configProviderMigrator;
-    @Mock private ConfigProvider profile;
+    @Mock private Profile profile;
     @Mock private AggregateConfigProvider configProvider;
     @Mock private Provider<CommandController> commandControllerProvider;
     @Mock private CommandController commandController;
@@ -76,16 +76,15 @@ public class ServerManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        serverManager = new ServerManager(identityController, identityFactory,
+        serverManager = new ServerManager(profileManager, identityFactory,
                 commandControllerProvider, windowManager, serverFactoryImpl, eventBus);
 
         when(commandControllerProvider.get()).thenReturn(commandController);
 
-        when(identityController.getProvidersByType("profile")).thenReturn(Arrays.asList(profile));
+        when(profileManager.getProfiles()).thenReturn(Arrays.asList(profile));
         when(identityFactory.createMigratableConfig(anyString(), anyString(), anyString(),
                 anyString())).thenReturn(configProviderMigrator);
         when(configProviderMigrator.getConfigProvider()).thenReturn(configProvider);
-        when(profile.isProfile()).thenReturn(true);
 
         when(serverFactoryImpl.getServer(eq(configProviderMigrator), any(CommandParser.class),
                 any(ScheduledExecutorService.class), uriCaptor.capture(), eq(profile)))

@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.profiles.Profile;
 
 import java.net.URI;
 import java.util.List;
@@ -90,7 +90,7 @@ public interface ConnectionManager extends ConnectionFactory {
      *
      * @since 0.6.3
      */
-    Connection connectToAddress(URI uri, ConfigProvider profile);
+    Connection connectToAddress(URI uri, Profile profile);
 
     /**
      * Connects the user to Quakenet if necessary and joins #DMDirc.

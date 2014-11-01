@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.util.validators.Validator;
 
 import java.util.List;
@@ -43,21 +43,21 @@ public interface NewServerDialogModel {
      *
      * @return List of available profiles
      */
-    List<ConfigProvider> getProfileList();
+    List<Profile> getProfileList();
 
     /**
      * Gets the selected profile in the dialog.
      *
      * @return Selected profile
      */
-    Optional<ConfigProvider> getSelectedProfile();
+    Optional<Profile> getSelectedProfile();
 
     /**
      * Sets the selected profile in the dialog.
      *
      * @param selectedProfile New selected profile
      */
-    void setSelectedProfile(Optional<ConfigProvider> selectedProfile);
+    void setSelectedProfile(Optional<Profile> selectedProfile);
 
     /**
      * Is the profiles list valid?
@@ -71,7 +71,7 @@ public interface NewServerDialogModel {
      *
      * @return Profile validator
      */
-    Validator<List<ConfigProvider>> getProfileListValidator();
+    Validator<List<Profile>> getProfileListValidator();
 
     /**
      * Returns the hostname of the server.

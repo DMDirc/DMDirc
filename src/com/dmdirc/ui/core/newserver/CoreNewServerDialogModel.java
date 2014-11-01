@@ -24,11 +24,14 @@ package com.dmdirc.ui.core.newserver;
 
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.ClientModule.UserConfig;
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.config.profiles.ProfileManager;
+import com.dmdirc.events.ProfileAddedEvent;
+import com.dmdirc.events.ProfileDeletedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProviderListener;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.NewServerDialogModel;
 import com.dmdirc.interfaces.ui.NewServerDialogModelListener;
 import com.dmdirc.util.collections.ListenerList;
@@ -45,24 +48,26 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+
+import net.engio.mbassy.listener.Handler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Default implementation of a new server dialog model.
  */
-public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigProviderListener {
+public class CoreNewServerDialogModel implements NewServerDialogModel {
 
     private final ListenerList listeners;
     private final AggregateConfigProvider globalConfig;
     private final ConfigProvider userConfig;
     private final ConnectionManager connectionManager;
-    private final IdentityController controller;
-    private final List<ConfigProvider> profiles;
-    private Optional<ConfigProvider> selectedProfile;
+    private final ProfileManager profileManager;
+    private final List<Profile> profiles;
+    private final DMDircMBassador eventBus;
+    private Optional<Profile> selectedProfile;
     private Optional<String> hostname;
     private Optional<Integer> port;
     private Optional<String> password;
@@ -73,12 +78,14 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
     public CoreNewServerDialogModel(
             @GlobalConfig final AggregateConfigProvider globalConfig,
             @UserConfig final ConfigProvider userConfig,
-            final IdentityController identityController,
-            final ConnectionManager connectionManager) {
+            final ProfileManager profileManager,
+            final ConnectionManager connectionManager,
+            final DMDircMBassador eventBus) {
         this.globalConfig = globalConfig;
         this.userConfig = userConfig;
-        this.controller = identityController;
+        this.profileManager = profileManager;
         this.connectionManager = connectionManager;
+        this.eventBus = eventBus;
         listeners = new ListenerList();
         profiles = new ArrayList<>(5);
         selectedProfile = Optional.empty();
@@ -91,9 +98,8 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
 
     @Override
     public void loadModel() {
-        controller.registerIdentityListener("profile", this);
-        profiles.addAll(
-                controller.getProvidersByType("profile").stream().collect(Collectors.toList()));
+        eventBus.subscribe(this);
+        profiles.addAll(profileManager.getProfiles());
         hostname = Optional.ofNullable(globalConfig.getOption("newserver", "hostname"));
         port = Optional.ofNullable(globalConfig.getOptionInt("newserver", "port"));
         password = Optional.ofNullable(globalConfig.getOption("newserver", "password"));
@@ -104,19 +110,19 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
     }
 
     @Override
-    public List<ConfigProvider> getProfileList() {
+    public List<Profile> getProfileList() {
         return ImmutableList.copyOf(profiles);
     }
 
     @Override
-    public Optional<ConfigProvider> getSelectedProfile() {
+    public Optional<Profile> getSelectedProfile() {
         return selectedProfile;
     }
 
     @Override
-    public void setSelectedProfile(final Optional<ConfigProvider> selectedProfile) {
+    public void setSelectedProfile(final Optional<Profile> selectedProfile) {
         checkNotNull(selectedProfile);
-        final Optional<ConfigProvider> oldSelectedProfile = this.selectedProfile;
+        final Optional<Profile> oldSelectedProfile = this.selectedProfile;
         this.selectedProfile = selectedProfile;
         listeners.getCallable(NewServerDialogModelListener.class).selectedProfileChanged(
                 oldSelectedProfile, selectedProfile);
@@ -128,7 +134,7 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
     }
 
     @Override
-    public Validator<List<ConfigProvider>> getProfileListValidator() {
+    public Validator<List<Profile>> getProfileListValidator() {
         return new ListNotEmptyValidator<>();
     }
 
@@ -270,25 +276,21 @@ public class CoreNewServerDialogModel implements NewServerDialogModel, ConfigPro
         listeners.remove(NewServerDialogModelListener.class, listener);
     }
 
-    @Override
-    public void configProviderAdded(final ConfigProvider configProvider) {
-        checkNotNull(configProvider);
-        profiles.add(configProvider);
+    @Handler
+    public void profileAdded(final ProfileAddedEvent event) {
+        profiles.add(event.getProfile());
         listeners.getCallable(NewServerDialogModelListener.class).profileListChanged(
                 ImmutableList.copyOf(profiles));
     }
 
-    @Override
-    public void configProviderRemoved(final ConfigProvider configProvider) {
-        checkNotNull(configProvider);
-        if (Optional.ofNullable(configProvider).equals(selectedProfile)) {
-            final Optional<ConfigProvider> oldSelectedProfile = selectedProfile;
+    @Handler
+    public void profileDeleted(final ProfileDeletedEvent event) {
+        if (Optional.of(event.getProfile()).equals(selectedProfile)) {
             selectedProfile = Optional.empty();
             listeners.getCallable(NewServerDialogModelListener.class).selectedProfileChanged(
-                    oldSelectedProfile, Optional.<ConfigProvider>empty());
-
+                    Optional.of(event.getProfile()), selectedProfile);
         }
-        profiles.remove(configProvider);
+        profiles.remove(event.getProfile());
         listeners.getCallable(NewServerDialogModelListener.class).profileListChanged(
                 ImmutableList.copyOf(profiles));
     }

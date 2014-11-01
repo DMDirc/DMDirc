@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.core.newserver;
 
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.ui.NewServerDialogModelListener;
 
 import java.util.List;
@@ -35,12 +35,12 @@ import java.util.Optional;
 public class NewServerDialogModelAdapter implements NewServerDialogModelListener {
 
     @Override
-    public void selectedProfileChanged(final Optional<ConfigProvider> oldProfile,
-            final Optional<ConfigProvider> newProfile) {
+    public void selectedProfileChanged(final Optional<Profile> oldProfile,
+            final Optional<Profile> newProfile) {
     }
 
     @Override
-    public void profileListChanged(final List<ConfigProvider> profiles) {
+    public void profileListChanged(final List<Profile> profiles) {
     }
 
     @Override

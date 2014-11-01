@@ -28,6 +28,7 @@ import com.dmdirc.Invite;
 import com.dmdirc.Query;
 import com.dmdirc.ServerState;
 import com.dmdirc.ServerStatus;
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.IgnoreList;
@@ -152,7 +153,7 @@ public interface Connection {
      *
      * @since 0.6.3
      */
-    void connect(final URI address, final ConfigProvider profile);
+    void connect(final URI address, final Profile profile);
 
     /**
      * Removes a specific channel and window from this server.
@@ -276,7 +277,7 @@ public interface Connection {
      *
      * @return The profile in use by this server
      */
-    ConfigProvider getProfile();
+    Profile getProfile();
 
     /**
      * Retrieves the protocol used by this server.

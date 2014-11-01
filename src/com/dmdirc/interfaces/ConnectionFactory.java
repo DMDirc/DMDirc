@@ -22,6 +22,7 @@
 
 package com.dmdirc.interfaces;
 
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.net.URI;
@@ -39,6 +40,6 @@ public interface ConnectionFactory {
      *
      * @return A new {@link Connection} instance with the appropriate configuration
      */
-    Connection createServer(final URI uri, final ConfigProvider profile);
+    Connection createServer(final URI uri, final Profile profile);
 
 }

@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.ChannelOpenedEvent;
 import com.dmdirc.events.QueryOpenedEvent;
 import com.dmdirc.events.ServerConnectErrorEvent;
@@ -42,7 +43,6 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
@@ -65,6 +65,7 @@ import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
 
@@ -141,7 +142,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     /** The address of the server we're connecting to. */
     private URI address;
     /** The profile we're using. */
-    private ConfigProvider profile;
+    private Profile profile;
     /** Object used to synchronise access to myState. */
     private final Object myStateLock = new Object();
     /** The current state of this server. */
@@ -229,7 +230,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final ConfigProvider userSettings,
             final ScheduledExecutorService executorService,
             final URI uri,
-            final ConfigProvider profile,
+            final Profile profile,
             final ColourManagerFactory colourManagerFactory) {
         super(null, "server-disconnected",
                 getHost(uri),
@@ -276,7 +277,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * @param uri     The new URI that this server should connect to
      * @param profile The profile that this server should use
      */
-    private void setConnectionDetails(final URI uri, final ConfigProvider profile) {
+    private void setConnectionDetails(final URI uri, final Profile profile) {
         this.address = uri;
         this.protocolDescription = parserFactory.getDescription(uri);
         this.profile = profile;
@@ -303,7 +304,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         "The specified profile is not null"
     })
     @SuppressWarnings("fallthrough")
-    public void connect(final URI address, final ConfigProvider profile) {
+    public void connect(final URI address, final Profile profile) {
         assert profile != null;
 
         synchronized (myStateLock) {
@@ -764,15 +765,12 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     })
     private MyInfo buildMyInfo() {
         checkNotNull(profile);
-        checkArgument(!profile.getOptionList(DOMAIN_PROFILE, "nicknames").isEmpty());
+        checkArgument(!profile.getNicknames().isEmpty());
 
         final MyInfo myInfo = new MyInfo();
-        myInfo.setNickname(profile.getOptionList(DOMAIN_PROFILE, "nicknames").get(0));
-        myInfo.setRealname(profile.getOption(DOMAIN_PROFILE, "realname"));
-
-        if (profile.hasOptionString(DOMAIN_PROFILE, "ident")) {
-            myInfo.setUsername(profile.getOption(DOMAIN_PROFILE, "ident"));
-        }
+        myInfo.setNickname(profile.getNicknames().get(0));
+        myInfo.setRealname(profile.getRealname());
+        profile.getIdent().ifPresent(myInfo::setUsername);
 
         return myInfo;
     }
@@ -870,7 +868,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     }
 
     @Override
-    public ConfigProvider getProfile() {
+    public Profile getProfile() {
         return profile;
     }
 
@@ -1131,7 +1129,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         String newNick = lastNick + new Random().nextInt(10);
 
-        final List<String> alts = profile.getOptionList(DOMAIN_PROFILE, "nicknames");
+        final List<String> alts = profile.getNicknames();
         int offset = 0;
 
         // Loop so we can check case sensitivity
