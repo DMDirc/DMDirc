@@ -22,7 +22,9 @@
 
 package com.dmdirc.config.profiles;
 
-import com.dmdirc.util.validators.Validator;
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.ProfileAddedEvent;
+import com.dmdirc.events.ProfileDeletedEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,10 +39,12 @@ import javax.inject.Singleton;
 @Singleton
 public class ProfileManager {
 
+    private final DMDircMBassador eventBus;
     private final Collection<Profile> profiles;
 
     @Inject
-    public ProfileManager() {
+    public ProfileManager(final DMDircMBassador eventBus) {
+        this.eventBus = eventBus;
         profiles = new ArrayList<>();
     }
 
@@ -51,6 +55,7 @@ public class ProfileManager {
      */
     public void addProfile(final Profile profile) {
         profiles.add(profile);
+        eventBus.publishAsync(new ProfileAddedEvent(profile));
     }
 
     /**
@@ -60,6 +65,7 @@ public class ProfileManager {
      */
     public void deleteProfile(final Profile profile) {
         profiles.remove(profile);
+        eventBus.publishAsync(new ProfileDeletedEvent(profile));
     }
 
     /**
