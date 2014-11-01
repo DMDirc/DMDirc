@@ -324,7 +324,7 @@ public class CoreNewServerDialogModelTest {
         instance.addListener(listener);
         assertEquals("testListenerProfileListChangedAdded: ", Lists.newArrayList(profile1),
                 instance.getProfileList());
-        instance.profileDeleted(new ProfileDeletedEvent(profile2));
+        instance.profileAdded(new ProfileAddedEvent(profile2));
         assertEquals("testListenerProfileListChangedAdded:", Lists.newArrayList(profile1, profile2),
                 instance.getProfileList());
         verify(listener).profileListChanged(Lists.newArrayList(profile1, profile2));
