@@ -99,7 +99,7 @@ public class NewServer extends Command implements IntelligentCommand {
         try {
             final URI address = uriParser.parseFromText(args.getArgumentsAsString());
             final Connection server = connectionFactory.createServer(address,
-                    Iterables.getFirst(profileManager.getProfiles(), profileManager.getDefault()));
+                    profileManager.getDefault());
             server.connect();
         } catch (InvalidURIException ex) {
             origin.addLine(FORMAT_ERROR, "Invalid URI: " + ex.getMessage()

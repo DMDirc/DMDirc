@@ -177,8 +177,7 @@ public class ServerManager implements ConnectionManager {
 
     @Override
     public Connection connectToAddress(final URI uri) {
-        return connectToAddress(uri,
-                Iterables.getFirst(profileManager.getProfiles(), profileManager.getDefault()));
+        return connectToAddress(uri, profileManager.getDefault());
     }
 
     @Override

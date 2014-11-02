@@ -26,6 +26,7 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
@@ -90,6 +91,6 @@ public class ProfileManager {
      * @return Default profile
      */
     public Profile getDefault() {
-        return defaultProfile;
+        return Iterables.getFirst(profiles, defaultProfile);
     }
 }
