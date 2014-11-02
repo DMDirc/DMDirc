@@ -26,6 +26,10 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
 
+import com.google.common.collect.Lists;
+
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,7 +95,9 @@ public class ProfileManagerTest {
 
     @Test
     public void testGetDefaultProfile_EmptyList() {
-        assertEquals(instance.getDefaultProfile(), instance.getDefault());
+        final String nick = System.getProperty("user.name").replace(' ', '_');
+        final Profile profile = new Profile(nick, nick, Optional.empty(), Lists.newArrayList(nick));
+        assertEquals(profile, instance.getDefault());
     }
 
     @Test

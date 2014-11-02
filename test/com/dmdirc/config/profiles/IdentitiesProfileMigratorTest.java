@@ -77,20 +77,20 @@ public class IdentitiesProfileMigratorTest {
     }
 
     @Test
-    public void testNeedsMigration_NoProfiles() throws Exception {
+    public void testNeedsMigration_NoProfiles() {
         when(identityManager.getProvidersByType("profile")).thenReturn(Lists.newArrayList());
         assertFalse(instance.needsMigration());
     }
 
     @Test
-    public void testNeedsMigration_Profiles() throws Exception {
+    public void testNeedsMigration_Profiles() {
         when(identityManager.getProvidersByType("profile")).thenReturn(
                 Lists.newArrayList(configProvider1));
         assertTrue(instance.needsMigration());
     }
 
     @Test
-    public void testMigrate_NoIdent() throws Exception {
+    public void testMigrate_NoIdent() {
         when(identityManager.getProvidersByType("profile")).thenReturn(
                 Lists.newArrayList(configProvider1));
         instance.migrate();
@@ -99,7 +99,7 @@ public class IdentitiesProfileMigratorTest {
     }
 
     @Test
-    public void testMigrate_Ident() throws Exception {
+    public void testMigrate_Ident() {
         when(identityManager.getProvidersByType("profile")).thenReturn(
                 Lists.newArrayList(configProvider2));
         instance.migrate();
@@ -108,7 +108,7 @@ public class IdentitiesProfileMigratorTest {
     }
 
     @Test
-    public void testMigrate_MultipleNicknames() throws Exception {
+    public void testMigrate_MultipleNicknames() {
         when(identityManager.getProvidersByType("profile")).thenReturn(
                 Lists.newArrayList(configProvider3));
         instance.migrate();
