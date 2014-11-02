@@ -39,8 +39,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
 
-import com.google.common.collect.Iterables;
-
 import java.net.URI;
 import java.util.stream.Collectors;
 

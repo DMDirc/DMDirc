@@ -35,7 +35,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
-import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.net.URI;
