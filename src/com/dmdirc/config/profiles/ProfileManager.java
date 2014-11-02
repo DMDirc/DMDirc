@@ -93,4 +93,8 @@ public class ProfileManager {
     public Profile getDefault() {
         return Iterables.getFirst(profiles, defaultProfile);
     }
+
+    Profile getDefaultProfile() {
+        return defaultProfile;
+    }
 }

@@ -88,4 +88,23 @@ public class ProfileManagerTest {
         instance.deleteProfile(profile1);
         verify(eventBus).publishAsync(any(ProfileDeletedEvent.class));
     }
+
+    @Test
+    public void testGetDefaultProfile_EmptyList() {
+        assertEquals(instance.getDefaultProfile(), instance.getDefault());
+    }
+
+    @Test
+    public void testGetDefaultProfile_1() {
+        instance.addProfile(profile1);
+        instance.addProfile(profile2);
+        assertEquals(profile1, instance.getDefault());
+    }
+
+    @Test
+    public void testGetDefaultProfile_2() {
+        instance.addProfile(profile2);
+        instance.addProfile(profile1);
+        assertEquals(profile2, instance.getDefault());
+    }
 }
