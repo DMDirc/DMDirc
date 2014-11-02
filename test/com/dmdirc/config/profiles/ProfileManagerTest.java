@@ -26,6 +26,10 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
 
+import com.google.common.collect.Lists;
+
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,5 +91,26 @@ public class ProfileManagerTest {
         reset(eventBus);
         instance.deleteProfile(profile1);
         verify(eventBus).publishAsync(any(ProfileDeletedEvent.class));
+    }
+
+    @Test
+    public void testGetDefaultProfile_EmptyList() {
+        final String nick = System.getProperty("user.name").replace(' ', '_');
+        final Profile profile = new Profile(nick, nick, Optional.empty(), Lists.newArrayList(nick));
+        assertEquals(profile, instance.getDefault());
+    }
+
+    @Test
+    public void testGetDefaultProfile_1() {
+        instance.addProfile(profile1);
+        instance.addProfile(profile2);
+        assertEquals(profile1, instance.getDefault());
+    }
+
+    @Test
+    public void testGetDefaultProfile_2() {
+        instance.addProfile(profile2);
+        instance.addProfile(profile1);
+        assertEquals(profile2, instance.getDefault());
     }
 }

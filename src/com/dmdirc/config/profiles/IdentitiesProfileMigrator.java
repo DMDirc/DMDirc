@@ -68,7 +68,7 @@ public class IdentitiesProfileMigrator implements Migrator {
             }
             profileManager.addProfile(
                     new Profile(p.getName(), p.getOption(DOMAIN_PROFILE, "realname"), ident,
-                            Lists.newArrayList(p.getOption(DOMAIN_PROFILE, "nicknames"))));
+                            p.getOptionList(DOMAIN_PROFILE, "nicknames")));
             try {
                 p.delete();
             } catch (IOException e) {
