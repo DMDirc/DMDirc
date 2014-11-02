@@ -57,23 +57,23 @@ public class IdentitiesProfileMigrator implements Migrator {
 
     @Override
     public void migrate() {
-        final List<ConfigProvider> profiles = identityManager.getProvidersByType("profile");
-        profiles.forEach(p -> {
+        final List<ConfigProvider> profiles = Lists.newArrayList(
+                identityManager.getProvidersByType("profile"));
+        for(ConfigProvider p : profiles) {
             final Optional<String> ident;
             if (p.hasOptionString("profile", "ident")) {
                 ident = Optional.of(p.getOption(DOMAIN_PROFILE, "ident"));
             } else {
                 ident = Optional.empty();
             }
-            profileManager.addProfile(new Profile(p.getName(),
-                            p.getOption(DOMAIN_PROFILE, "realname"),
-                            ident, Lists.newArrayList(p.getOption(DOMAIN_PROFILE, "nicknames")))
-            );
+            profileManager.addProfile(
+                    new Profile(p.getName(), p.getOption(DOMAIN_PROFILE, "realname"), ident,
+                            Lists.newArrayList(p.getOption(DOMAIN_PROFILE, "nicknames"))));
             try {
                 p.delete();
             } catch (IOException e) {
                 //Can't do anything, ignore
             }
-        });
+        }
     }
 }
