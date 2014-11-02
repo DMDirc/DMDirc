@@ -56,27 +56,28 @@ public class CoreProfilesDialogModelTest {
     private MutableProfile mutableProfile1;
     private MutableProfile mutableProfile2;
     private MutableProfile mutableProfile3;
+    private MutableProfile mutableProfile4;
     private List<MutableProfile> mutableProfiles;
     private CoreProfilesDialogModel instance;
-    private Profile profile1;
-    private Profile profile2;
-    private Profile profile3;
 
     @Before
     public void setupMocks() {
-        profile1 = getProfile(1);
-        profile2 = getProfile(2);
-        profile3 = getProfile(3);
+        final Profile profile1 = getProfile(1);
+        final Profile profile2 = getProfile(2);
+        final Profile profile3 = getProfile(3);
+        final Profile profile4 = getProfile(4);
         final List<Profile> profiles = Lists.newArrayList(profile3, profile1, profile2);
         Collections.sort(profiles, comparing(Profile::getName));
         mutableProfile1 = new MutableProfile(profile1);
         mutableProfile2 = new MutableProfile(profile2);
         mutableProfile3 = new MutableProfile(profile3);
+        mutableProfile4 = new MutableProfile(profile4);
         mutableProfiles = Lists.newArrayList(mutableProfile1, mutableProfile2, mutableProfile3);
         Collections.sort(mutableProfiles, comparing(MutableProfile::getName));
         when(profileManager.getProfiles()).thenReturn(profiles);
         instance = new CoreProfilesDialogModel(profileManager);
         instance.loadModel();
+        instance.addListener(listener);
     }
 
     private Profile getProfile(final int name) {
@@ -116,27 +117,34 @@ public class CoreProfilesDialogModelTest {
     public void testAddProfile() {
         when(profileManager.getProfiles()).thenReturn(Lists.newArrayList());
         instance.loadModel();
+        verify(listener).profileSelectionChanged(Optional.empty());
+        assertTrue("testAddProfile", !instance.getSelectedProfile().isPresent());
         assertFalse("testAddProfile", instance.getProfile("profile4").isPresent());
-        instance.addProfile("profile4", "realname", "ident", Lists.newArrayList("nickname"));
-        assertTrue("testAddProfile", instance.getProfile("profile4").isPresent());
+        instance.addProfile(mutableProfile1.getName(), mutableProfile1.getRealname(),
+                mutableProfile1.getIdent().get(), mutableProfile1.getNicknames());
+        assertTrue("testAddProfile", instance.getProfile(mutableProfile1.getName()).isPresent());
+        verify(listener).profileAdded(mutableProfile1);
+        verify(listener).profileSelectionChanged(Optional.of(mutableProfile1));
     }
 
     @Test
     public void testEditProfile() {
         final MutableProfile preEdit = instance.getProfile("profile1").get();
-        assertEquals("testEditProfile", "profile1", preEdit.getName());
-        assertEquals("testEditProfile", "realname1", preEdit.getRealname());
-        assertEquals("testEditProfile", "ident1", preEdit.getIdent().get());
-        assertEquals("testEditProfile", Lists.newArrayList("nickname11", "nickname12",
-                        "nickname13"), preEdit.getNicknames());
-        instance.editProfile(preEdit, "profile1", "newRealname", "newIdent",
-                Lists.newArrayList("nickname"));
-        final MutableProfile postEdit = instance.getProfile("profile1").get();
-        assertEquals("testEditProfile", "profile1", postEdit.getName());
-        assertEquals("testEditProfile", "newRealname", postEdit.getRealname());
-        assertEquals("testEditProfile", "newIdent", postEdit.getIdent().get());
-        assertEquals("testEditProfile", Lists.newArrayList("nickname"),
-                postEdit.getNicknames());
+        assertEquals("testEditProfile", "profile1", mutableProfile1.getName());
+        assertEquals("testEditProfile", "realname1", mutableProfile1.getRealname());
+        assertEquals("testEditProfile", "ident1", mutableProfile1.getIdent().get());
+        assertEquals("testEditProfile",
+                Lists.newArrayList("nickname11", "nickname12", "nickname13"),
+                mutableProfile1.getNicknames());
+        instance.editProfile(preEdit, mutableProfile4.getName(), mutableProfile4.getRealname(),
+                mutableProfile4.getIdent().get(), mutableProfile4.getNicknames());
+        verify(listener).profileEdited(mutableProfile4);
+        assertEquals("testEditProfile", "profile4", mutableProfile4.getName());
+        assertEquals("testEditProfile", "realname4", mutableProfile4.getRealname());
+        assertEquals("testEditProfile", "ident4", mutableProfile4.getIdent().get());
+        assertEquals("testEditProfile",
+                Lists.newArrayList("nickname41", "nickname42", "nickname43"),
+                mutableProfile4.getNicknames());
     }
 
     @Test
@@ -155,6 +163,7 @@ public class CoreProfilesDialogModelTest {
         assertEquals("testRemoveProfile", 3, instance.getProfileList().size());
         assertTrue("testRemoveProfile", instance.getProfile("profile3").isPresent());
         instance.removeProfile("profile3");
+        verify(listener).profileRemoved(mutableProfile3);
         assertEquals("testRemoveProfile", 2, instance.getProfileList().size());
         assertFalse("testRemoveProfile", instance.getProfile("profile3").isPresent());
     }
@@ -163,6 +172,7 @@ public class CoreProfilesDialogModelTest {
     public void testGetSelectedProfile() {
         assertTrue("testGetSelectedProfile", instance.getSelectedProfile().isPresent());
         instance.setSelectedProfile(instance.getProfile("profile2"));
+        verify(listener).profileSelectionChanged(Optional.of(mutableProfile2));
         assertEquals("testGetSelectedProfile", "profile2",
                 instance.getSelectedProfile().get().getName());
     }
@@ -170,6 +180,9 @@ public class CoreProfilesDialogModelTest {
     @Test
     public void testGetSelectedProfileDetails() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
+        verify(listener, times(0)).profileSelectionChanged(Optional.of(mutableProfile1));
+        assertEquals("testGetSelectedProfileDetails", Optional.of(mutableProfile1),
+                instance.getSelectedProfile());
         assertEquals("testGetSelectedProfileDetails", "profile1",
                 instance.getSelectedProfileName().get());
         assertEquals("testGetSelectedProfileDetails", "ident1",
@@ -184,17 +197,18 @@ public class CoreProfilesDialogModelTest {
     @Test
     public void testSetSelectedProfileSelectedNickname() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
-        assertEquals("testSetSelectedProfileSelectedNickname",
-                Optional.<String>empty(), instance.getSelectedProfileSelectedNickname());
+        assertEquals("testSetSelectedProfileSelectedNickname", Optional.<String>empty(),
+                instance.getSelectedProfileSelectedNickname());
         instance.setSelectedProfileSelectedNickname(Optional.ofNullable("nickname12"));
-        assertEquals("testSetSelectedProfileSelectedNickname",
-                Optional.ofNullable("nickname12"),
+        verify(listener).selectedNicknameChanged(Optional.of("nickname12"));
+        assertEquals("testSetSelectedProfileSelectedNickname", Optional.ofNullable("nickname12"),
                 instance.getSelectedProfileSelectedNickname());
     }
 
     @Test
     public void testSetSelectedProfileDetails() {
-        instance.setSelectedProfile(instance.getProfile("profile1"));
+        instance.setSelectedProfile(instance.getProfile("profile2"));
+        verify(listener).profileSelectionChanged(Optional.of(mutableProfile2));
         instance.setSelectedProfileName(Optional.ofNullable("testName"));
         instance.setSelectedProfileIdent(Optional.ofNullable("testIdent"));
         instance.setSelectedProfileRealname(Optional.ofNullable("testRealname"));
@@ -218,6 +232,7 @@ public class CoreProfilesDialogModelTest {
                 Lists.newArrayList("nickname11", "nickname12", "nickname13"),
                 instance.getSelectedProfileNicknames().get());
         instance.addSelectedProfileNickname("nickname4");
+        verify(listener).selectedProfileNicknameAdded("nickname4");
         assertEquals("testAddSelectedProfileNickname",
                 Lists.newArrayList("nickname11", "nickname12", "nickname13", "nickname4"),
                 instance.getSelectedProfileNicknames().get());
@@ -230,6 +245,7 @@ public class CoreProfilesDialogModelTest {
                 Lists.newArrayList("nickname11", "nickname12", "nickname13"),
                 instance.getSelectedProfileNicknames().get());
         instance.removeSelectedProfileNickname("nickname13");
+        verify(listener).selectedProfileNicknameRemoved("nickname13");
         assertEquals("testRemoveSelectedProfileNickname",
                 Lists.newArrayList("nickname11", "nickname12"),
                 instance.getSelectedProfileNicknames().get());
@@ -243,6 +259,7 @@ public class CoreProfilesDialogModelTest {
                 Optional.ofNullable("nickname12"),
                 instance.getSelectedProfileSelectedNickname());
         instance.editSelectedProfileNickname("nickname12", "nickname4");
+        verify(listener).selectedProfileNicknameEdited("nickname12", "nickname4");
         assertEquals("testAddSelectedProfileNickname",
                 Lists.newArrayList("nickname11", "nickname4", "nickname13"),
                 instance.getSelectedProfileNicknames().get());
@@ -250,14 +267,12 @@ public class CoreProfilesDialogModelTest {
 
     @Test
     public void testAddListener() {
-        instance.addListener(listener);
         instance.addProfile("profile4", "realname", "ident", Lists.newArrayList("nickname"));
         verify(listener).profileAdded(any(MutableProfile.class));
     }
 
     @Test
     public void testRemoveListener() {
-        instance.addListener(listener);
         instance.addProfile("profile4", "realname", "ident", Lists.newArrayList("nickname"));
         assertTrue(instance.getProfile("profile4").isPresent());
         final MutableProfile profile4 = instance.getProfile("profile4").get();
