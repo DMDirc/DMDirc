@@ -26,9 +26,13 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -41,11 +45,14 @@ public class ProfileManager {
 
     private final DMDircMBassador eventBus;
     private final List<Profile> profiles;
+    private final Profile defaultProfile;
 
     @Inject
     public ProfileManager(final DMDircMBassador eventBus) {
         this.eventBus = eventBus;
         profiles = new ArrayList<>();
+        final String nick = System.getProperty("user.name").replace(' ', '_');
+        defaultProfile = new Profile(nick, nick, Optional.empty(), Lists.newArrayList(nick));
     }
 
     /**
@@ -73,7 +80,16 @@ public class ProfileManager {
      *
      * @return Unmodifiable collection of profiles
      */
-    public List<Profile> getProfiles() {
-        return Collections.unmodifiableList(profiles);
+    public Collection<Profile> getProfiles() {
+        return Collections.unmodifiableCollection(profiles);
+    }
+
+    /**
+     * Returns the default profile if no custom profiles have been set.
+     *
+     * @return Default profile
+     */
+    public Profile getDefault() {
+        return defaultProfile;
     }
 }

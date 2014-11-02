@@ -35,6 +35,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
+import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.net.URI;
@@ -176,7 +177,8 @@ public class ServerManager implements ConnectionManager {
 
     @Override
     public Connection connectToAddress(final URI uri) {
-        return connectToAddress(uri, profileManager.getProfiles().get(0));
+        return connectToAddress(uri,
+                Iterables.getFirst(profileManager.getProfiles(), profileManager.getDefault()));
     }
 
     @Override

@@ -39,6 +39,8 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
 
+import com.google.common.collect.Iterables;
+
 import java.net.URI;
 import java.util.stream.Collectors;
 
@@ -97,7 +99,7 @@ public class NewServer extends Command implements IntelligentCommand {
         try {
             final URI address = uriParser.parseFromText(args.getArgumentsAsString());
             final Connection server = connectionFactory.createServer(address,
-                    profileManager.getProfiles().get(0));
+                    Iterables.getFirst(profileManager.getProfiles(), profileManager.getDefault()));
             server.connect();
         } catch (InvalidURIException ex) {
             origin.addLine(FORMAT_ERROR, "Invalid URI: " + ex.getMessage()
