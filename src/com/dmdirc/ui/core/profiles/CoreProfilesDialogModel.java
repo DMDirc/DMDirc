@@ -94,8 +94,8 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         final MutableProfile profile =
                 new MutableProfile(name, realname, Optional.of(ident), nicknames);
         profiles.put(name, profile);
-        setSelectedProfile(Optional.of(profile));
         listeners.getCallable(ProfilesDialogModelListener.class).profileAdded(profile);
+        setSelectedProfile(Optional.of(profile));
     }
 
     @Override
@@ -120,7 +120,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         checkArgument(profiles.containsKey(name), "profile must exist in list");
         final MutableProfile profile = profiles.remove(name);
         if (getSelectedProfile().isPresent() && getSelectedProfile().get().equals(profile)) {
-            setSelectedProfile(Optional.empty());
+            setSelectedProfile(Optional.ofNullable(Iterables.getFirst(profiles.values(), null)));
         }
         listeners.getCallable(ProfilesDialogModelListener.class).profileRemoved(profile);
     }
