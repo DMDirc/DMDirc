@@ -26,11 +26,11 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.util.Optional;
 
@@ -55,7 +55,7 @@ public class AutoCommandHandlerTest {
     @Mock private ClientOpenedEvent clientOpenedEvent;
     @Mock private ServerConnectedEvent serverConnectedEvent;
     @Mock private Connection connection;
-    @Mock private ConfigProvider profile;
+    @Mock private Profile profile;
     @Mock private FrameContainer container;
     @Mock private CommandParser commandParser;
     private AutoCommandHandler autoCommandHandler;

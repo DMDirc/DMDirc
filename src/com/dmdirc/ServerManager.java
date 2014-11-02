@@ -23,13 +23,13 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
+import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
@@ -52,8 +52,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 /**
  * The ServerManager maintains a list of all servers, and provides methods to search or iterate over
  * them.
@@ -63,8 +61,8 @@ public class ServerManager implements ConnectionManager {
 
     /** All servers that currently exist. */
     private final Set<Server> servers = new CopyOnWriteArraySet<>();
-    /** The identity controller to use to find profiles. */
-    private final IdentityController identityController;
+    /** The manager to use to find profiles. */
+    private final ProfileManager profileManager;
     /** A provider of {@link CommandController}s to pass to servers. */
     private final Provider<CommandController> commandController;
     /** The identity factory to give to servers. */
@@ -79,7 +77,7 @@ public class ServerManager implements ConnectionManager {
     /**
      * Creates a new instance of ServerManager.
      *
-     * @param identityController The identity controller to use to find profiles.
+     * @param profileManager     The manager to use to find profiles.
      * @param identityFactory    The factory to use to create new identities.
      * @param commandController  A provider of {@link CommandController}s to pass to servers.
      * @param windowManager      Window manager to add new servers to.
@@ -88,13 +86,13 @@ public class ServerManager implements ConnectionManager {
      */
     @Inject
     public ServerManager(
-            final IdentityController identityController,
+            final ProfileManager profileManager,
             final IdentityFactory identityFactory,
             final Provider<CommandController> commandController,
             final WindowManager windowManager,
             final ServerFactoryImpl serverFactory,
             final DMDircMBassador eventBus) {
-        this.identityController = identityController;
+        this.profileManager = profileManager;
         this.identityFactory = identityFactory;
         this.commandController = commandController;
         this.windowManager = windowManager;
@@ -103,7 +101,7 @@ public class ServerManager implements ConnectionManager {
     }
 
     @Override
-    public Server createServer(final URI uri, final ConfigProvider profile) {
+    public Server createServer(final URI uri, final Profile profile) {
         final ConfigProviderMigrator configProvider = identityFactory.createMigratableConfig(uri.
                 getScheme(), "", "", uri.getHost());
 
@@ -178,13 +176,11 @@ public class ServerManager implements ConnectionManager {
 
     @Override
     public Connection connectToAddress(final URI uri) {
-        return connectToAddress(uri,
-                identityController.getProvidersByType("profile").get(0));
+        return connectToAddress(uri, profileManager.getDefault());
     }
 
     @Override
-    public Connection connectToAddress(final URI uri, final ConfigProvider profile) {
-        checkArgument(profile.isProfile());
+    public Connection connectToAddress(final URI uri, final Profile profile) {
         final Optional<Server> existingServer = servers.stream()
                 .filter(s -> s.compareURI(uri)).findAny();
 

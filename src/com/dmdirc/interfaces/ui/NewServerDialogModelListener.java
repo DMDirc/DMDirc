@@ -22,6 +22,7 @@
 
 package com.dmdirc.interfaces.ui;
 
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.util.List;
@@ -38,15 +39,15 @@ public interface NewServerDialogModelListener {
      * @param oldProfile Old profile
      * @param newProfile New profile
      */
-    void selectedProfileChanged(Optional<ConfigProvider> oldProfile,
-            Optional<ConfigProvider> newProfile);
+    void selectedProfileChanged(Optional<Profile> oldProfile,
+            Optional<Profile> newProfile);
 
     /**
      * Called when the profile list is changed.
      *
      * @param profiles New profile list
      */
-    void profileListChanged(List<ConfigProvider> profiles);
+    void profileListChanged(List<Profile> profiles);
 
     /**
      * Called when the details of the server are changed.

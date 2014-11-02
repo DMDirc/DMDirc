@@ -20,26 +20,22 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces;
+package com.dmdirc.events;
 
 import com.dmdirc.config.profiles.Profile;
-import com.dmdirc.interfaces.config.ConfigProvider;
-
-import java.net.URI;
 
 /**
- * Interface for factories which create new {@link Connection}s.
+ * Fired when a profile is deleted from the config.
  */
-public interface ConnectionFactory {
+public class ProfileDeletedEvent extends DMDircEvent {
 
-    /**
-     * Creates a new connection which will connect to the specified URL with the specified profile.
-     *
-     * @param uri     The address of the server to connect to
-     * @param profile The profile to use
-     *
-     * @return A new {@link Connection} instance with the appropriate configuration
-     */
-    Connection createServer(final URI uri, final Profile profile);
+    private final Profile profile;
 
+    public ProfileDeletedEvent(final Profile profile) {
+        this.profile = profile;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
 }

@@ -23,6 +23,8 @@
 package com.dmdirc.config.profiles;
 
 import com.dmdirc.commandline.CommandLineOptionsModule;
+import com.dmdirc.commandparser.auto.ActionServerPerformMigrator;
+import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 
 import java.nio.file.Path;
@@ -49,5 +51,10 @@ public class ProfilesModule {
     public SystemLifecycleComponent getLifecycleComponent(
             final ProfileManagerLifeCycleManager manager) {
         return manager;
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public Migrator getIdentitiesProfileMigrator(final IdentitiesProfileMigrator migrator) {
+        return migrator;
     }
 }

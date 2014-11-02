@@ -25,8 +25,8 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.URIParser;
@@ -53,7 +53,7 @@ public class ChangeServerTest {
     @Mock private ErrorManager errorManager;
     @Mock private CommandController controller;
     @Mock private FrameContainer tiw;
-    @Mock private ConfigProvider profile;
+    @Mock private Profile profile;
     @Mock private Server server;
     private ChangeServer command;
 

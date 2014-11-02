@@ -126,10 +126,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         loadUserIdentities();
         loadConfig();
 
-        if (getProvidersByType("profile").isEmpty()) {
-            createProfileConfig("Default Profile");
-        }
-
         // Set up the identity used for the addons defaults
         final ConfigTarget target = new ConfigTarget();
         target.setGlobalDefault();

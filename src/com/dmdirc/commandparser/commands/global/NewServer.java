@@ -30,12 +30,11 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionFactory;
-import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.plugins.Service;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
@@ -59,8 +58,8 @@ public class NewServer extends Command implements IntelligentCommand {
     private final ConnectionFactory connectionFactory;
     /** Plugin manager to query for available services. */
     private final PluginManager pluginManager;
-    /** Identity controller to use to find profiles. */
-    private final IdentityController identityController;
+    /** Manager to use to find profiles. */
+    private final ProfileManager profileManager;
     /** The parser to use for user input. */
     private final URIParser uriParser;
 
@@ -70,7 +69,7 @@ public class NewServer extends Command implements IntelligentCommand {
      * @param controller         The controller to use for command information.
      * @param connectionFactory      The factory to use to construct servers.
      * @param pluginManager      The plugin manager to use to query available services.
-     * @param identityController Identity controller to use to find profiles.
+     * @param profileManager     Manager to use to find profiles.
      * @param uriParser          The parser to use for user input.
      */
     @Inject
@@ -78,12 +77,12 @@ public class NewServer extends Command implements IntelligentCommand {
             final CommandController controller,
             final ConnectionFactory connectionFactory,
             final PluginManager pluginManager,
-            final IdentityController identityController,
+            final ProfileManager profileManager,
             final URIParser uriParser) {
         super(controller);
         this.connectionFactory = connectionFactory;
         this.pluginManager = pluginManager;
-        this.identityController = identityController;
+        this.profileManager = profileManager;
         this.uriParser = uriParser;
     }
 
@@ -98,7 +97,7 @@ public class NewServer extends Command implements IntelligentCommand {
         try {
             final URI address = uriParser.parseFromText(args.getArgumentsAsString());
             final Connection server = connectionFactory.createServer(address,
-                    identityController.getProvidersByType("profile").get(0));
+                    profileManager.getDefault());
             server.connect();
         } catch (InvalidURIException ex) {
             origin.addLine(FORMAT_ERROR, "Invalid URI: " + ex.getMessage()
