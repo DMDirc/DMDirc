@@ -33,7 +33,7 @@ import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
 
 import java.net.URI;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Provider;
@@ -81,7 +81,8 @@ public class ServerManagerTest {
 
         when(commandControllerProvider.get()).thenReturn(commandController);
 
-        when(profileManager.getProfiles()).thenReturn(Arrays.asList(profile));
+        when(profileManager.getProfiles()).thenReturn(Collections.singletonList(profile));
+        when(profileManager.getDefault()).thenReturn(profile);
         when(identityFactory.createMigratableConfig(anyString(), anyString(), anyString(),
                 anyString())).thenReturn(configProviderMigrator);
         when(configProviderMigrator.getConfigProvider()).thenReturn(configProvider);

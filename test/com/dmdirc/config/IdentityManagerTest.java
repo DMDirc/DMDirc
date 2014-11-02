@@ -130,17 +130,6 @@ public class IdentityManagerTest {
     }
 
     @Test
-    public void testCreatesDefaultProfile() throws InvalidIdentityFileException {
-        final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus);
-        identityManager.initialise();
-
-        final List<ConfigProvider> profiles = identityManager.getProvidersByType("profile");
-        assertEquals(1, profiles.size());
-        assertEquals("Default Profile", profiles.get(0).getName());
-    }
-
-    @Test
     public void testUsesSystemUsernameForProfileNickname() throws InvalidIdentityFileException {
         final IdentityManager identityManager = new IdentityManager(
                 baseDirectory, identitiesDirectory, eventBus);
