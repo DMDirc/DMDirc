@@ -44,7 +44,7 @@ public class ProfilesModule {
     @Singleton
     public ProfileStore getProfileStore(
             @CommandLineOptionsModule.Directory(CommandLineOptionsModule.DirectoryType.BASE) final Path directory) {
-        return new YamlProfileStore(directory.resolve("auto-commands.yml"));
+        return new YamlProfileStore(directory.resolve("profiles.yml"));
     }
 
     @Provides(type = Provides.Type.SET)
