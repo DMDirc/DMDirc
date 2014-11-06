@@ -23,6 +23,7 @@
 package com.dmdirc.ui.core.autocommands;
 
 import com.dmdirc.commandparser.auto.AutoCommand;
+import com.dmdirc.ui.core.profiles.MutableProfile;
 
 import com.google.common.base.MoreObjects;
 
@@ -40,6 +41,13 @@ public class MutableAutoCommand {
     private Optional<String> network;
     private Optional<String> profile;
     private String response;
+
+    public MutableAutoCommand(@Nonnull final AutoCommand command) {
+        this(command.getServer(),
+                command.getNetwork(),
+                command.getProfile(),
+                command.getResponse());
+    }
 
     public MutableAutoCommand(
             final Optional<String> server,
