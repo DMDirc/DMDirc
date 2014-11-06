@@ -64,14 +64,16 @@ public class AutoCommandsModel {
                 }).forEach(commands::add);
                 break;
             case CONNECTION:
-                originalCommands.addAll(manager.getConnectionAutoCommands());
-                manager.getConnectionAutoCommands()
-                        .stream().map(MutableAutoCommand::new).forEach(commands::add);
+                manager.getConnectionAutoCommands().stream().map(c -> {
+                    originalCommands.add(c);
+                    return new MutableAutoCommand(c);
+                }).forEach(commands::add);
                 break;
             case GLOBAL:
-                originalCommands.addAll(manager.getGlobalAutoCommands());
-                manager.getGlobalAutoCommands()
-                        .stream().map(MutableAutoCommand::new).forEach(commands::add);
+                manager.getGlobalAutoCommands().stream().map(c -> {
+                    originalCommands.add(c);
+                    return new MutableAutoCommand(c);
+                }).forEach(commands::add);
                 break;
         }
     }
