@@ -25,6 +25,7 @@ package com.dmdirc.ui.core.autocommands;
 import com.dmdirc.commandparser.auto.AutoCommand;
 import com.dmdirc.commandparser.auto.AutoCommandManager;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.Collection;
@@ -150,7 +151,17 @@ public class AutoCommandsModel {
     }
 
     public void save() {
+        final Collection<AutoCommand> removedCommands = Lists.newArrayList(originalCommands);
+        originalCommands.forEach(ac -> commands.forEach(mac -> {
+            if (mac.equalsAutoCommand(ac)) {
+                removedCommands.remove(ac);
+            }
+        }));
         originalCommands.forEach(manager::removeAutoCommand);
-        commands.stream().map(MutableAutoCommand::getAutoCommand).forEach(manager::addAutoCommand);
+        commands.forEach(c -> {
+            if (!originalCommands.contains(c.getAutoCommand())) {
+                manager.addAutoCommand(c.getAutoCommand());
+            }
+        });
     }
 }
