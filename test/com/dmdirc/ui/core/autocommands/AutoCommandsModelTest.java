@@ -38,7 +38,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -271,13 +270,6 @@ public class AutoCommandsModelTest {
         instance.removeCommand(mutableCommand1);
         instance.save();
         verify(manager).removeAutoCommand(mutableCommand1.getAutoCommand());
-        verify(manager).removeAutoCommand(mutableCommand2.getAutoCommand());
-        verify(manager).removeAutoCommand(mutableCommand3.getAutoCommand());
-        verify(manager).removeAutoCommand(mutableCommand4.getAutoCommand());
-        verify(manager, never()).addAutoCommand(mutableCommand1.getAutoCommand());
-        verify(manager).addAutoCommand(mutableCommand2.getAutoCommand());
-        verify(manager).addAutoCommand(mutableCommand3.getAutoCommand());
-        verify(manager).addAutoCommand(mutableCommand4.getAutoCommand());
         verify(manager).addAutoCommand(mutableCommand5.getAutoCommand());
     }
 }
