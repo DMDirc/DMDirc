@@ -24,6 +24,8 @@ package com.dmdirc.ui.core.autocommands;
 
 import com.dmdirc.commandparser.auto.AutoCommand;
 import com.dmdirc.commandparser.auto.AutoCommandManager;
+import com.dmdirc.interfaces.ui.AutoCommandsModel;
+import com.dmdirc.interfaces.ui.AutoCommandsModelListener;
 
 import com.google.common.collect.Sets;
 
@@ -43,9 +45,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AutoCommandsModelTest {
+public class CoreAutoCommandsModelTest {
 
     @Mock private AutoCommandManager manager;
+    @Mock private AutoCommandsModelListener listener;
     private AutoCommandsModel instance;
     private MutableAutoCommand mutableCommand1;
     private MutableAutoCommand mutableCommand2;
@@ -74,13 +77,36 @@ public class AutoCommandsModelTest {
                 .thenReturn(Sets.newHashSet(command1, command2, command3, command4));
         when(manager.getConnectionAutoCommands()).thenReturn(Sets.newHashSet(command1, command3));
         when(manager.getGlobalAutoCommands()).thenReturn(Sets.newHashSet(command2, command4));
-        instance = new AutoCommandsModel(manager, AutoCommandType.ALL);
+        instance = new CoreAutoCommandsModel(manager);
+        instance.setType(AutoCommandType.ALL);
         instance.loadModel();
     }
 
     @Test
+    public void testAddListener() throws Exception {
+        instance.setSelectedCommand(Optional.of(mutableCommand2));
+        verify(listener, never()).setSelectedCommand(Optional.of(mutableCommand2));
+        instance.addListener(listener);
+        instance.setSelectedCommand(Optional.of(mutableCommand1));
+        verify(listener).setSelectedCommand(Optional.of(mutableCommand1));
+    }
+
+    @Test
+    public void testRemoveListener() throws Exception {
+        instance.setSelectedCommand(Optional.of(mutableCommand2));
+        verify(listener, never()).setSelectedCommand(Optional.of(mutableCommand2));
+        instance.addListener(listener);
+        instance.setSelectedCommand(Optional.of(mutableCommand1));
+        verify(listener).setSelectedCommand(Optional.of(mutableCommand1));
+        instance.removeListener(listener);
+        instance.setSelectedCommand(Optional.of(mutableCommand2));
+        verify(listener, never()).setSelectedCommand(Optional.of(mutableCommand2));
+    }
+
+    @Test
     public void testLoadModel_All() throws Exception {
-        instance = new AutoCommandsModel(manager, AutoCommandType.ALL);
+        instance = new CoreAutoCommandsModel(manager);
+        instance.setType(AutoCommandType.ALL);
         assertTrue(instance.getAutoCommands().isEmpty());
         instance.loadModel();
         assertFalse(instance.getAutoCommands().isEmpty());
@@ -93,7 +119,8 @@ public class AutoCommandsModelTest {
 
     @Test
     public void testLoadModel_Global() throws Exception {
-        instance = new AutoCommandsModel(manager, AutoCommandType.GLOBAL);
+        instance = new CoreAutoCommandsModel(manager);
+        instance.setType(AutoCommandType.GLOBAL);
         assertTrue(instance.getAutoCommands().isEmpty());
         instance.loadModel();
         assertFalse(instance.getAutoCommands().isEmpty());
@@ -106,7 +133,8 @@ public class AutoCommandsModelTest {
 
     @Test
     public void testLoadModel_Connection() throws Exception {
-        instance = new AutoCommandsModel(manager, AutoCommandType.CONNECTION);
+        instance = new CoreAutoCommandsModel(manager);
+        instance.setType(AutoCommandType.CONNECTION);
         assertTrue(instance.getAutoCommands().isEmpty());
         instance.loadModel();
         assertFalse(instance.getAutoCommands().isEmpty());
@@ -244,6 +272,14 @@ public class AutoCommandsModelTest {
         assertEquals("", instance.getSelectedCommandResponse());
         instance.setSelectedCommand(Optional.of(mutableCommand1));
         instance.setSelectedCommandResponse("response");
+        assertEquals("response", instance.getSelectedCommandResponse());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetSelectedCommandResponse_EmptyResponse() throws Exception {
+        assertEquals("", instance.getSelectedCommandResponse());
+        instance.setSelectedCommand(Optional.of(mutableCommand1));
+        instance.setSelectedCommandResponse("");
         assertEquals("response", instance.getSelectedCommandResponse());
     }
 

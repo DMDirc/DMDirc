@@ -24,6 +24,9 @@ package com.dmdirc.ui.core.autocommands;
 
 import com.dmdirc.commandparser.auto.AutoCommand;
 import com.dmdirc.commandparser.auto.AutoCommandManager;
+import com.dmdirc.interfaces.ui.AutoCommandsModel;
+import com.dmdirc.interfaces.ui.AutoCommandsModelListener;
+import com.dmdirc.util.collections.ListenerList;
 
 import com.google.common.collect.Sets;
 
@@ -33,26 +36,54 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
-public class AutoCommandsModel {
+public class CoreAutoCommandsModel implements AutoCommandsModel {
 
     private final AutoCommandManager manager;
-    private final AutoCommandType type;
     private final Set<AutoCommand> originalCommands;
     private final Set<MutableAutoCommand> commands;
+    private AutoCommandType type;
+    private boolean loaded;
     private Optional<MutableAutoCommand> selectedCommand;
+    private ListenerList listeners;
 
-    public AutoCommandsModel(final AutoCommandManager manager, final AutoCommandType type) {
+    @Inject
+    public CoreAutoCommandsModel(final AutoCommandManager manager) {
         this.manager = manager;
-        this.type = type;
         originalCommands = Sets.newHashSet();
         commands = Sets.newHashSet();
     }
 
+    @Override
+    public void addListener(@Nonnull final AutoCommandsModelListener listener) {
+        checkNotNull(listener);
+        listeners.add(AutoCommandsModelListener.class, listener);
+    }
+
+    @Override
+    public void removeListener(@Nonnull final AutoCommandsModelListener listener) {
+        checkNotNull(listener);
+        listeners.remove(AutoCommandsModelListener.class, listener);
+    }
+
+    @Override
+    public void setType(@Nonnull final AutoCommandType type) {
+        checkNotNull(type);
+        checkState(this.type == null);
+        this.type = type;
+    }
+
+    @Override
     public void loadModel() {
+        checkNotNull(type);
+        checkState(!loaded);
+        loaded = true;
+        listeners = new ListenerList();
         originalCommands.clear();
         commands.clear();
         selectedCommand = Optional.empty();
@@ -78,24 +109,35 @@ public class AutoCommandsModel {
         }
     }
 
-    public Set<MutableAutoCommand> getAutoCommands() {
-        return Collections.unmodifiableSet(commands);
+    @Override
+    @Nonnull
+    public Collection<MutableAutoCommand> getAutoCommands() {
+        return Collections.unmodifiableCollection(commands);
     }
 
-    public void setAutoCommands(final Collection<MutableAutoCommand> commands) {
+    @Override
+    public void setAutoCommands(@Nonnull final Collection<MutableAutoCommand> commands) {
+        checkNotNull(commands);
         this.commands.clear();
         this.commands.addAll(commands);
     }
 
+    @Override
+    @Nonnull
     public Optional<MutableAutoCommand> getSelectedCommand() {
         return selectedCommand;
     }
 
-    public void setSelectedCommand(final Optional<MutableAutoCommand> selectedCommand) {
+    @Override
+    public void setSelectedCommand(@Nonnull final Optional<MutableAutoCommand> selectedCommand) {
+        checkNotNull(selectedCommand);
         selectedCommand.ifPresent(s -> checkArgument(commands.contains(s)));
         this.selectedCommand = selectedCommand;
+        listeners.getCallable(AutoCommandsModelListener.class).setSelectedCommand(selectedCommand);
     }
 
+    @Override
+    @Nonnull
     public Optional<String> getSelectedCommandServer() {
         if (selectedCommand.isPresent()) {
             return selectedCommand.get().getServer();
@@ -103,6 +145,8 @@ public class AutoCommandsModel {
         return Optional.empty();
     }
 
+    @Override
+    @Nonnull
     public Optional<String> getSelectedCommandNetwork() {
         if (selectedCommand.isPresent()) {
             return selectedCommand.get().getNetwork();
@@ -110,6 +154,8 @@ public class AutoCommandsModel {
         return Optional.empty();
     }
 
+    @Override
+    @Nonnull
     public Optional<String> getSelectedCommandProfile() {
         if (selectedCommand.isPresent()) {
             return selectedCommand.get().getProfile();
@@ -117,6 +163,8 @@ public class AutoCommandsModel {
         return Optional.empty();
     }
 
+    @Override
+    @Nonnull
     public String getSelectedCommandResponse() {
         if (selectedCommand.isPresent()) {
             return selectedCommand.get().getResponse();
@@ -124,31 +172,44 @@ public class AutoCommandsModel {
         return "";
     }
 
-    public void setSelectedCommandServer(final Optional<String> server) {
+    @Override
+    public void setSelectedCommandServer(@Nonnull final Optional<String> server) {
+        checkNotNull(server);
         selectedCommand.ifPresent(s -> s.setServer(server));
     }
 
-    public void setSelectedCommandNetwork(final Optional<String> network) {
+    @Override
+    public void setSelectedCommandNetwork(@Nonnull final Optional<String> network) {
+        checkNotNull(network);
         selectedCommand.ifPresent(s -> s.setNetwork(network));
     }
 
-    public void setSelectedCommandProfile(final Optional<String> profile) {
+    @Override
+    public void setSelectedCommandProfile(@Nonnull final Optional<String> profile) {
+        checkNotNull(profile);
         selectedCommand.ifPresent(s -> s.setProfile(profile));
     }
 
+    @Override
     public void setSelectedCommandResponse(@Nonnull final String response) {
         checkNotNull(response);
+        checkArgument(!response.isEmpty());
         selectedCommand.ifPresent(s -> s.setResponse(response));
     }
 
-    public void addCommand(final MutableAutoCommand command) {
+    @Override
+    public void addCommand(@Nonnull final MutableAutoCommand command) {
+        checkNotNull(command);
         commands.add(command);
     }
 
-    public void removeCommand(final MutableAutoCommand command) {
+    @Override
+    public void removeCommand(@Nonnull final MutableAutoCommand command) {
+        checkNotNull(command);
         commands.remove(command);
     }
 
+    @Override
     public void save() {
         originalCommands.forEach(manager::removeAutoCommand);
         commands.stream().map(MutableAutoCommand::getAutoCommand).forEach(manager::addAutoCommand);
