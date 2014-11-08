@@ -85,22 +85,22 @@ public class CoreAutoCommandsModelTest {
     @Test
     public void testAddListener() throws Exception {
         instance.setSelectedCommand(Optional.of(mutableCommand2));
-        verify(listener, never()).setSelectedCommand(Optional.of(mutableCommand2));
+        verify(listener, never()).selectedCommandChanged(Optional.of(mutableCommand2));
         instance.addListener(listener);
         instance.setSelectedCommand(Optional.of(mutableCommand1));
-        verify(listener).setSelectedCommand(Optional.of(mutableCommand1));
+        verify(listener).selectedCommandChanged(Optional.of(mutableCommand1));
     }
 
     @Test
     public void testRemoveListener() throws Exception {
         instance.setSelectedCommand(Optional.of(mutableCommand2));
-        verify(listener, never()).setSelectedCommand(Optional.of(mutableCommand2));
+        verify(listener, never()).selectedCommandChanged(Optional.of(mutableCommand2));
         instance.addListener(listener);
         instance.setSelectedCommand(Optional.of(mutableCommand1));
-        verify(listener).setSelectedCommand(Optional.of(mutableCommand1));
+        verify(listener).selectedCommandChanged(Optional.of(mutableCommand1));
         instance.removeListener(listener);
         instance.setSelectedCommand(Optional.of(mutableCommand2));
-        verify(listener, never()).setSelectedCommand(Optional.of(mutableCommand2));
+        verify(listener, never()).selectedCommandChanged(Optional.of(mutableCommand2));
     }
 
     @Test

@@ -132,8 +132,11 @@ public class CoreAutoCommandsModel implements AutoCommandsModel {
     public void setSelectedCommand(@Nonnull final Optional<MutableAutoCommand> selectedCommand) {
         checkNotNull(selectedCommand);
         selectedCommand.ifPresent(s -> checkArgument(commands.contains(s)));
-        this.selectedCommand = selectedCommand;
-        listeners.getCallable(AutoCommandsModelListener.class).setSelectedCommand(selectedCommand);
+        if (!this.selectedCommand.equals(selectedCommand)) {
+            this.selectedCommand = selectedCommand;
+            listeners.getCallable(AutoCommandsModelListener.class)
+                    .selectedCommandChanged(selectedCommand);
+        }
     }
 
     @Override

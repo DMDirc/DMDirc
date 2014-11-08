@@ -24,13 +24,47 @@ package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.ui.core.autocommands.MutableAutoCommand;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
- *
+ * Listener for the various events in an {@link AutoCommandsModel}.
  */
 public interface AutoCommandsModelListener {
 
-    void setSelectedCommand(Optional<MutableAutoCommand> command);
+    /**
+     * Called when the selected command is changed.
+     *
+     * @param command New command
+     */
+    void selectedCommandChanged(Optional<MutableAutoCommand> command);
+
+    /**
+     * Called when the list of commands is replaced.
+     *
+     * @param commands New commands
+     */
+    void setAutoCommands(Collection<MutableAutoCommand> commands);
+
+    /**
+     * Called when a command in the model is changed.
+     *
+     * @param command Command that has changed
+     */
+    void commandEdited(MutableAutoCommand command);
+
+    /**
+     * Called when a single command is added to the model.
+     *
+     * @param command Command that has been added
+     */
+    void commandAdded(MutableAutoCommand command);
+
+    /**
+     * Called when a single command has been removed from the model.
+     *
+     * @param command Command that has been removed
+     */
+    void commandRemoved(MutableAutoCommand command);
 
 }
