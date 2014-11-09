@@ -40,6 +40,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -80,10 +81,14 @@ public class CoreAutoCommandsModelTest {
         instance = new CoreAutoCommandsModel(manager);
         instance.setType(AutoCommandType.ALL);
         instance.loadModel();
+        instance.addListener(listener);
     }
 
     @Test
     public void testAddListener() throws Exception {
+        instance = new CoreAutoCommandsModel(manager);
+        instance.setType(AutoCommandType.ALL);
+        instance.loadModel();
         instance.setSelectedCommand(Optional.of(mutableCommand2));
         verify(listener, never()).selectedCommandChanged(Optional.of(mutableCommand2));
         instance.addListener(listener);
@@ -93,6 +98,9 @@ public class CoreAutoCommandsModelTest {
 
     @Test
     public void testRemoveListener() throws Exception {
+        instance = new CoreAutoCommandsModel(manager);
+        instance.setType(AutoCommandType.ALL);
+        instance.loadModel();
         instance.setSelectedCommand(Optional.of(mutableCommand2));
         verify(listener, never()).selectedCommandChanged(Optional.of(mutableCommand2));
         instance.addListener(listener);
@@ -150,6 +158,7 @@ public class CoreAutoCommandsModelTest {
         assertFalse(instance.getAutoCommands().isEmpty());
         instance.setAutoCommands(Sets.newHashSet());
         assertTrue(instance.getAutoCommands().isEmpty());
+        verify(listener).setAutoCommands(Sets.newHashSet());
     }
 
     @Test
@@ -157,6 +166,7 @@ public class CoreAutoCommandsModelTest {
         assertEquals(4, instance.getAutoCommands().size());
         instance.setAutoCommands(Sets.newHashSet(mutableCommand1, mutableCommand2));
         assertEquals(2, instance.getAutoCommands().size());
+        verify(listener).setAutoCommands(Sets.newHashSet(mutableCommand1, mutableCommand2));
     }
 
     @Test
@@ -170,6 +180,7 @@ public class CoreAutoCommandsModelTest {
     public void testSetSelectedCommand_UnknownCommand() {
         assertEquals(Optional.<MutableAutoCommand>empty(), instance.getSelectedCommand());
         instance.setSelectedCommand(Optional.of(mutableCommand5));
+        verify(listener, never()).selectedCommandChanged(any());
     }
 
     @Test
@@ -179,6 +190,7 @@ public class CoreAutoCommandsModelTest {
         assertEquals(Optional.of(mutableCommand4), instance.getSelectedCommand());
         instance.setSelectedCommand(Optional.empty());
         assertEquals(Optional.<MutableAutoCommand>empty(), instance.getSelectedCommand());
+        verify(listener).selectedCommandChanged(Optional.empty());
     }
 
     @Test
@@ -214,6 +226,7 @@ public class CoreAutoCommandsModelTest {
         assertEquals(Optional.<String>empty(), instance.getSelectedCommandServer());
         instance.setSelectedCommandServer(Optional.of("server"));
         assertEquals(Optional.<String>empty(), instance.getSelectedCommandServer());
+        verify(listener, never()).commandEdited(any());
     }
 
     @Test
@@ -222,6 +235,7 @@ public class CoreAutoCommandsModelTest {
         instance.setSelectedCommand(Optional.of(mutableCommand1));
         instance.setSelectedCommandServer(Optional.of("server"));
         assertEquals(Optional.of("server"), instance.getSelectedCommandServer());
+        verify(listener).commandEdited(mutableCommand1);
     }
 
     @Test
@@ -229,6 +243,7 @@ public class CoreAutoCommandsModelTest {
         assertEquals(Optional.<String>empty(), instance.getSelectedCommandNetwork());
         instance.setSelectedCommandNetwork(Optional.of("network"));
         assertEquals(Optional.<String>empty(), instance.getSelectedCommandNetwork());
+        verify(listener, never()).commandEdited(any());
     }
 
     @Test
@@ -237,6 +252,7 @@ public class CoreAutoCommandsModelTest {
         instance.setSelectedCommand(Optional.of(mutableCommand1));
         instance.setSelectedCommandNetwork(Optional.of("network"));
         assertEquals(Optional.of("network"), instance.getSelectedCommandNetwork());
+        verify(listener).commandEdited(mutableCommand1);
     }
 
     @Test
@@ -244,6 +260,7 @@ public class CoreAutoCommandsModelTest {
         assertEquals(Optional.<String>empty(), instance.getSelectedCommandProfile());
         instance.setSelectedCommandProfile(Optional.of("profile"));
         assertEquals(Optional.<String>empty(), instance.getSelectedCommandProfile());
+        verify(listener, never()).commandEdited(any());
     }
 
     @Test
@@ -252,6 +269,7 @@ public class CoreAutoCommandsModelTest {
         instance.setSelectedCommand(Optional.of(mutableCommand1));
         instance.setSelectedCommandProfile(Optional.of("profile"));
         assertEquals(Optional.of("profile"), instance.getSelectedCommandProfile());
+        verify(listener).commandEdited(mutableCommand1);
     }
 
     @Test
@@ -259,12 +277,14 @@ public class CoreAutoCommandsModelTest {
         assertEquals("", instance.getSelectedCommandResponse());
         instance.setSelectedCommandResponse("response");
         assertEquals("", instance.getSelectedCommandResponse());
+        verify(listener, never()).commandEdited(any());
     }
 
     @Test(expected = NullPointerException.class)
     public void testSetSelectedCommandResponse_Null() throws Exception {
         assertEquals("", instance.getSelectedCommandResponse());
         instance.setSelectedCommandResponse(null);
+        verify(listener, never()).commandEdited(any());
     }
 
     @Test
@@ -273,6 +293,7 @@ public class CoreAutoCommandsModelTest {
         instance.setSelectedCommand(Optional.of(mutableCommand1));
         instance.setSelectedCommandResponse("response");
         assertEquals("response", instance.getSelectedCommandResponse());
+        verify(listener).commandEdited(mutableCommand1);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -281,6 +302,7 @@ public class CoreAutoCommandsModelTest {
         instance.setSelectedCommand(Optional.of(mutableCommand1));
         instance.setSelectedCommandResponse("");
         assertEquals("response", instance.getSelectedCommandResponse());
+        verify(listener, never()).commandEdited(any());
     }
 
     @Test
@@ -290,6 +312,15 @@ public class CoreAutoCommandsModelTest {
         instance.addCommand(mutableCommand5);
         assertEquals(5, instance.getAutoCommands().size());
         assertTrue(instance.getAutoCommands().contains(mutableCommand5));
+        verify(listener).commandAdded(mutableCommand5);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddCommand_exists() throws Exception {
+        assertEquals(4, instance.getAutoCommands().size());
+        assertTrue(instance.getAutoCommands().contains(mutableCommand4));
+        instance.addCommand(mutableCommand4);
+        verify(listener, never()).commandAdded(any());
     }
 
     @Test
@@ -299,6 +330,15 @@ public class CoreAutoCommandsModelTest {
         instance.removeCommand(mutableCommand4);
         assertEquals(3, instance.getAutoCommands().size());
         assertFalse(instance.getAutoCommands().contains(mutableCommand4));
+        verify(listener).commandRemoved(mutableCommand4);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveCommand_NotContains() throws Exception {
+        assertEquals(4, instance.getAutoCommands().size());
+        assertFalse(instance.getAutoCommands().contains(mutableCommand5));
+        instance.removeCommand(mutableCommand5);
+        verify(listener, never()).commandRemoved(any());
     }
 
     @Test

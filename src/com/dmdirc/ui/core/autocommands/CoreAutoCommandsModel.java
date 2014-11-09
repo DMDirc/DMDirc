@@ -120,6 +120,7 @@ public class CoreAutoCommandsModel implements AutoCommandsModel {
         checkNotNull(commands);
         this.commands.clear();
         this.commands.addAll(commands);
+        listeners.getCallable(AutoCommandsModelListener.class).setAutoCommands(this.commands);
     }
 
     @Override
@@ -178,38 +179,56 @@ public class CoreAutoCommandsModel implements AutoCommandsModel {
     @Override
     public void setSelectedCommandServer(@Nonnull final Optional<String> server) {
         checkNotNull(server);
-        selectedCommand.ifPresent(s -> s.setServer(server));
+        selectedCommand.ifPresent(s -> {
+            s.setServer(server);
+            listeners.getCallable(AutoCommandsModelListener.class)
+                    .commandEdited(selectedCommand.get());
+        });
     }
 
     @Override
     public void setSelectedCommandNetwork(@Nonnull final Optional<String> network) {
         checkNotNull(network);
-        selectedCommand.ifPresent(s -> s.setNetwork(network));
+        selectedCommand.ifPresent(s -> {
+            s.setNetwork(network);
+            listeners.getCallable(AutoCommandsModelListener.class)
+                    .commandEdited(selectedCommand.get());
+        });
     }
 
     @Override
     public void setSelectedCommandProfile(@Nonnull final Optional<String> profile) {
         checkNotNull(profile);
-        selectedCommand.ifPresent(s -> s.setProfile(profile));
+        selectedCommand.ifPresent(s -> {
+            s.setProfile(profile);
+            listeners.getCallable(AutoCommandsModelListener.class)
+                    .commandEdited(selectedCommand.get());});
     }
 
     @Override
     public void setSelectedCommandResponse(@Nonnull final String response) {
         checkNotNull(response);
         checkArgument(!response.isEmpty());
-        selectedCommand.ifPresent(s -> s.setResponse(response));
+        selectedCommand.ifPresent(s -> {
+            s.setResponse(response);
+            listeners.getCallable(AutoCommandsModelListener.class)
+                    .commandEdited(selectedCommand.get());});
     }
 
     @Override
     public void addCommand(@Nonnull final MutableAutoCommand command) {
         checkNotNull(command);
+        checkArgument(!commands.contains(command));
         commands.add(command);
+        listeners.getCallable(AutoCommandsModelListener.class).commandAdded(command);
     }
 
     @Override
     public void removeCommand(@Nonnull final MutableAutoCommand command) {
         checkNotNull(command);
+        checkArgument(commands.contains(command));
         commands.remove(command);
+        listeners.getCallable(AutoCommandsModelListener.class).commandRemoved(command);
     }
 
     @Override
