@@ -130,27 +130,33 @@ task getCredentials << {
 task publishSnapshot(dependsOn: ['getCredentials', 'publishMavenJavaPublicationToSnapshotsRepository']) << {
 }
 
-task createVersionConfig << {
-    def targetFile = new File(buildDir, 'version.config')
+task createVersionConfig {
+    inputs.dir 'src'
+    inputs.dir 'res'
+    outputs.file new File(buildDir, 'version.config')
 
-    targetFile.text = ''
-    targetFile << "keysections:\n identity\n version\n updater\n bundledplugins_versions\n\n"
-    targetFile << "identity:\n name=DMDirc version information\n globaldefault=true\n order=95000\n\n"
-    targetFile << "version:\n version=${version}\n\n"
-    targetFile << "updater:\n channel=${updaterChannel}\n\n"
-    targetFile << "buildenv:\n"
-    def compileConfiguration = project.configurations.getByName("compile")
-    def resolvedConfiguration = compileConfiguration.resolvedConfiguration
-    def resolvedArtifacts = resolvedConfiguration.resolvedArtifacts
-    resolvedArtifacts.each { dp ->
-       def version = dp.moduleVersion.id
-       targetFile << " " + version.group + " " + version.name + " " + version.version + "\n"
+    doLast {
+        def targetFile = new File(buildDir, 'version.config')
+
+        targetFile.text = ''
+        targetFile << "keysections:\n identity\n version\n updater\n bundledplugins_versions\n\n"
+        targetFile << "identity:\n name=DMDirc version information\n globaldefault=true\n order=95000\n\n"
+        targetFile << "version:\n version=${version}\n\n"
+        targetFile << "updater:\n channel=${updaterChannel}\n\n"
+        targetFile << "buildenv:\n"
+        def compileConfiguration = project.configurations.getByName("compile")
+        def resolvedConfiguration = compileConfiguration.resolvedConfiguration
+        def resolvedArtifacts = resolvedConfiguration.resolvedArtifacts
+        resolvedArtifacts.each { dp ->
+           def version = dp.moduleVersion.id
+           targetFile << " " + version.group + " " + version.name + " " + version.version + "\n"
+        }
+
+        // Copy to the build directory so it's accessible during tests
+        java.nio.file.Files.copy(targetFile.toPath(),
+           sourceSets.main.output.classesDir.toPath().resolve('com').resolve('dmdirc').resolve('version.config'),
+           java.nio.file.StandardCopyOption.REPLACE_EXISTING);
     }
-
-    // Copy to the build directory so it's accessible during tests
-    java.nio.file.Files.copy(targetFile.toPath(),
-       sourceSets.main.output.classesDir.toPath().resolve('com').resolve('dmdirc').resolve('version.config'),
-       java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 }
 
 createVersionConfig.dependsOn classes
