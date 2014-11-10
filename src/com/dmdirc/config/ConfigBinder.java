@@ -53,12 +53,12 @@ public class ConfigBinder {
     /** The configuration manager to use to retrieve settings. */
     private final AggregateConfigProvider manager;
 
-    public ConfigBinder(final AggregateConfigProvider manager) {
+    ConfigBinder(final AggregateConfigProvider manager) {
         this.manager = manager;
         this.defaultDomain = Optional.empty();
     }
 
-    public ConfigBinder(final AggregateConfigProvider manager, @Nonnull final String domain) {
+    ConfigBinder(final AggregateConfigProvider manager, @Nonnull final String domain) {
         this.manager = manager;
         this.defaultDomain = Optional.of(domain);
     }

@@ -23,12 +23,11 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
@@ -60,10 +59,7 @@ public class WritableFrameContainerTest {
         MockitoAnnotations.initMocks(this);
         when(acp.getOption("general", "silencechar")).thenReturn(".");
         when(acp.getOption("general", "commandchar")).thenReturn("/");
-        final ConfigBinder binder = new ConfigBinder(acp);
-        when(acp.getBinder()).thenReturn(binder);
         commands = new CommandManager(connectionManager, globalWindowProvider);
-        commands.initialise(acp);
     }
 
     @Test
