@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.ui.core.autocommands.AutoCommandType;
+import com.dmdirc.commandparser.auto.AutoCommandType;
 import com.dmdirc.ui.core.autocommands.MutableAutoCommand;
 
 import java.util.Collection;

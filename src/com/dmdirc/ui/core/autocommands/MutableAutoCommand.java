@@ -23,7 +23,6 @@
 package com.dmdirc.ui.core.autocommands;
 
 import com.dmdirc.commandparser.auto.AutoCommand;
-import com.dmdirc.ui.core.profiles.MutableProfile;
 
 import com.google.common.base.MoreObjects;
 

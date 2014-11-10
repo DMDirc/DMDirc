@@ -44,6 +44,8 @@ public class AutoCommand {
     private final Optional<String> profile;
     /** The commands to execute. */
     private final String response;
+    /** The type of auto command. */
+    private final AutoCommandType type;
 
     public AutoCommand(
             final Optional<String> server,
@@ -54,6 +56,15 @@ public class AutoCommand {
         this.network = network;
         this.profile = profile;
         this.response = response;
+        if (!server.isPresent() && !network.isPresent()) {
+            type = AutoCommandType.GLOBAL;
+        } else if (server.isPresent() && !network.isPresent()) {
+            type = AutoCommandType.SERVER;
+        } else if (!server.isPresent()) {
+            type = AutoCommandType.NETWORK;
+        } else {
+            type = AutoCommandType.UNKNOWN;
+        }
     }
 
     public Optional<String> getServer() {
@@ -71,6 +82,10 @@ public class AutoCommand {
     @Nonnull
     public String getResponse() {
         return response;
+    }
+
+    public AutoCommandType getType() {
+        return type;
     }
 
     @Override

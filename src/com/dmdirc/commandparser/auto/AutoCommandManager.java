@@ -23,7 +23,7 @@
 package com.dmdirc.commandparser.auto;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.profiles.Profile;
 
 import java.util.Collections;
 import java.util.Map;
@@ -166,13 +166,12 @@ public class AutoCommandManager {
      *
      * @return The set of all known connection auto commands.
      */
-    public Set<AutoCommand> getConnectionAutoCommands(final String server,
-            final ConfigProvider profile) {
+    public Set<AutoCommand> getConnectionAutoCommands(final String server, final Profile profile) {
         return getAutoCommands().parallelStream()
                 .filter(c -> c.getServer().isPresent() &&
                         c.getServer().get().equalsIgnoreCase(server))
-                .filter(c -> c.getProfile().isPresent() && c.getProfile().get().equalsIgnoreCase(
-                        profile.getName()))
+                .filter(c -> c.getProfile().isPresent()
+                        && c.getProfile().get().equalsIgnoreCase(profile.getName()))
                 .collect(Collectors.toSet());
     }
 
@@ -199,13 +198,12 @@ public class AutoCommandManager {
      *
      * @return The set of all known connection auto commands.
      */
-    public Set<AutoCommand> getNetworkAutoCommands(final String network,
-            final ConfigProvider profile) {
+    public Set<AutoCommand> getNetworkAutoCommands(final String network, final Profile profile) {
         return getAutoCommands().parallelStream()
                 .filter(c -> c.getNetwork().isPresent() &&
                         c.getNetwork().get().equalsIgnoreCase(network))
-                .filter(c -> c.getProfile().isPresent() && c.getProfile().get().equalsIgnoreCase
-                        (profile.getName()))
+                .filter(c -> c.getProfile().isPresent()
+                        && c.getProfile().get().equalsIgnoreCase(profile.getName()))
                 .collect(Collectors.toSet());
     }
 
