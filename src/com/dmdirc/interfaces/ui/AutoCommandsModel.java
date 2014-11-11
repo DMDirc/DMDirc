@@ -24,7 +24,7 @@ package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.commandparser.auto.AutoCommandType;
 import com.dmdirc.config.profiles.Profile;
-import com.dmdirc.ui.core.autocommands.MutableAutoCommand;
+import com.dmdirc.interfaces.Connection;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -53,8 +53,10 @@ public interface AutoCommandsModel {
     /**
      * Loads the model, initialising things as required.  Must be called before using the model.
      * Must not be called again.
+     *
+     * @param connection Connection to use
      */
-    void loadModel();
+    void loadModel(@Nonnull Connection connection);
 
     /**
      * Returns the available profiles to the model.
@@ -85,7 +87,7 @@ public interface AutoCommandsModel {
      * @return Global auto command
      */
     @Nonnull
-    MutableAutoCommand getGlobalAutoCommand();
+    String getGlobalAutoCommandResponse();
 
     /**
      * Sets the response for the global command. This should not be empty, and should not contain
