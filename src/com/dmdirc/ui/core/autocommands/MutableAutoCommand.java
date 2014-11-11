@@ -23,6 +23,7 @@
 package com.dmdirc.ui.core.autocommands;
 
 import com.dmdirc.commandparser.auto.AutoCommand;
+import com.dmdirc.commandparser.auto.AutoCommandType;
 
 import com.google.common.base.MoreObjects;
 
@@ -40,23 +41,27 @@ public class MutableAutoCommand {
     private Optional<String> network;
     private Optional<String> profile;
     private String response;
+    private AutoCommandType type;
 
     public MutableAutoCommand(@Nonnull final AutoCommand command) {
         this(command.getServer(),
                 command.getNetwork(),
                 command.getProfile(),
-                command.getResponse());
+                command.getResponse(),
+                command.getType());
     }
 
     public MutableAutoCommand(
             final Optional<String> server,
             final Optional<String> network,
             final Optional<String> profile,
-            @Nonnull final String response) {
+            @Nonnull final String response,
+            final AutoCommandType type) {
         this.server = server;
         this.network = network;
         this.profile = profile;
         this.response = response;
+        this.type = type;
     }
 
     public Optional<String> getServer() {
@@ -90,6 +95,14 @@ public class MutableAutoCommand {
 
     public void setResponse(@Nonnull final String response) {
         this.response = response;
+    }
+
+    public AutoCommandType getType() {
+        return type;
+    }
+
+    public void setType(final AutoCommandType type) {
+        this.type = type;
     }
 
     public AutoCommand getAutoCommand() {
