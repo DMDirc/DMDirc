@@ -85,16 +85,16 @@ public class AutoCommandHandler {
     private boolean appliesToServer(final String network, final String server,
             final String profile) {
         return !isGlobalCommand()
-                && matchesIfPreset(autoCommand.getNetwork(), network)
-                && matchesIfPreset(autoCommand.getServer(), server)
-                && matchesIfPreset(autoCommand.getProfile(), profile);
+                && matchesIfPresent(autoCommand.getNetwork(), network)
+                && matchesIfPresent(autoCommand.getServer(), server)
+                && matchesIfPresent(autoCommand.getProfile(), profile);
     }
 
     private boolean isGlobalCommand() {
         return !autoCommand.getServer().isPresent() && !autoCommand.getNetwork().isPresent();
     }
 
-    private boolean matchesIfPreset(final Optional<String> target, final String value) {
+    private boolean matchesIfPresent(final Optional<String> target, final String value) {
         return !target.isPresent() || target.get().equalsIgnoreCase(value);
     }
 

@@ -22,6 +22,7 @@
 
 package com.dmdirc.interfaces.ui;
 
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.ui.core.autocommands.MutableAutoCommand;
 
 import java.util.Collection;
@@ -33,18 +34,18 @@ import java.util.Optional;
 public interface AutoCommandsModelListener {
 
     /**
-     * Called when the selected command is changed.
+     * Called when the list of commands is changed.
      *
-     * @param command New command
+     * @param profiles New profiles list
      */
-    void selectedCommandChanged(Optional<MutableAutoCommand> command);
+    void profilesChanged(Collection<Profile> profiles);
 
     /**
-     * Called when the list of commands is replaced.
+     * Called when the selected profile is changed
      *
-     * @param commands New commands
+     * @param profile Newly selected profile
      */
-    void setAutoCommands(Collection<MutableAutoCommand> commands);
+    void selectedProfileChanged(Optional<Profile> profile);
 
     /**
      * Called when a command in the model is changed.
@@ -52,19 +53,5 @@ public interface AutoCommandsModelListener {
      * @param command Command that has changed
      */
     void commandEdited(MutableAutoCommand command);
-
-    /**
-     * Called when a single command is added to the model.
-     *
-     * @param command Command that has been added
-     */
-    void commandAdded(MutableAutoCommand command);
-
-    /**
-     * Called when a single command has been removed from the model.
-     *
-     * @param command Command that has been removed
-     */
-    void commandRemoved(MutableAutoCommand command);
 
 }

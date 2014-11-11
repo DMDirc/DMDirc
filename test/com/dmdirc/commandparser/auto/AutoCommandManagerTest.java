@@ -23,7 +23,7 @@
 package com.dmdirc.commandparser.auto;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.profiles.Profile;
 
 import java.util.Optional;
 
@@ -49,7 +49,7 @@ public class AutoCommandManagerTest {
     @Mock private AutoCommandHandler ircquakenetHandler;
     @Mock private AutoCommandHandler ukquakenetHandler;
     @Mock private AutoCommandHandler testnetHandler;
-    @Mock private ConfigProvider testProfile;
+    @Mock private Profile testProfile;
     private AutoCommandManager autoCommandManager;
     private AutoCommand global;
     private AutoCommand ircquakenet;

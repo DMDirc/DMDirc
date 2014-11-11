@@ -20,10 +20,14 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.core.autocommands;
+package com.dmdirc.commandparser.auto;
 
+/**
+ * Specifies the type of auto command.
+ */
 public enum AutoCommandType {
+    SERVER,
+    NETWORK,
     GLOBAL,
-    CONNECTION,
-    ALL
+    UNKNOWN
 }

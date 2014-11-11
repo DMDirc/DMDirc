@@ -22,8 +22,9 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.ui.core.autocommands.AutoCommandType;
-import com.dmdirc.ui.core.autocommands.MutableAutoCommand;
+import com.dmdirc.commandparser.auto.AutoCommandType;
+import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.interfaces.Connection;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -50,95 +51,87 @@ public interface AutoCommandsModel {
     void removeListener(@Nonnull AutoCommandsModelListener listener);
 
     /**
-     * Sets the type of auto command to display in the model.  Must be called before
-     * {@see #loadModel()}.  Must not be called again.
-     *
-     * @param type Type to use
-     */
-    void setType(@Nonnull AutoCommandType type);
-
-    /**
      * Loads the model, initialising things as required.  Must be called before using the model.
      * Must not be called again.
+     *
+     * @param connection Connection to use
      */
-    void loadModel();
+    void loadModel(@Nonnull Connection connection);
 
     /**
-     * Returns the auto commands for this model.
+     * Returns the available profiles to the model.
      *
-     * @return List of commands in this model
+     * @return Available profiles
      */
-    @Nonnull Collection<MutableAutoCommand> getAutoCommands();
+    @Nonnull
+    Collection<Profile> getProfiles();
 
     /**
-     * Sets the list of auto commands available in the model.
+     * Gets ths selected profile in this model.
      *
-     * @param commands New commands
+     * @return Select profile
      */
-    void setAutoCommands(@Nonnull Collection<MutableAutoCommand> commands);
+    @Nonnull
+    Optional<Profile> getSelectedProfile();
 
     /**
-     * Gets ths selected command in this model.
+     * Sets the selected profile in this model.
      *
-     * @return Select command
+     * @param selectedProfile New selected profile
      */
-    @Nonnull Optional<MutableAutoCommand> getSelectedCommand();
+    void setSelectedProfile(@Nonnull Optional<Profile> selectedProfile);
 
     /**
-     * Sets the selected command in this model.
+     * Returns the global auto command.
      *
-     * @param selectedCommand New selected command
+     * @return Global auto command
      */
-    void setSelectedCommand(@Nonnull Optional<MutableAutoCommand> selectedCommand);
+    @Nonnull
+    String getGlobalAutoCommandResponse();
 
     /**
-     * Returns the selected command's server.
+     * Sets the response for the global command. This should not be empty, and should not contain
+     * command characters.
      *
-     * @return Selected command's server, or an empty optional
+     * @param response The new response
      */
-    @Nonnull Optional<String> getSelectedCommandServer();
+    void setGlobalAutoCommandResponse(@Nonnull String response);
 
     /**
-     * Returns the selected command's network.
+     * Returns the selected command's server name.
      *
-     * @return Selected command's network, or an empty optional
+     * @return Selected command's server name, or empty
      */
-    @Nonnull Optional<String> getSelectedCommandNetwork();
+    Optional<String> getSelectedCommandServer();
 
     /**
-     * Returns the selected command's profile.
+     * Returns the selected command's network name.
      *
-     * @return Selected command's profile, or an empty optional
+     * @return Selected command's network name, or empty
      */
-    @Nonnull Optional<String> getSelectedCommandProfile();
+    Optional<String> getSelectedCommandNetwork();
+
+    /**
+     * Returns the selected command's type.
+     *
+     * @return Selected command's type, or an empty optional
+     */
+    @Nonnull
+    Optional<AutoCommandType> getSelectedCommandType();
+
+    /**
+     * Sets the command type of the selected command. This is a NOOP if there is no selected
+     * command.
+     */
+    void setSelectedCommandType(@Nonnull AutoCommandType type);
 
     /**
      * Returns the selected command's response.
      *
      * @return Selected command's response, or an empty string
      */
-    @Nonnull String getSelectedCommandResponse();
-
-    /**
-     * Sets the selected command's server. This is a NOOP if there is no selected command.
-     *
-     * @param server New server to set
-     */
-    void setSelectedCommandServer(@Nonnull Optional<String> server);
-
-    /**
-     * Sets the selected command's network. This is a NOOP if there is no selected command.
-     *
-     * @param network New network to set
-     */
-    void setSelectedCommandNetwork(@Nonnull Optional<String> network);
-
-    /**
-     * Sets the selected command's profile. This is a NOOP if there is no selected command.
-     *
-     * @param profile New profile to set
-     */
-    void setSelectedCommandProfile(@Nonnull Optional<String> profile);
+    @Nonnull
+    String getSelectedCommandResponse();
 
     /**
      * Sets the selected command's response. This is a NOOP if there is no selected command.
@@ -146,20 +139,6 @@ public interface AutoCommandsModel {
      * @param response New response to set.  Cannot be empty.
      */
     void setSelectedCommandResponse(@Nonnull String response);
-
-    /**
-     * Adds a new command to this model.
-     *
-     * @param command New command
-     */
-    void addCommand(@Nonnull MutableAutoCommand command);
-
-    /**
-     * Removes a command from this model.
-     *
-     * @param command Command to remove
-     */
-    void removeCommand(@Nonnull MutableAutoCommand command);
 
     /**
      * Saves the state of this model to the core manager.

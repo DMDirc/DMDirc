@@ -23,6 +23,7 @@
 package com.dmdirc.ui.core.autocommands;
 
 import com.dmdirc.commandparser.auto.AutoCommand;
+import com.dmdirc.commandparser.auto.AutoCommandType;
 
 import java.util.Optional;
 
@@ -38,6 +39,7 @@ public class MutableAutoCommandTest {
     private final Optional<String> server = Optional.of("server");
     private final Optional<String> network = Optional.of("network");
     private final Optional<String> profile = Optional.of("profile");
+    private final AutoCommandType type = AutoCommandType.GLOBAL;
     private static final String response = "response";
 
     @Test
@@ -52,31 +54,31 @@ public class MutableAutoCommandTest {
 
     @Test
     public void testGetServer() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertEquals("server", command.getServer().get());
     }
 
     @Test
     public void testGetNetwork() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertEquals("network", command.getNetwork().get());
     }
 
     @Test
     public void testGetProfile() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertEquals("profile", command.getProfile().get());
     }
 
     @Test
     public void testGetResponse() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertEquals("response", command.getResponse());
     }
 
     @Test
     public void testSetServer() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertEquals("server", command.getServer().get());
         command.setServer(Optional.of("newServer"));
         assertEquals("newServer", command.getServer().get());
@@ -84,7 +86,7 @@ public class MutableAutoCommandTest {
 
     @Test
     public void testSetNetwork() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertEquals("network", command.getNetwork().get());
         command.setNetwork(Optional.of("newNetwork"));
         assertEquals("newNetwork", command.getNetwork().get());
@@ -92,7 +94,7 @@ public class MutableAutoCommandTest {
 
     @Test
     public void testSetProfile() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertEquals("profile", command.getProfile().get());
         command.setProfile(Optional.of("newProfile"));
         assertEquals("newProfile", command.getProfile().get());
@@ -100,7 +102,7 @@ public class MutableAutoCommandTest {
 
     @Test
     public void testSetResponse() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertEquals("response", command.getResponse());
         command.setResponse("newResponse");
         assertEquals("newResponse", command.getResponse());
@@ -108,7 +110,7 @@ public class MutableAutoCommandTest {
 
     @Test
     public void testGetAutoCommand() throws Exception {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         final AutoCommand newCommand = command.getAutoCommand();
         assertEquals(command.getServer(), newCommand.getServer());
         assertEquals(command.getNetwork(), newCommand.getNetwork());
@@ -119,35 +121,35 @@ public class MutableAutoCommandTest {
     @Test
     public void testEqualsAutoCommand() {
         final MutableAutoCommand command1 = new MutableAutoCommand(server, network, profile,
-                response);
+                response, type);
         final AutoCommand command2 = new AutoCommand(server, network, profile, response);
         assertTrue(command1.equalsAutoCommand(command2));
     }
 
     @Test
     public void testEqualsAutoCommand_Null() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertFalse(command.equalsAutoCommand(null));
     }
 
     @Test
     public void testEquals() {
         final MutableAutoCommand command1 = new MutableAutoCommand(server, network, profile,
-                response);
+                response, type);
         final MutableAutoCommand command2 = new MutableAutoCommand(server, network, profile,
-                response);
+                response, type);
         assertEquals(command1, command2);
     }
 
     @Test
     public void testEquals_Null() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertFalse(command.equals(null));
     }
 
     @Test
     public void testEquals_Random() {
-        command = new MutableAutoCommand(server, network, profile, response);
+        command = new MutableAutoCommand(server, network, profile, response, type);
         assertFalse(command.equals(new Object()));
     }
 }
