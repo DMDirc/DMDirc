@@ -42,7 +42,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentityManagerTest {
@@ -70,63 +69,6 @@ public class IdentityManagerTest {
         assertNotNull(versionSettings);
         assertEquals(ConfigTarget.TYPE.GLOBALDEFAULT, versionSettings.getTarget().getType());
         assertEquals("DMDirc version information", versionSettings.getName());
-    }
-
-    @Test
-    public void testRenamesExistingDefaultsFile() throws IOException, InvalidIdentityFileException {
-        Files.createDirectories(identitiesDirectory);
-        Files.createFile(identitiesDirectory.resolve("default"));
-
-        final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus);
-        identityManager.initialise();
-
-        assertTrue(Files.exists(identitiesDirectory.resolve("default.old")));
-        assertTrue(Files.isDirectory(identitiesDirectory.resolve("default")));
-    }
-
-    @Test
-    public void testRenamesExistingDefaultsFileWithSuffix() throws IOException,
-            InvalidIdentityFileException {
-        Files.createDirectories(identitiesDirectory);
-        Files.createFile(identitiesDirectory.resolve("default"));
-        Files.createFile(identitiesDirectory.resolve("default.old"));
-        Files.createFile(identitiesDirectory.resolve("default.old-1"));
-
-        final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus);
-        identityManager.initialise();
-
-        assertTrue(Files.exists(identitiesDirectory.resolve("default.old")));
-        assertTrue(Files.exists(identitiesDirectory.resolve("default.old-1")));
-        assertTrue(Files.exists(identitiesDirectory.resolve("default.old-2")));
-        assertTrue(Files.isDirectory(identitiesDirectory.resolve("default")));
-    }
-
-    @Test
-    public void testExtractsDefaults() throws InvalidIdentityFileException {
-        final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus);
-        identityManager.initialise();
-
-        assertTrue(Files.isDirectory(identitiesDirectory.resolve("default")));
-        assertTrue(Files.exists(identitiesDirectory.resolve("default").resolve("defaults")));
-        assertTrue(Files.exists(identitiesDirectory.resolve("default").resolve("formatter")));
-    }
-
-    @Test
-    public void testAlwaysUpdatesFormatter() throws InvalidIdentityFileException, IOException {
-        final Path formatterPath = identitiesDirectory.resolve("default").resolve("formatter");
-
-        Files.createDirectories(identitiesDirectory.resolve("default"));
-        Files.createFile(formatterPath);
-
-        final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus);
-        identityManager.initialise();
-
-        assertTrue(Files.exists(formatterPath));
-        assertTrue(Files.size(formatterPath) > 0);
     }
 
     @Test
