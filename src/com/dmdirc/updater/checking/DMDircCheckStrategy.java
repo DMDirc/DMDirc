@@ -50,7 +50,7 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMDircCheckStrategy.class);
     /** The URL to request to check for updates. */
-    private static final String UPDATE_URL = "http://updates.dmdirc.com/";
+    private static final String UPDATE_URL = "https://updates.dmdirc.com/";
     /** The update channel to check for updates on. */
     private UpdateChannel channel;
     /** Downloader to download files. */
