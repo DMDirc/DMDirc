@@ -24,6 +24,7 @@ package com.dmdirc.config;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -32,7 +33,6 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.updater.Version;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.collections.WeakMapList;
 import com.dmdirc.util.io.ConfigFile;
@@ -40,6 +40,7 @@ import com.dmdirc.util.io.FileUtils;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -138,98 +139,45 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
         addonConfig = new ConfigFileBackedConfigProvider(this, addonConfigFile, target);
         addConfigProvider(addonConfig);
-
-        if (!getGlobalConfiguration().hasOptionString("identity", "defaultsversion")) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.FATAL, null,
-                    "Default settings could not be loaded", ""));
-        }
     }
 
     /** Loads the default (built in) identities. */
     private void loadDefaults() {
-        final String[] targets = {"default", "modealiases"};
-
-        for (String target : targets) {
-            final Path file = identitiesDirectory.resolve(target);
-
-            if (Files.exists(file) && !Files.isDirectory(file)) {
-                boolean success = false;
-                for (int i = 0; i < 10 && !success; i++) {
-                    try {
-                        final String suffix = ".old" + (i > 0 ? "-" + i : "");
-                        Files.move(file, identitiesDirectory.resolve(target + suffix));
-                        success = true;
-                    } catch (IOException ex) {
-                        success = false;
-                    }
-                }
-
-                if (!success) {
-                    eventBus.publishAsync(new UserErrorEvent(ErrorLevel.HIGH, null,
-                            "Unable to create directory for default settings folder ("
-                            + target + ')',
-                            "A file with that name already exists, and couldn't be renamed."
-                            + " Rename or delete " + file));
-                    continue;
-                }
-            }
-
-            if (!Files.exists(file)) {
-                try {
-                    Files.createDirectories(file);
-                } catch (IOException ex) {
-                    eventBus.publishAsync(new UserErrorEvent(ErrorLevel.FATAL, null,
-                            "Unable to create required directory '" + file + "'. Please check " +
-                                    "file permissions or specify a different configuration " +
-                                    "directory.", ""));
-                    return;
-                }
-            }
-
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(file)) {
-                if (!directoryStream.iterator().hasNext()) {
-                    extractIdentities(target);
-                }
-            } catch (IOException ex) {
-                eventBus.publishAsync(new UserErrorEvent(ErrorLevel.FATAL, null,
-                        "Unable to iterate required directory '" + file + "'. Please check " +
-                                "file permissions or specify a different configuration " +
-                                "directory.", ""));
-                return;
-            }
-
-            loadUser(file);
-        }
-
-        extractFormatters();
-
-        // If the bundled defaults are newer than the ones the user is
-        // currently using, extract them.
-        if (getGlobalConfiguration().hasOptionString("identity", "defaultsversion")
-                && getGlobalConfiguration().hasOptionString("updater", "bundleddefaultsversion")) {
-            final Version installedVersion = new Version(getGlobalConfiguration()
-                    .getOption("identity", "defaultsversion"));
-            final Version bundledVersion = new Version(getGlobalConfiguration()
-                    .getOption("updater", "bundleddefaultsversion"));
-
-            if (bundledVersion.compareTo(installedVersion) > 0) {
-                extractIdentities("default");
-                loadUser(identitiesDirectory.resolve("default"));
-            }
-        }
-    }
-
-    /**
-     * Extracts the bundled formatters to the user's identity folder.
-     */
-    private void extractFormatters() {
         try {
-            FileUtils.copyResources(getClass().getResource("defaults/default/formatter"),
-                    identitiesDirectory.resolve("default"));
-        } catch (IOException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Unable to extract default formatters: " + ex.getMessage(), ""));
+            loadIdentity(FileUtils.getPathForResource(getClass().getResource(
+                    "defaults/default/defaults")));
+            loadIdentity(FileUtils.getPathForResource(getClass().getResource(
+                    "defaults/default/formatter")));
+        } catch (URISyntaxException ex) {
+            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.FATAL, ex,
+                    "Unable to load settings", ""));
         }
+
+        final Path file = identitiesDirectory.resolve("modealiases");
+
+        if (!Files.exists(file)) {
+            try {
+                Files.createDirectories(file);
+            } catch (IOException ex) {
+                eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, ex,
+                        "Unable to create modealiases directory", "Please check file permissions " +
+                        "for " + file));
+            }
+        }
+
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(file)) {
+            if (!directoryStream.iterator().hasNext()) {
+                extractIdentities("modealiases");
+            }
+        } catch (IOException ex) {
+            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.FATAL, ex,
+                    "Unable to iterate required directory '" + file + "'. Please check " +
+                            "file permissions or specify a different configuration " +
+                            "directory.", ""));
+            return;
+        }
+
+        loadUser(file);
     }
 
     /**
@@ -606,7 +554,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProvider createCustomConfig(final String name, final String type) {
         final Map<String, Map<String, String>> settings = new HashMap<>();
-        settings.put(IDENTITY_DOMAIN, new HashMap<String, String>(2));
+        settings.put(IDENTITY_DOMAIN, new HashMap<>(2));
 
         settings.get(IDENTITY_DOMAIN).put("name", name);
         settings.get(IDENTITY_DOMAIN).put("type", type);
@@ -623,8 +571,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProvider createProfileConfig(final String name) {
         final Map<String, Map<String, String>> settings = new HashMap<>();
-        settings.put(IDENTITY_DOMAIN, new HashMap<String, String>(1));
-        settings.put(PROFILE_DOMAIN, new HashMap<String, String>(2));
+        settings.put(IDENTITY_DOMAIN, new HashMap<>(1));
+        settings.put(PROFILE_DOMAIN, new HashMap<>(2));
 
         final String nick = System.getProperty("user.name").replace(' ', '_');
 
@@ -644,7 +592,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProvider createConfig(final ConfigTarget target) {
         final Map<String, Map<String, String>> settings = new HashMap<>();
-        settings.put(IDENTITY_DOMAIN, new HashMap<String, String>(2));
+        settings.put(IDENTITY_DOMAIN, new HashMap<>(2));
         settings.get(IDENTITY_DOMAIN).put("name", target.getData());
         settings.get(IDENTITY_DOMAIN).put(target.getTypeName(), target.getData());
 
