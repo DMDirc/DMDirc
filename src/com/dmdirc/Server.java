@@ -1040,7 +1040,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         if ("VERSION".equalsIgnoreCase(type)) {
             parser.sendCTCPReply(source, "VERSION", "DMDirc "
                     + getConfigManager().getOption("version", "version")
-                    + " - http://www.dmdirc.com/");
+                    + " - https://www.dmdirc.com/");
         } else if ("PING".equalsIgnoreCase(type)) {
             parser.sendCTCPReply(source, "PING", args);
         } else if ("CLIENTINFO".equalsIgnoreCase(type)) {
