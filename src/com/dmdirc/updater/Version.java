@@ -63,9 +63,9 @@ public class Version implements Comparable<Version> {
             this.intVersion = Integer.parseInt(version);
             this.strVersion = null;
         } else if (version.matches(
-                "^[0-9]+(\\.[0-9]+)*((a|b|rc|m)[0-9]+)*(\\-[0-9]+\\-g[a-z0-9]{7})?$")) {
+                "^[0-9]+(\\.[0-9]+)*((a|b|rc|m)[0-9]+)*(\\-[0-9]+\\-g[a-z0-9]{7})?(-SNAPSHOT)?$")) {
             this.intVersion = Integer.MIN_VALUE;
-            this.strVersion = version;
+            this.strVersion = version.replaceAll("-SNAPSHOT$", "");
         } else {
             this.intVersion = Integer.MIN_VALUE;
             this.strVersion = null;
