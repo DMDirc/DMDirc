@@ -37,8 +37,8 @@ dependencies {
 
     plugin group: 'com.dmdirc', name: 'ui_swing', version: '+', changing: true
     plugin group: 'com.dmdirc', name: 'parser_irc', version: '+', changing: true
-    plugin group: 'com.dmdirc', name: 'tabcompleter_bash', version: '+', changing: true
-    plugin group: 'com.dmdirc', name: 'tabcompleter_mirc', version: '+', changing: true
+    plugin group: 'com.dmdirc', name: 'tabcompletion_bash', version: '+', changing: true
+    plugin group: 'com.dmdirc', name: 'tabcompletion_mirc', version: '+', changing: true
 
     testCompile group: 'junit', name: 'junit', version: '4.11'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
@@ -134,6 +134,7 @@ task createVersionConfig {
     inputs.dir 'src'
     inputs.dir 'res'
     outputs.file new File(buildDir, 'version.config')
+    dependsOn classes
 
     doLast {
         def targetFile = new File(buildDir, 'version.config')
@@ -159,11 +160,12 @@ task createVersionConfig {
     }
 }
 
-createVersionConfig.dependsOn classes
-jar.dependsOn createVersionConfig
 test.dependsOn createVersionConfig
 
 jar {
+    outputs.file "dist/DMDirc.jar"
+    dependsOn createVersionConfig
+
     from("$buildDir/version.config") {
         into 'com/dmdirc/'
     }
@@ -175,16 +177,15 @@ jar {
     manifest {
         attributes 'Main-Class': 'com.dmdirc.Main'
     }
-}
 
-jar.doLast {
-    copy {
-        from jar.archivePath
-        into "dist/"
-        rename ".*", "DMDirc.jar"
+    doLast {
+        copy {
+            from jar.archivePath
+            into "dist/"
+            rename ".*", "DMDirc.jar"
+        }
     }
 }
-jar.outputs.file "dist/DMDirc.jar"
 
 buildscript {
     repositories {
