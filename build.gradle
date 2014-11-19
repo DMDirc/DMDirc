@@ -11,7 +11,11 @@ apply plugin: 'pmd'
 
 configurations {
     bundle
-    plugin
+
+    plugin {
+        transitive = false
+    }
+
     compile {
         extendsFrom bundle
     }
@@ -149,14 +153,33 @@ task createVersionConfig {
         def resolvedConfiguration = compileConfiguration.resolvedConfiguration
         def resolvedArtifacts = resolvedConfiguration.resolvedArtifacts
         resolvedArtifacts.each { dp ->
-           def version = dp.moduleVersion.id
-           targetFile << " " + version.group + " " + version.name + " " + version.version + "\n"
+            def version = dp.moduleVersion.id
+            targetFile << " " + version.group + " " + version.name + " " + version.version + "\n"
         }
 
         // Copy to the build directory so it's accessible during tests
         java.nio.file.Files.copy(targetFile.toPath(),
-           sourceSets.main.output.classesDir.toPath().resolve('com').resolve('dmdirc').resolve('version.config'),
-           java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            sourceSets.main.output.classesDir.toPath().resolve('com').resolve('dmdirc').resolve('version.config'),
+            java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+    }
+}
+
+task createFatVersionConfig {
+    inputs.file new File(buildDir, 'version.config')
+    outputs.file new File(buildDir, 'fat.version.config')
+    dependsOn createVersionConfig
+
+    doLast {
+        def sourceFile = new File(buildDir, 'version.config')
+        def targetFile = new File(buildDir, 'fat.version.config')
+
+        java.nio.file.Files.copy(sourceFile.toPath(), targetFile.toPath(),
+            java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+
+        targetFile << "\nbundledplugins_versions:\n"
+        configurations.plugin.each { p ->
+            targetFile << " " + p.name.replaceFirst('-', '=').replaceAll('.jar$', '\n');
+        }
     }
 }
 
@@ -184,6 +207,29 @@ jar {
             into "dist/"
             rename ".*", "DMDirc.jar"
         }
+    }
+}
+
+task('fatjar', type: Jar) {
+    dependsOn createFatVersionConfig
+    baseName = 'fat-client'
+
+    from("$buildDir/fat.version.config") {
+        into 'com/dmdirc'
+        rename 'fat.version.config', 'version.config'
+    }
+
+    from { configurations.bundle.collect { it.isDirectory() ? it : zipTree(it) } } {
+        exclude 'META-INF/**'
+    }
+
+    into('plugins') {
+        from configurations.plugin
+        rename '(.*?)-.*(\\.jar)', '$1$2'
+    }
+
+    manifest {
+        attributes 'Main-Class': 'com.dmdirc.Main'
     }
 }
 
