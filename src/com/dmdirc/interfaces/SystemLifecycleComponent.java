@@ -33,11 +33,18 @@ public interface SystemLifecycleComponent {
     void startUp();
 
     /**
+     * Indicates that the component should save any configuration or other data to disk.
+     */
+    default void save() {}
+
+    /**
      * Called when the system or component is shutting down.
      * <p>
      * Any resources or threads used by the implementing class must be released before returning
      * from this method.
      */
-    void shutDown();
+    default void shutDown() {
+        save();
+    }
 
 }

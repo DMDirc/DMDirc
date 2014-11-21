@@ -47,7 +47,7 @@ public class AliasLifecycleManager implements SystemLifecycleComponent {
     }
 
     @Override
-    public void shutDown() {
+    public void save() {
         loader.save();
     }
 
