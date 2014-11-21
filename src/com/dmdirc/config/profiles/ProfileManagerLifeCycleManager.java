@@ -49,7 +49,8 @@ public class ProfileManagerLifeCycleManager implements SystemLifecycleComponent 
     }
 
     @Override
-    public void shutDown() {
+    public void save() {
         profileStore.writeProfiles(profileManager.getProfiles());
     }
+
 }

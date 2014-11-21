@@ -43,6 +43,8 @@ public interface SystemLifecycleComponent {
      * Any resources or threads used by the implementing class must be released before returning
      * from this method.
      */
-    void shutDown();
+    default void shutDown() {
+        save();
+    }
 
 }

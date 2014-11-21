@@ -53,6 +53,11 @@ public class AutoCommandLifecycleManager implements SystemLifecycleComponent {
     @Override
     public void shutDown() {
         manager.stop();
+        save();
+    }
+
+    @Override
+    public void save() {
         store.writeAutoCommands(manager.getAutoCommands());
     }
 
