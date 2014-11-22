@@ -189,6 +189,8 @@ jar {
     outputs.file "dist/DMDirc.jar"
     dependsOn createVersionConfig
 
+    exclude 'com/dmdirc/version.config'
+
     from("$buildDir/version.config") {
         into 'com/dmdirc/'
     }
@@ -219,20 +221,14 @@ task('fatjar', type: Jar) {
         rename 'fat.version.config', 'version.config'
     }
 
-    from { configurations.bundle.collect { it.isDirectory() ? it : zipTree(it) } } {
-        exclude 'META-INF/**'
-    }
-
     into('plugins') {
         from configurations.plugin
         rename '(.*?)-.*(\\.jar)', '$1$2'
     }
 
-    manifest {
-        attributes 'Main-Class': 'com.dmdirc.Main'
+    with jar {
+        exclude 'com/dmdirc/version.config'
     }
-
-    with jar
 }
 
 buildscript {
