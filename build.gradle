@@ -229,6 +229,10 @@ task('fatjar', type: Jar) {
     with jar {
         exclude 'com/dmdirc/version.config'
     }
+
+    manifest {
+        attributes 'Main-Class': 'com.dmdirc.Main'
+    }
 }
 
 buildscript {
