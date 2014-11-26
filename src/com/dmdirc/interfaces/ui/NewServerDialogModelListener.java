@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.config.profiles.Profile;
-import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.util.List;
 import java.util.Optional;

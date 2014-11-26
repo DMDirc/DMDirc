@@ -23,7 +23,6 @@
 package com.dmdirc.config.profiles;
 
 import com.dmdirc.commandline.CommandLineOptionsModule;
-import com.dmdirc.commandparser.auto.ActionServerPerformMigrator;
 import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 

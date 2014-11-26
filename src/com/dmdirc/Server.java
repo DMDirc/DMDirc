@@ -114,8 +114,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general";
-    /** The name of the profile domain. */
-    private static final String DOMAIN_PROFILE = "profile";
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server";
     /** Open channels that currently exist on the server. */
