@@ -600,10 +600,7 @@ public class PreferencesDialogModel {
      * Fires the "save" methods of all registered listeners.
      */
     public void fireSaveListeners() {
-        for (PreferencesInterface iface : listeners.get(PreferencesInterface.class)) {
-            iface.save();
-        }
-
+        listeners.get(PreferencesInterface.class).forEach(PreferencesInterface::save);
         categories.forEach(this::fireSaveListener);
     }
 

@@ -22,7 +22,7 @@
 
 package com.dmdirc.updater.retrieving;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * A specialised {@link UpdateRetrievalResult} which specifies a single file where the update is
@@ -35,6 +35,6 @@ public interface SingleFileRetrievalResult extends UpdateRetrievalResult {
      *
      * @return The file containing the retrieved update
      */
-    java.nio.file.Path getFile();
+    Path getFile();
 
 }

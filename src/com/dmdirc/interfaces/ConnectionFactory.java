@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.config.profiles.Profile;
-import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.net.URI;
 
