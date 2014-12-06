@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Channel;
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.commands.Command;
@@ -31,7 +32,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import com.dmdirc.DMDircMBassador;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class CommandParserTest {
 
         when(configProvider.getOptionInt("general", "commandhistory")).thenReturn(10);
 
-        when(container.getConnection()).thenReturn(connection);
+        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
         when(connection.isValidChannelName("#channel1")).thenReturn(true);
         when(connection.isValidChannelName("#channel2")).thenReturn(true);
         when(connection.hasChannel("#channel1")).thenReturn(true);

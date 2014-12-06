@@ -32,6 +32,8 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +56,7 @@ public class ModeTest {
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        when(channel.getConnection()).thenReturn(server);
+        when(channel.getOptionalConnection()).thenReturn(Optional.of(server));
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getModes()).thenReturn("my mode string!");
