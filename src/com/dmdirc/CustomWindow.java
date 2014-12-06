@@ -28,7 +28,7 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -52,7 +52,7 @@ public class CustomWindow extends FrameContainer {
             final ColourManagerFactory colourManagerFactory) {
         super(parent, "custom", name, title, parent.getConfigManager(), colourManagerFactory,
                 urlBuilder, parent.getEventBus(),
-                Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
+                Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
     /**
@@ -72,12 +72,12 @@ public class CustomWindow extends FrameContainer {
             final DMDircMBassador eventBus,
             final ColourManagerFactory colourManagerFactory) {
         super(null, "custom", name, title, configProvider, colourManagerFactory, urlBuilder,
-                eventBus, Arrays.asList(WindowComponent.TEXTAREA.getIdentifier()));
+                eventBus, Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
     @Override
     public Connection getConnection() {
-        return getParent().map(FrameContainer::getConnection).orElse(null);
+        return getOptionalConnection().orElse(null);
     }
 
     @Override

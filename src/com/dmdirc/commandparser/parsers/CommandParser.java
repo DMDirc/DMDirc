@@ -44,6 +44,7 @@ import com.dmdirc.util.collections.RollingList;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -178,14 +179,16 @@ public abstract class CommandParser implements Serializable {
         final boolean silent = args.isSilent();
         final String command = args.getCommandName();
         final String[] cargs = args.getArguments();
+        final Optional<Connection> connection = origin.getOptionalConnection();
 
-        if (cargs.length == 0 || !parseChannel
-                || origin.getConnection() == null
+        if (cargs.length == 0
+                || !parseChannel
+                || !connection.isPresent()
                 || !commandManager.isChannelCommand(command)) {
             return false;
         }
 
-        final Connection server = origin.getConnection();
+        final Connection server = connection.get();
         final String[] parts = cargs[0].split(",");
         boolean someValid = false;
         for (String part : parts) {

@@ -736,7 +736,7 @@ public enum CoreActionComponent implements ActionComponent {
     WINDOW_SERVER {
         @Override
         public Object get(final Object arg) {
-            return ((Window) arg).getContainer().getConnection();
+            return ((Window) arg).getContainer().getOptionalConnection().orElse(null);
         }
 
         @Override
