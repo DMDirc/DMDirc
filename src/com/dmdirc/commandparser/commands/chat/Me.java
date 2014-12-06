@@ -33,7 +33,11 @@ import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.util.validators.ValidationResponse;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -74,15 +78,16 @@ public class Me extends Command implements ValidatingCommand {
     public ValidationResponse validateArguments(
             final FrameContainer origin,
             final CommandArguments arguments) {
-        if (origin.getConnection() == null
-                || origin.getConnection().getParser() == null) {
+        final Optional<Connection> connection = origin.getOptionalConnection();
+        final Optional<Parser> parser = connection.flatMap(c -> Optional.ofNullable(c.getParser()));
+
+        if (!parser.isPresent()) {
             return new ValidationResponse();
         }
 
         final int length = 2 + arguments.getArgumentsAsString().length();
 
-        if (origin.getConnection().getParser().getMaxLength("PRIVMSG",
-                origin.getName()) <= length) {
+        if (parser.get().getMaxLength("PRIVMSG", origin.getName()) <= length) {
             return new ValidationResponse("Too long");
         } else {
             return new ValidationResponse();

@@ -114,7 +114,7 @@ public class ChannelEventHandler extends EventHandler implements
     @Nonnull
     @Override
     protected Connection getConnection() {
-        return owner.getConnection();
+        return owner.getOptionalConnection().get();
     }
 
     /**
@@ -125,7 +125,7 @@ public class ChannelEventHandler extends EventHandler implements
      * @return True if the client is ourself, false otherwise.
      */
     protected boolean isMyself(final ChannelClientInfo client) {
-        return client.getClient().equals(owner.getConnection().getParser().getLocalClient());
+        return client.getClient().equals(getConnection().getParser().getLocalClient());
     }
 
     @Override
@@ -321,7 +321,7 @@ public class ChannelEventHandler extends EventHandler implements
         final ChannelCtcpEvent event = new ChannelCtcpEvent(owner, client, type, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "channelCTCP");
         if (!event.isHandled()) {
-            owner.getConnection().sendCTCPReply(client.getClient().getNickname(), type, message);
+            getConnection().sendCTCPReply(client.getClient().getNickname(), type, message);
         }
         owner.doNotification(date, format, client, type, message);
     }
