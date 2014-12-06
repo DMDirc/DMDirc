@@ -35,6 +35,7 @@ import com.dmdirc.events.NotificationSetEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.ui.core.BackBuffer;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.IconManager;
@@ -73,8 +74,6 @@ public abstract class FrameContainer {
     protected final ListenerList listeners = new ListenerList();
     /** The colour of our frame's notifications. */
     private Optional<Colour> notification = Optional.empty();
-    /** The document used to store this container's content. */
-    private IRCDocument document;
     /** The children of this frame. */
     private final Collection<FrameContainer> children = new CopyOnWriteArrayList<>();
     /** The parent of this frame. */
@@ -91,12 +90,6 @@ public abstract class FrameContainer {
     private final ConfigChangeListener changer = (d, k) -> iconUpdated();
     /** The UI components that this frame requires. */
     private final Set<String> components;
-    /** The styliser used by this container. */
-    private Styliser styliser;
-    /** Object used to synchronise styliser access. */
-    private final Object styliserSync = new Object();
-    /** Object used to synchronise styliser access. */
-    private final Object documentSync = new Object();
     /** The manager to use to manage our event bus. */
     private final ChildEventBusManager eventBusManager;
     /** Event bus to dispatch events to. */
@@ -107,6 +100,10 @@ public abstract class FrameContainer {
     private final boolean writable;
     /** The colour manager factory. */
     private final ColourManagerFactory colourManagerFactory;
+    /** The back buffer for this container. */
+    private BackBuffer backBuffer;
+    /** Lock for access to {@link #backBuffer}. */
+    private final Object backBufferLock = new Object();
 
     /**
      * The command parser used for commands in this container.
@@ -163,8 +160,8 @@ public abstract class FrameContainer {
         this.messageSinkManager = Optional.empty();
         this.colourManagerFactory = colourManagerFactory;
 
-        this.eventBusManager = new ChildEventBusManager(eventBus);
-        this.eventBusManager.connect();
+        eventBusManager = new ChildEventBusManager(eventBus);
+        eventBusManager.connect();
         this.eventBus = eventBusManager.getChildBus();
 
         setIcon(icon);
@@ -213,8 +210,8 @@ public abstract class FrameContainer {
         this.colourManagerFactory = colourManagerFactory;
         commandParser.setOwner(this);
 
-        this.eventBusManager = new ChildEventBusManager(eventBus);
-        this.eventBusManager.connect();
+        eventBusManager = new ChildEventBusManager(eventBus);
+        eventBusManager.connect();
         this.eventBus = eventBusManager.getChildBus();
 
         setIcon(icon);
@@ -300,14 +297,11 @@ public abstract class FrameContainer {
      * @return This frame's document
      *
      * @since 0.6.4
+     * @deprecated Use {@link #getBackBuffer()}
      */
+    @Deprecated
     public IRCDocument getDocument() {
-        synchronized (documentSync) {
-            if (document == null) {
-                document = new IRCDocument(getConfigManager(), getStyliser());
-            }
-            return document;
-        }
+        return getBackBuffer().getDocument();
     }
 
     /**
@@ -416,15 +410,26 @@ public abstract class FrameContainer {
      * Retrieves the styliser which should be used by this container.
      *
      * @return this container's styliser
+     * @deprecated Use {@link #getBackBuffer()}
      */
+    @Deprecated
     public Styliser getStyliser() {
-        synchronized (styliserSync) {
-            if (styliser == null) {
-                styliser = new Styliser(getOptionalConnection().orElse(null), getConfigManager(),
-                        colourManagerFactory.getColourManager(getConfigManager()));
+        return getBackBuffer().getStyliser();
+    }
+
+    /**
+     * Gets the back buffer for this container.
+     *
+     * @return This container's back buffer.
+     */
+    public BackBuffer getBackBuffer() {
+        synchronized (backBufferLock) {
+            if (backBuffer == null) {
+                this.backBuffer = new BackBuffer(this, colourManagerFactory);
             }
-            return styliser;
         }
+
+        return backBuffer;
     }
 
     /**
