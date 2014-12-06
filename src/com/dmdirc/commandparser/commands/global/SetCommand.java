@@ -315,7 +315,7 @@ public class SetCommand extends Command implements IntelligentCommand {
             res.add("--server");
             res.add("--channel");
             res.excludeAll();
-        } else if (arg == 1 && previousArgs.size() >= 1) {
+        } else if (arg == 1 && !previousArgs.isEmpty()) {
             if ("--unset".equalsIgnoreCase(previousArgs.get(0))
                     || "--append".equalsIgnoreCase(previousArgs.get(0))
                     || "--server".equalsIgnoreCase(previousArgs.get(0))
