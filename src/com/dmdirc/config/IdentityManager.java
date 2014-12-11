@@ -33,6 +33,7 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.collections.WeakMapList;
 import com.dmdirc.util.io.ConfigFile;
@@ -91,6 +92,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * specific custom type use their type as the key.
      */
     private final MapList<String, ConfigProviderListener> listeners = new WeakMapList<>();
+    /** Client info objecty. */
+    private final ClientInfo clientInfo;
     /** The identity file used for the global config. */
     private ConfigProvider config;
     /** The identity file used for addon defaults. */
@@ -108,10 +111,11 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @param eventBus            The event bus to post events to
      */
     public IdentityManager(final Path baseDirectory, final Path identitiesDirectory,
-            final DMDircMBassador eventBus) {
+            final DMDircMBassador eventBus, final ClientInfo clientInfo) {
         this.configDirectory = baseDirectory;
         this.identitiesDirectory = identitiesDirectory;
         this.eventBus = eventBus;
+        this.clientInfo = clientInfo;
     }
 
     /**
@@ -669,7 +673,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
+                network, server);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -677,8 +682,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server,
-                channel);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
+                network, server, channel);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -686,7 +691,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
+                network, server);
         setUpConfigManager(configManager);
         return configManager;
     }
@@ -694,8 +700,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server,
-                channel);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
+                network, server, channel);
         setUpConfigManager(configManager);
         return configManager;
     }

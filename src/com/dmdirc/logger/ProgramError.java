@@ -22,6 +22,8 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.util.ClientInfo;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -84,7 +86,8 @@ public final class ProgramError implements Serializable {
     public ProgramError(final long id, final ErrorLevel level, final String message,
             @Nullable final Throwable exception,
             @Nullable final String details,
-            final Date date) {
+            final Date date,
+            final ClientInfo clientInfo) {
 
         if (id < 0) {
             throw new IllegalArgumentException("ID must be a positive integer: " + id);
@@ -111,7 +114,7 @@ public final class ProgramError implements Serializable {
         this.lastDate = (Date) date.clone();
         this.count = new AtomicInteger(1);
         this.reportStatus = ErrorReportStatus.WAITING;
-        this.reporter = new ErrorReporter();
+        this.reporter = new ErrorReporter(clientInfo);
     }
 
     /**

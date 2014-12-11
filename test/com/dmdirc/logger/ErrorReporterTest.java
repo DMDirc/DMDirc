@@ -22,6 +22,8 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.util.ClientInfo;
+
 import java.util.Date;
 
 import org.junit.Before;
@@ -66,7 +68,7 @@ public class ErrorReporterTest {
     @Before
     public void setUp() {
         when(ravenFactory.createRavenInstance(Matchers.<Dsn>anyObject())).thenReturn(raven);
-        errorReporter = new ErrorReporter();
+        errorReporter = new ErrorReporter(new ClientInfo());
     }
 
     @Test

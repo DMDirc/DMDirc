@@ -32,6 +32,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WarningDialog;
+import com.dmdirc.util.ClientInfo;
 
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
@@ -65,11 +66,13 @@ public class ConfigModule {
             @Directory(DirectoryType.IDENTITIES) final Path identitiesDirectory,
             @Directory(DirectoryType.ERRORS) final Path errorsDirectory,
             final CommandLineParser commandLineParser,
-            final DMDircMBassador eventBus) {
+            final DMDircMBassador eventBus,
+            final ClientInfo clientInfo) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,
-                identitiesDirectory, eventBus);
+                identitiesDirectory, eventBus, clientInfo);
         ErrorManager.getErrorManager()
-                .initialise(identityManager.getGlobalConfiguration(), errorsDirectory, eventBus);
+                .initialise(identityManager.getGlobalConfiguration(), errorsDirectory, eventBus,
+                        clientInfo);
         identityManager.loadVersionIdentity();
 
         try {

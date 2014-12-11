@@ -29,13 +29,17 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.Locale;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Provides static utility methods to access information about the client and its environment.
  */
-public final class ClientInfo {
+@Singleton
+public class ClientInfo {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientInfo.class);
     /** Domain to read version settings from. */
@@ -49,126 +53,127 @@ public final class ClientInfo {
     /** Fallback value to use if a system property isn't found. */
     private static final String PROPERTY_FALLBACK = "unknown";
     /** Lock used to guard access to {@link #versionConfig}. */
-    private static final Object VERSION_CONFIG_LOCK = new Object();
+    private final Object VERSION_CONFIG_LOCK = new Object();
     /** Cached config file containing the client's version information. */
-    private static ConfigFile versionConfig;
+    private ConfigFile versionConfig;
 
-    private ClientInfo() {
+    @Inject
+    public ClientInfo() {
         // Shouldn't be initialised.
     }
 
     /**
      * @return The version of the client.
      */
-    public static String getVersion() {
+    public String getVersion() {
         return getVersionConfigSetting(VERSION_DOMAIN, VERSION_KEY);
     }
 
     /**
      * @return The major version of the client.
      */
-    public static String getMajorVersion() {
+    public String getMajorVersion() {
         return getVersion().replaceAll("(-|rc|a|b|m).*", "");
     }
 
     /**
      * @return The channel that this client was built for.
      */
-    public static String getUpdaterChannel() {
+    public String getUpdaterChannel() {
         return getVersionConfigSetting(UPDATER_DOMAIN, UPDATER_CHANNEL_KEY);
     }
 
     /**
      * @return The name of the operating system the client is running on.
      */
-    public static String getOperatingSystemName() {
+    public String getOperatingSystemName() {
         return System.getProperty("os.name", PROPERTY_FALLBACK);
     }
 
     /**
      * @return The version of the operating system the client is running on.
      */
-    public static String getOperatingSystemVersion() {
+    public String getOperatingSystemVersion() {
         return System.getProperty("os.version", PROPERTY_FALLBACK);
     }
 
     /**
      * @return The name of the architecture that the operating system is built for.
      */
-    public static String getOperatingSystemArchitecture() {
+    public String getOperatingSystemArchitecture() {
         return System.getProperty("os.arch", PROPERTY_FALLBACK);
     }
 
     /**
      * @return The default file encoding used by the system.
      */
-    public static String getSystemFileEncoding() {
+    public String getSystemFileEncoding() {
         return System.getProperty("file.encoding", PROPERTY_FALLBACK);
     }
 
     /**
      * @return The default locale used by the system.
      */
-    public static String getSystemDefaultLocale() {
+    public String getSystemDefaultLocale() {
         return Locale.getDefault().toString();
     }
 
     /**
      * @return The name of the JVM running the client.
      */
-    public static String getJavaName() {
+    public String getJavaName() {
         return System.getProperty("java.vm.name", PROPERTY_FALLBACK);
     }
 
     /**
      * @return The name of the vendor of the JVM running the client.
      */
-    public static String getJavaVendor() {
+    public String getJavaVendor() {
         return System.getProperty("java.vm.vendor", PROPERTY_FALLBACK);
     }
 
     /**
      * @return The version of the JVM running the client.
      */
-    public static String getJavaVersion() {
+    public String getJavaVersion() {
         return System.getProperty("java.version", PROPERTY_FALLBACK);
     }
 
     /**
      * @return The major version of the JVM running the client.
      */
-    public static String getJavaMajorVersion() {
+    public String getJavaMajorVersion() {
         return getJavaVersion().replaceAll("_.*", "");
     }
 
     /**
      * @return The uptime for the client in milliseconds.
      */
-    public static long getUptime() {
+    public long getUptime() {
         return ManagementFactory.getRuntimeMXBean().getUptime();
     }
 
     /**
      * @return A string containing the DMDirc version and updater channel.
      */
-    public static String getVersionInformation() {
-        return getVersion() + " (" + getUpdaterChannel() + ")";
+    public String getVersionInformation() {
+        return getVersion() + " (" + getUpdaterChannel() + ')';
     }
 
     /**
      * @return A string containing the JVM name, version, and vendor.
      */
-    public static String getJavaInformation() {
-        return getJavaName() + " " + getJavaVersion() + " [" + getJavaVendor() + "]";
+    public String getJavaInformation() {
+        return getJavaName() + ' ' + getJavaVersion() + " [" + getJavaVendor() + ']';
     }
 
     /**
      * @return A string containing the OS name, version and architecture, and the default file
      *         encoding and locale.
      */
-    public static String getOperatingSystemInformation() {
-        return getOperatingSystemName() + " "
-                + getOperatingSystemVersion() + " "
+    public String getOperatingSystemInformation() {
+        return getOperatingSystemName() + ' '
+                + getOperatingSystemVersion() + ' '
                 + getOperatingSystemArchitecture() + "; "
                 + getSystemFileEncoding() + "; "
                 + getSystemDefaultLocale();
@@ -182,7 +187,7 @@ public final class ClientInfo {
      *
      * @return The value of the key within the version config, or {@code null} if it doesn't exist.
      */
-    public static String getVersionConfigSetting(final String domain, final String key) {
+    public String getVersionConfigSetting(final String domain, final String key) {
         return getVersionConfig().getKeyDomain(domain).get(key);
     }
 
@@ -194,7 +199,7 @@ public final class ClientInfo {
      *
      * @return The client's bundled version config file.
      */
-    private static ConfigFile getVersionConfig() {
+    private ConfigFile getVersionConfig() {
         synchronized (VERSION_CONFIG_LOCK) {
             if (versionConfig == null) {
                 LOG.debug("No previous version config cached, creating a new one...");

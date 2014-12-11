@@ -52,6 +52,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
     private final AggregateConfigProvider config;
     private final ConnectionManager connectionManager;
     private final Path configDirectory;
+    private final ClientInfo clientInfo;
     private Optional<String> name;
     private Optional<String> email;
     private Optional<String> feedback;
@@ -61,11 +62,13 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
     @Inject
     public CoreFeedbackDialogModel(@ClientModule.GlobalConfig final AggregateConfigProvider config,
             final ConnectionManager connectionManager, final FeedbackSenderFactory feedbackSenderFactory,
-            @Directory(DirectoryType.BASE) final Path configDirectory) {
+            @Directory(DirectoryType.BASE) final Path configDirectory,
+            final ClientInfo clientInfo) {
         this.connectionManager = connectionManager;
         this.configDirectory = configDirectory;
         this.feedbackSenderFactory = feedbackSenderFactory;
         this.config = config;
+        this.clientInfo = clientInfo;
         this.listeners = new ListenerList();
         name = Optional.empty();
         email = Optional.empty();
@@ -194,12 +197,12 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
             }
         }
         if (getIncludeDMDircInfo()) {
-            dmdircInfo.append("DMDirc version: ").append(ClientInfo.getVersionInformation())
+            dmdircInfo.append("DMDirc version: ").append(clientInfo.getVersionInformation())
                     .append('\n');
             dmdircInfo.append("Profile directory: ").append(configDirectory).append('\n');
-            dmdircInfo.append("Java version: ").append(ClientInfo.getJavaInformation())
+            dmdircInfo.append("Java version: ").append(clientInfo.getJavaInformation())
                     .append('\n');
-            dmdircInfo.append("OS Version: ").append(ClientInfo.getOperatingSystemInformation());
+            dmdircInfo.append("OS Version: ").append(clientInfo.getOperatingSystemInformation());
         }
         final FeedbackSender sender = feedbackSenderFactory.getFeedbackSender(
                 name.orElse(""), email.orElse(""), feedback.orElse(""),

@@ -23,6 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.validators.PermissiveValidator;
 
 import org.junit.Test;
@@ -30,23 +31,29 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigManagerTest {
 
     @Mock private IdentityManager identityManager;
+    @Mock private ClientInfo clientInfo;
 
     @Test
     public void testNonExistantOption() {
-        assertNull(new ConfigManager(identityManager, "", "", "", "")
+        assertNull(new ConfigManager(clientInfo, identityManager, "", "", "", "")
                 .getOption("unit-test123", "foobar"));
     }
 
     @Test
     public void testStats() {
-        final ConfigManager cm = new ConfigManager(identityManager, "", "", "", "");
+        final ConfigManager cm = new ConfigManager(clientInfo, identityManager, "", "", "", "");
         assertNull(ConfigManager.getStats().get("unit-test123.baz"));
         cm.hasOption("unit-test123", "baz", new PermissiveValidator<String>());
         assertNotNull(ConfigManager.getStats().get("unit-test123.baz"));
@@ -56,7 +63,7 @@ public class ConfigManagerTest {
     @Test
     public void testDomainListener() {
         final ConfigChangeListener listener = mock(ConfigChangeListener.class);
-        final ConfigManager cm = new ConfigManager(identityManager, "", "", "", "");
+        final ConfigManager cm = new ConfigManager(clientInfo, identityManager, "", "", "", "");
         cm.addChangeListener("unit-test", listener);
 
         cm.configChanged("foo", "bar");
@@ -69,7 +76,7 @@ public class ConfigManagerTest {
     @Test
     public void testDomainKeyListener() {
         final ConfigChangeListener listener = mock(ConfigChangeListener.class);
-        final ConfigManager cm = new ConfigManager(identityManager, "", "", "", "");
+        final ConfigManager cm = new ConfigManager(clientInfo, identityManager, "", "", "", "");
         cm.addChangeListener("unit-test", "foo", listener);
 
         cm.configChanged("foo", "bar");

@@ -22,6 +22,8 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.util.ClientInfo;
+
 import java.util.Date;
 
 import org.junit.Before;
@@ -38,6 +40,7 @@ import static org.junit.Assert.assertTrue;
 public class ProgramErrorTest {
 
     @Mock private ErrorManager errorManager;
+    @Mock private ClientInfo clientInfo;
 
     @Before
     public void setup() {
@@ -46,45 +49,46 @@ public class ProgramErrorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNegativeID() {
-        new ProgramError(-1, ErrorLevel.HIGH, "moo", null, null, new Date());
+        new ProgramError(-1, ErrorLevel.HIGH, "moo", null, null, new Date(), clientInfo);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullErrorLevel() {
-        new ProgramError(1, null, "moo", null, null, new Date());
+        new ProgramError(1, null, "moo", null, null, new Date(), clientInfo);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullMessage() {
-        new ProgramError(1, ErrorLevel.HIGH, null, null, null, new Date());
+        new ProgramError(1, ErrorLevel.HIGH, null, null, null, new Date(), clientInfo);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorEmptyMessage() {
-        new ProgramError(1, ErrorLevel.HIGH, "", null, null, new Date());
+        new ProgramError(1, ErrorLevel.HIGH, "", null, null, new Date(), clientInfo);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorNullDate() {
-        new ProgramError(1, ErrorLevel.HIGH, "moo", null, null, null);
+        new ProgramError(1, ErrorLevel.HIGH, "moo", null, null, null, clientInfo);
     }
 
     @Test
     public void testConstructorGood() {
-        new ProgramError(1, ErrorLevel.HIGH, "moo", new UnsupportedOperationException(), null, new Date());
+        new ProgramError(1, ErrorLevel.HIGH, "moo", new UnsupportedOperationException(),
+                null, new Date(), clientInfo);
     }
 
     @Test
     public void testGetLevel() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), null, new Date());
+                new UnsupportedOperationException(), null, new Date(), clientInfo);
         assertEquals(ErrorLevel.HIGH, pe.getLevel());
     }
 
     @Test
     public void testGetMessage() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), null, new Date());
+                new UnsupportedOperationException(), null, new Date(), clientInfo);
         assertEquals("moo", pe.getMessage());
     }
 
@@ -92,14 +96,14 @@ public class ProgramErrorTest {
     public void testGetDate() {
         final Date date = new Date();
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), null, date);
+                new UnsupportedOperationException(), null, date, clientInfo);
         assertEquals(date, pe.getDate());
     }
 
     @Test
     public void testReportStatus() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), null, new Date());
+                new UnsupportedOperationException(), null, new Date(), clientInfo);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
         pe.setReportStatus(null);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
@@ -112,7 +116,7 @@ public class ProgramErrorTest {
     @Test
     public void testToString() {
         final ProgramError pe = new ProgramError(1, ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), null, new Date());
+                new UnsupportedOperationException(), null, new Date(), clientInfo);
         assertTrue(pe.toString().contains("moo"));
     }
 
@@ -120,15 +124,15 @@ public class ProgramErrorTest {
     public void testEquals() {
         final Exception ex = new UnsupportedOperationException();
         final ProgramError pe1 = new ProgramError(10, ErrorLevel.LOW, "moo",
-                ex, null, new Date());
+                ex, null, new Date(), clientInfo);
         final ProgramError pe2 = new ProgramError(11, ErrorLevel.LOW, "moo",
-                ex, null, new Date());
+                ex, null, new Date(), clientInfo);
         final ProgramError pe3 = new ProgramError(10, ErrorLevel.MEDIUM, "moo",
-                ex, null, new Date());
+                ex, null, new Date(), clientInfo);
         final ProgramError pe4 = new ProgramError(10, ErrorLevel.LOW, "bar",
-                ex, null, new Date());
+                ex, null, new Date(), clientInfo);
         final ProgramError pe5 = new ProgramError(10, ErrorLevel.LOW, "moo",
-                null, "Hello", new Date());
+                null, "Hello", new Date(), clientInfo);
 
         assertFalse(pe1.equals(null)); // NOPMD
         assertFalse(pe1.equals("moo"));

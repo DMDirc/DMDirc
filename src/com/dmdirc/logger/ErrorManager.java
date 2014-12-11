@@ -28,6 +28,7 @@ import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.FatalErrorDialog;
+import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.collections.ListenerList;
 
 import java.awt.GraphicsEnvironment;
@@ -74,6 +75,7 @@ public class ErrorManager implements ConfigChangeListener {
     private AggregateConfigProvider config;
     /** Directory to store errors in. */
     private Path errorsDirectory;
+    private ClientInfo clientInfo;
 
     /** Creates a new instance of ErrorListDialog. */
     public ErrorManager() {
@@ -89,7 +91,8 @@ public class ErrorManager implements ConfigChangeListener {
      * @param eventBus     The event bus to listen for error events on.
      */
     public void initialise(final AggregateConfigProvider globalConfig, final Path directory,
-            final DMDircMBassador eventBus) {
+            final DMDircMBassador eventBus, final ClientInfo clientInfo) {
+        this.clientInfo = clientInfo;
         eventBus.subscribe(this);
         RavenFactory.registerFactory(new DefaultRavenFactory());
 
@@ -272,7 +275,7 @@ public class ErrorManager implements ConfigChangeListener {
     protected ProgramError getError(final ErrorLevel level, final String message,
             final Throwable exception, final String details) {
         return new ProgramError(nextErrorID.getAndIncrement(), level, message, exception,
-                details, new Date());
+                details, new Date(), clientInfo);
     }
 
     /**

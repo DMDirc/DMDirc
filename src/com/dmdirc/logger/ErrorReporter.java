@@ -47,6 +47,11 @@ public class ErrorReporter {
             + "e0a8aa1ecca14568a9f52d052ecf6a30@sentry.dmdirc.com/2?raven.async=false";
     /** Template to use when sending mode alias reports. */
     private static final String MODE_ALIAS_TEMPLATE = "%s\n\nConnection headers:\n%s";
+    private final ClientInfo clientInfo;
+
+    public ErrorReporter(final ClientInfo clientInfo) {
+        this.clientInfo = clientInfo;
+    }
 
     /**
      * Sends an error report caused by some kind of exception.
@@ -141,17 +146,17 @@ public class ErrorReporter {
     private EventBuilder newEventBuilder() {
         return new EventBuilder()
                 .setServerName("")
-                .addTag("version", ClientInfo.getVersion())
-                .addTag("version.major", ClientInfo.getMajorVersion())
-                .addTag("os.name", ClientInfo.getOperatingSystemName())
-                .addTag("os.version", ClientInfo.getOperatingSystemVersion())
-                .addTag("os.arch", ClientInfo.getOperatingSystemArchitecture())
-                .addTag("encoding", ClientInfo.getSystemFileEncoding())
-                .addTag("locale", ClientInfo.getSystemDefaultLocale())
-                .addTag("jvm.name", ClientInfo.getJavaName())
-                .addTag("jvm.vendor", ClientInfo.getJavaVendor())
-                .addTag("jvm.version", ClientInfo.getJavaVersion())
-                .addTag("jvm.version.major", ClientInfo.getJavaMajorVersion());
+                .addTag("version", clientInfo.getVersion())
+                .addTag("version.major", clientInfo.getMajorVersion())
+                .addTag("os.name", clientInfo.getOperatingSystemName())
+                .addTag("os.version", clientInfo.getOperatingSystemVersion())
+                .addTag("os.arch", clientInfo.getOperatingSystemArchitecture())
+                .addTag("encoding", clientInfo.getSystemFileEncoding())
+                .addTag("locale", clientInfo.getSystemDefaultLocale())
+                .addTag("jvm.name", clientInfo.getJavaName())
+                .addTag("jvm.vendor", clientInfo.getJavaVendor())
+                .addTag("jvm.version", clientInfo.getJavaVersion())
+                .addTag("jvm.version.major", clientInfo.getJavaMajorVersion());
     }
 
     /**
