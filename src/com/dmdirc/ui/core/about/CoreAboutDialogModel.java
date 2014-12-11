@@ -23,8 +23,10 @@
 package com.dmdirc.ui.core.about;
 
 import com.dmdirc.ClientModule.GlobalConfig;
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.events.ClientInfoRequestEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.AboutDialogModel;
 import com.dmdirc.util.ClientInfo;
@@ -45,6 +47,7 @@ public class CoreAboutDialogModel implements AboutDialogModel {
     private final AggregateConfigProvider globalConfig;
     private final Path baseDirectory;
     private final ClientInfo clientInfo;
+    private final DMDircMBassador eventBus;
     private String about;
     private List<Developer> mainDevelopers;
     private List<Developer> otherDevelopers;
@@ -54,10 +57,11 @@ public class CoreAboutDialogModel implements AboutDialogModel {
     @Inject
     public CoreAboutDialogModel(@GlobalConfig final AggregateConfigProvider globalConfig,
             @Directory(CommandLineOptionsModule.DirectoryType.BASE) final Path baseDirectory,
-            final ClientInfo clientInfo) {
+            final ClientInfo clientInfo, final DMDircMBassador eventBus) {
         this.globalConfig = globalConfig;
         this.baseDirectory = baseDirectory;
         this.clientInfo = clientInfo;
+        this.eventBus = eventBus;
         about = "";
         mainDevelopers = new ArrayList<>();
         otherDevelopers = new ArrayList<>();
@@ -76,6 +80,9 @@ public class CoreAboutDialogModel implements AboutDialogModel {
         mainDevelopers = createMainDevelopers();
         otherDevelopers = createOtherDevelopers();
         info = createInfoItems();
+        final ClientInfoRequestEvent event = new ClientInfoRequestEvent();
+        eventBus.publish(event);
+        info.addAll(event.getNewInfoItems());
         licences = createLicensedComponents();
     }
 
