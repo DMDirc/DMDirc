@@ -34,6 +34,11 @@ import java.util.List;
 public interface AboutDialogModel {
 
     /**
+     * Initialises the model.  Should be called before the other methods are used.
+     */
+    void load();
+
+    /**
      * Returns the HTML about text for the client.
      *
      * @return HTML to display

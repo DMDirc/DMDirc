@@ -65,6 +65,7 @@ public class CoreAboutDialogModel implements AboutDialogModel {
         licences = new ArrayList<>();
     }
 
+    @Override
     public void load() {
         about = "<html><center>"
                 + "<h1 style=\"margin-bottom: 0px;\">DMDirc</h1>"
