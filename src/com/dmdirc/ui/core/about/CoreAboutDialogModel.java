@@ -71,12 +71,12 @@ public class CoreAboutDialogModel implements AboutDialogModel {
                 + "<h1 style=\"margin-bottom: 0px;\">DMDirc</h1>"
                 + "<span style=\"font-style: italic;\">The intelligent IRC client.</span>"
                 + "<p>Easy to use, cross-platform IRC client.</p>"
-                + "<p><a href=\"http://www.dmdirc.com\">www.dmdirc.com</a></p>"
+                + "<p><a href=\"https://www.dmdirc.com\">www.dmdirc.com</a></p>"
                 + "</center></html>";
         mainDevelopers = createMainDevelopers();
         otherDevelopers = createOtherDevelopers();
         info = createInfoItems();
-        licences = new ArrayList<>();
+        licences = createLicensedComponents();
     }
 
     private List<Developer> createMainDevelopers() {
@@ -110,6 +110,10 @@ public class CoreAboutDialogModel implements AboutDialogModel {
                 InfoItem.create("Client Uptime",
                         DateUtils.formatDuration((int) clientInfo.getUptime() / 1000))
         );
+    }
+
+    private List<LicensedComponent> createLicensedComponents() {
+        return Lists.newArrayList();
     }
 
     @Override

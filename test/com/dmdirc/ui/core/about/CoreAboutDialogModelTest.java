@@ -60,7 +60,7 @@ public class CoreAboutDialogModelTest {
         final String about = instance.getAbout();
         assertTrue(about.contains("DMDirc"));
         assertTrue(about.contains("The intelligent IRC client."));
-        assertTrue(about.contains("<a href=\"http://www.dmdirc.com\">www.dmdirc.com</a>"));
+        assertTrue(about.contains("<a href=\"https://www.dmdirc.com\">www.dmdirc.com</a>"));
     }
 
     @Test
