@@ -1,5 +1,6 @@
 # DMDirc .gitignore file
 /build
+/generated
 /dist
 /lib
 /etc/clover.license

@@ -24,6 +24,7 @@ package com.dmdirc.config;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.util.ClientInfo;
 
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
@@ -47,6 +48,7 @@ import static org.junit.Assert.assertNotNull;
 public class IdentityManagerTest {
 
     @Mock private DMDircMBassador eventBus;
+    @Mock private ClientInfo clientInfo;
 
     private Path baseDirectory;
     private Path identitiesDirectory;
@@ -62,7 +64,7 @@ public class IdentityManagerTest {
     @Test
     public void testLoadsVersionIdentity() throws InvalidIdentityFileException {
         final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus);
+                baseDirectory, identitiesDirectory, eventBus, clientInfo);
         identityManager.initialise();
 
         final ConfigProvider versionSettings = identityManager.getVersionSettings();
@@ -74,7 +76,7 @@ public class IdentityManagerTest {
     @Test
     public void testUsesSystemUsernameForProfileNickname() throws InvalidIdentityFileException {
         final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus);
+                baseDirectory, identitiesDirectory, eventBus, clientInfo);
         identityManager.initialise();
 
         System.setProperty("user.name", "Awesome User");
@@ -90,7 +92,7 @@ public class IdentityManagerTest {
                 identitiesDirectory.resolve("profile"));
 
         final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus);
+                baseDirectory, identitiesDirectory, eventBus, clientInfo);
         identityManager.initialise();
 
         final List<ConfigProvider> profiles = identityManager.getProvidersByType("profile");
