@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.core.about;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.ClientInfo;
 
@@ -43,6 +44,7 @@ public class CoreAboutDialogModelTest {
     @Mock private ClientInfo clientInfo;
     @Mock private AggregateConfigProvider globalConfig;
     @Mock private Path path;
+    @Mock private DMDircMBassador eventBus;
     private CoreAboutDialogModel instance;
 
     @Before
@@ -51,7 +53,7 @@ public class CoreAboutDialogModelTest {
         when(clientInfo.getOperatingSystemInformation()).thenReturn("OS Version");
         when(clientInfo.getJavaInformation()).thenReturn("Java Version");
         when(globalConfig.getOption("identity", "modealiasversion")).thenReturn("ModeAlias Version");
-        instance = new CoreAboutDialogModel(globalConfig, path, clientInfo);
+        instance = new CoreAboutDialogModel(globalConfig, path, clientInfo, eventBus);
         instance.load();
     }
 
