@@ -24,6 +24,7 @@ package com.dmdirc.ui.core.about;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.util.ClientInfo;
 
 import java.nio.file.Path;
@@ -45,6 +46,7 @@ public class CoreAboutDialogModelTest {
     @Mock private AggregateConfigProvider globalConfig;
     @Mock private Path path;
     @Mock private DMDircMBassador eventBus;
+    @Mock private PluginManager pluginManager;
     private CoreAboutDialogModel instance;
 
     @Before
@@ -53,7 +55,7 @@ public class CoreAboutDialogModelTest {
         when(clientInfo.getOperatingSystemInformation()).thenReturn("OS Version");
         when(clientInfo.getJavaInformation()).thenReturn("Java Version");
         when(globalConfig.getOption("identity", "modealiasversion")).thenReturn("ModeAlias Version");
-        instance = new CoreAboutDialogModel(globalConfig, path, clientInfo, eventBus);
+        instance = new CoreAboutDialogModel(globalConfig, path, clientInfo, eventBus, pluginManager);
         instance.load();
     }
 
@@ -86,6 +88,6 @@ public class CoreAboutDialogModelTest {
 
     @Test
     public void testGetLicensedComponents() throws Exception {
-        assertEquals(0, instance.getLicensedComponents().size());
+        // TODO: Add a virtual file system, mock plugin manager test licences
     }
 }
