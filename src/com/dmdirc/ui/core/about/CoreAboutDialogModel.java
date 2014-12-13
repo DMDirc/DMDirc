@@ -130,7 +130,7 @@ public class CoreAboutDialogModel implements AboutDialogModel {
                             .getPathForResource(getClass().getResource("/com/dmdirc/licences")))));
             pluginManager.getPluginInfos().forEach(p -> {
                         final List<Licence> componentLicences = getLicences(
-                                p.getPath("/META-INF/licenses/"));
+                                p.getPath("/META-INF/licences/"));
                         if (!componentLicences.isEmpty()) {
                             components.add(LicensedComponent
                                     .create(p.getMetaData().getFriendlyName(), componentLicences));
