@@ -70,8 +70,8 @@ public class CoreAboutDialogModelTest {
         when(clientInfo.getJavaInformation()).thenReturn("Java Version");
         when(globalConfig.getOption("identity", "modealiasversion")).thenReturn("ModeAlias Version");
         when(pluginManager.getPluginInfos()).thenReturn(Lists.newArrayList(pluginInfo1, pluginInfo2));
-        when(pluginInfo1.getPath("/META-INF/licenses/")).thenReturn(pluginPath1);
-        when(pluginInfo2.getPath("/META-INF/licenses/")).thenReturn(pluginPath2);
+        when(pluginInfo1.getPath("/META-INF/licences/")).thenReturn(pluginPath1);
+        when(pluginInfo2.getPath("/META-INF/licences/")).thenReturn(pluginPath2);
         when(pluginInfo1.getMetaData()).thenReturn(pluginMetaData1);
         when(pluginInfo2.getMetaData()).thenReturn(pluginMetaData2);
         when(pluginMetaData1.getFriendlyName()).thenReturn("Plugin1");
