@@ -148,7 +148,9 @@ public class CoreAboutDialogModel implements AboutDialogModel {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             stream.forEach(p -> {
                 try {
-                    componentLicences.add(Licence.create(p.getFileName().toString(),
+                    final String filename = p.getFileName().toString();
+                    final String[] parts = filename.split(" - ");
+                    componentLicences.add(Licence.create(parts[0], parts[1],
                             Joiner.on('\n').join(Files.readAllLines(p))));
                 } catch (IOException ex) {
                     LOGGER.warn("Error reading licence", ex);
