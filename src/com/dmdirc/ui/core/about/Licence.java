@@ -30,11 +30,12 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Licence {
 
+    public abstract String getComponent();
     public abstract String getName();
     public abstract String getBody();
 
-    public static Licence create(final String name, final String body) {
-        return new AutoValue_Licence(name, body);
+    public static Licence create(final String component, final String name, final String body) {
+        return new AutoValue_Licence(component, name, body);
     }
 
 }

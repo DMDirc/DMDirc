@@ -30,9 +30,11 @@ public class LicenceTest {
 
     @Test
     public void testLicence() throws Exception {
+        final String component = "component";
         final String name = "name";
         final String body = "body";
-        final Licence licence = Licence.create(name, body);
+        final Licence licence = Licence.create(component, name, body);
+        assertEquals(component, licence.getComponent());
         assertEquals(name, licence.getName());
         assertEquals(body, licence.getBody());
     }
