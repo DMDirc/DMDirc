@@ -23,7 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -157,7 +157,7 @@ public class ConfigBinder {
             } catch (IllegalAccessException | IllegalArgumentException ex) {
                 // Ignore
             } catch (InvocationTargetException ex) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, ex,
+                eventBus.publish(new AppErrorEvent(ErrorLevel.HIGH, ex,
                         "Exception when updating bound setting", ""));
             }
         }
