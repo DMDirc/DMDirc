@@ -177,7 +177,7 @@ public class Main {
      */
     public void init() {
         migrators.stream().filter(Migrator::needsMigration).forEach(Migrator::migrate);
-        commands.stream().forEach(c -> commandManager.registerCommand(c.getCommand(), c.getInfo()));
+        commands.forEach(c -> commandManager.registerCommand(c.getCommand(), c.getInfo()));
 
         loadUIs(pluginManager);
 
