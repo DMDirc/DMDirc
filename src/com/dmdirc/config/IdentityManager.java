@@ -141,7 +141,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         addonSettings.put("name", "Addon defaults");
         addonConfigFile.addDomain("identity", addonSettings);
 
-        addonConfig = new ConfigFileBackedConfigProvider(this, addonConfigFile, target);
+        addonConfig = new ConfigFileBackedConfigProvider(this, eventBus, addonConfigFile, target);
         addConfigProvider(addonConfig);
     }
 
@@ -262,7 +262,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         try {
-            final ConfigProvider provider = new ConfigFileBackedConfigProvider(this, file, false);
+            final ConfigProvider provider = new ConfigFileBackedConfigProvider(this, eventBus,
+                    file, false);
             addConfigProvider(provider);
             configProvidersByPath.put(file, provider);
         } catch (InvalidIdentityFileException ex) {
@@ -309,7 +310,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public void loadVersionIdentity() {
         try {
-            versionConfig = new ConfigFileBackedConfigProvider(IdentityManager.class.
+            versionConfig = new ConfigFileBackedConfigProvider(eventBus, IdentityManager.class.
                     getResourceAsStream("/com/dmdirc/version.config"), false);
             addConfigProvider(versionConfig);
         } catch (IOException | InvalidIdentityFileException ex) {
@@ -331,7 +332,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 Files.createFile(file);
             }
 
-            config = new ConfigFileBackedConfigProvider(this, file, true);
+            config = new ConfigFileBackedConfigProvider(this, eventBus, file, true);
             config.setOption("identity", "name", "Global config");
             configProvidersByPath.put(file, config);
             addConfigProvider(config);
@@ -648,7 +649,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         configFile.write();
 
         final ConfigFileBackedConfigProvider identity = new ConfigFileBackedConfigProvider(this,
-                file, false);
+                eventBus, file, false);
         addConfigProvider(identity);
 
         return identity;
@@ -673,7 +674,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+                ircd,
                 network, server);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
@@ -682,8 +684,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
-                network, server, channel);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+                ircd, network, server, channel);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -691,8 +693,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
-                network, server);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+                ircd, network, server);
         setUpConfigManager(configManager);
         return configManager;
     }
@@ -700,8 +702,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
-                network, server, channel);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+                ircd, network, server, channel);
         setUpConfigManager(configManager);
         return configManager;
     }

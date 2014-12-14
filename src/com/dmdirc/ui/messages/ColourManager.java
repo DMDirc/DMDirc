@@ -25,11 +25,10 @@ package com.dmdirc.ui.messages;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.validators.ColourValidator;
+import com.dmdirc.util.validators.Validator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,11 +64,8 @@ public class ColourManager {
         this.configManager = configManager;
         this.eventBus = eventBus;
 
-        configManager.addChangeListener("colour", new ConfigChangeListener() {
-            @Override
-            public void configChanged(final String domain, final String key) {
-                initColours();
-            }
+        configManager.addChangeListener("colour", (domain, key) -> {
+            initColours();
         });
 
         initColours();
@@ -79,7 +75,7 @@ public class ColourManager {
      * Initialises the IRC_COLOURS array.
      */
     private void initColours() {
-        final ColourValidator validator = new ColourValidator();
+        final Validator validator = new ColourValidator();
         for (int i = 0; i < 16; i++) {
             if (configManager.hasOptionString("colour", String.valueOf(i), validator)) {
                 ircColours[i] = getColourFromHex(
@@ -128,7 +124,9 @@ public class ColourManager {
         }
 
         if (res == null) {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid colour format: " + spec);
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM,
+                    new IllegalStateException("Invalid colour format: " + spec),
+                    "Invalid colour format: " + spec, ""));
             res = fallback;
         } else {
             colourCache.put(spec, res);

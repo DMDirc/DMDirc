@@ -22,10 +22,11 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.WeakList;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
@@ -41,11 +42,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -53,8 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ConfigFileBackedConfigProvider extends BaseConfigProvider implements ConfigProvider {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(
-            ConfigFileBackedConfigProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigFileBackedConfigProvider.class);
     /** The domain used for identity settings. */
     private static final String DOMAIN = "identity";
     /** The domain used for profile settings. */
@@ -70,6 +71,8 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
     protected ConfigManager globalConfig;
     /** The config change listeners for this source. */
     protected final List<ConfigChangeListener> listeners = new WeakList<>();
+    /** The event bus to post error events to. */
+    private final DMDircMBassador eventBus;
     /** Whether this identity needs to be saved. */
     protected boolean needSave;
 
@@ -84,11 +87,12 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * @throws IOException                  Input/output exception
      */
     public ConfigFileBackedConfigProvider(@Nullable final IdentityManager identityManager,
-            final Path file, final boolean forceDefault) throws IOException,
-            InvalidIdentityFileException {
+            final DMDircMBassador eventBus, final Path file, final boolean forceDefault)
+            throws IOException, InvalidIdentityFileException {
         this.identityManager = identityManager;
         this.file = new ConfigFile(file);
         this.file.setAutomake(true);
+        this.eventBus = eventBus;
         initFile(forceDefault);
         myTarget = getTarget(forceDefault);
 
@@ -106,11 +110,12 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException                  Input/output exception
      */
-    public ConfigFileBackedConfigProvider(final InputStream stream, final boolean forceDefault)
-            throws IOException, InvalidIdentityFileException {
+    public ConfigFileBackedConfigProvider(final DMDircMBassador eventBus, final InputStream stream,
+            final boolean forceDefault) throws IOException, InvalidIdentityFileException {
         this.identityManager = null;
         this.file = new ConfigFile(stream);
         this.file.setAutomake(true);
+        this.eventBus = eventBus;
         initFile(forceDefault);
         myTarget = getTarget(forceDefault);
 
@@ -127,9 +132,11 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
      * @param target          The target of this identity
      */
     public ConfigFileBackedConfigProvider(@Nullable final IdentityManager identityManager,
-            final ConfigFile configFile, final ConfigTarget target) {
+            final DMDircMBassador eventBus, final ConfigFile configFile,
+            final ConfigTarget target) {
         this.identityManager = identityManager;
         this.file = configFile;
+        this.eventBus = eventBus;
         this.file.setAutomake(true);
         this.myTarget = target;
 
@@ -492,8 +499,8 @@ public class ConfigFileBackedConfigProvider extends BaseConfigProvider implement
 
                 needSave = false;
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM,
-                        "Unable to save identity file: " + ex.getMessage());
+                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                        "Unable to save identity file: " + ex.getMessage(), ""));
             }
         }
     }

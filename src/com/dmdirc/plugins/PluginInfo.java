@@ -327,7 +327,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 synchronized (configProviders) {
                     try {
                         final ConfigProvider configProvider = new ConfigFileBackedConfigProvider(
-                                stream, false);
+                                eventBus, stream, false);
                         identityController.addConfigProvider(configProvider);
                         configProviders.add(configProvider);
                     } catch (final InvalidIdentityFileException ex) {
