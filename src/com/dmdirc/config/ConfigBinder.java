@@ -22,10 +22,11 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.MapList;
 
 import java.lang.reflect.AccessibleObject;
@@ -52,14 +53,19 @@ public class ConfigBinder {
     private final Optional<String> defaultDomain;
     /** The configuration manager to use to retrieve settings. */
     private final AggregateConfigProvider manager;
+    /** The event but used to raise error events. */
+    private final DMDircMBassador eventBus;
 
-    ConfigBinder(final AggregateConfigProvider manager) {
+    ConfigBinder(final AggregateConfigProvider manager, final DMDircMBassador eventBus) {
         this.manager = manager;
+        this.eventBus = eventBus;
         this.defaultDomain = Optional.empty();
     }
 
-    ConfigBinder(final AggregateConfigProvider manager, @Nonnull final String domain) {
+    ConfigBinder(final AggregateConfigProvider manager, final DMDircMBassador eventBus,
+            @Nonnull final String domain) {
         this.manager = manager;
+        this.eventBus = eventBus;
         this.defaultDomain = Optional.of(domain);
     }
 
@@ -70,7 +76,6 @@ public class ConfigBinder {
      * @param instance The instance to be bound
      * @param clazz    The class to read bindings from
      */
-    @SuppressWarnings("unchecked")
     public void bind(final Object instance, final Class<?> clazz) {
         final Collection<ConfigChangeListener> newListeners = new ArrayList<>();
         final Collection<AccessibleObject> elements = new ArrayList<>();
@@ -152,8 +157,8 @@ public class ConfigBinder {
             } catch (IllegalAccessException | IllegalArgumentException ex) {
                 // Ignore
             } catch (InvocationTargetException ex) {
-                Logger.appError(ErrorLevel.HIGH,
-                        "Exception when updating bound setting", ex);
+                eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, ex,
+                        "Exception when updating bound setting", ""));
             }
         }
     }
@@ -244,7 +249,7 @@ public class ConfigBinder {
      * @return A config binder with the specified default domain.
      */
     public ConfigBinder withDefaultDomain(@Nonnull final String domain) {
-        return new ConfigBinder(manager, domain);
+        return new ConfigBinder(manager, eventBus, domain);
     }
 
 }

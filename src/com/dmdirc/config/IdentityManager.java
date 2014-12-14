@@ -673,7 +673,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+                ircd,
                 network, server);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
@@ -682,8 +683,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
-                network, server, channel);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+                ircd, network, server, channel);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -691,8 +692,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
-                network, server);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+                ircd, network, server);
         setUpConfigManager(configManager);
         return configManager;
     }
@@ -700,8 +701,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol, ircd,
-                network, server, channel);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+                ircd, network, server, channel);
         setUpConfigManager(configManager);
         return configManager;
     }

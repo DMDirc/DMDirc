@@ -22,15 +22,18 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
+import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +61,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     /** The listeners registered for this manager. */
     private final MapList<String, ConfigChangeListener> listeners = new MapList<>();
     /** The config binder to use for this manager. */
-    private final ConfigBinder binder = new ConfigBinder(this);
+    private final ConfigBinder binder;
     /** The manager to use to fetch global state. */
     private final IdentityManager manager;
     /** Client info object. */
@@ -88,9 +91,10 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     ConfigManager(
             final ClientInfo clientInfo,
             final IdentityManager manager,
+            final DMDircMBassador eventBus,
             final String protocol, final String ircd,
             final String network, final String server) {
-        this(clientInfo, manager, protocol, ircd, network, server, "<Unknown>");
+        this(clientInfo, manager, eventBus, protocol, ircd, network, server, "<Unknown>");
     }
 
     /**
@@ -108,6 +112,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     ConfigManager(
             final ClientInfo clientInfo,
             final IdentityManager manager,
+            final DMDircMBassador eventBus,
             final String protocol, final String ircd,
             final String network, final String server, final String channel) {
         final String chanName = channel + '@' + network;
@@ -119,6 +124,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         this.network = network;
         this.server = server;
         this.channel = chanName;
+
+        binder = new ConfigBinder(this, eventBus);
     }
 
     @Override
@@ -198,7 +205,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
             return;
         }
 
-        final List<String[]> changed = new ArrayList<>();
+        final Collection<String[]> changed = new ArrayList<>();
 
         // Determine which settings will have changed
         for (String domain : identity.getDomains()) {
@@ -349,9 +356,8 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      * new parameters, firing listeners where settings have changed.
      *
      * <p>
-     * This is package private - only callers with access to a
-     * {@link com.dmdirc.interfaces.config.ConfigProviderMigrator} should be able to migrate
-     * managers.
+     * This is package private - only callers with access to a {@link ConfigProviderMigrator}
+     * should be able to migrate managers.
      *
      * @param protocol The protocol for this manager
      * @param ircd     The new name of the ircd for this manager
@@ -369,7 +375,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
         this.ircd = ircd;
         this.network = network;
         this.server = server;
-        this.channel = channel + "@" + network;
+        this.channel = channel + '@' + network;
 
         new ArrayList<>(sources).stream().filter(identity -> !identityApplies(identity))
                 .forEach(identity -> {
@@ -394,7 +400,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
      */
     @SuppressWarnings("PMD.AvoidCatchingNPE")
     protected static void doStats(final String domain, final String option) {
-        final String key = domain + "." + option;
+        final String key = domain + '.' + option;
 
         try {
             STATS.put(key, 1 + (STATS.containsKey(key) ? STATS.get(key) : 0));
@@ -421,7 +427,7 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
     @Override
     public void addChangeListener(final String domain, final String key,
             final ConfigChangeListener listener) {
-        addListener(domain + "." + key, listener);
+        addListener(domain + '.' + key, listener);
     }
 
     @Override
@@ -446,14 +452,14 @@ class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
 
     @Override
     public void configChanged(final String domain, final String key) {
-        final List<ConfigChangeListener> targets = new ArrayList<>();
+        final Collection<ConfigChangeListener> targets = new ArrayList<>();
 
         if (listeners.containsKey(domain)) {
             targets.addAll(listeners.get(domain));
         }
 
-        if (listeners.containsKey(domain + "." + key)) {
-            targets.addAll(listeners.get(domain + "." + key));
+        if (listeners.containsKey(domain + '.' + key)) {
+            targets.addAll(listeners.get(domain + '.' + key));
         }
 
         for (ConfigChangeListener listener : targets) {
