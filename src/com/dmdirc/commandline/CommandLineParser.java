@@ -25,8 +25,6 @@ package com.dmdirc.commandline;
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
 
@@ -55,7 +53,7 @@ public class CommandLineParser {
      * The arguments that the client supports, in groups of four, in the following order: short
      * option, long option, description, whether or not the option takes an argument.
      */
-    private static final Object[][] ARGUMENTS = new Object[][]{
+    private static final Object[][] ARGUMENTS = {
         {'c', "connect", "Connect to the specified server", Boolean.TRUE},
         {'d', "directory", "Use the specified configuration directory", Boolean.TRUE},
         {'e', "existing", "Try to use an existing instance of DMDirc (use with -c)", Boolean.FALSE},
@@ -64,7 +62,8 @@ public class CommandLineParser {
         {'p', "portable", "Enable portable mode", Boolean.FALSE},
         {'r', "disable-reporting", "Disable automatic error reporting", Boolean.FALSE},
         {'v', "version", "Display client version and exit", Boolean.FALSE},
-        {'k', "check", "Check if an existing instance of DMDirc exists.", Boolean.FALSE},};
+        {'k', "check", "Check if an existing instance of DMDirc exists.", Boolean.FALSE}
+    };
     /** A list of addresses to autoconnect to. */
     private final List<URI> addresses = new ArrayList<>();
     /** Provider to use to get server managers. */
@@ -134,8 +133,8 @@ public class CommandLineParser {
                 server.connect(addresses);
                 System.exit(0);
             } catch (RemoteException ex) {
-                Logger.appError(ErrorLevel.MEDIUM,
-                        "Unable to execute remote connection", ex);
+                System.err.println("Unable to execute remote connection: " + ex.getMessage());
+                ex.printStackTrace();
             }
         }
 

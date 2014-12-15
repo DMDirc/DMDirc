@@ -38,8 +38,6 @@ import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.CorePluginExtractor;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
@@ -149,14 +147,15 @@ public class Main {
      * @param args the command line arguments
      */
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
-    public static void main(final String[] args) {
+    public static void main(final String... args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         try {
             Policy.setPolicy(new DMDircSecurityPolicy());
             System.setSecurityManager(new SecurityManager());
         } catch (SecurityException ex) {
-            Logger.appError(ErrorLevel.HIGH, "Unable to set security policy", ex);
+            System.err.println("Unable to set security policy: " + ex.getMessage());
+            ex.printStackTrace();
         }
 
         try {
@@ -168,7 +167,8 @@ public class Main {
             parser.parse(args);
             graph.get(Main.class).init();
         } catch (Throwable ex) {
-            Logger.appError(ErrorLevel.FATAL, "Exception while initialising", ex);
+            System.err.println("Unable to set security policy: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -177,10 +177,7 @@ public class Main {
      */
     public void init() {
         migrators.stream().filter(Migrator::needsMigration).forEach(Migrator::migrate);
-
-        for (CommandDetails command : commands) {
-            commandManager.registerCommand(command.getCommand(), command.getInfo());
-        }
+        commands.forEach(c -> commandManager.registerCommand(c.getCommand(), c.getInfo()));
 
         loadUIs(pluginManager);
 
