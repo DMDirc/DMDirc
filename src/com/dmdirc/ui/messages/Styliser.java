@@ -22,11 +22,12 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.colours.Colour;
 
 import java.awt.Color;
@@ -119,6 +120,8 @@ public class Styliser implements ConfigChangeListener {
     /** The regular expression to use for marking up channels. */
     private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>\\(\"',])([\\Q%s\\E]"
             + RESERVED_CHARS + "+)";
+    /** The event bus to post errors to. */
+    private final DMDircMBassador eventBus;
     /** Whether or not we should style links. */
     private boolean styleURIs;
     /** Whether or not we should style channel names. */
@@ -146,10 +149,12 @@ public class Styliser implements ConfigChangeListener {
      */
     public Styliser(@Nullable final Connection connection,
             final AggregateConfigProvider configManager,
-            final ColourManager colourManager) {
+            final ColourManager colourManager,
+            final DMDircMBassador eventBus) {
         this.connection = connection;
         this.configManager = configManager;
         this.colourManager = colourManager;
+        this.eventBus = eventBus;
 
         configManager.addChangeListener("ui", "linkcolour", this);
         configManager.addChangeListener("ui", "channelcolour", this);
@@ -215,8 +220,8 @@ public class Styliser implements ConfigChangeListener {
                     }
                 }
             } catch (BadLocationException ex) {
-                Logger.userError(ErrorLevel.MEDIUM,
-                        "Unable to insert styled string: " + ex.getMessage());
+                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                        "Unable to insert styled string: " + ex.getMessage(), ""));
             }
         }
     }

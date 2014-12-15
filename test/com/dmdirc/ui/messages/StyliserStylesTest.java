@@ -47,26 +47,28 @@ import static org.mockito.Mockito.*;
 @Ignore("Doesn't work in a headless environment (initialises an IRCDocument)")
 public class StyliserStylesTest {
 
+    private DMDircMBassador eventBus;
     protected String input, output;
 
     public StyliserStylesTest(final String input, final String output) {
         this.input = input;
         this.output = output;
+        eventBus = mock(DMDircMBassador.class);
     }
 
     @Test
     public void testStyle() {
-        assertEquals(output, style(input));
+        assertEquals(output, style(input, eventBus));
     }
 
-    protected static String style(final String input) {
+    protected static String style(final String input, final DMDircMBassador eventBus) {
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
 
         final Styliser styliser = new Styliser(null, manager, new ColourManager(manager,
-                mock(DMDircMBassador.class)));
+                mock(DMDircMBassador.class)), eventBus);
         styliser.addStyledString(doc, new String[]{input});
         final AttributedCharacterIterator aci = Utils.getAttributedString(styliser,
                 new String[]{input, }, "dialog", 12).
