@@ -31,13 +31,16 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
 public class IntelligentLinkingTest {
 
+    @Mock private DMDircMBassador eventBus;
     private final String input, expected;
     private final Styliser styliser;
 
@@ -50,7 +53,7 @@ public class IntelligentLinkingTest {
         when(server.getChannelPrefixes()).thenReturn("#&+");
 
         styliser = new Styliser(server, manager, new ColourManager(manager,
-                mock(DMDircMBassador.class)));
+                mock(DMDircMBassador.class)), eventBus);
     }
 
     @Test

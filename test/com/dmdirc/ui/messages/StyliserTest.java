@@ -29,11 +29,18 @@ import java.util.Enumeration;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
 
+@RunWith(MockitoJUnitRunner.class)
 public class StyliserTest {
+
+    @Mock private DMDircMBassador eventBus;
 
     @Test
     public void testStripControlCodes1() {
@@ -85,7 +92,7 @@ public class StyliserTest {
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
         final Styliser styliser = new Styliser(null, manager, new ColourManager(manager,
-                mock(DMDircMBassador.class)));
+                mock(DMDircMBassador.class)), eventBus);
 
         for (int i = 0; i < input2.length(); i++) {
             final Enumeration<?> res1 = styliser.getStyledString(new String[]{input1})

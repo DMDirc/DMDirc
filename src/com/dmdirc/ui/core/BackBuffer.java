@@ -39,7 +39,8 @@ public class BackBuffer {
         this.styliser = new Styliser(
                 owner.getOptionalConnection().orElse(null),
                 owner.getConfigManager(),
-                colourManagerFactory.getColourManager(owner.getConfigManager()));
+                colourManagerFactory.getColourManager(owner.getConfigManager()),
+                owner.getEventBus());
         this.document = new IRCDocument(owner.getConfigManager(), styliser);
     }
 
