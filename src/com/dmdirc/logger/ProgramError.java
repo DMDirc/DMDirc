@@ -64,6 +64,8 @@ public final class ProgramError implements Serializable {
     private final String details;
     /** Date/time error first occurred. */
     private final Date firstDate;
+    /** The error manager to register with. */
+    private final ErrorManager errorManager;
     /** Date/time error last occurred. */
     private Date lastDate;
     /** Number of occurrences. */
@@ -87,7 +89,8 @@ public final class ProgramError implements Serializable {
             @Nullable final Throwable exception,
             @Nullable final String details,
             final Date date,
-            final ClientInfo clientInfo) {
+            final ClientInfo clientInfo,
+            final ErrorManager errorManager) {
 
         if (id < 0) {
             throw new IllegalArgumentException("ID must be a positive integer: " + id);
@@ -115,6 +118,7 @@ public final class ProgramError implements Serializable {
         this.count = new AtomicInteger(1);
         this.reportStatus = ErrorReportStatus.WAITING;
         this.reporter = new ErrorReporter(clientInfo);
+        this.errorManager = errorManager;
     }
 
     /**
@@ -189,7 +193,7 @@ public final class ProgramError implements Serializable {
     public void setReportStatus(final ErrorReportStatus newStatus) {
         if (newStatus != null && reportStatus != newStatus) {
             reportStatus = newStatus;
-            ErrorManager.getErrorManager().fireErrorStatusChanged(this);
+            errorManager.fireErrorStatusChanged(this);
 
             synchronized (this) {
                 notifyAll();
@@ -331,7 +335,7 @@ public final class ProgramError implements Serializable {
     public void updateLastDate(final Date date) {
         lastDate = date;
         count.getAndIncrement();
-        ErrorManager.getErrorManager().fireErrorStatusChanged(this);
+        errorManager.fireErrorStatusChanged(this);
 
         synchronized (this) {
             notifyAll();
