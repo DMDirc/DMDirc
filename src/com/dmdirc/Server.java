@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ChannelOpenedEvent;
 import com.dmdirc.events.QueryOpenedEvent;
 import com.dmdirc.events.ServerConnectErrorEvent;
@@ -42,7 +43,6 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
@@ -286,7 +286,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                         uri.getHost(), protocolDescription.getDefaultPort(),
                         uri.getPath(), uri.getQuery(), uri.getFragment());
             } catch (URISyntaxException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to construct URI", ex);
+                getEventBus().publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
+                        "Unable to construct URI", ""));
             }
         }
     }
@@ -731,7 +732,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             try {
                 return new URI(type, userInfo, host, port, "", "", "");
             } catch (URISyntaxException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to create proxy URI", ex);
+                getEventBus().publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
+                        "Unable to create proxy URI", ""));
             }
         }
 
@@ -1296,9 +1298,10 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                         || exception instanceof SSLException) {
                     description = exception.getMessage();
                 } else {
-                    Logger.appError(ErrorLevel.LOW, "Unknown socket error: "
-                            + exception.getClass().getCanonicalName(),
-                            new IllegalArgumentException(exception));
+                    getEventBus().publish(new AppErrorEvent(ErrorLevel.LOW,
+                            new IllegalArgumentException(exception),
+                            "Unknown socket error: " + exception.getClass().getCanonicalName(),
+                            ""));
                     description = "Unknown error: " + exception.getMessage();
                 }
             }
@@ -1307,8 +1310,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
             handleNotification("connectError", getAddress(), description);
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "reconnectonconnectfailure")) {
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure")) {
                 doDelayedReconnect();
             }
         }
@@ -1414,11 +1416,10 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 missing.append(missingUmodes);
             }
 
-            Logger.appError(ErrorLevel.LOW, missing + " ["
-                    + parser.getServerSoftwareType() + ']',
-                    new MissingModeAliasException(getNetwork(), parser,
-                            getConfigManager().getOption("identity",
-                                    "modealiasversion"), missing.toString()));
+
+            getEventBus().publish(new AppErrorEvent(ErrorLevel.LOW, new MissingModeAliasException(
+                    getNetwork(), parser, getConfigManager().getOption("identity","modealiasversion"),
+                    missing.toString()), missing + " ["+ parser.getServerSoftwareType() + ']', ""));
         }
     }
 
