@@ -425,7 +425,7 @@ public abstract class FrameContainer {
     public BackBuffer getBackBuffer() {
         synchronized (backBufferLock) {
             if (backBuffer == null) {
-                this.backBuffer = new BackBuffer(this, colourManagerFactory);
+                this.backBuffer = new BackBuffer(this, colourManagerFactory, eventBus);
             }
         }
 

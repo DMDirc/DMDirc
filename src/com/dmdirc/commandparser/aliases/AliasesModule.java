@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.aliases;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.interfaces.Migrator;
@@ -59,8 +60,9 @@ public class AliasesModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    public Migrator getDefaultsMigrator(@Directory(DirectoryType.BASE) final Path directory) {
-        return new DefaultAliasInstaller(directory.resolve("aliases.yml"));
+    public Migrator getDefaultsMigrator(@Directory(DirectoryType.BASE) final Path directory,
+            final DMDircMBassador eventBus) {
+        return new DefaultAliasInstaller(directory.resolve("aliases.yml"), eventBus);
     }
 
 }

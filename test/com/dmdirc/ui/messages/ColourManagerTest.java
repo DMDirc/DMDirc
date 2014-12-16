@@ -26,7 +26,6 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorManager;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.colours.ColourUtils;
 import com.dmdirc.util.validators.ColourValidator;
@@ -39,8 +38,13 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ColourManagerTest {
@@ -53,8 +57,6 @@ public class ColourManagerTest {
 
     @Before
     public void setup() {
-        Logger.setErrorManager(errorManager);
-
         manager = new ColourManager(configManager, eventBus);
         verify(configManager).addChangeListener(anyString(), configListener.capture());
     }

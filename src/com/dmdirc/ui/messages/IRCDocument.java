@@ -22,8 +22,11 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 
@@ -37,6 +40,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.UIManager;
+import javax.swing.text.BadLocationException;
 
 /**
  * Data contained in a TextPane.
@@ -57,6 +61,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     private final AggregateConfigProvider configManager;
     /** This document's styliser. */
     private final Styliser styliser;
+    /** The event bus to post errors to. */
+    private final DMDircMBassador eventBus;
     /** Font size. */
     private int fontSize;
     /** Font name. */
@@ -73,9 +79,10 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @since 0.6.3
      */
     public IRCDocument(final AggregateConfigProvider configManager,
-            final Styliser styliser) {
+            final Styliser styliser, final DMDircMBassador eventBus) {
         this.configManager = configManager;
         this.styliser = styliser;
+        this.eventBus = eventBus;
 
         lines = new ArrayList<>();
         listeners = new ListenerList();
@@ -276,11 +283,16 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
             }
 
             if (styledLine == null) {
-                styledLine = line.getStyled();
+                try {
+                    styledLine = line.getStyled();
+                } catch (BadLocationException ex) {
+                    eventBus.publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
+                            "Unable to add line: " + ex.getMessage(),  ""));
+                }
                 cachedLines.add(line);
                 cachedStrings.add(styledLine);
             }
-
+            // TODO: Consider what to do if this is null from the BLE above
             return styledLine.getIterator();
         }
     }

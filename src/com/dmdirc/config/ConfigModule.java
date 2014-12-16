@@ -28,9 +28,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorManager;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.WarningDialog;
 import com.dmdirc.util.ClientInfo;
 
@@ -149,7 +147,8 @@ public class ConfigModule {
                 identityManager.initialise();
             } catch (InvalidIdentityFileException iife) {
                 // This shouldn't happen!
-                Logger.appError(ErrorLevel.FATAL, "Unable to load global config", iife);
+                System.err.println("Unable to load global config");
+                iife.printStackTrace();;
             }
         } catch (IOException ex) {
             final String newMessage = "DMDirc was unable to rename the "

@@ -22,8 +22,6 @@
 
 package com.dmdirc.ui.core.util;
 
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.messages.Styliser;
 
@@ -60,19 +58,13 @@ public final class Utils {
      * @return AttributedString representing the specified StyledDocument
      */
     public static ExtendedAttributedString getAttributedString(final Styliser styliser,
-            final String[] lineParts, final String fontName, final int fontSize) {
+            final String[] lineParts, final String fontName, final int fontSize) throws
+            BadLocationException {
         final StyledDocument doc = styliser.getStyledString(lineParts);
 
-        AttributedString attString = null;
         final Element line = doc.getParagraphElement(0);
-        try {
-            attString = new AttributedString(line.getDocument().getText(0,
-                    line.getDocument().getLength()));
-        } catch (BadLocationException ex) {
-            Logger.userError(ErrorLevel.MEDIUM,
-                    "Unable to insert styled string: " + ex.getMessage());
-        }
-
+        final AttributedString attString = new AttributedString(line.getDocument().getText(0,
+                line.getDocument().getLength()));
         if (attString.getIterator().getEndIndex() != 0) {
             final Font font = new Font(fontName, Font.PLAIN, fontSize);
             attString.addAttribute(TextAttribute.SIZE, font.getSize());
