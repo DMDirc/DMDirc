@@ -148,7 +148,6 @@ public class Main {
      */
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String... args) {
-        Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
 
         try {
             Policy.setPolicy(new DMDircSecurityPolicy());
@@ -176,6 +175,7 @@ public class Main {
      * Initialises the client.
      */
     public void init() {
+        Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler(eventBus));
         migrators.stream().filter(Migrator::needsMigration).forEach(Migrator::migrate);
         commands.forEach(c -> commandManager.registerCommand(c.getCommand(), c.getInfo()));
 
