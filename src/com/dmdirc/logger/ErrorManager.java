@@ -40,6 +40,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import net.engio.mbassy.listener.Handler;
 import net.kencochrane.raven.DefaultRavenFactory;
 import net.kencochrane.raven.RavenFactory;
@@ -47,6 +50,7 @@ import net.kencochrane.raven.RavenFactory;
 /**
  * Error manager.
  */
+@Singleton
 public class ErrorManager implements ConfigChangeListener {
 
     /** Previously instantiated instance of ErrorManager. */
@@ -78,6 +82,7 @@ public class ErrorManager implements ConfigChangeListener {
     private ClientInfo clientInfo;
 
     /** Creates a new instance of ErrorListDialog. */
+    @Inject
     public ErrorManager() {
         errors = new LinkedList<>();
         nextErrorID = new AtomicLong();
@@ -114,27 +119,6 @@ public class ErrorManager implements ConfigChangeListener {
                 error.save(errorsDirectory);
             }
         }
-    }
-
-    /**
-     * Returns the instance of ErrorManager.
-     *
-     * @return Instance of ErrorManager
-     */
-    public static synchronized ErrorManager getErrorManager() {
-        if (me == null) {
-            me = new ErrorManager();
-        }
-        return me;
-    }
-
-    /**
-     * Sets the singleton instance of the error manager.
-     *
-     * @param errorManager The error manager to use.
-     */
-    public static void setErrorManager(final ErrorManager errorManager) {
-        me = errorManager;
     }
 
     @Handler
