@@ -41,12 +41,13 @@ import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.ui.messages.sink.MessagesModule;
+import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.plugins.PluginModule;
 import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.UiMessagesModule;
+import com.dmdirc.ui.messages.sink.MessagesModule;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.updater.manager.UpdateManager;
@@ -177,6 +178,14 @@ public class ClientModule {
     public ColourManager getGlobalColourManager(final ColourManagerFactory colourManagerFactory,
             @GlobalConfig final  AggregateConfigProvider globalConfig) {
         return colourManagerFactory.getColourManager(globalConfig);
+    }
+
+    @Singleton
+    @Provides
+    public ErrorManager getErrorManager() {
+        final ErrorManager errorManager = new ErrorManager();
+        ErrorManager.setErrorManager(errorManager);
+        return errorManager;
     }
 
     @Provides

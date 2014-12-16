@@ -65,12 +65,12 @@ public class ConfigModule {
             @Directory(DirectoryType.ERRORS) final Path errorsDirectory,
             final CommandLineParser commandLineParser,
             final DMDircMBassador eventBus,
-            final ClientInfo clientInfo) {
+            final ClientInfo clientInfo,
+            final ErrorManager errorManager) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,
                 identitiesDirectory, eventBus, clientInfo);
-        ErrorManager.getErrorManager()
-                .initialise(identityManager.getGlobalConfiguration(), errorsDirectory, eventBus,
-                        clientInfo);
+        errorManager.initialise(identityManager.getGlobalConfiguration(), errorsDirectory,
+                eventBus, clientInfo);
         identityManager.loadVersionIdentity();
 
         try {

@@ -65,6 +65,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     private static boolean restart = true;
     /** Fatal error to be shown in this dialog. */
     private final ProgramError error;
+    /** Error manager to report the error to. */
+    private final ErrorManager errorManager;
     /** Restart client Button. */
     private JButton restartButton;
     /** Quit client button. */
@@ -87,18 +89,19 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      *
      * @param error Error
      */
-    public FatalErrorDialog(final ProgramError error) {
+    public FatalErrorDialog(final ProgramError error, final ErrorManager errorManager) {
         super(null, Dialog.ModalityType.TOOLKIT_MODAL);
 
         setModal(true);
 
         this.error = error;
+        this.errorManager = errorManager;
 
         initComponents();
         layoutComponents();
 
         try {
-            ErrorManager.getErrorManager().addErrorListener(this);
+            errorManager.addErrorListener(this);
         } catch (Exception e) {
             System.err.println("Error initialising error manager: ");
             e.printStackTrace();
@@ -219,7 +222,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
             new SwingWorker<Void, Void>() {
                 @Override
                 protected Void doInBackground() {
-                    ErrorManager.getErrorManager().sendError(error);
+                    errorManager.sendError(error);
                     return null;
                 }
             }.execute();

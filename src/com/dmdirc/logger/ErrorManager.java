@@ -275,7 +275,7 @@ public class ErrorManager implements ConfigChangeListener {
     protected ProgramError getError(final ErrorLevel level, final String message,
             final Throwable exception, final String details) {
         return new ProgramError(nextErrorID.getAndIncrement(), level, message, exception,
-                details, new Date(), clientInfo);
+                details, new Date(), clientInfo, this);
     }
 
     /**
@@ -427,7 +427,7 @@ public class ErrorManager implements ConfigChangeListener {
             }
             restart = false;
         } else {
-            final FatalErrorDialog fed = new FatalErrorDialog(error);
+            final FatalErrorDialog fed = new FatalErrorDialog(error, this);
             fed.setVisible(true);
             try {
                 synchronized (fed) {
