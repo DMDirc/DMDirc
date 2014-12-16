@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.core;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.IRCDocument;
@@ -35,13 +36,14 @@ public class BackBuffer {
     private final IRCDocument document;
     private final Styliser styliser;
 
-    public BackBuffer(final FrameContainer owner, final ColourManagerFactory colourManagerFactory) {
+    public BackBuffer(final FrameContainer owner, final ColourManagerFactory colourManagerFactory,
+            final DMDircMBassador eventBus) {
         this.styliser = new Styliser(
                 owner.getOptionalConnection().orElse(null),
                 owner.getConfigManager(),
                 colourManagerFactory.getColourManager(owner.getConfigManager()),
                 owner.getEventBus());
-        this.document = new IRCDocument(owner.getConfigManager(), styliser);
+        this.document = new IRCDocument(owner.getConfigManager(), styliser, eventBus);
     }
 
     public IRCDocument getDocument() {
