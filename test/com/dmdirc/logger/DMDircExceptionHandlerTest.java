@@ -22,38 +22,52 @@
 package com.dmdirc.logger;
 
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.AppErrorEvent;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static junit.framework.TestCase.assertEquals;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMDircExceptionHandlerTest {
 
-    @Mock private ErrorManager errorManager;
+    @Mock private DMDircMBassador eventBus;
+    @Captor private ArgumentCaptor<AppErrorEvent> event;
     private DMDircExceptionHandler eh;
 
     @Before
     public void setup() {
-        Logger.setErrorManager(errorManager);
-        eh = new DMDircExceptionHandler();
+        eh = new DMDircExceptionHandler(eventBus);
     }
 
     @Test
     public void testUncaughtException() {
         final Exception exception = new UnsupportedOperationException();
         eh.uncaughtException(null, exception);
-        verify(errorManager).addError(eq(ErrorLevel.HIGH), anyString(), same(exception), eq(true));
+        verify(eventBus).publish(event.capture());
+        assertEquals(ErrorLevel.HIGH, event.getValue().getLevel());
+        assertEquals(exception, event.getValue().getThrowable());
+        assertEquals(exception.toString(), event.getValue().getMessage());
+        assertEquals("", event.getValue().getDetails());
     }
 
     @Test
     public void testUncaughtError() {
         final Error error = new OutOfMemoryError();
         eh.uncaughtException(null, error);
-        verify(errorManager).addError(eq(ErrorLevel.FATAL), anyString(), same(error), eq(true));
+        verify(eventBus).publish(event.capture());
+        assertEquals(ErrorLevel.FATAL, event.getValue().getLevel());
+        assertEquals(error, event.getValue().getThrowable());
+        assertEquals(error.toString(), event.getValue().getMessage());
+        assertEquals("", event.getValue().getDetails());
     }
 
 }

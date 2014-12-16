@@ -22,18 +22,27 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.AppErrorEvent;
+
 /**
  * Passes uncaught exceptions to the logger.
  */
 public final class DMDircExceptionHandler implements
         Thread.UncaughtExceptionHandler {
 
+    private final DMDircMBassador eventBus;
+
+    public DMDircExceptionHandler(final DMDircMBassador eventBus) {
+        this.eventBus = eventBus;
+    }
+
     @Override
     public void uncaughtException(final Thread t, final Throwable e) {
         if (e instanceof Error) {
-            Logger.appError(ErrorLevel.FATAL, e.toString(), e);
+            eventBus.publish(new AppErrorEvent(ErrorLevel.FATAL, e, e.toString(), ""));
         } else {
-            Logger.appError(ErrorLevel.HIGH, e.toString(), e);
+            eventBus.publish(new AppErrorEvent(ErrorLevel.HIGH, e, e.toString(), ""));
         }
     }
 
