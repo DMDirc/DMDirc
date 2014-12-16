@@ -23,8 +23,6 @@
 package com.dmdirc.util.resourcemanager;
 
 import com.dmdirc.Main;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.io.FileUtils;
 
 import java.io.File;
@@ -50,7 +48,7 @@ public abstract class ResourceManager {
      *
      * @return ResourceManager implementation
      */
-    public static synchronized ResourceManager getResourceManager() {
+    public static synchronized ResourceManager getResourceManager() throws IllegalStateException {
         if (me == null) {
             try {
                 if (FileUtils.isRunningFromJar(Main.class)) {
@@ -62,8 +60,8 @@ public abstract class ResourceManager {
 
                 }
             } catch (IllegalStateException | IOException ex) {
-                Logger.appError(ErrorLevel.MEDIUM,
-                        "Unable to determine how DMDirc has been executed", ex);
+                throw new IllegalStateException("Unable to determine how DMDirc has been executed",
+                        ex);
             }
         }
         return me;
