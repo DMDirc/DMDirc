@@ -23,17 +23,17 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
@@ -89,7 +89,8 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
             server.getParser().getCallbackManager().addCallback(DataInListener.class, this);
             server.getParser().getCallbackManager().addCallback(DataOutListener.class, this);
         } catch (CallbackNotFoundException ex) {
-            Logger.appError(ErrorLevel.HIGH, "Unable to register raw callbacks", ex);
+            getEventBus().publish(new AppErrorEvent(ErrorLevel.HIGH, ex,
+                    "Unable to register raw callbacks", ""));
         }
     }
 
