@@ -31,8 +31,6 @@ import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.logger.ErrorManager;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
@@ -48,7 +46,6 @@ import java.util.Map;
 import javax.inject.Provider;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -61,7 +58,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -81,11 +77,6 @@ public class ActionTest {
     private Map<String, PreferencesSetting> prefs;
     //TODO replace with virtual filesystem like jimfs
     private final FileSystem filesystem = FileSystems.getDefault();
-
-    @BeforeClass
-    public static void stubLogger() {
-        Logger.setErrorManager(mock(ErrorManager.class));
-    }
 
     @Before
     public void setupActionController() {

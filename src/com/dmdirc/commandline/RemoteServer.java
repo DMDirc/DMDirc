@@ -23,8 +23,6 @@
 package com.dmdirc.commandline;
 
 import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
 import java.net.URI;
 import java.rmi.NotBoundException;
@@ -73,7 +71,8 @@ public class RemoteServer implements RemoteInterface {
         try {
             stub = (RemoteInterface) UnicastRemoteObject.exportObject(this, 0);
         } catch (RemoteException ex) {
-            Logger.appError(ErrorLevel.MEDIUM, "Unable to export remote interface", ex);
+            System.err.println("Unable to export the remote interface");
+            ex.printStackTrace();
             return;
         }
 

@@ -29,6 +29,8 @@ import com.dmdirc.config.prefs.PreferencesType;
 import com.dmdirc.events.ActionCreatedEvent;
 import com.dmdirc.events.ActionDeletedEvent;
 import com.dmdirc.events.ActionUpdatedEvent;
+import com.dmdirc.events.AppErrorEvent;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionComparison;
 import com.dmdirc.interfaces.actions.ActionComponent;
@@ -36,7 +38,6 @@ import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
@@ -343,9 +344,9 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
         for (ActionType trigger : triggers) {
             if (trigger == null) {
-                Logger.appError(ErrorLevel.LOW, "ActionType was null",
-                        new IllegalArgumentException("Triggers: "
-                                + Arrays.toString(triggers)));
+                eventBus.publish(new AppErrorEvent(ErrorLevel.LOW,
+                        new IllegalArgumentException("Triggers: "+ Arrays.toString(triggers)),
+                        "ActionType was null", ""));
                 continue;
             }
 
@@ -410,8 +411,9 @@ public class Action extends ActionModel implements ConfigChangeListener {
 
             resetModified();
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.HIGH, "I/O error when saving action: "
-                    + group + "/" + name + ": " + ex.getMessage());
+            eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, ex,
+                    "I/O error when saving action: " + group + '/' + name + ": " + ex.getMessage(),
+                    ""));
         }
 
         eventBus.publishAsync(new ActionUpdatedEvent(this));
@@ -541,8 +543,10 @@ public class Action extends ActionModel implements ConfigChangeListener {
         this.errorType = type;
         this.status = ActionStatus.FAILED;
 
-        Logger.userError(ErrorLevel.LOW, "Error when parsing action: "
-                + group + "/" + name + ": " + message);
+        eventBus.publish(new UserErrorEvent(ErrorLevel.LOW,
+                new IllegalStateException("Error when parsing action: " + group + '/' + name + ": "
+                        + message),
+                "Error when parsing action" + group + '/' + name + ": " + message, ""));
     }
 
     @Override

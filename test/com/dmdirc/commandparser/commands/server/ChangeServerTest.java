@@ -28,7 +28,6 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.logger.ErrorManager;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.URIParser;
 
 import java.net.URI;
@@ -59,7 +58,6 @@ public class ChangeServerTest {
 
     @Before
     public void setUp() {
-        Logger.setErrorManager(errorManager);
         when(server.getProfile()).thenReturn(profile);
         command = new ChangeServer(controller, new URIParser());
     }

@@ -30,8 +30,6 @@ import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.actions.ActionComponent;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.ui.Window;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.ui.messages.Styliser;
@@ -174,10 +172,6 @@ public enum CoreActionComponent implements ActionComponent {
             final Connection server = (Connection) arg;
 
             if (server == null || server.getParser() == null) {
-                Logger.appError(ErrorLevel.LOW, "SERVER_MYNICKNAME.get() called with null element",
-                        new UnsupportedOperationException(server == null ? "Server was null" :
-                                server.getParser() == null ? "Parser was null" : "Unknown"));
-
                 return "null";
             } else {
                 return server.getParser().getLocalClient().getNickname();

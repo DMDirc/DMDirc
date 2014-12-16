@@ -28,6 +28,8 @@ import com.dmdirc.ui.core.util.Utils;
 import java.text.AttributedString;
 import java.util.Arrays;
 
+import javax.swing.text.BadLocationException;
+
 /**
  * Represents a line of text in IRC.
  */
@@ -136,7 +138,7 @@ public class Line {
      *
      * @return AttributedString representing the specified StyledDocument
      */
-    public AttributedString getStyled() {
+    public AttributedString getStyled() throws BadLocationException {
         final ExtendedAttributedString string = Utils.getAttributedString(
                 styliser, lineParts, fontName, fontSize);
         fontSize = string.getMaxLineHeight();

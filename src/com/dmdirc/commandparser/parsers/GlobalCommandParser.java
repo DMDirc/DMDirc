@@ -30,10 +30,10 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -47,6 +47,7 @@ public class GlobalCommandParser extends CommandParser {
 
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new command parser for global commands.
@@ -61,6 +62,7 @@ public class GlobalCommandParser extends CommandParser {
             final CommandController commandManager,
             final DMDircMBassador eventBus) {
         super(configManager, commandManager, eventBus);
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -103,7 +105,9 @@ public class GlobalCommandParser extends CommandParser {
     @Override
     protected void handleNonCommand(final FrameContainer origin, final String line) {
         if (origin == null) {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid global command: " + line);
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM,
+                    new IllegalArgumentException("Invalid Global Command: " +  line),
+                    "Invalid Global Command: " +  line, ""));
         } else {
             origin.addLine("commandError", "Invalid global command: " + line);
         }

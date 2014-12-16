@@ -667,7 +667,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         if (myParser instanceof SecureParser) {
             certificateManager = new CertificateManager(
-                    address.getHost(), getConfigManager(), userSettings);
+                    address.getHost(), getConfigManager(), userSettings, getEventBus());
             final SecureParser secureParser = (SecureParser) myParser;
             secureParser.setTrustManagers(new TrustManager[]{certificateManager});
             secureParser.setKeyManagers(certificateManager.getKeyManager());

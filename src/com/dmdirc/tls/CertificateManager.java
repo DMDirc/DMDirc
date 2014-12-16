@@ -22,10 +22,11 @@
 
 package com.dmdirc.tls;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.util.collections.ListenerList;
 
 import java.io.File;
@@ -85,6 +86,8 @@ public class CertificateManager implements X509TrustManager {
     private final boolean checkHost;
     /** Used to synchronise the manager with the certificate dialog. */
     private final Semaphore actionSem = new Semaphore(0);
+    /** The event bus to post errors to. */
+    private final DMDircMBassador eventBus;
     /** The action to perform. */
     private CertificateAction action;
     /** A list of problems encountered most recently. */
@@ -100,17 +103,20 @@ public class CertificateManager implements X509TrustManager {
      * @param serverName   The name the user used to connect to the server
      * @param config       The configuration manager to use
      * @param userSettings The user settings to write to.
+     * @param eventBus     The event bus to post errors to
      */
     public CertificateManager(
             final String serverName,
             final AggregateConfigProvider config,
-            final ConfigProvider userSettings) {
+            final ConfigProvider userSettings,
+            final DMDircMBassador eventBus) {
         this.serverName = serverName;
         this.config = config;
         this.checkDate = config.getOptionBool("ssl", "checkdate");
         this.checkIssuer = config.getOptionBool("ssl", "checkissuer");
         this.checkHost = config.getOptionBool("ssl", "checkhost");
         this.userSettings = userSettings;
+        this.eventBus = eventBus;
 
         loadTrustedCAs();
     }
@@ -131,7 +137,8 @@ public class CertificateManager implements X509TrustManager {
                             .collect(Collectors.toList()));
         } catch (CertificateException | IOException | InvalidAlgorithmParameterException |
                 KeyStoreException | NoSuchAlgorithmException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to load trusted certificates", ex);
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to load trusted certificates", ""));
         }
     }
 
@@ -162,9 +169,11 @@ public class CertificateManager implements X509TrustManager {
 
                 return kmf.getKeyManagers();
             } catch (FileNotFoundException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Certificate file not found", ex);
+                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                        "Certificate file not found", ""));
             } catch (GeneralSecurityException | IOException ex) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unable to get key manager", ex);
+                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                        "Unable to get key manager", ""));
             }
         }
 
