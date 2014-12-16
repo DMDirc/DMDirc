@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 
 import org.junit.Ignore;
@@ -57,11 +58,12 @@ public class StyliserStylesTest {
     }
 
     @Test
-    public void testStyle() {
+    public void testStyle() throws BadLocationException {
         assertEquals(output, style(input, eventBus));
     }
 
-    protected static String style(final String input, final DMDircMBassador eventBus) {
+    protected static String style(final String input, final DMDircMBassador eventBus)
+            throws BadLocationException{
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();
 
