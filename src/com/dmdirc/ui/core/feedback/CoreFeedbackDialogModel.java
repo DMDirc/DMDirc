@@ -171,44 +171,50 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
 
     @Override
     public void save() {
-        final StringBuilder serverInfo = new StringBuilder(255);
-        final StringBuilder dmdircInfo = new StringBuilder(255);
+        final String serverInfo;
         if (getIncludeServerInfo()) {
-            for (Connection connection : connectionManager.getConnections()) {
-                if (connection.getState().isDisconnected()) {
-                    continue;
-                }
-                serverInfo.append("Actual name: ").append(connection.getParser()
-                        .getServerName()).append('\n');
-                serverInfo.append("Network: ").append(connection.getNetwork())
-                        .append('\n');
-                serverInfo.append("IRCd: ").append(connection.getParser()
-                        .getServerSoftware()).append(" - ");
-                serverInfo.append(connection.getParser().getServerSoftwareType())
-                        .append('\n');
-                serverInfo.append("Modes: ").append(connection.getParser()
-                        .getBooleanChannelModes()).append(' ');
-                serverInfo.append(connection.getParser().getListChannelModes())
-                        .append(' ');
-                serverInfo.append(connection.getParser().getParameterChannelModes())
-                        .append(' ');
-                serverInfo.append(connection.getParser().
-                        getDoubleParameterChannelModes());
-            }
+            serverInfo = getServerInfo();
+        } else {
+            serverInfo = "";
         }
+        final String dmdircInfo;
         if (getIncludeDMDircInfo()) {
-            dmdircInfo.append("DMDirc version: ").append(clientInfo.getVersionInformation())
-                    .append('\n');
-            dmdircInfo.append("Profile directory: ").append(configDirectory).append('\n');
-            dmdircInfo.append("Java version: ").append(clientInfo.getJavaInformation())
-                    .append('\n');
-            dmdircInfo.append("OS Version: ").append(clientInfo.getOperatingSystemInformation());
+            dmdircInfo = getDMDircInfo();
+        } else {
+            dmdircInfo = "";
         }
         final FeedbackSender sender = feedbackSenderFactory.getFeedbackSender(
                 name.orElse(""), email.orElse(""), feedback.orElse(""),
-                config.getOption("version", "version"),
-                serverInfo.toString(), dmdircInfo.toString());
+                config.getOption("version", "version"), serverInfo, dmdircInfo);
         new Thread(sender, "Feedback Sender").start();
+    }
+
+    public String getServerInfo() {
+        final StringBuilder serverInfo = new StringBuilder(255);
+        connectionManager.getConnections()
+                .forEach(c -> serverInfo.append(getServerInfo(c)).append('\n'));
+        return serverInfo.toString();
+    }
+
+    public String getServerInfo(final Connection connection) {
+        if (connection.getState().isDisconnected()) {
+            return "";
+        }
+        return "Actual name: " + connection.getParser().getServerName() + '\n'
+                + "Network: " + connection.getNetwork() + '\n'
+                + "IRCd: " + connection.getParser().getServerSoftware() + " - "
+                + connection.getParser().getServerSoftwareType() + '\n'
+                + "Modes: " + connection.getParser().getBooleanChannelModes() + ' '
+                + connection.getParser().getListChannelModes() + ' '
+                + connection.getParser().getParameterChannelModes() + ' '
+                + connection.getParser().getDoubleParameterChannelModes();
+    }
+
+    public String getDMDircInfo() {
+        return "DMDirc version: " + clientInfo.getVersionInformation() + '\n'
+                + "Profile directory: " + configDirectory + '\n' + "Java version: "
+                + clientInfo.getJavaInformation() + '\n' + "OS Version: "
+                + clientInfo.getOperatingSystemInformation();
     }
 
     @Override
