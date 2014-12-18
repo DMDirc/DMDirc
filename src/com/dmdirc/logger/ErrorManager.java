@@ -40,6 +40,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import net.engio.mbassy.listener.Handler;
 import net.kencochrane.raven.DefaultRavenFactory;
 import net.kencochrane.raven.RavenFactory;
@@ -47,6 +50,7 @@ import net.kencochrane.raven.RavenFactory;
 /**
  * Error manager.
  */
+@Singleton
 public class ErrorManager {
 
     /** Previously instantiated instance of ErrorManager. */
@@ -61,6 +65,10 @@ public class ErrorManager {
     private boolean sendReports;
     /** Whether or not to log error reports. */
     private boolean logReports;
+    /** Whether to submit error reports. */
+    private boolean submitReports;
+    /** Temp no error reporting. */
+    private boolean tempNoErrors;
     /** Queue of errors to be reported. */
     private final BlockingQueue<ProgramError> reportQueue = new LinkedBlockingQueue<>();
     /** Thread used for sending errors. */
@@ -76,6 +84,7 @@ public class ErrorManager {
     private ClientInfo clientInfo;
 
     /** Creates a new instance of ErrorListDialog. */
+    @Inject
     public ErrorManager() {
         errors = new LinkedList<>();
         nextErrorID = new AtomicLong();
@@ -120,15 +129,6 @@ public class ErrorManager {
             me = new ErrorManager();
         }
         return me;
-    }
-
-    /**
-     * Sets the singleton instance of the error manager.
-     *
-     * @param errorManager The error manager to use.
-     */
-    public static void setErrorManager(final ErrorManager errorManager) {
-        me = errorManager;
     }
 
     @Handler
@@ -398,8 +398,8 @@ public class ErrorManager {
                 });
 
         if (!error.isHandled()) {
-            System.err.println("An error has occurred: " + error.getLevel()
-                    + ": " + error.getMessage());
+            System.err.println(
+                    "An error has occurred: " + error.getLevel() + ": " + error.getMessage());
 
             for (String line : error.getTrace()) {
                 System.err.println("\t" + line);
@@ -476,11 +476,19 @@ public class ErrorManager {
 
     @ConfigBinding(domain = "general", key = "submitErrors")
     public void handleSubmitErrors(final boolean value) {
-        sendReports = value;
+        submitReports = value;
+
+        sendReports = submitReports && !tempNoErrors;
     }
 
     @ConfigBinding(domain = "general", key="logerrors")
     public void handleLogErrors(final boolean value) {
         logReports = value;
+    }
+
+    @ConfigBinding(domain = "temp", key="noerrorreporting")
+    public void handleNoErrorReporting(final boolean value) {
+        tempNoErrors = value;
+        sendReports = submitReports && !tempNoErrors;
     }
 }
