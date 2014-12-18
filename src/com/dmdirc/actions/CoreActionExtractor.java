@@ -31,7 +31,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.io.FileUtils;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 
 import javax.inject.Inject;
@@ -71,10 +70,10 @@ public class CoreActionExtractor {
      */
     public void extractCoreActions() {
         try {
-            FileUtils.copyRecursively(FileUtils.getPathForResource(
-                            getClass().getResource("/com/dmdirc/actions/defaults")), actionsDir);
+            FileUtils.copyResourcesContents(getClass().getResource("/com/dmdirc/actions/defaults/"),
+                    actionsDir);
             actionManager.loadUserActions();
-        } catch (URISyntaxException | IOException ex) {
+        } catch (IOException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, ex,
                     "Failed to extract actions: " + ex.getMessage(), ""));
         }
