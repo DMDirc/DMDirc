@@ -130,49 +130,6 @@ public class ErrorManager {
     }
 
     /**
-     * Adds a new error to the manager with the specified details. It is assumed that errors without
-     * exceptions or details are not application errors.
-     *
-     * @param level   The severity of the error
-     * @param message The error message
-     *
-     * @since 0.6.3m1
-     */
-    protected void addError(final ErrorLevel level, final String message) {
-        addError(level, message, (String) null, false);
-    }
-
-    /**
-     * Adds a new error to the manager with the specified details.
-     *
-     * @param level     The severity of the error
-     * @param message   The error message
-     * @param exception The exception that caused this error
-     * @param appError  Whether or not this is an application error
-     *
-     * @since 0.6.3m1
-     */
-    protected void addError(final ErrorLevel level, final String message,
-            final Throwable exception, final boolean appError) {
-        addError(level, message, exception, null, appError, isValidError(exception));
-    }
-
-    /**
-     * Adds a new error to the manager with the specified details.
-     *
-     * @param level    The severity of the error
-     * @param message  The error message
-     * @param details  The details of the exception
-     * @param appError Whether or not this is an application error
-     *
-     * @since 0.6.3m1
-     */
-    protected void addError(final ErrorLevel level, final String message, final String details,
-            final boolean appError) {
-        addError(level, message, null, details, appError, true);
-    }
-
-    /**
      * Adds a new error to the manager with the specified details.
      *
      * @param level     The severity of the error
@@ -324,7 +281,6 @@ public class ErrorManager {
     public void deleteAll() {
         synchronized (errors) {
             errors.forEach(this::fireErrorDeleted);
-
             errors.clear();
         }
     }
@@ -444,9 +400,7 @@ public class ErrorManager {
      * @param error Error that has been deleted
      */
     protected void fireErrorDeleted(final ProgramError error) {
-        for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
-            listener.errorDeleted(error);
-        }
+        errorListeners.get(ErrorListener.class).forEach(l -> l.errorDeleted(error));
     }
 
     /**
@@ -455,9 +409,7 @@ public class ErrorManager {
      * @param error Error that has been altered
      */
     protected void fireErrorStatusChanged(final ProgramError error) {
-        for (ErrorListener listener : errorListeners.get(ErrorListener.class)) {
-            listener.errorStatusChanged(error);
-        }
+        errorListeners.get(ErrorListener.class).forEach(l -> l.errorStatusChanged(error));
     }
 
     @ConfigBinding(domain = "general", key = "submitErrors")
