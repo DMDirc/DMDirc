@@ -67,7 +67,7 @@ public class DMDircUpdateManager extends CachingUpdateManagerImpl {
             final Set<UpdateInstallationStrategy> installationStrategies,
             final Set<UpdateComponent> components) {
         super(new ThreadPoolExecutor(THREAD_COUNT, THREAD_COUNT, 1, TimeUnit.MINUTES,
-                new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory()),
+                new LinkedBlockingQueue<>(), new NamedThreadFactory()),
                 consolidator, updatePolicy);
 
         checkStrategies.forEach(DMDircUpdateManager.this::addCheckStrategy);
