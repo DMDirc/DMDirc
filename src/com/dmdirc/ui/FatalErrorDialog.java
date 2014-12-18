@@ -298,12 +298,9 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     public void errorStatusChanged(final ProgramError error) {
         if (this.error.equals(error)) {
             final ErrorReportStatus status = error.getReportStatus();
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    restartButton.setEnabled(status.isTerminal());
-                    updateSendButtonText(status);
-                }
+            SwingUtilities.invokeLater(() -> {
+                restartButton.setEnabled(status.isTerminal());
+                updateSendButtonText(status);
             });
         }
     }

@@ -1189,12 +1189,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         if (Thread.holdsLock(myStateLock)) {
             LOG.info("State lock contended: rerunning on a new thread");
 
-            executorService.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    onSocketClosed();
-                }
-            }, 0, TimeUnit.SECONDS);
+            executorService.schedule(this::onSocketClosed, 0, TimeUnit.SECONDS);
             return;
         }
 
