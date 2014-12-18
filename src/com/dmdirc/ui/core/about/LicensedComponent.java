@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.core.about;
 
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
 /**

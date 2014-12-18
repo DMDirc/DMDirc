@@ -23,6 +23,8 @@
 package com.dmdirc.ui.core.about;
 
 
+import com.google.auto.value.AutoValue;
+
 /**
  * Describes an individual piece of information about the client.
  */
