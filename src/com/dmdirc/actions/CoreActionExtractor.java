@@ -69,7 +69,7 @@ public class CoreActionExtractor {
     /**
      * Extracts actions bundled with DMDirc to the user's profile's actions directory.
      */
-    public void extractCorePlugins() {
+    public void extractCoreActions() {
         try {
             FileUtils.copyRecursively(FileUtils.getPathForResource(
                             getClass().getResource("/com/dmdirc/actions/defaults")), actionsDir);
