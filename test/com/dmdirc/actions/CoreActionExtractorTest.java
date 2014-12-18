@@ -41,6 +41,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CoreActionExtractorTest {
@@ -71,5 +72,6 @@ public class CoreActionExtractorTest {
         instance.extractCoreActions();
         assertTrue(Files.exists(actionsDir.resolve("action1")));
         assertTrue(Files.exists(actionsDir.resolve("action2")));
+        verify(actionController).loadUserActions();
     }
 }
