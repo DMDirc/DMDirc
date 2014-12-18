@@ -24,7 +24,6 @@ package com.dmdirc.ui.themes;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.UserErrorEvent;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 
@@ -62,12 +61,7 @@ public class ThemeManager {
         this.themeDirectory = themesDirectory;
         this.eventBus = eventBus;
         identityController.getGlobalConfiguration().addChangeListener("themes", "enabled",
-                new ConfigChangeListener() {
-                    @Override
-                    public void configChanged(final String domain, final String key) {
-                        refreshAndLoadThemes();
-                    }
-                });
+                (domain, key) -> refreshAndLoadThemes());
     }
 
     /**
