@@ -22,22 +22,14 @@
 
 package com.dmdirc.ui.core.feedback;
 
-import com.dmdirc.ClientModule;
-import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
-import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
-import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.FeedbackDialogModel;
 import com.dmdirc.interfaces.ui.FeedbackDialogModelListener;
-import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.OptionalEmailAddressValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -49,10 +41,7 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
 
     private final FeedbackSenderFactory feedbackSenderFactory;
     private final ListenerList listeners;
-    private final AggregateConfigProvider config;
-    private final ConnectionManager connectionManager;
-    private final Path configDirectory;
-    private final ClientInfo clientInfo;
+    private final FeedbackHelper feedbackHelper;
     private Optional<String> name;
     private Optional<String> email;
     private Optional<String> feedback;
@@ -60,15 +49,10 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
     private boolean includeDMDircInfo;
 
     @Inject
-    public CoreFeedbackDialogModel(@ClientModule.GlobalConfig final AggregateConfigProvider config,
-            final ConnectionManager connectionManager, final FeedbackSenderFactory feedbackSenderFactory,
-            @Directory(DirectoryType.BASE) final Path configDirectory,
-            final ClientInfo clientInfo) {
-        this.connectionManager = connectionManager;
-        this.configDirectory = configDirectory;
+    public CoreFeedbackDialogModel(final FeedbackSenderFactory feedbackSenderFactory,
+            final FeedbackHelper feedbackHelper) {
         this.feedbackSenderFactory = feedbackSenderFactory;
-        this.config = config;
-        this.clientInfo = clientInfo;
+        this.feedbackHelper = feedbackHelper;
         this.listeners = new ListenerList();
         name = Optional.empty();
         email = Optional.empty();
@@ -173,48 +157,20 @@ public class CoreFeedbackDialogModel implements FeedbackDialogModel {
     public void save() {
         final String serverInfo;
         if (getIncludeServerInfo()) {
-            serverInfo = getServerInfo();
+            serverInfo = feedbackHelper.getServerInfo();
         } else {
             serverInfo = "";
         }
         final String dmdircInfo;
         if (getIncludeDMDircInfo()) {
-            dmdircInfo = getDMDircInfo();
+            dmdircInfo = feedbackHelper.getDMDircInfo();
         } else {
             dmdircInfo = "";
         }
         final FeedbackSender sender = feedbackSenderFactory.getFeedbackSender(
                 name.orElse(""), email.orElse(""), feedback.orElse(""),
-                config.getOption("version", "version"), serverInfo, dmdircInfo);
+                feedbackHelper.getVersion(), serverInfo, dmdircInfo);
         new Thread(sender, "Feedback Sender").start();
-    }
-
-    public String getServerInfo() {
-        final StringBuilder serverInfo = new StringBuilder(255);
-        connectionManager.getConnections()
-                .forEach(c -> serverInfo.append(getServerInfo(c)).append('\n'));
-        return serverInfo.toString();
-    }
-
-    public String getServerInfo(final Connection connection) {
-        if (connection.getState().isDisconnected()) {
-            return "";
-        }
-        return "Actual name: " + connection.getParser().getServerName() + '\n'
-                + "Network: " + connection.getNetwork() + '\n'
-                + "IRCd: " + connection.getParser().getServerSoftware() + " - "
-                + connection.getParser().getServerSoftwareType() + '\n'
-                + "Modes: " + connection.getParser().getBooleanChannelModes() + ' '
-                + connection.getParser().getListChannelModes() + ' '
-                + connection.getParser().getParameterChannelModes() + ' '
-                + connection.getParser().getDoubleParameterChannelModes();
-    }
-
-    public String getDMDircInfo() {
-        return "DMDirc version: " + clientInfo.getVersionInformation() + '\n'
-                + "Profile directory: " + configDirectory + '\n' + "Java version: "
-                + clientInfo.getJavaInformation() + '\n' + "OS Version: "
-                + clientInfo.getOperatingSystemInformation();
     }
 
     @Override
