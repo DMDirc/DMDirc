@@ -23,10 +23,10 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.collections.ListenerList;
@@ -51,7 +51,7 @@ import net.kencochrane.raven.RavenFactory;
  * Error manager.
  */
 @Singleton
-public class ErrorManager implements ConfigChangeListener {
+public class ErrorManager {
 
     /** A list of exceptions which we don't consider bugs and thus don't report. */
     private static final Class<?>[] BANNED_EXCEPTIONS = new Class<?>[]{
@@ -63,6 +63,10 @@ public class ErrorManager implements ConfigChangeListener {
     private boolean sendReports;
     /** Whether or not to log error reports. */
     private boolean logReports;
+    /** Whether to submit error reports. */
+    private boolean submitReports;
+    /** Temp no error reporting. */
+    private boolean tempNoErrors;
     /** Queue of errors to be reported. */
     private final BlockingQueue<ProgramError> reportQueue = new LinkedBlockingQueue<>();
     /** Thread used for sending errors. */
@@ -73,8 +77,6 @@ public class ErrorManager implements ConfigChangeListener {
     private final ListenerList errorListeners = new ListenerList();
     /** Next error ID. */
     private final AtomicLong nextErrorID;
-    /** Config to read settings from. */
-    private AggregateConfigProvider config;
     /** Directory to store errors in. */
     private Path errorsDirectory;
     private ClientInfo clientInfo;
@@ -99,11 +101,7 @@ public class ErrorManager implements ConfigChangeListener {
         eventBus.subscribe(this);
         RavenFactory.registerFactory(new DefaultRavenFactory());
 
-        config = globalConfig;
-        config.addChangeListener("general", "logerrors", this);
-        config.addChangeListener("general", "submitErrors", this);
-        config.addChangeListener("temp", "noerrorreporting", this);
-        updateSettings();
+        globalConfig.getBinder().bind(this, ErrorManager.class);
 
         errorsDirectory = directory;
 
@@ -386,8 +384,8 @@ public class ErrorManager implements ConfigChangeListener {
                 });
 
         if (!error.isHandled()) {
-            System.err.println("An error has occurred: " + error.getLevel()
-                    + ": " + error.getMessage());
+            System.err.println(
+                    "An error has occurred: " + error.getLevel() + ": " + error.getMessage());
 
             for (String line : error.getTrace()) {
                 System.err.println("\t" + line);
@@ -462,21 +460,21 @@ public class ErrorManager implements ConfigChangeListener {
         }
     }
 
-    @Override
-    public void configChanged(final String domain, final String key) {
-        updateSettings();
+    @ConfigBinding(domain = "general", key = "submitErrors")
+    public void handleSubmitErrors(final boolean value) {
+        submitReports = value;
+
+        sendReports = submitReports && !tempNoErrors;
     }
 
-    /** Updates the settings used by this error manager. */
-    protected void updateSettings() {
-        try {
-            sendReports = config.getOptionBool("general", "submitErrors")
-                    && !config.getOptionBool("temp", "noerrorreporting");
-            logReports = config.getOptionBool("general", "logerrors");
-        } catch (IllegalArgumentException ex) {
-            sendReports = false;
-            logReports = true;
-        }
+    @ConfigBinding(domain = "general", key="logerrors")
+    public void handleLogErrors(final boolean value) {
+        logReports = value;
     }
 
+    @ConfigBinding(domain = "temp", key="noerrorreporting")
+    public void handleNoErrorReporting(final boolean value) {
+        tempNoErrors = value;
+        sendReports = submitReports && !tempNoErrors;
+    }
 }
