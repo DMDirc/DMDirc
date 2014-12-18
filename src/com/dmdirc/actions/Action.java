@@ -357,22 +357,22 @@ public class Action extends ActionModel implements ConfigChangeListener {
         newConfig.addDomain(DOMAIN_RESPONSE, responseLines);
 
         if (conditionTree != null) {
-            newConfig.addDomain(DOMAIN_CONDITIONTREE, new ArrayList<String>());
+            newConfig.addDomain(DOMAIN_CONDITIONTREE, new ArrayList<>());
             newConfig.getFlatDomain(DOMAIN_CONDITIONTREE).add(conditionTree.toString());
         }
 
         if (newFormat != null) {
-            newConfig.addDomain(DOMAIN_FORMAT, new ArrayList<String>());
+            newConfig.addDomain(DOMAIN_FORMAT, new ArrayList<>());
             newConfig.getFlatDomain(DOMAIN_FORMAT).add(newFormat);
         }
 
         if (concurrencyGroup != null) {
-            newConfig.addDomain(DOMAIN_CONCURRENCY, new HashMap<String, String>());
+            newConfig.addDomain(DOMAIN_CONCURRENCY, new HashMap<>());
             newConfig.getKeyDomain(DOMAIN_CONCURRENCY).put("group", concurrencyGroup);
         }
 
         if (stop) {
-            newConfig.addDomain(DOMAIN_MISC, new HashMap<String, String>());
+            newConfig.addDomain(DOMAIN_MISC, new HashMap<>());
             newConfig.getKeyDomain(DOMAIN_MISC).put("stopping", "true");
         }
 

@@ -47,7 +47,7 @@ public class GroupListManager implements GroupListStartListener,
     private final Connection connection;
     /** The cached groups. */
     private final ObservableList<GroupListEntry> groups = new ObservableListDecorator<>(
-            new LinkedList<GroupListEntry>());
+            new LinkedList<>());
 
     public GroupListManager(final Connection connection) {
         this.connection = connection;

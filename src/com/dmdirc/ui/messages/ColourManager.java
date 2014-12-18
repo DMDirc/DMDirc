@@ -64,9 +64,7 @@ public class ColourManager {
         this.configManager = configManager;
         this.eventBus = eventBus;
 
-        configManager.addChangeListener("colour", (domain, key) -> {
-            initColours();
-        });
+        configManager.addChangeListener("colour", (domain, key) -> initColours());
 
         initColours();
     }
@@ -75,7 +73,7 @@ public class ColourManager {
      * Initialises the IRC_COLOURS array.
      */
     private void initColours() {
-        final Validator validator = new ColourValidator();
+        final Validator<String> validator = new ColourValidator();
         for (int i = 0; i < 16; i++) {
             if (configManager.hasOptionString("colour", String.valueOf(i), validator)) {
                 ircColours[i] = getColourFromHex(
