@@ -53,8 +53,6 @@ import net.kencochrane.raven.RavenFactory;
 @Singleton
 public class ErrorManager {
 
-    /** Previously instantiated instance of ErrorManager. */
-    private static ErrorManager me;
     /** A list of exceptions which we don't consider bugs and thus don't report. */
     private static final Class<?>[] BANNED_EXCEPTIONS = new Class<?>[]{
         NoSuchMethodError.class, NoClassDefFoundError.class,
@@ -117,18 +115,6 @@ public class ErrorManager {
                 error.save(errorsDirectory);
             }
         }
-    }
-
-    /**
-     * Returns the instance of ErrorManager.
-     *
-     * @return Instance of ErrorManager
-     */
-    public static synchronized ErrorManager getErrorManager() {
-        if (me == null) {
-            me = new ErrorManager();
-        }
-        return me;
     }
 
     @Handler

@@ -29,6 +29,11 @@ checkout:
         pwd:
           ../meta/client
 
+dependencies:
+  override:
+    - ./gradlew dependencies:
+        pwd: ../meta
+
 test:
   override:
     - ./gradlew --stacktrace --parallel client:jar client:test:
