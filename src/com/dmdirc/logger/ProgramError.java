@@ -24,6 +24,8 @@ package com.dmdirc.logger;
 
 import com.dmdirc.util.ClientInfo;
 
+import com.google.common.io.ByteStreams;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -272,7 +274,7 @@ public final class ProgramError implements Serializable {
         } catch (IOException ex) {
             System.err.println("Error creating new file: ");
             ex.printStackTrace();
-            return new NullOutputStream();
+            return ByteStreams.nullOutputStream();
         } finally {
             WRITING_SEM.release();
         }
