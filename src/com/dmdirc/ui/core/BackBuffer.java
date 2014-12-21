@@ -25,20 +25,29 @@ package com.dmdirc.ui.core;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.EventFormatter;
+import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
+
+import java.util.Date;
+
+import net.engio.mbassy.listener.Handler;
 
 /**
  * Models the history of a window in the client.
  */
 public class BackBuffer {
 
+    private static final boolean ENABLED = false;
+
     private final IRCDocument document;
     private final Styliser styliser;
     private final DMDircMBassador eventBus;
     private final EventFormatter formatter;
+    private final AggregateConfigProvider configProvider;
 
     public BackBuffer(
             final FrameContainer owner,
@@ -52,6 +61,7 @@ public class BackBuffer {
         this.document = new IRCDocument(owner.getConfigManager(), styliser, owner.getEventBus());
         this.eventBus = owner.getEventBus();
         this.formatter = formatter;
+        this.configProvider = owner.getConfigManager();
     }
 
     /**
@@ -73,8 +83,18 @@ public class BackBuffer {
      *
      * @param event The event to be displayed.
      */
+    @Handler
     public void handleDisplayableEvent(final DisplayableEvent event) {
+        if (ENABLED) {
+            formatter.format(event)
+                    .map(l -> new String[]{getTimestamp(event), l})
+                    .ifPresent(document::addText);
+        }
+    }
 
+    private String getTimestamp(final DisplayableEvent event) {
+        return Formatter.formatMessage(configProvider, "timestamp",
+                new Date(event.getTimestamp()));
     }
 
     public IRCDocument getDocument() {
