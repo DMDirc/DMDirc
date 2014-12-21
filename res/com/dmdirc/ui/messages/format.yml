@@ -1,6 +1,6 @@
 ---
-ChannelModeNoticeEvent: "-{{client}}:{{prefix}}{{channel}}- {{message}}"
-ChannelNoticeEvent: "-{{client}}:{{channel}}- {{message}}"
+ChannelModeNoticeEvent: "-{{client}}:{{prefix}}{{channel.name}}- {{message}}"
+ChannelNoticeEvent: "-{{client}}:{{channel.name}}- {{message}}"
 ChannelMessageEvent: "<{{client}}> {{message}}"
 ChannelActionEvent: "* {{client}} {{message}}"
 ChannelSelfMessageEvent: "<{{client}}> {{message}}"
