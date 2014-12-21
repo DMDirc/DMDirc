@@ -76,7 +76,6 @@ public class ActionFactory {
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             @Directory(DirectoryType.ACTIONS) final Path actionsDirectory) {
-        this.filesystem = FileSystems.getDefault();
         this.eventBus = eventBus;
         this.actionController = actionController;
         this.identityController = identityController;
@@ -96,7 +95,6 @@ public class ActionFactory {
      */
     public Action getAction(final String group, final String name) {
         return new Action(
-                filesystem,
                 eventBus, globalWindowProvider,
                 substitutorFactory,
                 actionController.get(),
@@ -124,7 +122,6 @@ public class ActionFactory {
             final List<ActionCondition> conditions,
             final ConditionTree conditionTree, final String newFormat) {
         return new Action(
-                filesystem,
                 eventBus, globalWindowProvider,
                 substitutorFactory,
                 actionController.get(),

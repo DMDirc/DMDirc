@@ -43,7 +43,6 @@ import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -81,8 +80,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
     private final ActionController actionController;
     /** Event bus to post events to. */
     private final DMDircMBassador eventBus;
-    /** The file system to read/write actions to. */
-    private final FileSystem filesystem;
     /** The config file we're using. */
     protected ConfigFile config;
     /** The location of the file we're reading/saving. */
@@ -92,7 +89,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * Creates a new instance of Action. The group and name specified must be the group and name of
      * a valid action already saved to disk.
      *
-     * @param filesystem                  The file system to read/write actions to
      * @param eventBus                    Event bus to post events to
      * @param globalWindowProvider        Provider of global windows for triggering actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
@@ -102,14 +98,13 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param group                       The group the action belongs to
      * @param name                        The name of the action
      */
-    public Action(final FileSystem filesystem, final DMDircMBassador eventBus,
+    public Action(final DMDircMBassador eventBus,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController, final IdentityController identityController,
             final Path actionsDirectory, final String group, final String name) {
         super(globalWindowProvider, substitutorFactory, group, name);
 
-        this.filesystem = filesystem;
         this.eventBus = eventBus;
         this.actionController = actionController;
         this.identityController = identityController;
@@ -135,7 +130,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /**
      * Creates a new instance of Action with the specified properties and saves it to disk.
      *
-     * @param filesystem                  The file system to read/write actions to
      * @param eventBus                    Event bus to post events to
      * @param globalWindowProvider        Provider of global windows for triggering actions.
      * @param substitutorFactory          Factory to use to create action substitutors.
@@ -150,7 +144,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
      * @param conditionTree               The condition tree to use
      * @param newFormat                   The new formatter to use
      */
-    public Action(final FileSystem filesystem, final DMDircMBassador eventBus,
+    public Action(final DMDircMBassador eventBus,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController, final IdentityController identityController,
@@ -161,7 +155,6 @@ public class Action extends ActionModel implements ConfigChangeListener {
         super(globalWindowProvider, substitutorFactory, group, name,
                 triggers, response, conditions, conditionTree, newFormat);
 
-        this.filesystem = filesystem;
         this.eventBus = eventBus;
         this.actionController = actionController;
         this.identityController = identityController;
