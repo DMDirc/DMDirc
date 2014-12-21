@@ -195,6 +195,13 @@ public class CommandLineOptionsModule {
 
     @Provides
     @Singleton
+    @Directory(DirectoryType.TEMPORARY)
+    public Path getTempDirectory(@Directory(DirectoryType.BASE) final Path baseDirectory) {
+        return baseDirectory;
+    }
+
+    @Provides
+    @Singleton
     @Directory(DirectoryType.BASE)
     public Path getBasePath(@Directory(DirectoryType.BASE) final String directory) {
         return new File(directory).toPath();
