@@ -20,11 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.core;
+package com.dmdirc.ui.messages;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.messages.ColourManagerFactory;
-import com.dmdirc.ui.messages.EventFormatter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
