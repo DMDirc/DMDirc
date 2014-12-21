@@ -23,9 +23,9 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleterFactory;
-import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
 import javax.inject.Inject;
@@ -41,22 +41,22 @@ public class QueryFactory {
     private final CommandController commandController;
     private final MessageSinkManager messageSinkManager;
     private final URLBuilder urlBuilder;
-    private final ColourManagerFactory colourManagerFactory;
+    private final BackBufferFactory backBufferFactory;
 
     @Inject
     public QueryFactory(final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController, final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final ColourManagerFactory colourManagerFactory) {
+            final URLBuilder urlBuilder, final BackBufferFactory backBufferFactory) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;
         this.messageSinkManager = messageSinkManager;
         this.urlBuilder = urlBuilder;
-        this.colourManagerFactory = colourManagerFactory;
+        this.backBufferFactory = backBufferFactory;
     }
 
     public Query getQuery(final Server server, final String host) {
         return new Query(server, host, tabCompleterFactory, commandController,
-                messageSinkManager, urlBuilder, colourManagerFactory);
+                messageSinkManager, urlBuilder, backBufferFactory);
     }
 
 }

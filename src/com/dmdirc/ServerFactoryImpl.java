@@ -28,8 +28,8 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleterFactory;
-import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
@@ -59,7 +59,7 @@ public class ServerFactoryImpl {
     private final DMDircMBassador eventBus;
     private final MessageEncoderFactory messageEncoderFactory;
     private final ConfigProvider userSettings;
-    private final ColourManagerFactory colourManagerFactory;
+    private final BackBufferFactory backBufferFactory;
 
     @Inject
     public ServerFactoryImpl(
@@ -76,7 +76,7 @@ public class ServerFactoryImpl {
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             @ClientModule.UserConfig final ConfigProvider userSettings,
-            final ColourManagerFactory colourManagerFactory) {
+            final BackBufferFactory backBufferFactory) {
         this.manager = manager;
         this.parserFactory = parserFactory;
         this.tabCompleterFactory = tabCompleterFactory;
@@ -90,7 +90,7 @@ public class ServerFactoryImpl {
         this.eventBus = eventBus;
         this.messageEncoderFactory = messageEncoderFactory;
         this.userSettings = userSettings;
-        this.colourManagerFactory = colourManagerFactory;
+        this.backBufferFactory = backBufferFactory;
     }
 
     public Server getServer(
@@ -103,6 +103,6 @@ public class ServerFactoryImpl {
                 tabCompleterFactory, identityFactory, messageSinkManager, windowManager,
                 channelFactory.get(), queryFactory.get(), rawFactory.get(),urlBuilder, eventBus,
                 messageEncoderFactory, userSettings, executorService, uri, profile,
-                colourManagerFactory);
+                backBufferFactory);
     }
 }

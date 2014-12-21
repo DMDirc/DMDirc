@@ -34,15 +34,15 @@ import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
@@ -113,11 +113,11 @@ public class Channel extends MessageTarget implements GroupChat {
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
-            final ColourManagerFactory colourManagerFactory) {
+            final BackBufferFactory backBufferFactory) {
         super(newServer, "channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
-                colourManagerFactory,
+                backBufferFactory,
                 new ChannelCommandParser(newServer, commandController, eventBus),
                 tabCompleterFactory.getTabCompleter(newServer.getTabCompleter(),
                         configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,

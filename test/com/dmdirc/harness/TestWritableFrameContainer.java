@@ -22,18 +22,17 @@
 
 package com.dmdirc.harness;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
-
-import com.dmdirc.DMDircMBassador;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -48,8 +47,8 @@ public class TestWritableFrameContainer extends FrameContainer {
             final AggregateConfigProvider cm, final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder, final DMDircMBassador eventBus,
-            final ColourManagerFactory colourManagerFactory) {
-        super(null, "raw", "Raw", "(Raw)", cm, colourManagerFactory, urlBuilder,
+            final BackBufferFactory backBufferFactory) {
+        super(null, "raw", "Raw", "(Raw)", cm, backBufferFactory, urlBuilder,
                 new GlobalCommandParser(cm, commandManager, eventBus),
                 new TabCompleter(mock(CommandController.class), cm),
                 messageSinkManager,

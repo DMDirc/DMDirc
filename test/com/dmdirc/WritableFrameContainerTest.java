@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
@@ -50,7 +50,7 @@ public class WritableFrameContainerTest {
     @Mock private MessageSinkManager messageSinkManager;
     @Mock private URLBuilder urlBuilder;
     @Mock private DMDircMBassador eventBus;
-    @Mock private ColourManagerFactory colourManagerFactory;
+    @Mock private BackBufferFactory backBufferFactory;
     @Mock private Provider<GlobalWindow> globalWindowProvider;
     private CommandManager commands;
 
@@ -65,7 +65,7 @@ public class WritableFrameContainerTest {
     @Test
     public void testGetNumLines() {
         final FrameContainer container10 = new TestWritableFrameContainer(10, acp, commands,
-                messageSinkManager, urlBuilder, eventBus, colourManagerFactory);
+                messageSinkManager, urlBuilder, eventBus, backBufferFactory);
 
         final int res0a = container10.getNumLines("");
         final int res0b = container10.getNumLines("\r");
@@ -95,7 +95,7 @@ public class WritableFrameContainerTest {
     @Test
     public void testSplitLine() {
         final FrameContainer container10 = new TestWritableFrameContainer(10, acp, commands,
-                messageSinkManager, urlBuilder, eventBus, colourManagerFactory);
+                messageSinkManager, urlBuilder, eventBus, backBufferFactory);
         final String[][][] tests = new String[][][]{
             {{""}, {""}},
             {{"0123456789"}, {"0123456789"}},
