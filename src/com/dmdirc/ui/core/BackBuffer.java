@@ -35,15 +35,30 @@ public class BackBuffer {
 
     private final IRCDocument document;
     private final Styliser styliser;
+    private final DMDircMBassador eventBus;
 
-    public BackBuffer(final FrameContainer owner, final ColourManagerFactory colourManagerFactory,
-            final DMDircMBassador eventBus) {
+    public BackBuffer(final FrameContainer owner, final ColourManagerFactory colourManagerFactory) {
         this.styliser = new Styliser(
                 owner.getOptionalConnection().orElse(null),
                 owner.getConfigManager(),
                 colourManagerFactory.getColourManager(owner.getConfigManager()),
                 owner.getEventBus());
-        this.document = new IRCDocument(owner.getConfigManager(), styliser, eventBus);
+        this.document = new IRCDocument(owner.getConfigManager(), styliser, owner.getEventBus());
+        this.eventBus = owner.getEventBus();
+    }
+
+    /**
+     * Starts adding events received on the event bus to this buffer's document.
+     */
+    public void startAddingEvents() {
+        eventBus.subscribe(this);
+    }
+
+    /**
+     * Stops adding events received on the event bus to this buffer's document.
+     */
+    public void stopAddingEvents() {
+        eventBus.unsubscribe(this);
     }
 
     public IRCDocument getDocument() {

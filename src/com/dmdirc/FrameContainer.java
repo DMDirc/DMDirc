@@ -366,6 +366,7 @@ public abstract class FrameContainer {
     public void close() {
         eventBus.publish(new FrameClosingEvent(this));
         eventBusManager.disconnect();
+        getBackBuffer().stopAddingEvents();
     }
 
     /**
@@ -425,7 +426,8 @@ public abstract class FrameContainer {
     public BackBuffer getBackBuffer() {
         synchronized (backBufferLock) {
             if (backBuffer == null) {
-                this.backBuffer = new BackBuffer(this, colourManagerFactory, eventBus);
+                backBuffer = new BackBuffer(this, colourManagerFactory);
+                backBuffer.startAddingEvents();
             }
         }
 
