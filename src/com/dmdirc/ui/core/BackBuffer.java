@@ -41,6 +41,8 @@ import net.engio.mbassy.listener.Handler;
  */
 public class BackBuffer {
 
+    private static final boolean ENABLED = false;
+
     private final IRCDocument document;
     private final Styliser styliser;
     private final DMDircMBassador eventBus;
@@ -83,9 +85,11 @@ public class BackBuffer {
      */
     @Handler
     public void handleDisplayableEvent(final DisplayableEvent event) {
-        formatter.format(event)
-                .map(l -> new String[]{getTimestamp(event), l})
-                .ifPresent(document::addText);
+        if (ENABLED) {
+            formatter.format(event)
+                    .map(l -> new String[]{getTimestamp(event), l})
+                    .ifPresent(document::addText);
+        }
     }
 
     private String getTimestamp(final DisplayableEvent event) {
