@@ -26,7 +26,7 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.core.BackBufferFactory;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Date;
