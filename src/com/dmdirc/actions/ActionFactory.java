@@ -30,8 +30,6 @@ import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.actions.ActionType;
 import com.dmdirc.interfaces.config.IdentityController;
 
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -57,8 +55,6 @@ public class ActionFactory {
     private final Path actionsDirectory;
     /** Event bus to post events on. */
     private final DMDircMBassador eventBus;
-    /** The file system to read/write actions to. */
-    private final FileSystem filesystem;
 
     /**
      * Creates a new instance of {@link ActionFactory}.

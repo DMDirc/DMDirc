@@ -34,10 +34,13 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
+
 import java.io.IOException;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,9 +49,7 @@ import java.util.Map;
 import javax.inject.Provider;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -64,8 +65,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ActionTest {
 
-    @Rule public final TemporaryFolder folder = new TemporaryFolder();
-
     @Mock private DMDircMBassador eventBus;
     @Mock private Provider<GlobalWindow> gwProvider;
     @Mock private ActionSubstitutorFactory substitutorFactory;
@@ -75,8 +74,7 @@ public class ActionTest {
     @Mock private ConfigProvider configProvider;
     @Mock private AggregateConfigProvider aggregateConfigProvider;
     private Map<String, PreferencesSetting> prefs;
-    //TODO replace with virtual filesystem like jimfs
-    private final FileSystem filesystem = FileSystems.getDefault();
+    private FileSystem filesystem;
 
     @Before
     public void setupActionController() {
@@ -98,62 +96,67 @@ public class ActionTest {
         when(identityController.getUserSettings()).thenReturn(configProvider);
     }
 
+    @Before
+    public void setupFileSystem() {
+        filesystem = Jimfs.newFileSystem(Configuration.unix());
+    }
+
     @Test
-    public void testSave() {
-        new Action(filesystem, eventBus, gwProvider, substitutorFactory,
+    public void testSave() throws IOException {
+        new Action(eventBus, gwProvider, substitutorFactory,
                 actionController, identityController, getTempDirectory(), "unit-test", "test1",
-                new ActionType[0], new String[0], new ArrayList<ActionCondition>(),
+                new ActionType[0], new String[0], new ArrayList<>(),
                 ConditionTree.createConjunction(0), null);
         assertTrue("Action constructor must create new file",
-                Files.exists(filesystem.getPath(getTempDirectory(), "unit-test", "test1")));
+                Files.exists(getTempDirectory().resolve("unit-test").resolve("test1")));
 
     }
 
     @Test
-    public void testSetGroup() {
-        final Action action = new Action(filesystem, eventBus, gwProvider,
+    public void testSetGroup() throws IOException {
+        final Action action = new Action(eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0],
-                new String[0], new ArrayList<ActionCondition>(),
+                new String[0], new ArrayList<>(),
                 ConditionTree.createConjunction(0), null);
         action.setGroup("unit-test-two");
 
         assertFalse("setGroup must remove old file",
-                Files.exists(filesystem.getPath(getTempDirectory(), "unit-test", "test1")));
+                Files.exists(getTempDirectory().resolve("unit-test").resolve("test1")));
         assertTrue("setGroup must create new file",
-                Files.exists(filesystem.getPath(getTempDirectory(), "unit-test-two", "test1")));
+                Files.exists(getTempDirectory().resolve("unit-test-two").resolve("test1")));
     }
 
     @Test
-    public void testSetName() {
-        final Action action = new Action(filesystem, eventBus, gwProvider,
+    public void testSetName() throws IOException {
+        final Action action = new Action(eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0], new String[0],
-                new ArrayList<ActionCondition>(), ConditionTree.createConjunction(0), null);
+                new ArrayList<>(), ConditionTree.createConjunction(0), null);
         action.setName("test2");
 
         assertFalse("setName must remove old file",
-                Files.exists(filesystem.getPath(getTempDirectory(), "unit-test", "test1")));
+                Files.exists(getTempDirectory().resolve("unit-test").resolve("test1")));
         assertTrue("setName must create new file",
-                Files.exists(filesystem.getPath(getTempDirectory(), "unit-test", "test2")));
+                Files.exists(getTempDirectory().resolve("unit-test").resolve("test2")));
     }
 
     @Test
-    public void testDelete() {
-        final Action action = new Action(filesystem, eventBus, gwProvider,
+    public void testDelete() throws IOException {
+        final Action action = new Action(eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "test1", new ActionType[0],
-                new String[0], new ArrayList<ActionCondition>(),
+                new String[0], new ArrayList<>(),
                 ConditionTree.createConjunction(0), null);
         action.delete();
 
         assertFalse("delete must remove file",
-                Files.exists(filesystem.getPath(getTempDirectory(), "unit-test", "test1")));
+                Files.exists(getTempDirectory().resolve("unit-test").resolve("test1")));
     }
 
     @Test
     public void testRead() throws IOException, InvalidConfigFileException {
-        final Action action = new Action(filesystem, eventBus, gwProvider,
+        final Action action = new Action(eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action1"));
@@ -172,7 +175,7 @@ public class ActionTest {
 
     @Test
     public void testMultipleGroups() throws IOException, InvalidConfigFileException {
-        final Action action = new Action(filesystem, eventBus, gwProvider,
+        final Action action = new Action(eventBus, gwProvider,
                 substitutorFactory, actionController, identityController, getTempDirectory(),
                 "unit-test", "doesn't_exist");
         action.config = new ConfigFile(getClass().getResourceAsStream("action_multisettings"));
@@ -190,8 +193,9 @@ public class ActionTest {
                 "(?i).*(shane|dataforce|Q${SERVER_MYNICKNAME}E|(?<![#A-Z])DF).*");
     }
 
-    private String getTempDirectory() {
-        return folder.getRoot().toString() + filesystem.getSeparator();
+    private Path getTempDirectory() throws IOException {
+        Files.createDirectories(filesystem.getPath("/temp"));
+        return filesystem.getPath("/temp/");
     }
 
 }
