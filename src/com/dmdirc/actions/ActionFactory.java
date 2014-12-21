@@ -32,6 +32,7 @@ import com.dmdirc.interfaces.config.IdentityController;
 
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -53,7 +54,7 @@ public class ActionFactory {
     /** The factory to use to create substitutors. */
     private final ActionSubstitutorFactory substitutorFactory;
     /** The base directory to store actions in. */
-    private final String actionsDirectory;
+    private final Path actionsDirectory;
     /** Event bus to post events on. */
     private final DMDircMBassador eventBus;
     /** The file system to read/write actions to. */
@@ -74,7 +75,7 @@ public class ActionFactory {
             final Provider<IdentityController> identityController,
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
-            @Directory(DirectoryType.ACTIONS) final String actionsDirectory) {
+            @Directory(DirectoryType.ACTIONS) final Path actionsDirectory) {
         this.filesystem = FileSystems.getDefault();
         this.eventBus = eventBus;
         this.actionController = actionController;
