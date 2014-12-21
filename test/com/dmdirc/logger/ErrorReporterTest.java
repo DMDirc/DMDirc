@@ -55,6 +55,7 @@ public class ErrorReporterTest {
 
     private static RavenFactory ravenFactory;
     @Mock private Raven raven;
+    @Mock private ClientInfo clientInfo;
     @Captor private ArgumentCaptor<Event> eventCaptor;
     private ErrorReporter errorReporter;
 
@@ -68,7 +69,7 @@ public class ErrorReporterTest {
     @Before
     public void setUp() {
         when(ravenFactory.createRavenInstance(Matchers.<Dsn>anyObject())).thenReturn(raven);
-        errorReporter = new ErrorReporter(new ClientInfo());
+        errorReporter = new ErrorReporter(clientInfo);
     }
 
     @Test
