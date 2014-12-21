@@ -363,5 +363,4 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         }
         fireRepaintNeeded();
     }
-
 }
