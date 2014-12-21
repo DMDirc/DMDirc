@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandline;
 
+import com.dmdirc.util.SystemInfo;
+
 import java.io.File;
 
 import javax.inject.Inject;
@@ -31,8 +33,12 @@ import javax.inject.Inject;
  */
 public class BaseDirectoryLocator {
 
+    private final SystemInfo systemInfo;
+
     @Inject
-    public BaseDirectoryLocator(){}
+    public BaseDirectoryLocator(final SystemInfo systemInfo) {
+        this.systemInfo = systemInfo;
+    }
 
     /**
      * Initialises the location of the configuration directory.
@@ -40,28 +46,28 @@ public class BaseDirectoryLocator {
      * @return Directory
      */
     public String getDefaultBaseDirectory() {
-        final String fs = System.getProperty("file.separator");
-        final String osName = System.getProperty("os.name");
+        final String fs = systemInfo.getProperty("file.separator");
+        final String osName = systemInfo.getProperty("os.name");
         String configdir;
 
-        if (System.getenv("DMDIRC_HOME") != null) {
-            configdir = System.getenv("DMDIRC_HOME");
+        if (systemInfo.getenv("DMDIRC_HOME") != null) {
+            configdir = systemInfo.getenv("DMDIRC_HOME");
         } else if (osName.startsWith("Mac OS")) {
-            configdir = System.getProperty("user.home") + fs + "Library"
+            configdir = systemInfo.getProperty("user.home") + fs + "Library"
                     + fs + "Preferences" + fs + "DMDirc" + fs;
         } else if (osName.startsWith("Windows")) {
-            if (System.getenv("APPDATA") == null) {
-                configdir = System.getProperty("user.home") + fs + "DMDirc" + fs;
+            if (systemInfo.getenv("APPDATA") == null) {
+                configdir = systemInfo.getProperty("user.home") + fs + "DMDirc" + fs;
             } else {
-                configdir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
+                configdir = systemInfo.getenv("APPDATA") + fs + "DMDirc" + fs;
             }
         } else {
-            configdir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
+            configdir = systemInfo.getProperty("user.home") + fs + ".DMDirc" + fs;
             final File testFile = new File(configdir);
             if (!testFile.exists()) {
-                final String configHome = System.getenv("XDG_CONFIG_HOME");
+                final String configHome = systemInfo.getenv("XDG_CONFIG_HOME");
                 configdir = (configHome == null || configHome.isEmpty())
-                        ? System.getProperty("user.home") + fs + ".config" + fs
+                        ? systemInfo.getProperty("user.home") + fs + ".config" + fs
                         : configHome;
                 configdir += fs + "DMDirc" + fs;
             }

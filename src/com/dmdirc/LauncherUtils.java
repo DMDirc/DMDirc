@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.commandline.BaseDirectoryLocator;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.updater.Version;
+import com.dmdirc.util.SystemInfo;
 
 /**
  * Utility class to help launcher interface with client.
@@ -39,8 +40,9 @@ public class LauncherUtils {
      * @return Returns the config directory to use
      */
     public static String getDirectory(final String... args) {
-        final CommandLineParser cliParser = new CommandLineParser(null, null, null);
-        final BaseDirectoryLocator locator = new BaseDirectoryLocator();
+        final SystemInfo systemInfo = new SystemInfo();
+        final CommandLineParser cliParser = new CommandLineParser(null, null, null, systemInfo);
+        final BaseDirectoryLocator locator = new BaseDirectoryLocator(systemInfo);
         cliParser.parse(args);
         final String configDirectory = cliParser.getConfigDirectory();
         return configDirectory == null ? locator.getDefaultBaseDirectory() : configDirectory;
