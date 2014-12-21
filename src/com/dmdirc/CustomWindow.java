@@ -24,8 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Collections;
@@ -38,31 +38,20 @@ public class CustomWindow extends FrameContainer {
 
     /**
      * Creates a new custom window as a child of the specified window.
-     *
-     * @param name       The name of this custom window
-     * @param title      The title of this custom window
-     * @param parent     The parent of this custom window
-     * @param urlBuilder The URL builder to use when finding icons.
      */
     public CustomWindow(
             final String name,
             final String title,
             final FrameContainer parent,
             final URLBuilder urlBuilder,
-            final ColourManagerFactory colourManagerFactory) {
-        super(parent, "custom", name, title, parent.getConfigManager(), colourManagerFactory,
+            final BackBufferFactory backBufferFactory) {
+        super(parent, "custom", name, title, parent.getConfigManager(), backBufferFactory,
                 urlBuilder, parent.getEventBus(),
                 Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 
     /**
      * Creates a new custom window as a top-level window.
-     *
-     * @param name           The name of this custom window
-     * @param title          The parent of this custom window
-     * @param configProvider The config provider to read settings from.
-     * @param urlBuilder     The URL builder to use when finding icons.
-     * @param eventBus       The bus to dispatch events on.
      */
     public CustomWindow(
             final String name,
@@ -70,8 +59,8 @@ public class CustomWindow extends FrameContainer {
             final AggregateConfigProvider configProvider,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
-            final ColourManagerFactory colourManagerFactory) {
-        super(null, "custom", name, title, configProvider, colourManagerFactory, urlBuilder,
+            final BackBufferFactory backBufferFactory) {
+        super(null, "custom", name, title, configProvider, backBufferFactory, urlBuilder,
                 eventBus, Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
     }
 

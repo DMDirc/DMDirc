@@ -36,8 +36,8 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.URLBuilder;
 
 import javax.annotation.Nonnull;
@@ -61,17 +61,11 @@ public class OpenWindow extends Command implements IntelligentCommand {
     private final DMDircMBassador eventBus;
     /** The config provider to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
-    /** Colour manager factory. */
-    private final ColourManagerFactory colourManagerFactory;
+    /** Back buffer factory. */
+    private final BackBufferFactory backBufferFactory;
 
     /**
      * Creates a new instance of this command.
-     *
-     * @param controller     The controller to use for command information.
-     * @param windowManager  Window management
-     * @param urlBuilder     The URL builder to use when finding icons.
-     * @param eventBus       The bus to dispatch events on.
-     * @param configProvider The config provider to retrieve settings from.
      */
     @Inject
     public OpenWindow(
@@ -80,14 +74,14 @@ public class OpenWindow extends Command implements IntelligentCommand {
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             @GlobalConfig final AggregateConfigProvider configProvider,
-            final ColourManagerFactory colourManagerFactory) {
+            final BackBufferFactory backBufferFactory) {
         super(controller);
 
         this.windowManager = windowManager;
         this.urlBuilder = urlBuilder;
         this.eventBus = eventBus;
         this.configProvider = configProvider;
-        this.colourManagerFactory = colourManagerFactory;
+        this.backBufferFactory = backBufferFactory;
     }
 
     @Override
@@ -129,11 +123,11 @@ public class OpenWindow extends Command implements IntelligentCommand {
                 final CustomWindow newWindow;
                 if (parent == null) {
                     newWindow = new CustomWindow(args.getArguments()[start], title,
-                            configProvider, urlBuilder, eventBus, colourManagerFactory);
+                            configProvider, urlBuilder, eventBus, backBufferFactory);
                     windowManager.addWindow(newWindow);
                 } else {
                     newWindow = new CustomWindow(args.getArguments()[start], title, parent,
-                            urlBuilder, colourManagerFactory);
+                            urlBuilder, backBufferFactory);
                     windowManager.addWindow(parent, newWindow);
                 }
             } else {

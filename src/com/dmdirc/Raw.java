@@ -31,8 +31,8 @@ import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.DataInListener;
 import com.dmdirc.parser.interfaces.callbacks.DataOutListener;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
@@ -53,20 +53,15 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
 
     /**
      * Creates a new instance of Raw.
-     *
-     * @param newServer          the server to monitor
-     * @param commandController  The controller to load commands from.
-     * @param messageSinkManager The sink manager to use to dispatch messages.
-     * @param urlBuilder         The URL builder to use when finding icons.
      */
     public Raw(
             final Server newServer,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
-            final ColourManagerFactory colourManagerFactory) {
+            final BackBufferFactory backBufferFactory) {
         super(newServer, "raw", "Raw", "(Raw log)", newServer.getConfigManager(),
-                colourManagerFactory, urlBuilder,
+                backBufferFactory, urlBuilder,
                 new ServerCommandParser(newServer.getConfigManager(), commandController, newServer.
                         getEventBus()),
                 newServer.getTabCompleter(),

@@ -35,15 +35,15 @@ import com.dmdirc.events.NotificationSetEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.ui.core.BackBuffer;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.IconManager;
+import com.dmdirc.ui.core.BackBuffer;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
@@ -98,8 +98,8 @@ public abstract class FrameContainer {
     private final IconManager iconManager;
     /** Whether or not this container is writable. */
     private final boolean writable;
-    /** The colour manager factory. */
-    private final ColourManagerFactory colourManagerFactory;
+    /** The back buffer factory. */
+    private final BackBufferFactory backBufferFactory;
     /** The back buffer for this container. */
     private BackBuffer backBuffer;
     /** Lock for access to {@link #backBuffer}. */
@@ -126,17 +126,6 @@ public abstract class FrameContainer {
 
     /**
      * Instantiate new frame container.
-     *
-     * @param parent     The parent of this frame container, if any.
-     * @param icon       The icon to use for this container
-     * @param name       The name of this container
-     * @param title      The title of this container
-     * @param config     The config manager for this container
-     * @param urlBuilder The URL builder to use when finding icons.
-     * @param eventBus   The bus to dispatch events on.
-     * @param components The UI components that this frame requires
-     *
-     * @since 0.6.4
      */
     protected FrameContainer(
             @Nullable final FrameContainer parent,
@@ -144,7 +133,7 @@ public abstract class FrameContainer {
             final String name,
             final String title,
             final AggregateConfigProvider config,
-            final ColourManagerFactory colourManagerFactory,
+            final BackBufferFactory backBufferFactory,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
@@ -158,7 +147,7 @@ public abstract class FrameContainer {
         this.commandParser = Optional.empty();
         this.tabCompleter = Optional.empty();
         this.messageSinkManager = Optional.empty();
-        this.colourManagerFactory = colourManagerFactory;
+        this.backBufferFactory = backBufferFactory;
 
         eventBusManager = new ChildEventBusManager(eventBus);
         eventBusManager.connect();
@@ -169,20 +158,6 @@ public abstract class FrameContainer {
 
     /**
      * Instantiate new frame container that accepts user input.
-     *
-     * @param parent             The parent of this frame container, if any.
-     * @param icon               The icon to use for this container
-     * @param name               The name of this container
-     * @param title              The title of this container
-     * @param config             The config manager for this container
-     * @param urlBuilder         The URL builder to use when finding icons.
-     * @param commandParser      The command parser to use for input.
-     * @param tabCompleter       The tab completer to use.
-     * @param messageSinkManager The manager to use to dispatch notifications.
-     * @param eventBus           The bus to dispatch events on.
-     * @param components         The UI components that this frame requires
-     *
-     * @since 0.6.4
      */
     protected FrameContainer(
             @Nullable final FrameContainer parent,
@@ -190,7 +165,7 @@ public abstract class FrameContainer {
             final String name,
             final String title,
             final AggregateConfigProvider config,
-            final ColourManagerFactory colourManagerFactory,
+            final BackBufferFactory backBufferFactory,
             final URLBuilder urlBuilder,
             final CommandParser commandParser,
             final TabCompleter tabCompleter,
@@ -207,7 +182,7 @@ public abstract class FrameContainer {
         this.commandParser = Optional.of(commandParser);
         this.tabCompleter = Optional.of(tabCompleter);
         this.messageSinkManager = Optional.of(messageSinkManager);
-        this.colourManagerFactory = colourManagerFactory;
+        this.backBufferFactory = backBufferFactory;
         commandParser.setOwner(this);
 
         eventBusManager = new ChildEventBusManager(eventBus);
@@ -426,7 +401,7 @@ public abstract class FrameContainer {
     public BackBuffer getBackBuffer() {
         synchronized (backBufferLock) {
             if (backBuffer == null) {
-                backBuffer = new BackBuffer(this, colourManagerFactory);
+                backBuffer = backBufferFactory.getBackBuffer(this);
                 backBuffer.startAddingEvents();
             }
         }

@@ -60,6 +60,7 @@ import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.tls.CertificateProblemListener;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -188,27 +189,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     /**
      * Creates a new server which will connect to the specified URL with the specified profile.
-     *
-     * @since 0.6.3
-     * @param manager               The server manager that owns this server.
-     * @param configMigrator        The migrateable configuration manager to read config settings
-     *                              from.
-     * @param commandParser         The parser to use for commands in this server's window.
-     * @param parserFactory         The factory to use to generate parsers.
-     * @param tabCompleterFactory   The factory to use for tab completers.
-     * @param identityFactory       The factory to use to create identities.
-     * @param messageSinkManager    The sink manager to use to dispatch messages.
-     * @param windowManager         Window Manager
-     * @param channelFactory        The factory to use to create channels.
-     * @param queryFactory          The factory to use to create queries.
-     * @param rawFactory            The factory to use to create raw windows.
-     * @param urlBuilder            The URL builder to use when finding icons.
-     * @param eventBus              The event bus to dispatch events onto.
-     * @param messageEncoderFactory The message encoder factory to create a message encoder with.
-     * @param userSettings          The config provider to write user settings to.
-     * @param executorService       The service to use to schedule events.
-     * @param uri                   The address of the server to connect to
-     * @param profile               The profile to use
      */
     public Server(
             final ServerManager manager,
@@ -229,12 +209,12 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final ScheduledExecutorService executorService,
             final URI uri,
             final Profile profile,
-            final ColourManagerFactory colourManagerFactory) {
+            final BackBufferFactory backBufferFactory) {
         super(null, "server-disconnected",
                 getHost(uri),
                 getHost(uri),
                 configMigrator.getConfigProvider(),
-                colourManagerFactory,
+                backBufferFactory,
                 urlBuilder,
                 commandParser,
                 tabCompleterFactory.getTabCompleter(configMigrator.getConfigProvider(),

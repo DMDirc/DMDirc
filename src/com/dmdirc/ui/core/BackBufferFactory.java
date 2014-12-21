@@ -20,41 +20,34 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.ui.core;
 
-import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.ui.core.BackBufferFactory;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.URLBuilder;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.EventFormatter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Factory for {@link Raw}s.
+ * Factory for {@link BackBuffer}s.
  */
 @Singleton
-public class RawFactory {
+public class BackBufferFactory {
 
-    private final CommandController commandController;
-    private final MessageSinkManager messageSinkManager;
-    private final URLBuilder urlBuilder;
-    private final BackBufferFactory backBufferFactory;
+    private final ColourManagerFactory colourManagerFactory;
+    private final EventFormatter formatter;
 
     @Inject
-    public RawFactory(final CommandController commandController,
-            final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder,
-            final BackBufferFactory backBufferFactory) {
-        this.commandController = commandController;
-        this.messageSinkManager = messageSinkManager;
-        this.urlBuilder = urlBuilder;
-        this.backBufferFactory = backBufferFactory;
+    public BackBufferFactory(
+            final ColourManagerFactory colourManagerFactory,
+            final EventFormatter formatter) {
+        this.colourManagerFactory = colourManagerFactory;
+        this.formatter = formatter;
     }
 
-    public Raw getRaw(final Server server) {
-        return new Raw(server, commandController, messageSinkManager, urlBuilder,
-                backBufferFactory);
+    public BackBuffer getBackBuffer(final FrameContainer owner) {
+        return new BackBuffer(owner, colourManagerFactory, formatter);
     }
 
 }

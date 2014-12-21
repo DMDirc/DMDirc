@@ -28,11 +28,11 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.ui.WindowManager;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
-import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
@@ -50,20 +50,13 @@ public class GlobalWindow extends FrameContainer {
 
     /**
      * Creates a new instance of GlobalWindow.
-     *
-     * @param config              The ConfigManager to retrieve settings from.
-     * @param parser              The command parser to use to parse input.
-     * @param tabCompleterFactory The factory to use to create tab completers.
-     * @param messageSinkManager  The sink manager to use to dispatch messages.
-     * @param urlBuilder          The URL builder to use when finding icons.
-     * @param eventBus            The bus to dispatch events on.
      */
     @Inject
     public GlobalWindow(@GlobalConfig final AggregateConfigProvider config,
             final GlobalCommandParser parser, final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager, final URLBuilder urlBuilder,
-            final DMDircMBassador eventBus, final ColourManagerFactory colourManagerFactory) {
-        super(null, "icon", "Global", "(Global)", config, colourManagerFactory, urlBuilder, parser,
+            final DMDircMBassador eventBus, final BackBufferFactory backBufferFactory) {
+        super(null, "icon", "Global", "(Global)", config, backBufferFactory, urlBuilder, parser,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
                 messageSinkManager, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),

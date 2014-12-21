@@ -24,7 +24,9 @@ package com.dmdirc.ui.core;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.EventFormatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
 
@@ -36,8 +38,12 @@ public class BackBuffer {
     private final IRCDocument document;
     private final Styliser styliser;
     private final DMDircMBassador eventBus;
+    private final EventFormatter formatter;
 
-    public BackBuffer(final FrameContainer owner, final ColourManagerFactory colourManagerFactory) {
+    public BackBuffer(
+            final FrameContainer owner,
+            final ColourManagerFactory colourManagerFactory,
+            final EventFormatter formatter) {
         this.styliser = new Styliser(
                 owner.getOptionalConnection().orElse(null),
                 owner.getConfigManager(),
@@ -45,6 +51,7 @@ public class BackBuffer {
                 owner.getEventBus());
         this.document = new IRCDocument(owner.getConfigManager(), styliser, owner.getEventBus());
         this.eventBus = owner.getEventBus();
+        this.formatter = formatter;
     }
 
     /**
@@ -59,6 +66,15 @@ public class BackBuffer {
      */
     public void stopAddingEvents() {
         eventBus.unsubscribe(this);
+    }
+
+    /**
+     * Handles a displayable event received on the event bus.
+     *
+     * @param event The event to be displayed.
+     */
+    public void handleDisplayableEvent(final DisplayableEvent event) {
+
     }
 
     public IRCDocument getDocument() {

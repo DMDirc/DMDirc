@@ -24,9 +24,9 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
+import com.dmdirc.ui.core.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
 import java.util.Collection;
@@ -40,20 +40,6 @@ public abstract class MessageTarget extends FrameContainer {
 
     /**
      * Creates a new MessageTarget.
-     *
-     * @param parent             The parent of this frame container, if any.
-     * @param icon               The icon to use for this target
-     * @param name               The name of this target
-     * @param title              The title of this target
-     * @param config             The config manager to use for this target
-     * @param parser             The command parser for this container
-     * @param tabCompleter       The tab completer to use
-     * @param messageSinkManager The sink manager to use to dispatch messages.
-     * @param urlBuilder         The URL builder to use when finding icons.
-     * @param eventBus           The bus to dispatch events on.
-     * @param components         The UI components that this frame requires
-     *
-     * @since 0.6.4
      */
     public MessageTarget(
             @Nullable final FrameContainer parent,
@@ -61,14 +47,14 @@ public abstract class MessageTarget extends FrameContainer {
             final String name,
             final String title,
             final AggregateConfigProvider config,
-            final ColourManagerFactory colourManagerFactory,
+            final BackBufferFactory backBufferFactory,
             final CommandParser parser,
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
-        super(parent, icon, name, title, config,colourManagerFactory, urlBuilder, parser,
+        super(parent, icon, name, title, config, backBufferFactory, urlBuilder, parser,
                 tabCompleter, messageSinkManager, eventBus, components);
     }
 
