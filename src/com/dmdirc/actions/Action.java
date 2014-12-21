@@ -45,6 +45,7 @@ import com.dmdirc.util.io.InvalidConfigFileException;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /** The domain name for misc settings. */
     private static final String DOMAIN_MISC = "misc";
     /** The base directory to save actions in. */
-    private final String actionsDirectory;
+    private final Path actionsDirectory;
     /** The controller to use to read and update settings. */
     private final IdentityController identityController;
     /** The controller to use to retrieve components, comparisons, etc. */
@@ -85,7 +86,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     /** The config file we're using. */
     protected ConfigFile config;
     /** The location of the file we're reading/saving. */
-    private String location;
+    private Path location;
 
     /**
      * Creates a new instance of Action. The group and name specified must be the group and name of
@@ -105,7 +106,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController, final IdentityController identityController,
-            final String actionsDirectory, final String group, final String name) {
+            final Path actionsDirectory, final String group, final String name) {
         super(globalWindowProvider, substitutorFactory, group, name);
 
         this.filesystem = filesystem;
@@ -113,7 +114,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
         this.actionController = actionController;
         this.identityController = identityController;
         this.actionsDirectory = actionsDirectory;
-        this.location = actionsDirectory + group + filesystem.getSeparator() + name;
+        this.location = actionsDirectory.resolve(group).resolve(name);
 
         try {
             config = new ConfigFile(location);
@@ -153,7 +154,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
             final Provider<GlobalWindow> globalWindowProvider,
             final ActionSubstitutorFactory substitutorFactory,
             final ActionController actionController, final IdentityController identityController,
-            final String actionsDirectory, final String group, final String name,
+            final Path actionsDirectory, final String group, final String name,
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions, final ConditionTree conditionTree,
             final String newFormat) {
@@ -165,11 +166,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
         this.actionController = actionController;
         this.identityController = identityController;
         this.actionsDirectory = actionsDirectory;
-        this.location = actionsDirectory + group + filesystem.getSeparator()
-                + name.replaceAll("[^A-Za-z0-9\\-_]", "_");
+        this.location = actionsDirectory.resolve(group)
+                .resolve(name.replaceAll("[^A-Za-z0-9\\-_]", "_"));
 
         try {
-            Files.createDirectories(filesystem.getPath(actionsDirectory, group));
+            Files.createDirectories(location.getParent());
         } catch (IOException ex) {
             //TODO we don't handle the error now, but we should
         }
@@ -554,11 +555,11 @@ public class Action extends ActionModel implements ConfigChangeListener {
         super.setName(newName);
 
         try {
-            Files.delete(filesystem.getPath(location));
+            Files.delete(location);
         } catch (IOException ex) {
             //TODO we don't handle the error now, but we should
         }
-        location = actionsDirectory + group + filesystem.getSeparator() + newName;
+        location = actionsDirectory.resolve(group).resolve(newName);
 
         save();
     }
@@ -568,16 +569,15 @@ public class Action extends ActionModel implements ConfigChangeListener {
         super.setGroup(newGroup);
 
         try {
-            Files.delete(filesystem.getPath(location));
+            Files.delete(location);
         } catch (IOException ex) {
             //TODO we don't handle the error now, but we should
         }
 
-        final String dir = actionsDirectory + group + filesystem.getSeparator();
-        location = dir + name;
+        location = actionsDirectory.resolve(group).resolve(name);
 
         try {
-            Files.createDirectories(filesystem.getPath(location));
+            Files.createDirectories(location);
         } catch (IOException ex) {
             //TODO we don't handle the error now, but we should
         }
@@ -592,7 +592,7 @@ public class Action extends ActionModel implements ConfigChangeListener {
     public void delete() {
         eventBus.publishAsync(new ActionDeletedEvent(actionController.getOrCreateGroup(getGroup()), this));
         try {
-            Files.delete(filesystem.getPath(location));
+            Files.delete(location);
         } catch (IOException ex) {
             //TODO we don't handle the error now, but we should
         }
