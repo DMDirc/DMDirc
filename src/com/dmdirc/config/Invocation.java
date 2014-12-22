@@ -37,11 +37,8 @@ public abstract class Invocation {
      * @param element  Element to call, can be a {@link Method} or {@link Field}
      * @param instance Instance to call the element on
      * @param value    Value to be passed to the element
-     *
-     * @throws ReflectiveOperationException If something goes wrong invoking the element
      */
-    public void invoke(final AccessibleObject element, final Object instance, final Object value)
-            throws ReflectiveOperationException {
+    protected void invoke(final AccessibleObject element, final Object instance, final Object value) {
         if (element instanceof Field) {
             invoke((Field) element, instance, value);
         } else if (element instanceof Method) {
@@ -57,11 +54,8 @@ public abstract class Invocation {
      * @param field    Field to set
      * @param instance Instance to set the field on
      * @param value    Value to set the field to
-     *
-     * @throws ReflectiveOperationException If something goes wrong setting the value
      */
-    protected abstract void invoke(final Field field, final Object instance, final Object value)
-            throws ReflectiveOperationException;
+    public abstract void invoke(final Field field, final Object instance, final Object value);
 
     /**
      * Sets a field on the specified instance to the specified value.
@@ -69,9 +63,6 @@ public abstract class Invocation {
      * @param method   Method to call
      * @param instance Instance to call the method on
      * @param value    Value to call the method with
-     *
-     * @throws ReflectiveOperationException If something goes wrong calling the method
      */
-    protected abstract void invoke(final Method method, final Object instance, final Object value)
-            throws ReflectiveOperationException;
+    public abstract void invoke(final Method method, final Object instance, final Object value);
 }

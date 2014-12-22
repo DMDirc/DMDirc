@@ -25,21 +25,32 @@ package com.dmdirc.config;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Basic {@link Invocation} implementation that just executes or sets the field on the current
  * thread.
  */
 public class BasicInvocation extends Invocation {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasicInvocation.class);
+
     @Override
-    public void invoke(final Field field, final Object instance, final Object value)
-            throws ReflectiveOperationException {
-        field.set(instance, value);
+    public void invoke(final Field field, final Object instance, final Object value) {
+        try {
+            field.set(instance, value);
+        } catch (ReflectiveOperationException ex) {
+            LOGGER.warn("Unable to set field: " + ex.getMessage());
+        }
     }
 
     @Override
-    public void invoke(final Method method, final Object instance, final Object value)
-            throws ReflectiveOperationException {
-        method.invoke(instance, value);
+    public void invoke(final Method method, final Object instance, final Object value) {
+        try {
+            method.invoke(instance, value);
+        } catch (ReflectiveOperationException ex) {
+            LOGGER.warn("Unable to set field: " + ex.getMessage());
+        }
     }
 }
