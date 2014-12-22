@@ -69,6 +69,7 @@ public class TestWritableFrameContainer extends FrameContainer {
     }
 
     @Override
+    @Deprecated
     public Connection getConnection() {
         return null;
     }

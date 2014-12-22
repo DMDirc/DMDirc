@@ -114,6 +114,7 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
     }
 
     @Nonnull
+    @Deprecated
     @Override
     public Connection getConnection() {
         return server;

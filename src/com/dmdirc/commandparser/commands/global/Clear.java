@@ -59,7 +59,7 @@ public class Clear extends Command implements IntelligentCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        origin.getDocument().clear();
+        origin.getBackBuffer().getDocument().clear();
     }
 
     @Override

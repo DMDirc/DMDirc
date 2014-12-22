@@ -23,11 +23,10 @@
 package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -64,13 +63,15 @@ public class LastCommandMessageSink implements MessageSink {
         final String command = String.format(patternMatches[0], escapedargs);
 
         FrameContainer best = source;
+
+        final Collection<FrameContainer> containers = new ArrayList<>();
+
+        final FrameContainer connectionContainer = source.getOptionalConnection()
+                .get().getWindowModel();
+        containers.add(connectionContainer);
+        containers.addAll(connectionContainer.getChildren());
+
         long besttime = 0;
-
-        final List<FrameContainer> containers = new ArrayList<>();
-
-        containers.add((Server) source.getConnection());
-        containers.addAll(((Server) source.getConnection()).getChildren());
-
         for (FrameContainer container : containers) {
             if (!container.isWritable()) {
                 continue;

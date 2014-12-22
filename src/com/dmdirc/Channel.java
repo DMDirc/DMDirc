@@ -550,6 +550,7 @@ public class Channel extends MessageTarget implements GroupChat {
     }
 
     @Override
+    @Deprecated
     @Nonnull
     public Connection getConnection() {
         return server;

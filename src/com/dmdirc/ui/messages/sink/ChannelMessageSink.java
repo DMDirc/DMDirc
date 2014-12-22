@@ -24,6 +24,7 @@ package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.Connection;
 
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -57,8 +58,9 @@ public class ChannelMessageSink implements MessageSink {
         final String user = String.format(patternMatches[0], args);
         boolean found = false;
 
-        for (String channelName : source.getConnection().getChannels()) {
-            final Channel channel = source.getConnection().getChannel(channelName);
+        final Connection connection = source.getOptionalConnection().get();
+        for (String channelName : connection.getChannels()) {
+            final Channel channel = connection.getChannel(channelName);
             if (channel.getChannelInfo().getChannelClient(user) != null) {
                 channel.addLine(messageType, date, args);
                 found = true;

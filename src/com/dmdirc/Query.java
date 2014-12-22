@@ -288,6 +288,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Nonnull
     @Override
+    @Deprecated
     public Connection getConnection() {
         return server;
     }

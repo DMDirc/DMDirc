@@ -65,6 +65,7 @@ public class CustomWindow extends FrameContainer {
     }
 
     @Override
+    @Deprecated
     public Connection getConnection() {
         return getOptionalConnection().orElse(null);
     }

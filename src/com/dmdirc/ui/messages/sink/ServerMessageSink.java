@@ -52,7 +52,7 @@ public class ServerMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        ((Server) source.getConnection()).addLine(messageType, date, args);
+        source.getOptionalConnection().get().getWindowModel().addLine(messageType, date, args);
     }
 
 }

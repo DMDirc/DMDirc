@@ -24,6 +24,7 @@ package com.dmdirc.events;
 
 import com.dmdirc.logger.ErrorLevel;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public abstract class ErrorEvent extends DMDircEvent {
@@ -69,8 +70,9 @@ public abstract class ErrorEvent extends DMDircEvent {
         this.handled = true;
     }
 
+    @Override
     public String toString() {
-        return Objects.toStringHelper(getClass())
+        return MoreObjects.toStringHelper(getClass())
                 .add("Level", getLevel())
                 .add("Message", getMessage())
                 .add("Details", getDetails())

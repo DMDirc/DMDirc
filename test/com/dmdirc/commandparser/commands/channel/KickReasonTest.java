@@ -31,6 +31,8 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +64,9 @@ public class KickReasonTest {
     public void testUsage() {
         final FrameContainer tiw = mock(FrameContainer.class);
         final Channel channel = mock(Channel.class);
+
+        when(tiw.getOptionalConnection()).thenReturn(Optional.empty());
+
         command.execute(tiw, new CommandArguments(controller, "/kick"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
 
@@ -76,6 +81,7 @@ public class KickReasonTest {
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channelInfo.getChannelClient(anyString())).thenReturn(null);
+        when(tiw.getOptionalConnection()).thenReturn(Optional.empty());
 
         command.execute(tiw, new CommandArguments(controller, "/kick user1"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
@@ -92,6 +98,7 @@ public class KickReasonTest {
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channelInfo.getChannelClient("user1")).thenReturn(cci);
+        when(tiw.getOptionalConnection()).thenReturn(Optional.empty());
 
         command.execute(tiw, new CommandArguments(controller, "/kick user1 reason here"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
@@ -111,6 +118,7 @@ public class KickReasonTest {
         when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channelInfo.getChannelClient("user1")).thenReturn(cci);
         when(manager.getOption("general", "kickmessage")).thenReturn("reason here");
+        when(tiw.getOptionalConnection()).thenReturn(Optional.empty());
 
         command.execute(tiw, new CommandArguments(controller, "/kick user1"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));

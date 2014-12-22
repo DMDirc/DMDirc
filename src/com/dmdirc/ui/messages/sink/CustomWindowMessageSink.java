@@ -71,13 +71,15 @@ public class CustomWindowMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
+        final FrameContainer connectionContainer = source.getOptionalConnection()
+                .get().getWindowModel();
         FrameContainer targetWindow = windowManager
-                .findCustomWindow((Server) source.getConnection(), patternMatches[0]);
+                .findCustomWindow(connectionContainer, patternMatches[0]);
 
         if (targetWindow == null) {
             targetWindow = new CustomWindow(patternMatches[0], patternMatches[0],
-                    (Server) source.getConnection(), urlBuilder, backBufferFactory);
-            windowManager.addWindow((Server) source.getConnection(), targetWindow);
+                    connectionContainer, urlBuilder, backBufferFactory);
+            windowManager.addWindow(connectionContainer, targetWindow);
         }
 
         targetWindow.addLine(messageType, date, args);
