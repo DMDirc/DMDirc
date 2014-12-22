@@ -63,4 +63,10 @@ public @interface ConfigBinding {
      */
     boolean applyInitially() default true;
 
+    /**
+     * {@link Invocation} class that will be created and used to execute the config binding.  The
+     * default just directly executes or sets the value.
+     */
+    Class<? extends Invocation> invocation() default BasicInvocation.class;
+
 }
