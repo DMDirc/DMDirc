@@ -79,6 +79,7 @@ public class ServerManagerTest {
         serverManager = new ServerManager(profileManager, identityFactory,
                 commandControllerProvider, windowManager, serverFactoryImpl, eventBus);
 
+        when(server.getState()).thenReturn(ServerState.DISCONNECTED);
         when(commandControllerProvider.get()).thenReturn(commandController);
 
         when(profileManager.getProfiles()).thenReturn(Collections.singletonList(profile));
