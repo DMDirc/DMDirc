@@ -46,6 +46,8 @@ public abstract class Invocation {
             invoke((Field) element, instance, value);
         } else if (element instanceof Method) {
             invoke((Method) element, instance, value);
+        } else {
+            throw new IllegalArgumentException("element must be a Field or Method");
         }
     }
 

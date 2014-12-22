@@ -32,9 +32,9 @@ import java.lang.reflect.Method;
 public class BasicInvocation extends Invocation {
 
     @Override
-    public void invoke(final Field method, final Object instance, final Object value)
+    public void invoke(final Field field, final Object instance, final Object value)
             throws ReflectiveOperationException {
-        method.set(instance, value);
+        field.set(instance, value);
     }
 
     @Override
