@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 
 import java.util.Optional;
@@ -57,10 +58,13 @@ public class EventFormatter {
     }
 
     public Optional<String> format(final DisplayableEvent event) {
-        final Optional<EventFormat> template = formatProvider.getFormat(event.getClass());
+        final Optional<EventFormat> format = formatProvider.getFormat(event.getClass());
 
-        if (template.isPresent()) {
-            final StringBuilder builder = new StringBuilder(template.get().getTemplate());
+        format.flatMap(EventFormat::getDefaultForegroundColour).ifPresent(
+                c -> event.setDisplayProperty(DisplayProperty.FOREGROUND_COLOUR, c));
+
+        return format.map(f -> {
+            final StringBuilder builder = new StringBuilder(f.getTemplate());
             int tagStart = builder.indexOf("{{");
             while (tagStart > -1) {
                 final int tagEnd = builder.indexOf("}}", tagStart);
@@ -68,10 +72,9 @@ public class EventFormatter {
                 builder.replace(tagStart, tagEnd + 2, getReplacement(event, tag));
                 tagStart = builder.indexOf("{{");
             }
-            return Optional.of(builder.toString());
-        }
 
-        return Optional.empty();
+            return builder.toString();
+        });
     }
 
     private String getReplacement(final DisplayableEvent event, final String tag) {
