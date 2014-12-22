@@ -40,8 +40,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
 /**
  * Handles the raw window (which shows the user raw data being sent and received to/from the
  * server).
@@ -111,13 +109,6 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
     public void onDataOut(final Parser parser, final Date date, final String data,
             final boolean fromParser) {
         addLine("rawOut", data);
-    }
-
-    @Nonnull
-    @Deprecated
-    @Override
-    public Connection getConnection() {
-        return server;
     }
 
     @Override

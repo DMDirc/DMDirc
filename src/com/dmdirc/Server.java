@@ -94,7 +94,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManager;
@@ -1036,13 +1035,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         } finally {
             parserLock.readLock().unlock();
         }
-    }
-
-    @Nonnull
-    @Deprecated
-    @Override
-    public Connection getConnection() {
-        return this;
     }
 
     @Override

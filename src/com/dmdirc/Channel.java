@@ -549,7 +549,6 @@ public class Channel extends MessageTarget implements GroupChat {
         listenerList.remove(TopicChangeListener.class, listener);
     }
 
-    @Override
     @Deprecated
     @Nonnull
     public Connection getConnection() {

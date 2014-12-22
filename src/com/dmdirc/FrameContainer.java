@@ -347,16 +347,6 @@ public abstract class FrameContainer {
     /**
      * Returns the connection that this container is associated with.
      *
-     * @deprecated Use {@link #getOptionalConnection()}
-     * @return the associated connection, or {@code null}.
-     */
-    @Nullable
-    @Deprecated
-    public abstract Connection getConnection();
-
-    /**
-     * Returns the connection that this container is associated with.
-     *
      * @return the associated connection.
      */
     public abstract Optional<Connection> getOptionalConnection();
