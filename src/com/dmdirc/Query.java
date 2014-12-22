@@ -59,8 +59,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
 /**
  * The Query class represents the client's view of a query with another user. It handles callbacks
  * for query events from the parser, maintains the corresponding QueryWindow, and handles user input
@@ -284,12 +282,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
         } else {
             removeComponent(WindowComponent.TYPING_INDICATOR.getIdentifier());
         }
-    }
-
-    @Nonnull
-    @Deprecated
-    public Connection getConnection() {
-        return server;
     }
 
     @Override

@@ -59,8 +59,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
-
 /**
  * The Channel class represents the client's view of the channel. It handles callbacks for channel
  * events from the parser, maintains the corresponding ChannelWindow, and handles user input for the
@@ -547,12 +545,6 @@ public class Channel extends MessageTarget implements GroupChat {
     @Override
     public void removeTopicChangeListener(final TopicChangeListener listener) {
         listenerList.remove(TopicChangeListener.class, listener);
-    }
-
-    @Deprecated
-    @Nonnull
-    public Connection getConnection() {
-        return server;
     }
 
     @Override
