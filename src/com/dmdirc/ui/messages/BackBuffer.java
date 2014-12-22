@@ -24,6 +24,8 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -36,13 +38,14 @@ import net.engio.mbassy.listener.Handler;
  */
 public class BackBuffer {
 
-    private static final boolean ENABLED = false;
-
     private final IRCDocument document;
     private final Styliser styliser;
     private final DMDircMBassador eventBus;
     private final EventFormatter formatter;
     private final AggregateConfigProvider configProvider;
+
+    @ConfigBinding(domain="dev", key="enableNewEvents")
+    private boolean enabled;
 
     public BackBuffer(
             final FrameContainer owner,
@@ -64,6 +67,7 @@ public class BackBuffer {
      */
     public void startAddingEvents() {
         eventBus.subscribe(this);
+        configProvider.getBinder().bind(this, BackBuffer.class);
     }
 
     /**
@@ -71,6 +75,7 @@ public class BackBuffer {
      */
     public void stopAddingEvents() {
         eventBus.unsubscribe(this);
+        configProvider.getBinder().unbind(this);
     }
 
     /**
@@ -80,10 +85,11 @@ public class BackBuffer {
      */
     @Handler
     public void handleDisplayableEvent(final DisplayableEvent event) {
-        if (ENABLED) {
+        if (enabled && !event.getDisplayProperty(DisplayProperty.HANDLED).isPresent()) {
             formatter.format(event)
                     .map(l -> new String[]{getTimestamp(event), l})
                     .ifPresent(document::addText);
+            event.setDisplayProperty(DisplayProperty.HANDLED, Boolean.TRUE);
         }
     }
 
