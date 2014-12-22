@@ -32,8 +32,6 @@ import com.dmdirc.util.collections.MapList;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -143,23 +141,11 @@ public class ConfigBinder {
 
         final Object value = getValue(binding, getTargetClass(element));
 
-        if (element instanceof Field) {
-            try {
-                ((Field) element).set(instance, value);
-            } catch (IllegalAccessException | IllegalArgumentException ex) {
-                // Ignore
-            }
-        }
-
-        if (element instanceof Method) {
-            try {
-                ((Method) element).invoke(instance, value);
-            } catch (IllegalAccessException | IllegalArgumentException ex) {
-                // Ignore
-            } catch (InvocationTargetException ex) {
-                eventBus.publish(new AppErrorEvent(ErrorLevel.HIGH, ex,
-                        "Exception when updating bound setting", ""));
-            }
+        try {
+            binding.invocation().newInstance().invoke(element, instance, value);
+        } catch (ReflectiveOperationException ex) {
+            eventBus.publish(new AppErrorEvent(ErrorLevel.HIGH, ex,
+                    "Exception when updating bound setting", ""));
         }
     }
 
