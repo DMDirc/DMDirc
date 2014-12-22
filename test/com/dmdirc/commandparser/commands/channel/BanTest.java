@@ -77,7 +77,7 @@ public class BanTest {
         when(channelInfo.getChannelClient("user")).thenReturn(ccInfo);
         when(ccInfo.getClient()).thenReturn(clientInfo);
         when(clientInfo.getHostname()).thenReturn("my.host.name");
-        when(container.getOptionalConnection()).thenReturn(Optional.empty());
+        when(container.getConnection()).thenReturn(Optional.empty());
 
         command.execute(container, new CommandArguments(controller, "/ban user"),
                 new ChannelCommandContext(null, Ban.INFO, channel));
@@ -94,7 +94,7 @@ public class BanTest {
         final Channel channel = mock(Channel.class);
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(container.getOptionalConnection()).thenReturn(Optional.empty());
+        when(container.getConnection()).thenReturn(Optional.empty());
 
         command.execute(container, new CommandArguments(controller, "/ban *!*@my.host.name"),
                 new ChannelCommandContext(null, Ban.INFO, channel));

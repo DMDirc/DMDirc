@@ -51,7 +51,7 @@ public class AllMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        source.getOptionalConnection().get().addLineToAll(messageType, date, args);
+        source.getConnection().get().addLineToAll(messageType, date, args);
     }
 
 }

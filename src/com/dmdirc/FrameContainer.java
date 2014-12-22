@@ -349,7 +349,7 @@ public abstract class FrameContainer {
      *
      * @return the associated connection.
      */
-    public abstract Optional<Connection> getOptionalConnection();
+    public abstract Optional<Connection> getConnection();
 
     /**
      * Sets the icon to be used by this frame container and fires a {@link FrameIconChangedEvent}.

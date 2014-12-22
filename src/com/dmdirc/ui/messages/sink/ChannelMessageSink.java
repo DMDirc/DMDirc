@@ -58,7 +58,7 @@ public class ChannelMessageSink implements MessageSink {
         final String user = String.format(patternMatches[0], args);
         boolean found = false;
 
-        final Connection connection = source.getOptionalConnection().get();
+        final Connection connection = source.getConnection().get();
         for (String channelName : connection.getChannels()) {
             final Channel channel = connection.getChannel(channelName);
             if (channel.getChannelInfo().getChannelClient(user) != null) {

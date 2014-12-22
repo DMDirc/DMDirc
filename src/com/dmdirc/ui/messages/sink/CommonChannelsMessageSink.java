@@ -57,7 +57,7 @@ public class CommonChannelsMessageSink implements MessageSink {
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
         final String user = String.format(patternMatches[0], args);
-        final Connection connection = source.getOptionalConnection().get();
+        final Connection connection = source.getConnection().get();
         boolean found = false;
 
         for (String channelName : connection.getChannels()) {

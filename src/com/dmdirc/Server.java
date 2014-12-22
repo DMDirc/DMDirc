@@ -1038,7 +1038,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     }
 
     @Override
-    public Optional<Connection> getOptionalConnection() {
+    public Optional<Connection> getConnection() {
         return Optional.of(this);
     }
 

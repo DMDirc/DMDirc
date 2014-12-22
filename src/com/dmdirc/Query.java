@@ -285,7 +285,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
     }
 
     @Override
-    public Optional<Connection> getOptionalConnection() {
+    public Optional<Connection> getConnection() {
         return Optional.of(server);
     }
 

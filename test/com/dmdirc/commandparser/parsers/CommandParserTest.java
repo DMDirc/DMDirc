@@ -74,7 +74,7 @@ public class CommandParserTest {
 
         when(configProvider.getOptionInt("general", "commandhistory")).thenReturn(10);
 
-        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
+        when(container.getConnection()).thenReturn(Optional.of(connection));
         when(connection.isValidChannelName("#channel1")).thenReturn(true);
         when(connection.isValidChannelName("#channel2")).thenReturn(true);
         when(connection.hasChannel("#channel1")).thenReturn(true);
@@ -191,7 +191,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseChannelCommandWithArguments() {
-        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
+        when(container.getConnection()).thenReturn(Optional.of(connection));
         commandParser.parseCommand(container, "/channel #channel1 this is a test");
 
         assertNull(channelCommandParser.nonCommandLine);
@@ -203,7 +203,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseChannelCommandWithoutArguments() {
-        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
+        when(container.getConnection()).thenReturn(Optional.of(connection));
         commandParser.parseCommand(container, "/channel #channel1");
 
         assertNull(channelCommandParser.nonCommandLine);
@@ -215,7 +215,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseSilencedChannelCommandWithArguments() {
-        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
+        when(container.getConnection()).thenReturn(Optional.of(connection));
         commandParser.parseCommand(container, "/.channel #channel1 this is a test");
 
         assertNull(channelCommandParser.nonCommandLine);
@@ -227,7 +227,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseSilencedChannelCommandWithoutArguments() {
-        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
+        when(container.getConnection()).thenReturn(Optional.of(connection));
         commandParser.parseCommand(container, "/.channel #channel1");
 
         assertNull(channelCommandParser.nonCommandLine);

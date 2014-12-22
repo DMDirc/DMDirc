@@ -71,7 +71,7 @@ public class ShowTopic extends Command implements ExternalCommand {
             if (cChannel.getTopic().isEmpty()) {
                 sendLine(origin, args.isSilent(), "channelNoTopic", cChannel);
             } else {
-                final String[] parts = channel.getOptionalConnection().get().parseHostmask(
+                final String[] parts = channel.getConnection().get().parseHostmask(
                         cChannel.getTopicSetter());
 
                 sendLine(origin, args.isSilent(), "channelTopicDiscovered",

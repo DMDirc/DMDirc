@@ -36,7 +36,7 @@ public interface Chat {
      *
      * @return This chat's connection.
      */
-    Optional<Connection> getOptionalConnection();
+    Optional<Connection> getConnection();
 
     /**
      * Sends an action to the chat. If an action is too long to be sent, an error will be displayed.

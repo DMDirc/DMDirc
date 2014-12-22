@@ -179,7 +179,7 @@ public abstract class CommandParser implements Serializable {
         final boolean silent = args.isSilent();
         final String command = args.getCommandName();
         final String[] cargs = args.getArguments();
-        final Optional<Connection> connection = origin.getOptionalConnection();
+        final Optional<Connection> connection = origin.getConnection();
 
         if (cargs.length == 0
                 || !parseChannel

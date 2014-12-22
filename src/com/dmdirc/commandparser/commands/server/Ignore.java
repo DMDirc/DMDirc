@@ -185,7 +185,7 @@ public class Ignore extends Command implements IntelligentCommand {
             targets.include(TabCompletionType.CHANNEL_NICK);
             targets.include(TabCompletionType.QUERY_NICK);
         } else if (arg == 1 && "--remove".equals(context.getPreviousArgs().get(0))) {
-            final IgnoreList ignoreList = context.getWindow().getOptionalConnection()
+            final IgnoreList ignoreList = context.getWindow().getConnection()
                     .get().getIgnoreList();
             if (ignoreList.canConvert()) {
                 targets.addAll(ignoreList.getSimpleList().stream().collect(Collectors.toList()));
