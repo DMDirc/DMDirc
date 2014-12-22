@@ -47,20 +47,20 @@ public class EventFormatter {
     private static final String ERROR_STRING = "<FormatError>";
 
     private final EventPropertyManager propertyManager;
-    private final EventTemplateProvider templateProvider;
+    private final EventFormatProvider formatProvider;
 
     @Inject
     public EventFormatter(final EventPropertyManager propertyManager,
-            final EventTemplateProvider templateProvider) {
+            final EventFormatProvider formatProvider) {
         this.propertyManager = propertyManager;
-        this.templateProvider = templateProvider;
+        this.formatProvider = formatProvider;
     }
 
     public Optional<String> format(final DisplayableEvent event) {
-        final Optional<String> template = templateProvider.getTemplate(event.getClass());
+        final Optional<EventFormat> template = formatProvider.getFormat(event.getClass());
 
         if (template.isPresent()) {
-            final StringBuilder builder = new StringBuilder(template.get());
+            final StringBuilder builder = new StringBuilder(template.get().getTemplate());
             int tagStart = builder.indexOf("{{");
             while (tagStart > -1) {
                 final int tagEnd = builder.indexOf("}}", tagStart);
@@ -68,7 +68,7 @@ public class EventFormatter {
                 builder.replace(tagStart, tagEnd + 2, getReplacement(event, tag));
                 tagStart = builder.indexOf("{{");
             }
-            return Optional.ofNullable(builder.toString());
+            return Optional.of(builder.toString());
         }
 
         return Optional.empty();

@@ -26,6 +26,7 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.util.colours.Colour;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,20 +42,23 @@ import com.esotericsoftware.yamlbeans.YamlReader;
 import static com.dmdirc.util.YamlReaderUtils.asMap;
 
 /**
- * YAML-backed supplier of event templates.
+ * YAML-backed supplier of event formats.
  */
-public class YamlEventTemplateProvider implements EventTemplateProvider {
+public class YamlEventFormatProvider implements EventFormatProvider {
 
     /** The charset to use when reading and writing files. */
     private static final String CHARSET = "UTF-8";
 
     private final Path path;
     private final DMDircMBassador eventBus;
-    private final Map<String, String> formats = new HashMap<>();
+    private final ColourManager colourManager;
+    private final Map<String, EventFormat> formats = new HashMap<>();
 
-    public YamlEventTemplateProvider(final Path path, final DMDircMBassador eventBus) {
+    public YamlEventFormatProvider(final Path path, final DMDircMBassador eventBus,
+            final ColourManager colourManager) {
         this.path = path;
         this.eventBus = eventBus;
+        this.colourManager = colourManager;
     }
 
     public void load() {
@@ -82,7 +86,7 @@ public class YamlEventTemplateProvider implements EventTemplateProvider {
             final YamlReader yamlReader = new YamlReader(reader);
             final Object root = yamlReader.read();
             final Map<Object, Object> entries = asMap(root);
-            entries.forEach((k, v) -> formats.put(k.toString(), v.toString()));
+            entries.forEach((k, v) -> formats.put(k.toString(), readFormat(v)));
             yamlReader.close();
         } catch (IOException e) {
             eventBus.publishAsync(new AppErrorEvent(ErrorLevel.LOW, e,
@@ -90,8 +94,18 @@ public class YamlEventTemplateProvider implements EventTemplateProvider {
         }
     }
 
+    private EventFormat readFormat(final Object format) {
+        final Map<Object, Object> info = asMap(format);
+        final String template = info.get("format").toString();
+        final Optional<Colour> foregroundColour = info.containsKey("colour")
+                ? Optional.of(colourManager.getColourFromIrcCode(
+                        Integer.parseInt(info.get("colour").toString())))
+                : Optional.empty();
+        return EventFormat.create(template, foregroundColour);
+    }
+
     @Override
-    public Optional<String> getTemplate(final Class<? extends DisplayableEvent> eventType) {
+    public Optional<EventFormat> getFormat(final Class<? extends DisplayableEvent> eventType) {
         return Optional.ofNullable(formats.get(eventType.getSimpleName()));
     }
 
