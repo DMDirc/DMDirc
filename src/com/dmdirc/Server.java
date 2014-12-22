@@ -1039,6 +1039,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     }
 
     @Nonnull
+    @Deprecated
     @Override
     public Connection getConnection() {
         return this;

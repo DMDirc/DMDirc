@@ -75,7 +75,6 @@ public class ActionSubstitutorTest {
 
         final ChannelClientInfo clientInfo = mock(ChannelClientInfo.class);
 
-        when(channel.getConnection()).thenReturn(server);
         when(channel.getOptionalConnection()).thenReturn(Optional.of(server));
         when(channel.getConfigManager()).thenReturn(manager);
         when(server.getState()).thenReturn(ServerState.DISCONNECTED);

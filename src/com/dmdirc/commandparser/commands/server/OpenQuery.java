@@ -89,11 +89,7 @@ public class OpenQuery extends Command implements IntelligentCommand,
             query.sendLine(args.getArgumentsAsString(1), args.getArguments()[0]);
         }
 
-        if (!args.isSilent()) {
-            //TODO how are we going to handle focusing an existing query?
-            //context.getSource().getController().requestWindowFocus(query);
-            return; //NOPMD
-        }
+        // TODO: Focus if the command isn't silent
     }
 
     @Override
@@ -113,7 +109,7 @@ public class OpenQuery extends Command implements IntelligentCommand,
     public int getLineCount(final FrameContainer origin, final CommandArguments arguments) {
         if (arguments.getArguments().length >= 2) {
             final String target = arguments.getArguments()[0];
-            return origin.getConnection().getWindowModel().getNumLines("PRIVMSG "
+            return origin.getOptionalConnection().get().getWindowModel().getNumLines("PRIVMSG "
                     + target + " :" + arguments.getArgumentsAsString(1));
         } else {
             return 1;

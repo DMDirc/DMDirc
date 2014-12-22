@@ -26,6 +26,8 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandInfo;
 
+import java.util.Optional;
+
 /**
  * A command context specific to chat windows.
  *
@@ -45,7 +47,10 @@ public class ChatCommandContext extends ServerCommandContext {
      */
     public ChatCommandContext(final FrameContainer source,
             final CommandInfo commandInfo, final MessageTarget chat) {
-        super(source, commandInfo, chat.getConnection());
+        super(source, commandInfo,
+                Optional.ofNullable(source)
+                        .flatMap(FrameContainer::getOptionalConnection)
+                        .orElse(null));
         this.chat = chat;
     }
 

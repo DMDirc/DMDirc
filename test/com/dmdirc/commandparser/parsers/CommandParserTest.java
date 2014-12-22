@@ -191,7 +191,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseChannelCommandWithArguments() {
-        when(container.getConnection()).thenReturn(connection);
+        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
         commandParser.parseCommand(container, "/channel #channel1 this is a test");
 
         assertNull(channelCommandParser.nonCommandLine);
@@ -203,7 +203,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseChannelCommandWithoutArguments() {
-        when(container.getConnection()).thenReturn(connection);
+        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
         commandParser.parseCommand(container, "/channel #channel1");
 
         assertNull(channelCommandParser.nonCommandLine);
@@ -215,7 +215,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseSilencedChannelCommandWithArguments() {
-        when(container.getConnection()).thenReturn(connection);
+        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
         commandParser.parseCommand(container, "/.channel #channel1 this is a test");
 
         assertNull(channelCommandParser.nonCommandLine);
@@ -227,7 +227,7 @@ public class CommandParserTest {
 
     @Test
     public void testParseSilencedChannelCommandWithoutArguments() {
-        when(container.getConnection()).thenReturn(connection);
+        when(container.getOptionalConnection()).thenReturn(Optional.of(connection));
         commandParser.parseCommand(container, "/.channel #channel1");
 
         assertNull(channelCommandParser.nonCommandLine);

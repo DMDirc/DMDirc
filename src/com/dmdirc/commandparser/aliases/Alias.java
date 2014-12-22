@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.aliases;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -94,7 +95,7 @@ public class Alias implements CommandInfo {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("name", name)
                 .add("minargs", minArguments)
                 .add("substitution", substitution)

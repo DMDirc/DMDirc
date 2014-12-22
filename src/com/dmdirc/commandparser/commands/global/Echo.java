@@ -36,10 +36,12 @@ import com.dmdirc.commandparser.commands.flags.CommandFlag;
 import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
 import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -138,16 +140,17 @@ public class Echo extends Command implements IntelligentCommand {
                 || (arg == 3 && context.getPreviousArgs().get(2).equals("--target")
                 && context.getPreviousArgs().get(0).equals("--ts"))) {
 
-            final List<FrameContainer> windowList = new ArrayList<>();
-            final Server currentServer = (Server) context.getWindow().getConnection();
+            final Collection<FrameContainer> windowList = new ArrayList<>();
+            final Optional<Connection> connection = context.getWindow().getOptionalConnection();
 
             //Active window's Children
             windowList.addAll(context.getWindow().getChildren());
 
             //Children of Current Window's server
-            if (currentServer != null) {
-                windowList.addAll(currentServer.getChildren());
-            }
+            connection
+                    .map(c -> (Server) c)
+                    .map(Server::getChildren)
+                    .ifPresent(windowList::addAll);
 
             //Global Windows
             windowList.addAll(windowManager.getRootWindows());

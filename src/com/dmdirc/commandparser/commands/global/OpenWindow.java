@@ -34,11 +34,14 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.util.URLBuilder;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -91,13 +94,14 @@ public class OpenWindow extends Command implements IntelligentCommand {
         FrameContainer parent = null;
 
         if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
-            if (origin.getConnection() == null) {
+            final Optional<Connection> connection = origin.getOptionalConnection();
+            if (!connection.isPresent()) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "This window doesn't have an associated server.");
                 return;
             }
 
-            parent = (FrameContainer) origin.getConnection();
+            parent = connection.get().getWindowModel();
             start = 1;
         } else if (args.getArguments().length > 0 && "--child".equals(args.getArguments()[0])) {
             parent = origin;

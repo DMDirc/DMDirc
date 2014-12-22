@@ -64,6 +64,7 @@ public class GlobalWindow extends FrameContainer {
     }
 
     @Override
+    @Deprecated
     public Connection getConnection() {
         return null;
     }

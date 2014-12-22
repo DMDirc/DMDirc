@@ -105,7 +105,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
 
     @Handler
     public void handleClientLineAdded(final ClientLineAddedEvent event) {
-        final String[] parts = event.getFrameContainer().getStyliser()
+        final String[] parts = event.getFrameContainer().getBackBuffer().getStyliser()
                 .doLinks(event.getLine())
                 .split(Character.toString(Styliser.CODE_CHANNEL));
 
@@ -119,7 +119,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final FrameContainer source = context.getWindow();
-        final Connection connection = source.getConnection();
+        final Connection connection = source.getOptionalConnection().get();
         final List<String> results = checkSource(source, true, true);
 
         final AdditionalTabTargets targets = new AdditionalTabTargets().excludeAll();

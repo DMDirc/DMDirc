@@ -36,6 +36,7 @@ import com.dmdirc.commandparser.commands.flags.CommandFlag;
 import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
 import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -44,6 +45,7 @@ import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -112,16 +114,17 @@ public class SetCommand extends Command implements IntelligentCommand {
 
         ConfigProvider identity = identityController.getUserSettings();
         AggregateConfigProvider manager = identityController.getGlobalConfiguration();
+        final Optional<Connection> connection = origin.getOptionalConnection();
 
         if (res.hasFlag(serverFlag)) {
-            if (origin.getConnection() == null) {
+            if (!connection.isPresent()) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "Cannot use --server in this context");
                 return;
             }
 
-            identity = origin.getConnection().getServerIdentity();
-            manager = ((FrameContainer) origin.getConnection()).getConfigManager();
+            identity = connection.get().getServerIdentity();
+            manager = connection.get().getWindowModel().getConfigManager();
         }
 
         if (res.hasFlag(channelFlag)) {
@@ -133,7 +136,7 @@ public class SetCommand extends Command implements IntelligentCommand {
 
             final Channel channel = ((ChannelCommandContext) context).getChannel();
             identity = identityFactory.createChannelConfig(
-                    origin.getConnection().getNetwork(), channel.getName());
+                    connection.get().getNetwork(), channel.getName());
             manager = channel.getConfigManager();
         }
 

@@ -31,6 +31,8 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,6 +77,7 @@ public class BanTest {
         when(channelInfo.getChannelClient("user")).thenReturn(ccInfo);
         when(ccInfo.getClient()).thenReturn(clientInfo);
         when(clientInfo.getHostname()).thenReturn("my.host.name");
+        when(container.getOptionalConnection()).thenReturn(Optional.empty());
 
         command.execute(container, new CommandArguments(controller, "/ban user"),
                 new ChannelCommandContext(null, Ban.INFO, channel));
@@ -91,6 +94,7 @@ public class BanTest {
         final Channel channel = mock(Channel.class);
 
         when(channel.getChannelInfo()).thenReturn(channelInfo);
+        when(container.getOptionalConnection()).thenReturn(Optional.empty());
 
         command.execute(container, new CommandArguments(controller, "/ban *!*@my.host.name"),
                 new ChannelCommandContext(null, Ban.INFO, channel));
