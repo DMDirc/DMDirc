@@ -279,7 +279,7 @@ public class ActionSubstitutor {
 
         if (hasFrameContainer() && serverMatcher.matches()) {
             final Optional<Connection> connection =
-                    ((FrameContainer) args[0]).getOptionalConnection();
+                    ((FrameContainer) args[0]).getConnection();
 
             if (connection.isPresent()) {
                 try {
@@ -311,7 +311,7 @@ public class ActionSubstitutor {
     protected String checkConnection(final ActionComponentChain chain,
             final Object[] args, final Object argument) {
         if ((chain.requiresConnection() && args[0] instanceof FrameContainer
-                && ((FrameContainer) args[0]).getOptionalConnection().get().getState()
+                && ((FrameContainer) args[0]).getConnection().get().getState()
                 == ServerState.CONNECTED) || !chain.requiresConnection()) {
             final Object res = chain.get(argument);
             return res == null ? ERR_NULL_CHAIN : res.toString();

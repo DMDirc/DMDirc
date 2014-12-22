@@ -49,7 +49,7 @@ public class BackBuffer {
             final ColourManagerFactory colourManagerFactory,
             final EventFormatter formatter) {
         this.styliser = new Styliser(
-                owner.getOptionalConnection().orElse(null),
+                owner.getConnection().orElse(null),
                 owner.getConfigManager(),
                 colourManagerFactory.getColourManager(owner.getConfigManager()),
                 owner.getEventBus());

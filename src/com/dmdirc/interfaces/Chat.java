@@ -24,7 +24,7 @@ package com.dmdirc.interfaces;
 
 import com.dmdirc.parser.common.CompositionState;
 
-import javax.annotation.Nonnull;
+import java.util.Optional;
 
 /**
  * A generic chat, to which the user can send messages.
@@ -36,8 +36,7 @@ public interface Chat {
      *
      * @return This chat's connection.
      */
-    @Nonnull
-    Connection getConnection();
+    Optional<Connection> getConnection();
 
     /**
      * Sends an action to the chat. If an action is too long to be sent, an error will be displayed.

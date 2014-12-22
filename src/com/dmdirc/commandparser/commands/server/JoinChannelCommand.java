@@ -119,7 +119,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
         final FrameContainer source = context.getWindow();
-        final Connection connection = source.getOptionalConnection().get();
+        final Connection connection = source.getConnection().get();
         final List<String> results = checkSource(source, true, true);
 
         final AdditionalTabTargets targets = new AdditionalTabTargets().excludeAll();

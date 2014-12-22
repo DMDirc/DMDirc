@@ -56,7 +56,7 @@ public class ModeTest {
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        when(channel.getOptionalConnection()).thenReturn(Optional.of(server));
+        when(channel.getConnection()).thenReturn(Optional.of(server));
         when(server.getParser()).thenReturn(parser);
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getModes()).thenReturn("my mode string!");

@@ -114,7 +114,7 @@ public class SetCommand extends Command implements IntelligentCommand {
 
         ConfigProvider identity = identityController.getUserSettings();
         AggregateConfigProvider manager = identityController.getGlobalConfiguration();
-        final Optional<Connection> connection = origin.getOptionalConnection();
+        final Optional<Connection> connection = origin.getConnection();
 
         if (res.hasFlag(serverFlag)) {
             if (!connection.isPresent()) {

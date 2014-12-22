@@ -114,7 +114,7 @@ public class ChannelEventHandler extends EventHandler implements
     @Nonnull
     @Override
     protected Connection getConnection() {
-        return owner.getOptionalConnection().get();
+        return owner.getConnection().get();
     }
 
     /**

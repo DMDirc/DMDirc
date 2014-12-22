@@ -65,14 +65,8 @@ public class CustomWindow extends FrameContainer {
     }
 
     @Override
-    @Deprecated
-    public Connection getConnection() {
-        return getOptionalConnection().orElse(null);
-    }
-
-    @Override
-    public Optional<Connection> getOptionalConnection() {
-        return getParent().flatMap(FrameContainer::getOptionalConnection);
+    public Optional<Connection> getConnection() {
+        return getParent().flatMap(FrameContainer::getConnection);
     }
 
 }

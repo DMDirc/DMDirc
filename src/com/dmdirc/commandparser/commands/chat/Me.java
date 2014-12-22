@@ -78,7 +78,7 @@ public class Me extends Command implements ValidatingCommand {
     public ValidationResponse validateArguments(
             final FrameContainer origin,
             final CommandArguments arguments) {
-        final Optional<Connection> connection = origin.getOptionalConnection();
+        final Optional<Connection> connection = origin.getConnection();
         final Optional<Parser> parser = connection.flatMap(c -> Optional.ofNullable(c.getParser()));
 
         if (!parser.isPresent()) {

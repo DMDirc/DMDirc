@@ -116,7 +116,7 @@ public class Message extends Command implements IntelligentCommand,
     public int getLineCount(final FrameContainer origin, final CommandArguments arguments) {
         if (arguments.getArguments().length >= 2) {
             final String target = arguments.getArguments()[0];
-            return origin.getOptionalConnection().get().getWindowModel().getNumLines(
+            return origin.getConnection().get().getWindowModel().getNumLines(
                     "PRIVMSG " + target + " :" + arguments.getArgumentsAsString(1));
         } else {
             return 1;

@@ -23,7 +23,6 @@
 package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -52,7 +51,7 @@ public class ServerMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        source.getOptionalConnection().get().getWindowModel().addLine(messageType, date, args);
+        source.getConnection().get().getWindowModel().addLine(messageType, date, args);
     }
 
 }

@@ -49,7 +49,7 @@ public class ChatCommandContext extends ServerCommandContext {
             final CommandInfo commandInfo, final MessageTarget chat) {
         super(source, commandInfo,
                 Optional.ofNullable(source)
-                        .flatMap(FrameContainer::getOptionalConnection)
+                        .flatMap(FrameContainer::getConnection)
                         .orElse(null));
         this.chat = chat;
     }

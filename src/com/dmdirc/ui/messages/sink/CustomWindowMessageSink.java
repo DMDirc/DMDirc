@@ -24,7 +24,6 @@ package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.util.URLBuilder;
@@ -71,7 +70,7 @@ public class CustomWindowMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        final FrameContainer connectionContainer = source.getOptionalConnection()
+        final FrameContainer connectionContainer = source.getConnection()
                 .get().getWindowModel();
         FrameContainer targetWindow = windowManager
                 .findCustomWindow(connectionContainer, patternMatches[0]);

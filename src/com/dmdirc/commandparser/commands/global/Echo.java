@@ -43,7 +43,6 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -141,7 +140,7 @@ public class Echo extends Command implements IntelligentCommand {
                 && context.getPreviousArgs().get(0).equals("--ts"))) {
 
             final Collection<FrameContainer> windowList = new ArrayList<>();
-            final Optional<Connection> connection = context.getWindow().getOptionalConnection();
+            final Optional<Connection> connection = context.getWindow().getConnection();
 
             //Active window's Children
             windowList.addAll(context.getWindow().getChildren());

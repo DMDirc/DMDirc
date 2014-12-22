@@ -94,7 +94,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
         FrameContainer parent = null;
 
         if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
-            final Optional<Connection> connection = origin.getOptionalConnection();
+            final Optional<Connection> connection = origin.getConnection();
             if (!connection.isPresent()) {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "This window doesn't have an associated server.");
