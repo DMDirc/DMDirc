@@ -47,7 +47,7 @@ public abstract class Invocation {
         } else if (element instanceof Method) {
             invoke((Method) element, instance, value);
         } else {
-            throw new IllegalArgumentException("element must be a Field or Method");
+            throw new IllegalArgumentException("Can only invoke on a Field or Method.");
         }
     }
 
@@ -60,7 +60,7 @@ public abstract class Invocation {
      *
      * @throws ReflectiveOperationException If something goes wrong setting the value
      */
-    abstract void invoke(final Field field, final Object instance, final Object value)
+    protected abstract void invoke(final Field field, final Object instance, final Object value)
             throws ReflectiveOperationException;
 
     /**
@@ -72,6 +72,6 @@ public abstract class Invocation {
      *
      * @throws ReflectiveOperationException If something goes wrong calling the method
      */
-    abstract void invoke(final Method method, final Object instance, final Object value)
+    protected abstract void invoke(final Method method, final Object instance, final Object value)
             throws ReflectiveOperationException;
 }
