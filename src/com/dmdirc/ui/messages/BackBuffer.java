@@ -26,11 +26,6 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.messages.ColourManagerFactory;
-import com.dmdirc.ui.messages.EventFormatter;
-import com.dmdirc.ui.messages.Formatter;
-import com.dmdirc.ui.messages.IRCDocument;
-import com.dmdirc.ui.messages.Styliser;
 
 import java.util.Date;
 

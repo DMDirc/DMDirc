@@ -22,36 +22,21 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.ClientModule.GlobalConfig;
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.events.DisplayableEvent;
 
-import java.nio.file.Path;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-
-import static com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType.BASE;
+import java.util.Optional;
 
 /**
- * Dagger module for message related objects.
+ * Provides formats to be used for displayable events.
  */
-@Module(library = true, complete = false)
-public class UiMessagesModule {
+public interface EventFormatProvider {
 
-    @Provides
-    @Singleton
-    public EventFormatProvider getTemplateProvider(
-            @Directory(BASE) final Path directory,
-            @GlobalConfig final ColourManager colourManager,
-            final DMDircMBassador eventBus) {
-        final YamlEventFormatProvider provider =
-                new YamlEventFormatProvider(directory.resolve("format.yml"), eventBus,
-                        colourManager);
-        provider.load();
-        return provider;
-    }
+    /**
+     * Gets the format to be used, if any, for the given event type.
+     *
+     * @param eventType The type of event to retrieve a format for.
+     * @return The format to use, or an absent optional if no format is defined.
+     */
+    Optional<EventFormat> getFormat(final Class<? extends DisplayableEvent> eventType);
 
 }

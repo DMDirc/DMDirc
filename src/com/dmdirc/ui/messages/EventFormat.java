@@ -22,21 +22,27 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.util.colours.Colour;
+
+import com.google.auto.value.AutoValue;
 
 import java.util.Optional;
 
 /**
- * Provides templates to be used for displayable events.
+ * Describes a format for an event.
  */
-public interface EventTemplateProvider {
+@AutoValue
+public abstract class EventFormat {
 
-    /**
-     * Gets the template to be used, if any, for the given event type.
-     *
-     * @param eventType The type of event to retrieve a template for.
-     * @return The template to use, or an absent optional if no template is defined.
-     */
-    Optional<String> getTemplate(final Class<? extends DisplayableEvent> eventType);
+    public abstract String getTemplate();
+
+    // TODO: This should probably be a generic set of properties.
+    public abstract Optional<Colour> getDefaultForegroundColour();
+
+    public static EventFormat create(
+            final String template,
+            final Optional<Colour> defaultForegroundColour) {
+        return new AutoValue_EventFormat(template, defaultForegroundColour);
+    }
 
 }

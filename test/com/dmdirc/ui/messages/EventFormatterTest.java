@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 public class EventFormatterTest {
 
     @Mock private EventPropertyManager propertyManager;
-    @Mock private EventTemplateProvider templateProvider;
+    @Mock private EventFormatProvider templateProvider;
     @Mock private Channel channel;
     private ChannelMessageEvent messageEvent;
     private EventFormatter formatter;
@@ -54,8 +54,9 @@ public class EventFormatterTest {
     public void testBasicFormat() {
         messageEvent = new ChannelMessageEvent(channel, null, null);
 
-        when(templateProvider.getTemplate(ChannelMessageEvent.class))
-                .thenReturn(Optional.ofNullable("Template {{channel}} meep"));
+        when(templateProvider.getFormat(ChannelMessageEvent.class))
+                .thenReturn(Optional.ofNullable(
+                        EventFormat.create("Template {{channel}} meep", Optional.empty())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn(Optional.of("MONKEY"));
 
@@ -66,8 +67,10 @@ public class EventFormatterTest {
     public void testFormatWithFunction() {
         messageEvent = new ChannelMessageEvent(channel, null, null);
 
-        when(templateProvider.getTemplate(ChannelMessageEvent.class))
-                .thenReturn(Optional.ofNullable("Template {{channel|lowercase}} meep"));
+        when(templateProvider.getFormat(ChannelMessageEvent.class))
+                .thenReturn(Optional.ofNullable(
+                        EventFormat.create("Template {{channel|lowercase}} meep",
+                                Optional.empty())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn(Optional.of("MONKEY"));
         when(propertyManager.applyFunction("MONKEY", "lowercase")).thenReturn("monkey");

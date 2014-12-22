@@ -1,9 +1,22 @@
 ---
-ChannelModeNoticeEvent: "-{{client}}:{{prefix}}{{channel.name}}- {{message}}"
-ChannelNoticeEvent: "-{{client}}:{{channel.name}}- {{message}}"
-ChannelMessageEvent: "<{{client}}> {{message}}"
-ChannelActionEvent: "* {{client}} {{message}}"
-ChannelSelfMessageEvent: "<{{client}}> {{message}}"
-ChannelSelfActionEvent: "* {{client}} {{message}}"
-ChannelSelfExternalMessageEvent: "<{{client}}> {{message}}"
-ChannelSelfExternalActionEvent: "* {{client}} {{message}}"
+ChannelModeNoticeEvent:
+  format: "-{{client}}:{{prefix}}{{channel.name}}- {{message}}"
+  colour: 5
+ChannelNoticeEvent:
+  format: "-{{client}}:{{channel.name}}- {{message}}"
+  colour: 5
+ChannelMessageEvent:
+  format: "<{{client}}> {{message}}"
+ChannelActionEvent:
+  format: "* {{client}} {{message}}"
+  colour: 6
+ChannelSelfMessageEvent:
+  format: "<{{client}}> {{message}}"
+ChannelSelfActionEvent:
+  format: "* {{client}} {{message}}"
+  colour: 6
+ChannelSelfExternalMessageEvent:
+  format: "<{{client}}> {{message}}"
+ChannelSelfExternalActionEvent:
+  format: "* {{client}} {{message}}"
+  colour: 6
