@@ -140,12 +140,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     public void trim(final int numLines) {
         synchronized (lines) {
             if (frameBufferSize != null && frameBufferSize > 0) {
-                int i = 0;
-                while (lines.size() > numLines) {
-                    i++;
-                    lines.remove(0);
-                }
+                final int i = lines.size() - numLines;
                 if (i > 0) {
+                    lines.subList(0, i).clear();
                     fireTrimmed(numLines, i);
                 }
             }
