@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ClientLineAddedEvent;
+import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.events.FrameComponentAddedEvent;
 import com.dmdirc.events.FrameComponentRemovedEvent;
@@ -493,7 +494,8 @@ public abstract class FrameContainer {
      */
     public void addLine(final String line, final Date timestamp) {
         for (final String myLine : line.split("\n")) {
-            getBackBuffer().getDocument().addText(timestamp.getTime(), myLine);
+            getBackBuffer().getDocument().addText(
+                    timestamp.getTime(), DisplayPropertyMap.EMPTY, myLine);
             eventBus.publishAsync(new ClientLineAddedEvent(this, myLine));
         }
     }

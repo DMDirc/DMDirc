@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.ui.core.util.ExtendedAttributedString;
 import com.dmdirc.ui.core.util.Utils;
 
@@ -38,6 +39,7 @@ public class Line {
     private final String timestamp;
     private final String text;
     private final Styliser styliser;
+    private final DisplayPropertyMap displayProperties;
     private int fontSize;
     private String fontName;
 
@@ -47,14 +49,16 @@ public class Line {
      * @param styliser  The styliser to use to style this line
      * @param timestamp The textual timestamp to use for the line
      * @param text      The textual content of the line
+     * @param displayProperties The properties to use when displaying the line.
      * @param fontSize  The height for this line
      * @param fontName  The name of the font to use for this line
      */
     public Line(final Styliser styliser, final String timestamp, final String text,
-            final int fontSize, final String fontName) {
+            final DisplayPropertyMap displayProperties, final int fontSize, final String fontName) {
         this.styliser = styliser;
         this.timestamp = timestamp; // TODO: Make this a long and convert further down the line
         this.text = text;
+        this.displayProperties = displayProperties;
         this.fontName = fontName;
         this.fontSize = fontSize;
     }

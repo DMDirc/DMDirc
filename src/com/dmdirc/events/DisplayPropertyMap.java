@@ -31,6 +31,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class DisplayPropertyMap {
 
+    public static final DisplayPropertyMap EMPTY = new ReadOnlyDisplayPropertyMap();
+
     private final Map<DisplayProperty<?>, Object> properties = new ConcurrentSkipListMap<>();
 
     /**
@@ -54,6 +56,13 @@ public class DisplayPropertyMap {
      */
     public <T> void put(final DisplayProperty<T> property, final T value) {
         properties.put(property, value);
+    }
+
+    private static class ReadOnlyDisplayPropertyMap extends DisplayPropertyMap {
+        @Override
+        public <T> void put(final DisplayProperty<T> property, final T value) {
+            throw new UnsupportedOperationException("Read only");
+        }
     }
 
 }

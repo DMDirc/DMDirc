@@ -66,4 +66,8 @@ public abstract class QueryDisplayableEvent extends QueryEvent implements
         return properties.get(property);
     }
 
+    @Override
+    public DisplayPropertyMap getDisplayProperties() {
+        return properties;
+    }
 }
