@@ -95,7 +95,7 @@ public class AutoCommandHandler {
     }
 
     private boolean matchesIfPresent(final Optional<String> target, final String value) {
-        return !target.isPresent() || target.get().equalsIgnoreCase(value);
+        return target.map(value::equalsIgnoreCase).orElse(true);
     }
 
     private void execute(final FrameContainer origin, final CommandParser parser) {

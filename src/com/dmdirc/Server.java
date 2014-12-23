@@ -52,6 +52,7 @@ import com.dmdirc.parser.common.ThreadedParser;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.EncodingParser;
+import com.dmdirc.parser.interfaces.LocalClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
@@ -94,10 +95,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManager;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -110,21 +113,27 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class Server extends FrameContainer implements ConfigChangeListener,
         CertificateProblemListener, Connection {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(Server.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general";
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server";
+
     /** Open channels that currently exist on the server. */
     private final ChannelMap channels = new ChannelMap();
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
+
     /** The Parser instance handling this server. */
-    private Parser parser;
+    @Nonnull
+    private Optional<Parser> parser = Optional.empty();
     /** The Parser instance that used to be handling this server. */
-    private Parser oldParser;
+    @Nonnull
+    private Optional<Parser> oldParser = Optional.empty();
     /** The parser-supplied protocol description object. */
-    private ProtocolDescription protocolDescription;
+    @Nonnull
+    private Optional<ProtocolDescription> protocolDescription = Optional.empty();
+
     /**
      * Object used to synchronise access to parser. This object should be locked by anything
      * requiring that the parser reference remains the same for a duration of time, or by anything
@@ -255,18 +264,20 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      */
     private void setConnectionDetails(final URI uri, final Profile profile) {
         this.address = uri;
-        this.protocolDescription = parserFactory.getDescription(uri);
+        this.protocolDescription = Optional.ofNullable(parserFactory.getDescription(uri));
         this.profile = profile;
 
-        if (uri.getPort() == -1 && protocolDescription != null) {
-            try {
-                this.address = new URI(uri.getScheme(), uri.getUserInfo(),
-                        uri.getHost(), protocolDescription.getDefaultPort(),
-                        uri.getPath(), uri.getQuery(), uri.getFragment());
-            } catch (URISyntaxException ex) {
-                getEventBus().publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
-                        "Unable to construct URI", ""));
-            }
+        if (uri.getPort() == -1) {
+            protocolDescription.ifPresent(pd -> {
+                try {
+                    this.address = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(),
+                            pd.getDefaultPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
+                } catch (URISyntaxException ex) {
+                    getEventBus().publish(
+                            new AppErrorEvent(ErrorLevel.MEDIUM, ex, "Unable to construct URI",
+                                    ""));
+                }
+            });
         }
     }
 
@@ -315,10 +326,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             }
 
             final URI connectAddress;
+            final Parser newParser;
 
             try {
                 parserLock.writeLock().lock();
-                if (parser != null) {
+                if (parser.isPresent()) {
                     throw new IllegalArgumentException("Connection attempt while parser "
                             + "is still connected.\n\nMy state:" + getState());
                 }
@@ -330,14 +342,15 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                 updateTitle();
                 updateIcon();
 
-                parser = buildParser();
+                parser = Optional.ofNullable(buildParser());
 
-                if (parser == null) {
+                if (!parser.isPresent()) {
                     addLine("serverUnknownProtocol", address.getScheme());
                     return;
                 }
 
-                connectAddress = parser.getURI();
+                newParser = parser.get();
+                connectAddress = newParser.getURI();
             } finally {
                 parserLock.writeLock().unlock();
             }
@@ -351,10 +364,10 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             updateAwayState(null);
             removeInvites();
 
-            parser.connect();
-            if (parser instanceof ThreadedParser) {
-                ((ThreadedParser) parser).getControlThread().setName("Parser - " + connectAddress.
-                        getHost());
+            newParser.connect();
+            if (newParser instanceof ThreadedParser) {
+                ((ThreadedParser) newParser).getControlThread()
+                        .setName("Parser - " + connectAddress.getHost());
             }
         }
 
@@ -410,15 +423,15 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
             try {
                 parserLock.readLock().lock();
-                if (parser == null) {
-                    myState.transition(ServerState.DISCONNECTED);
-                } else {
+                if (parser.isPresent()) {
                     myState.transition(ServerState.DISCONNECTING);
 
                     removeInvites();
                     updateIcon();
 
-                    parser.disconnect(reason);
+                    parser.get().disconnect(reason);
+                } else {
+                    myState.transition(ServerState.DISCONNECTED);
                 }
             } finally {
                 parserLock.readLock().unlock();
@@ -550,7 +563,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
             try {
                 parserLock.readLock().lock();
-                if (parser != null) {
+                if (parser.isPresent()) {
                     raw.registerCallbacks();
                 }
             } finally {
@@ -720,16 +733,13 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public boolean compareURI(final URI uri) {
-        if (parser != null) {
-            return parser.compareURI(uri);
-        }
-
-        return oldParser != null && oldParser.compareURI(uri);
+        return parser.map(p -> p.compareURI(uri)).orElse(
+                oldParser.map(op -> op.compareURI(uri)).orElse(false));
     }
 
     @Override
     public String[] parseHostmask(final String hostmask) {
-        return protocolDescription.parseHostmask(hostmask);
+        return protocolDescription.get().parseHostmask(hostmask);
     }
 
     /**
@@ -758,7 +768,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      */
     private void updateIcon() {
         final String icon = myState.getState() == ServerState.CONNECTED
-                ? protocolDescription.isSecure(address)
+                ? protocolDescription.get().isSecure(address)
                 ? "secure-server" : "server" : "server-disconnected";
         setIcon(icon);
     }
@@ -773,9 +783,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         eventHandler.registerCallbacks();
 
-        for (Query query : queries.values()) {
-            query.reregister();
-        }
+        queries.values().forEach(Query::reregister);
     }
 
     @Override
@@ -787,16 +795,16 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     public void join(final boolean focus, final ChannelJoinRequest... requests) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CONNECTED) {
-                final List<ChannelJoinRequest> pending = new ArrayList<>();
+                final Collection<ChannelJoinRequest> pending = new ArrayList<>();
 
                 for (ChannelJoinRequest request : requests) {
                     removeInvites(request.getName());
 
                     final String name;
-                    if (parser.isValidChannelName(request.getName())) {
+                    if (parser.get().isValidChannelName(request.getName())) {
                         name = request.getName();
                     } else {
-                        name = parser.getChannelPrefixes().substring(0, 1)
+                        name = parser.get().getChannelPrefixes().substring(0, 1)
                                 + request.getName();
                     }
 
@@ -809,7 +817,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
                     }
                 }
 
-                parser.joinChannels(pending.toArray(new ChannelJoinRequest[pending.size()]));
+                parser.get().joinChannels(pending.toArray(new ChannelJoinRequest[pending.size()]));
             }
             // TODO: otherwise: address.getChannels().add(channel);
         }
@@ -820,10 +828,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         synchronized (myStateLock) {
             try {
                 parserLock.readLock().lock();
-                if (parser != null && !line.isEmpty()
-                        && myState.getState() == ServerState.CONNECTED) {
-                    parser.sendRawMessage(line);
-                }
+                parser.ifPresent(p -> {
+                    if (!line.isEmpty() && myState.getState() == ServerState.CONNECTED) {
+                        p.sendRawMessage(line);
+                    }
+                });
             } finally {
                 parserLock.readLock().unlock();
             }
@@ -834,7 +843,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     public int getMaxLineLength() {
         try {
             parserLock.readLock().lock();
-            return parser == null ? -1 : parser.getMaxLength();
+            return parser.map(Parser::getMaxLength).orElse(-1);
         } finally {
             parserLock.readLock().unlock();
         }
@@ -842,7 +851,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public Parser getParser() {
-        return parser;
+        return parser.orElse(null);
     }
 
     @Override
@@ -854,7 +863,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     public String getChannelPrefixes() {
         try {
             parserLock.readLock().lock();
-            return parser == null ? "#&" : parser.getChannelPrefixes();
+            return parser.map(Parser::getChannelPrefixes).orElse("#&");
         } finally {
             parserLock.readLock().unlock();
         }
@@ -864,7 +873,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     public String getAddress() {
         try {
             parserLock.readLock().lock();
-            return parser == null ? address.getHost() : parser.getServerName();
+            return parser.map(Parser::getServerName).orElse(address.getHost());
         } finally {
             parserLock.readLock().unlock();
         }
@@ -874,14 +883,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     public String getNetwork() {
         try {
             parserLock.readLock().lock();
-            if (parser == null) {
-                throw new IllegalStateException("getNetwork called when "
-                        + "parser is null (state: " + getState() + ')');
-            } else if (parser.getNetworkName().isEmpty()) {
-                return getNetworkFromServerName(parser.getServerName());
-            } else {
-                return parser.getNetworkName();
-            }
+            return parser.map(p -> p.getNetworkName().isEmpty()
+                            ? getNetworkFromServerName(p.getServerName()) : p.getNetworkName())
+                    .orElseThrow(() -> new IllegalStateException(
+                            "getNetwork called when " + "parser is null (state: " + getState() +
+                                    ')'));
         } finally {
             parserLock.readLock().unlock();
         }
@@ -892,7 +898,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         synchronized (myStateLock) {
             try {
                 parserLock.readLock().lock();
-                return parser != null && getNetwork().equalsIgnoreCase(target);
+                return parser.map(p -> getNetwork().equalsIgnoreCase(target)).orElse(false);
             } finally {
                 parserLock.readLock().unlock();
             }
@@ -940,7 +946,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public String getIrcd() {
-        return parser.getServerSoftwareType();
+        return parser.get().getServerSoftwareType();
     }
 
     @Override
@@ -1016,13 +1022,13 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     @Override
     public void sendCTCPReply(final String source, final String type, final String args) {
         if ("VERSION".equalsIgnoreCase(type)) {
-            parser.sendCTCPReply(source, "VERSION", "DMDirc "
-                    + getConfigManager().getOption("version", "version")
-                    + " - https://www.dmdirc.com/");
+            parser.get().sendCTCPReply(source, "VERSION",
+                    "DMDirc " + getConfigManager().getOption("version", "version") +
+                            " - https://www.dmdirc.com/");
         } else if ("PING".equalsIgnoreCase(type)) {
-            parser.sendCTCPReply(source, "PING", args);
+            parser.get().sendCTCPReply(source, "PING", args);
         } else if ("CLIENTINFO".equalsIgnoreCase(type)) {
-            parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
+            parser.get().sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
     }
 
@@ -1031,7 +1037,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         try {
             parserLock.readLock().lock();
             return hasChannel(channelName)
-                    || parser != null && parser.isValidChannelName(channelName);
+                    || parser.map(p -> p.isValidChannelName(channelName)).orElse(false);
         } finally {
             parserLock.readLock().unlock();
         }
@@ -1065,9 +1071,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             try {
                 parserLock.readLock().lock();
                 final Object[] arguments = {
-                    address.getHost(), parser == null ? "Unknown" : parser.getServerName(),
-                    address.getPort(), parser == null ? "Unknown" : getNetwork(),
-                    parser == null ? "Unknown" : parser.getLocalClient().getNickname(),};
+                    address.getHost(), parser.map(Parser::getServerName).orElse("Unknown"),
+                    address.getPort(), parser.map(p -> getNetwork()).orElse("Unknown"),
+                    parser.map(Parser::getLocalClient).map(LocalClientInfo::getNickname).orElse(
+                            "Unknown")
+                };
 
                 setName(Formatter.formatMessage(getConfigManager(),
                         "serverName", arguments));
@@ -1092,7 +1100,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * @param nickname The nickname that we were trying to use
      */
     public void onNickInUse(final String nickname) {
-        final String lastNick = parser.getLocalClient().getNickname();
+        final String lastNick = parser.get().getLocalClient().getNickname();
 
         // If our last nick is still valid, ignore the in use message
         if (!converter.equalsIgnoreCase(lastNick, nickname)) {
@@ -1116,7 +1124,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             newNick = alts.get(offset);
         }
 
-        parser.getLocalClient().setNickname(newNick);
+        parser.get().getLocalClient().setNickname(newNick);
     }
 
     /**
@@ -1189,7 +1197,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             try {
                 parserLock.writeLock().lock();
                 oldParser = parser;
-                parser = null;
+                parser = Optional.empty();
             } finally {
                 parserLock.writeLock().unlock();
             }
@@ -1241,7 +1249,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             try {
                 parserLock.writeLock().lock();
                 oldParser = parser;
-                parser = null;
+                parser = Optional.empty();
             } finally {
                 parserLock.writeLock().unlock();
             }
@@ -1289,12 +1297,12 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     public void onPingFailed() {
         getEventBus().publishAsync(new StatusBarMessageEvent(new StatusMessage(
                 "No ping reply from " + getName() + " for over "
-                        + (int) Math.floor(parser.getPingTime() / 1000.0)
+                        + (int) Math.floor(parser.get().getPingTime() / 1000.0)
                         + " seconds.", getConfigManager())));
 
-        getEventBus().publishAsync(new ServerNopingEvent(this, parser.getPingTime()));
+        getEventBus().publishAsync(new ServerNopingEvent(this, parser.get().getPingTime()));
 
-        if (parser.getPingTime()
+        if (parser.get().getPingTime()
                 >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
             LOG.warn("Server appears to be stoned, reconnecting");
             handleNotification("stonedServer", getAddress());
@@ -1317,13 +1325,13 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             myState.transition(ServerState.CONNECTED);
 
             configMigrator.migrate(address.getScheme(),
-                    parser.getServerSoftwareType(), getNetwork(), parser.getServerName());
+                    parser.get().getServerSoftwareType(), getNetwork(), parser.get().getServerName());
 
             updateIcon();
             updateTitle();
             updateIgnoreList();
 
-            converter = parser.getStringConverter();
+            converter = parser.get().getStringConverter();
             channels.setStringConverter(converter);
 
             final List<ChannelJoinRequest> requests = new ArrayList<>();
@@ -1347,9 +1355,11 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      */
     private void checkModeAliases() {
         // Check we have mode aliases
-        final String modes = parser.getBooleanChannelModes() + parser.getListChannelModes()
-                + parser.getParameterChannelModes() + parser.getDoubleParameterChannelModes();
-        final String umodes = parser.getUserModes();
+        final String modes = parser.get().getBooleanChannelModes()
+                + parser.get().getListChannelModes()
+                + parser.get().getParameterChannelModes()
+                + parser.get().getDoubleParameterChannelModes();
+        final String umodes = parser.get().getUserModes();
 
         final StringBuilder missingModes = new StringBuilder();
         final StringBuilder missingUmodes = new StringBuilder();
@@ -1385,8 +1395,9 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
 
             getEventBus().publish(new AppErrorEvent(ErrorLevel.LOW, new MissingModeAliasException(
-                    getNetwork(), parser, getConfigManager().getOption("identity","modealiasversion"),
-                    missing.toString()), missing + " ["+ parser.getServerSoftwareType() + ']', ""));
+                    getNetwork(), parser.get(),
+                    getConfigManager().getOption("identity", "modealiasversion"),
+                    missing.toString()), missing + " ["+ parser.get().getServerSoftwareType() + ']', ""));
         }
     }
 
@@ -1408,7 +1419,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public ConfigProvider getServerIdentity() {
-        return identityFactory.createServerConfig(parser.getServerName());
+        return identityFactory.createServerConfig(parser.get().getServerName());
     }
 
     @Override
