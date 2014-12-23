@@ -35,7 +35,8 @@ import javax.swing.text.BadLocationException;
  */
 public class Line {
 
-    private final String[] lineParts;
+    private final String timestamp;
+    private final String text;
     private final Styliser styliser;
     private int fontSize;
     private String fontName;
@@ -44,14 +45,16 @@ public class Line {
      * Creates a new line with a specified height.
      *
      * @param styliser  The styliser to use to style this line
-     * @param lineParts Parts of the line
+     * @param timestamp The textual timestamp to use for the line
+     * @param text      The textual content of the line
      * @param fontSize  The height for this line
      * @param fontName  The name of the font to use for this line
      */
-    public Line(final Styliser styliser, final String[] lineParts,
+    public Line(final Styliser styliser, final String timestamp, final String text,
             final int fontSize, final String fontName) {
         this.styliser = styliser;
-        this.lineParts = lineParts;
+        this.timestamp = timestamp; // TODO: Make this a long and convert further down the line
+        this.text = text;
         this.fontName = fontName;
         this.fontSize = fontSize;
     }
@@ -62,7 +65,7 @@ public class Line {
      * @return Lines parts
      */
     public String[] getLineParts() {
-        return lineParts;
+        return new String[] { timestamp, text };
     }
 
     /**
@@ -71,11 +74,7 @@ public class Line {
      * @return Length of the line
      */
     public int getLength() {
-        int length = 0;
-        for (String linePart : lineParts) {
-            length += linePart.length();
-        }
-        return length;
+        return timestamp.length() + text.length();
     }
 
     /**
@@ -111,11 +110,7 @@ public class Line {
      * @return Line at the specified number or null
      */
     public String getText() {
-        final StringBuilder lineText = new StringBuilder();
-        for (String linePart : lineParts) {
-            lineText.append(linePart);
-        }
-        return Styliser.stipControlCodes(lineText.toString());
+        return Styliser.stipControlCodes(timestamp + text);
     }
 
     /**
@@ -126,11 +121,7 @@ public class Line {
      * @since 0.6.3m1
      */
     public String getStyledText() {
-        final StringBuilder lineText = new StringBuilder();
-        for (String linePart : lineParts) {
-            lineText.append(linePart);
-        }
-        return lineText.toString();
+        return timestamp + text;
     }
 
     /**
@@ -140,7 +131,7 @@ public class Line {
      */
     public AttributedString getStyled() throws BadLocationException {
         final ExtendedAttributedString string = Utils.getAttributedString(
-                styliser, lineParts, fontName, fontSize);
+                styliser, getLineParts(), fontName, fontSize);
         fontSize = string.getMaxLineHeight();
         return string.getAttributedString();
     }
