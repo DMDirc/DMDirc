@@ -92,12 +92,12 @@ public class StyliserTest {
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
         final Styliser styliser = new Styliser(null, manager, new ColourManager(manager,
-                mock(DMDircMBassador.class)), eventBus);
+                mock(DMDircMBassador.class)));
 
         for (int i = 0; i < input2.length(); i++) {
-            final Enumeration<?> res1 = styliser.getStyledString(new String[]{input1})
+            final Enumeration<?> res1 = styliser.getStyledString(input1)
                     .getLogicalStyle(i).getAttributeNames();
-            final Enumeration<?> res2 = styliser.getStyledString(new String[]{input2})
+            final Enumeration<?> res2 = styliser.getStyledString(input2)
                     .getLogicalStyle(i).getAttributeNames();
 
             while (res1.hasMoreElements()) {
