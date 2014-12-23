@@ -57,6 +57,8 @@ public class PerformWrapper extends ActionGroup {
     private static final String PP_COMP_NAME = "SERVER_PROFILE.IDENTITY_NAME";
     /** Factory to use for actions. */
     private final ActionFactory actionFactory;
+    /** Action manager. */
+    private final ActionManager actionManager;
 
     /**
      * Creates a new instance of PerformWrapper.
@@ -64,9 +66,9 @@ public class PerformWrapper extends ActionGroup {
      * @param actionFactory Factory to use to create actions.
      */
     @Inject
-    public PerformWrapper(final ActionFactory actionFactory) {
-        super("performs");
-
+    public PerformWrapper(final ActionManager actionManager, final ActionFactory actionFactory) {
+        super(actionManager, "performs");
+        this.actionManager = actionManager;
         this.actionFactory = actionFactory;
     }
 
@@ -175,8 +177,7 @@ public class PerformWrapper extends ActionGroup {
 
         if (profile != null) {
             conditions.add(new ActionCondition(0,
-                    new ActionComponentChain(Connection.class, PP_COMP_NAME, ActionManager.
-                            getActionManager()),
+                    new ActionComponentChain(Connection.class, PP_COMP_NAME, actionManager),
                     CoreActionComparison.STRING_EQUALS, profile));
         }
 

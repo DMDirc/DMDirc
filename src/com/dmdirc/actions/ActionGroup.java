@@ -40,8 +40,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ActionGroup implements Iterable<Action> {
 
-    /** A version number for this class. */
-    private static final long serialVersionUID = 1;
     /** The actions in this group. */
     private final List<Action> actions = new ArrayList<>();
     /** The name of this action group. */
@@ -56,14 +54,17 @@ public class ActionGroup implements Iterable<Action> {
     private Version version;
     /** A list of settings used by this action group. */
     private final Map<String, PreferencesSetting> settings = new HashMap<>();
+    /** Action manager. */
+    private final ActionManager actionManager;
 
     /**
      * Creates a new instance of ActionGroup.
      *
-     * @param name The name of this action group
+     * @param actionManager The action manager used to manager this group.
+     * @param name          The name of this action group
      */
-    public ActionGroup(final String name) {
-
+    public ActionGroup(final ActionManager actionManager, final String name) {
+        this.actionManager = actionManager;
         this.name = name;
     }
 
@@ -222,7 +223,7 @@ public class ActionGroup implements Iterable<Action> {
         checkNotNull(action);
         checkArgument(actions.contains(action));
 
-        ActionManager.getActionManager().removeAction(action);
+        actionManager.removeAction(action);
         action.delete();
     }
 
