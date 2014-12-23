@@ -90,4 +90,9 @@ public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent
         return properties.get(property);
     }
 
+    @Override
+    public DisplayPropertyMap getDisplayProperties() {
+        return properties;
+    }
+
 }

@@ -66,4 +66,9 @@ public abstract class ServerDisplayableEvent extends ServerEvent implements Disp
         return properties.get(property);
     }
 
+    @Override
+    public DisplayPropertyMap getDisplayProperties() {
+        return properties;
+    }
+
 }

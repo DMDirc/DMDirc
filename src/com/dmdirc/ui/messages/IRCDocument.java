@@ -24,6 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.AppErrorEvent;
+import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorLevel;
@@ -117,13 +118,16 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * Adds the stylised string to the canvas.
      *
      * @param timestamp The timestamp to show along with the text.
+     * @param displayPropertyMap The display properties to use
      * @param text stylised string to add to the document
      */
-    public void addText(final long timestamp, final String text) {
+    public void addText(final long timestamp, final DisplayPropertyMap displayPropertyMap,
+            final String text) {
         final int start;
         synchronized (lines) {
             start = lines.size();
-            lines.add(new Line(styliser, formatTimestamp(timestamp), text, fontSize, fontName));
+            lines.add(new Line(styliser, formatTimestamp(timestamp), text, displayPropertyMap,
+                    fontSize, fontName));
         }
         fireLinesAdded(start, 1);
     }

@@ -65,4 +65,9 @@ public abstract class ChannelDisplayableEvent extends ChannelEvent implements Di
         return properties.get(property);
     }
 
+    @Override
+    public DisplayPropertyMap getDisplayProperties() {
+        return properties;
+    }
+
 }

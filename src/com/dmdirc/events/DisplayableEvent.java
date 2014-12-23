@@ -62,10 +62,16 @@ public interface DisplayableEvent {
     <T> Optional<T> getDisplayProperty(DisplayProperty<T> property);
 
     /**
+     * Gets the map of all display properties.
+     *
+     * @return The map of display properties.
+     */
+    DisplayPropertyMap getDisplayProperties();
+
+    /**
      * Gets the timestamp at which the event occurred.
      *
      * @return The timestamp the event occurred at.
      */
     long getTimestamp();
-
 }
