@@ -28,6 +28,7 @@ import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.util.ClientInfo;
 
 import java.nio.file.Path;
@@ -69,14 +70,15 @@ public class FeedbackHelper {
         if (connection.getState().isDisconnected()) {
             return "";
         }
-        return "Actual name: " + connection.getParser().getServerName() + '\n'
+        final Parser parser = connection.getParser().get();
+        return "Actual name: " + parser.getServerName() + '\n'
                 + "Network: " + connection.getNetwork() + '\n'
-                + "IRCd: " + connection.getParser().getServerSoftware() + " - "
-                + connection.getParser().getServerSoftwareType() + '\n'
-                + "Modes: " + connection.getParser().getBooleanChannelModes() + ' '
-                + connection.getParser().getListChannelModes() + ' '
-                + connection.getParser().getParameterChannelModes() + ' '
-                + connection.getParser().getDoubleParameterChannelModes();
+                + "IRCd: " + parser.getServerSoftware() + " - "
+                + parser.getServerSoftwareType() + '\n'
+                + "Modes: " + parser.getBooleanChannelModes() + ' '
+                + parser.getListChannelModes() + ' '
+                + parser.getParameterChannelModes() + ' '
+                + parser.getDoubleParameterChannelModes();
     }
 
     public String getVersion() {

@@ -74,7 +74,7 @@ public class Mode extends Command implements IntelligentCommand,
         if (args.getArguments().length == 0) {
             sendLine(origin, args.isSilent(), "channelModeDiscovered", cChannel.getModes(), cChannel);
         } else {
-            channel.getConnection().get().getParser().sendRawMessage("MODE "
+            channel.getConnection().get().getParser().get().sendRawMessage("MODE "
                     + cChannel + " " + args.getArgumentsAsString());
         }
     }
@@ -83,9 +83,9 @@ public class Mode extends Command implements IntelligentCommand,
     public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
-            server.getParser().sendRawMessage("MODE " + channel);
+            server.getParser().get().sendRawMessage("MODE " + channel);
         } else {
-            server.getParser().sendRawMessage("MODE " + channel + " " + args.getArgumentsAsString());
+            server.getParser().get().sendRawMessage("MODE " + channel + " " + args.getArgumentsAsString());
         }
     }
 

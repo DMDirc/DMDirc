@@ -84,7 +84,7 @@ public class Invite extends Command implements ExternalCommand {
             sendLine(origin, isSilent, FORMAT_ERROR,
                     "Insufficient arguments: must specify user");
         } else {
-            server.getParser().sendInvite(channel, args.getArgumentsAsString());
+            server.getParser().get().sendInvite(channel, args.getArgumentsAsString());
         }
     }
 

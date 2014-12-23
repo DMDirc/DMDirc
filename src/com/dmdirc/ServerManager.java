@@ -188,7 +188,7 @@ public class ServerManager implements ConnectionManager {
             server.connect(uri, profile);
         } else {
             final Collection<? extends ChannelJoinRequest> joinRequests =
-                    server.getParser().extractChannels(uri);
+                    server.getParser().get().extractChannels(uri);
             server.join(joinRequests.toArray(new ChannelJoinRequest[joinRequests.size()]));
         }
 

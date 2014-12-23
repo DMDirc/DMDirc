@@ -68,7 +68,7 @@ public class Ctcp extends Command implements IntelligentCommand {
         if (args.getArguments().length < 2) {
             showUsage(origin, args.isSilent(), "ctcp", "<target> <type> [arguments]");
         } else {
-            connection.getParser().sendCTCP(args.getArguments()[0],
+            connection.getParser().get().sendCTCP(args.getArguments()[0],
                     args.getArguments()[1], args.getArgumentsAsString(2));
             sendLine(origin, args.isSilent(), "selfCTCP", args.getArguments()[0],
                     args.getArgumentsAsString(1));

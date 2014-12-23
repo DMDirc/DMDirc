@@ -79,8 +79,8 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
      */
     public void registerCallbacks() {
         try {
-            server.getParser().getCallbackManager().addCallback(DataInListener.class, this);
-            server.getParser().getCallbackManager().addCallback(DataOutListener.class, this);
+            server.getParser().get().getCallbackManager().addCallback(DataInListener.class, this);
+            server.getParser().get().getCallbackManager().addCallback(DataOutListener.class, this);
         } catch (CallbackNotFoundException ex) {
             getEventBus().publish(new AppErrorEvent(ErrorLevel.HIGH, ex,
                     "Unable to register raw callbacks", ""));
@@ -92,9 +92,7 @@ public class Raw extends FrameContainer implements DataInListener, DataOutListen
         super.close();
 
         // Remove any callbacks or listeners
-        if (server.getParser() != null) {
-            server.getParser().getCallbackManager().delAllCallback(this);
-        }
+        server.getParser().map(Parser::getCallbackManager).ifPresent(cm -> cm.delAllCallback(this));
 
         // Inform any parents that the window is closing
         server.delRaw();

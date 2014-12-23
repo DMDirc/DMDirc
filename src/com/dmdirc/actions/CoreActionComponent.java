@@ -32,6 +32,8 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.ui.Window;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.LocalClientInfo;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.util.colours.Colour;
 
@@ -39,6 +41,7 @@ import java.awt.AWTKeyStroke;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;
+import java.util.Optional;
 
 import javax.swing.KeyStroke;
 
@@ -146,7 +149,7 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         @ComponentOptions(requireConnected = true)
         public Object get(final Object arg) {
-            return ((Connection) arg).getParser().getChannelUserModes();
+            return ((Connection) arg).getParser().get().getChannelUserModes();
         }
 
         @Override
@@ -169,13 +172,11 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         @ComponentOptions(requireConnected = true)
         public Object get(final Object arg) {
-            final Connection server = (Connection) arg;
-
-            if (server == null || server.getParser() == null) {
-                return "null";
-            } else {
-                return server.getParser().getLocalClient().getNickname();
-            }
+            return Optional.ofNullable((Connection) arg)
+                    .flatMap(Connection::getParser)
+                    .map(Parser::getLocalClient)
+                    .map(LocalClientInfo::getNickname)
+                    .orElse("null");
         }
 
         @Override

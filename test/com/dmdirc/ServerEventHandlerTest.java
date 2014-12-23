@@ -41,6 +41,7 @@ import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 import com.google.common.collect.Lists;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +72,7 @@ public class ServerEventHandlerTest {
 
     @Before
     public void setUp() {
-        when(server.getParser()).thenReturn(parser);
+        when(server.getParser()).thenReturn(Optional.of(parser));
         when(server.getState()).thenReturn(ServerState.CONNECTED);
         when(parser.getCallbackManager()).thenReturn(callbackManager);
 

@@ -32,6 +32,7 @@ import com.dmdirc.util.ClientInfo;
 import com.google.common.collect.Lists;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +76,7 @@ public class FeedbackHelperTest {
         when(clientInfo.getJavaInformation()).thenReturn(JAVA);
         when(clientInfo.getOperatingSystemInformation()).thenReturn(OS);
         when(connectionManager.getConnections()).thenReturn(Lists.newArrayList(connection));
-        when(connection.getParser()).thenReturn(parser);
+        when(connection.getParser()).thenReturn(Optional.of(parser));
         when(parser.getServerName()).thenReturn(SERVER_NAME);
         when(connection.getState()).thenReturn(ServerState.CONNECTED);
         when(connection.getNetwork()).thenReturn(NETWORK_NAME);

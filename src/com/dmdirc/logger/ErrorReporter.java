@@ -103,12 +103,12 @@ public class ErrorReporter {
                 .setCulprit(title)
                 .setLevel(Event.Level.INFO)
                 .addTag("ircd.type", connection.getIrcd())
-                .addTag("ircd.version", connection.getParser().getServerSoftware())
+                .addTag("ircd.version", connection.getParser().get().getServerSoftware())
                 .addTag("network", connection.getNetwork())
                 .addTag("server", connection.getAddress())
                 .addTag("modealiases", modeAliasVersion)
                 .addSentryInterface(new MessageInterface(MODE_ALIAS_TEMPLATE, title,
-                                connection.getParser().getServerInformationLines().toString()));
+                                connection.getParser().get().getServerInformationLines().toString()));
 
         send(eventBuilder.build());
     }

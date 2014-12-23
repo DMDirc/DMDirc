@@ -70,7 +70,7 @@ public class Nick extends Command implements IntelligentCommand {
             return;
         }
 
-        connection.getParser().getLocalClient().setNickname(args.getArguments()[0]);
+        connection.getParser().get().getLocalClient().setNickname(args.getArguments()[0]);
     }
 
     @Override

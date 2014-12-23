@@ -59,7 +59,7 @@ public class RawServerCommand extends Command implements CommandInfo {
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Connection connection = ((ServerCommandContext) context).getConnection();
-        connection.getParser().sendRawMessage(myName.toUpperCase() + ' '
+        connection.getParser().get().sendRawMessage(myName.toUpperCase() + ' '
                 + args.getArgumentsAsString());
     }
 
