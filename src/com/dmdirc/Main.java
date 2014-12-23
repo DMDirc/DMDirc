@@ -38,6 +38,7 @@ import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
+import com.dmdirc.logger.ModeAliasReporter;
 import com.dmdirc.plugins.CorePluginExtractor;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
@@ -93,23 +94,11 @@ public class Main {
     private final DMDircMBassador eventBus;
     /** The commands to load into the command manager. */
     private final Set<CommandDetails> commands;
+    /** Mode alias reporter to use. */
+    private final ModeAliasReporter reporter;
 
     /**
      * Creates a new instance of {@link Main}.
-     *
-     * @param identityManager        The identity manager the client will use.
-     * @param connectionManager          The server manager the client will use.
-     * @param actionManager          The action manager the client will use.
-     * @param commandLineParser      The command-line parser used for this instance.
-     * @param pluginManager          The plugin manager the client will use.
-     * @param commandManager         The command manager the client will use.
-     * @param corePluginExtractor    Extractor to use for core plugins.
-     * @param globalWindowManager    Global window manager to use.
-     * @param colourActionComparison The colour-based action comparisons.
-     * @param lifecycleComponents    The set of known lifecycle components.
-     * @param migrators              The set of migrators to execute on startup.
-     * @param eventBus               The event bus to dispatch events on.
-     * @param commands               The commands to be loaded into the command manager.
      */
     @Inject
     public Main(
@@ -125,7 +114,8 @@ public class Main {
             final Set<SystemLifecycleComponent> lifecycleComponents,
             final Set<Migrator> migrators,
             final DMDircMBassador eventBus,
-            final Set<CommandDetails> commands) {
+            final Set<CommandDetails> commands,
+            final ModeAliasReporter reporter) {
         this.identityManager = identityManager;
         this.connectionManager = connectionManager;
         this.actionManager = actionManager;
@@ -139,6 +129,7 @@ public class Main {
         this.migrators = migrators;
         this.eventBus = eventBus;
         this.commands = commands;
+        this.reporter = reporter;
     }
 
     /**
@@ -188,7 +179,9 @@ public class Main {
         actionManager.initialise(colourActionComparison);
         pluginManager.doAutoLoad();
         actionManager.loadUserActions();
+
         eventBus.publishAsync(new ClientOpenedEvent());
+        eventBus.subscribe(reporter);
 
         commandLineParser.processArguments(connectionManager);
 
