@@ -35,9 +35,8 @@ import java.io.Serializable;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
@@ -70,14 +69,6 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     /** Frame buffer size. */
     private Integer frameBufferSize;
 
-    /**
-     * Creates a new instance of IRCDocument.
-     *
-     * @param configManager Config Manager for required settings.
-     * @param styliser      Styliser to style text
-     *
-     * @since 0.6.3
-     */
     public IRCDocument(final AggregateConfigProvider configManager,
             final Styliser styliser, final DMDircMBassador eventBus) {
         this.configManager = configManager;
@@ -123,53 +114,22 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     }
 
     /**
-     * Adds the stylised strings to the canvas. Each part of the array is treated as a separate
-     * namespace for stylising but are all added on the same line.
+     * Adds the stylised string to the canvas.
      *
+     * @param timestamp The timestamp to show along with the text.
      * @param text stylised string to add to the document
      */
-    public void addText(final String[] text) {
-        addText(Arrays.asList(new String[][]{text,}));
-    }
-
-    /**
-     * Adds the stylised strings to the canvas. Each part of the array is treated as a separate
-     * namespace for stylising but are all added on the same line.
-     *
-     * @param text stylised strings to add to the document
-     */
-    public void addText(final List<String[]> text) {
+    public void addText(final long timestamp, final String text) {
         final int start;
         synchronized (lines) {
             start = lines.size();
-            lines.addAll(text.stream()
-                    // TODO: Handle timestamps properly, don't use an array.
-                    .map(string -> new Line(styliser, string[0], string[1], fontSize, fontName))
-                    .collect(Collectors.toList()));
+            lines.add(new Line(styliser, formatTimestamp(timestamp), text, fontSize, fontName));
         }
-        fireLinesAdded(start, text.size());
+        fireLinesAdded(start, 1);
     }
 
-    /**
-     * Adds the stylised string to the canvas. Each part of the array is treated as a separate
-     * namespace for stylising but are all added on the same line.
-     *
-     * @param text        stylised string to add to the document
-     * @param lineHeights line heights for the new lines
-     */
-    public void addText(final List<String[]> text,
-            final List<Integer> lineHeights) {
-        final int start;
-        synchronized (lines) {
-            start = lines.size();
-            for (int i = 0; i < text.size(); i++) {
-                final String[] string = text.get(i);
-                final int lineHeight = lineHeights.get(i);
-                // TODO: Handle timestamps properly, don't use an array.
-                lines.add(new Line(styliser, string[0], string[1], lineHeight, fontName));
-            }
-        }
-        fireLinesAdded(start, text.size());
+    private String formatTimestamp(final long timestamp) {
+        return Formatter.formatMessage(configManager, "timestamp", new Date(timestamp));
     }
 
     /**
@@ -180,12 +140,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     public void trim(final int numLines) {
         synchronized (lines) {
             if (frameBufferSize != null && frameBufferSize > 0) {
-                int i = 0;
-                while (lines.size() > numLines) {
-                    i++;
-                    lines.remove(0);
-                }
+                final int i = lines.size() - numLines;
                 if (i > 0) {
+                    lines.subList(0, i).clear();
                     fireTrimmed(numLines, i);
                 }
             }
@@ -253,20 +210,14 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * fires the cleared method on all listeners.
      */
     protected void fireCleared() {
-        for (IRCDocumentListener listener
-                : listeners.get(IRCDocumentListener.class)) {
-            listener.cleared();
-        }
+        listeners.get(IRCDocumentListener.class).forEach(IRCDocumentListener::cleared);
     }
 
     /**
      * fires the need repaint method on all listeners.
      */
     protected void fireRepaintNeeded() {
-        for (IRCDocumentListener listener
-                : listeners.get(IRCDocumentListener.class)) {
-            listener.repaintNeeded();
-        }
+        listeners.get(IRCDocumentListener.class).forEach(IRCDocumentListener::repaintNeeded);
     }
 
     /**

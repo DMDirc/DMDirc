@@ -37,9 +37,9 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.IconManager;
+import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
@@ -54,7 +54,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -493,21 +492,10 @@ public abstract class FrameContainer {
      * @since 0.6.4
      */
     public void addLine(final String line, final Date timestamp) {
-        final List<String[]> lines = new LinkedList<>();
         for (final String myLine : line.split("\n")) {
-            if (timestamp == null) {
-                lines.add(new String[]{myLine});
-            } else {
-                lines.add(new String[]{
-                        Formatter.formatMessage(getConfigManager(), "timestamp", timestamp),
-                        myLine,
-                });
-            }
-
+            getBackBuffer().getDocument().addText(timestamp.getTime(), myLine);
             eventBus.publishAsync(new ClientLineAddedEvent(this, myLine));
         }
-
-        getDocument().addText(lines);
     }
 
     /**

@@ -29,8 +29,6 @@ import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import java.util.Date;
-
 import net.engio.mbassy.listener.Handler;
 
 /**
@@ -86,16 +84,9 @@ public class BackBuffer {
     @Handler
     public void handleDisplayableEvent(final DisplayableEvent event) {
         if (enabled && !event.getDisplayProperty(DisplayProperty.HANDLED).isPresent()) {
-            formatter.format(event)
-                    .map(l -> new String[]{getTimestamp(event), l})
-                    .ifPresent(document::addText);
+            formatter.format(event).ifPresent(t -> document.addText(event.getTimestamp(), t));
             event.setDisplayProperty(DisplayProperty.HANDLED, Boolean.TRUE);
         }
-    }
-
-    private String getTimestamp(final DisplayableEvent event) {
-        return Formatter.formatMessage(configProvider, "timestamp",
-                new Date(event.getTimestamp()));
     }
 
     public IRCDocument getDocument() {
