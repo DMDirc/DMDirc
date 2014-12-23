@@ -47,7 +47,7 @@ public class SSLCertificateDialogModel {
     /** The text to use if a field isn't present on the certificate. */
     private static final String NOTPRESENT = "(not present on certificate)";
     /** The certificate chain that we're displaying information about. */
-    private final X509Certificate[] chain;
+    private final List<X509Certificate> chain;
     /** The certificate manager for the connection attempt. */
     private final CertificateManager manager;
     /** The list of problems found with the certs, if any. */
@@ -60,7 +60,7 @@ public class SSLCertificateDialogModel {
      * @param problems A list of problems with the certificates, if any
      * @param manager  The certificate manager responsible for the certs
      */
-    public SSLCertificateDialogModel(final X509Certificate[] chain,
+    public SSLCertificateDialogModel(final List<X509Certificate> chain,
             final Collection<CertificateException> problems,
             final CertificateManager manager) {
         this.chain = chain;
@@ -107,7 +107,7 @@ public class SSLCertificateDialogModel {
      */
     public List<List<CertificateInformationEntry>> getCertificateInfo(final int index) {
         final List<List<CertificateInformationEntry>> res = new ArrayList<>();
-        final X509Certificate cert = chain[index];
+        final X509Certificate cert = chain.get(index);
         List<CertificateInformationEntry> group;
 
         boolean tooOld = false;
