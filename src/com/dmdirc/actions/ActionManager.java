@@ -298,7 +298,7 @@ public class ActionManager implements ActionController {
         LOG.debug("Loading actions from directory: {}", dir.getAbsolutePath());
 
         if (!groups.containsKey(dir.getName())) {
-            groups.put(dir.getName(), new ActionGroup(dir.getName()));
+            groups.put(dir.getName(), new ActionGroup(this, dir.getName()));
         }
 
         for (File file : dir.listFiles()) {
@@ -326,7 +326,7 @@ public class ActionManager implements ActionController {
     @Override
     public ActionGroup getOrCreateGroup(final String name) {
         if (!groups.containsKey(name)) {
-            groups.put(name, new ActionGroup(name));
+            groups.put(name, new ActionGroup(this, name));
         }
 
         return groups.get(name);
@@ -498,7 +498,7 @@ public class ActionManager implements ActionController {
 
         final File file = new File(directory + group);
         if (file.isDirectory() || file.mkdir()) {
-            final ActionGroup actionGroup = new ActionGroup(group);
+            final ActionGroup actionGroup = new ActionGroup(this, group);
             groups.put(group, actionGroup);
             return actionGroup;
         } else {

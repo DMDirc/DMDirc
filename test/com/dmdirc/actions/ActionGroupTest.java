@@ -25,15 +25,23 @@ import com.dmdirc.config.prefs.PreferencesSetting;
 import com.dmdirc.updater.Version;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ActionGroupTest {
+
+    @Mock private ActionManager actionManager;
 
     @Test
     public void testGetAuthor() {
-        final ActionGroup instance = new ActionGroup("moo");
+        final ActionGroup instance = new ActionGroup(actionManager, "moo");
         instance.setAuthor("foo");
 
         final String expResult = "foo";
@@ -43,7 +51,7 @@ public class ActionGroupTest {
 
     @Test
     public void testGetDescription() {
-        final ActionGroup instance = new ActionGroup("bar");
+        final ActionGroup instance = new ActionGroup(actionManager, "bar");
         instance.setDescription("Tra-la-la-la-la");
 
         final String expResult = "Tra-la-la-la-la";
@@ -53,7 +61,7 @@ public class ActionGroupTest {
 
     @Test
     public void testGetName() {
-        final ActionGroup instance = new ActionGroup("foobar");
+        final ActionGroup instance = new ActionGroup(actionManager, "foobar");
 
         final String expResult = "foobar";
         final String result = instance.getName();
@@ -62,7 +70,7 @@ public class ActionGroupTest {
 
     @Test
     public void testGetSettings() {
-        final ActionGroup instance = new ActionGroup("foo");
+        final ActionGroup instance = new ActionGroup(actionManager, "foo");
 
         assertTrue(instance.getSettings().isEmpty());
 
@@ -72,7 +80,7 @@ public class ActionGroupTest {
 
     @Test
     public void testGetVersion() {
-        final ActionGroup instance = new ActionGroup("vtest");
+        final ActionGroup instance = new ActionGroup(actionManager, "vtest");
         instance.setVersion(new Version(73));
 
         final Version expResult = new Version(73);
@@ -82,7 +90,7 @@ public class ActionGroupTest {
 
     @Test
     public void testGetComponent() {
-        final ActionGroup instance = new ActionGroup("zzz");
+        final ActionGroup instance = new ActionGroup(actionManager, "zzz");
         instance.setComponent(69);
 
         final int expResult = 69;
@@ -92,7 +100,7 @@ public class ActionGroupTest {
 
     @Test
     public void testClear() {
-        final ActionGroup instance = new ActionGroup("zzz");
+        final ActionGroup instance = new ActionGroup(actionManager, "zzz");
         instance.add(null);
         assertTrue(instance.iterator().hasNext());
         instance.clear();
@@ -101,7 +109,7 @@ public class ActionGroupTest {
 
     @Test
     public void testRemove() {
-        final ActionGroup instance = new ActionGroup("zzz");
+        final ActionGroup instance = new ActionGroup(actionManager, "zzz");
         instance.add(null);
         assertTrue(instance.iterator().hasNext());
         instance.remove(null);
@@ -110,7 +118,7 @@ public class ActionGroupTest {
 
     @Test
     public void testIsDelible() {
-        assertTrue(new ActionGroup("foo").isDelible());
+        assertTrue(new ActionGroup(actionManager, "foo").isDelible());
     }
 
 }
