@@ -142,7 +142,9 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         final int start;
         synchronized (lines) {
             start = lines.size();
-            lines.addAll(text.stream().map(string -> new Line(styliser, string, fontSize, fontName))
+            lines.addAll(text.stream()
+                    // TODO: Handle timestamps properly, don't use an array.
+                    .map(string -> new Line(styliser, string[0], string[1], fontSize, fontName))
                     .collect(Collectors.toList()));
         }
         fireLinesAdded(start, text.size());
@@ -163,7 +165,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
             for (int i = 0; i < text.size(); i++) {
                 final String[] string = text.get(i);
                 final int lineHeight = lineHeights.get(i);
-                lines.add(new Line(styliser, string, lineHeight, fontName));
+                // TODO: Handle timestamps properly, don't use an array.
+                lines.add(new Line(styliser, string[0], string[1], lineHeight, fontName));
             }
         }
         fireLinesAdded(start, text.size());
