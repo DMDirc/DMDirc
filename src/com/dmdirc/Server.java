@@ -61,10 +61,10 @@ import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.tls.CertificateProblemListener;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.EventUtils;
@@ -110,8 +110,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The Server class represents the client's view of a server. It maintains a list of all channels,
  * queries, etc, and handles parser callbacks pertaining to the server.
  */
-public class Server extends FrameContainer implements ConfigChangeListener,
-        CertificateProblemListener, Connection {
+public class Server extends FrameContainer implements CertificateProblemListener, Connection {
 
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
@@ -143,16 +142,23 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * myStateLock to prevent deadlocks.
      */
     private final ReadWriteLock parserLock = new ReentrantReadWriteLock();
-    /** The raw frame used for this server instance. */
-    private Raw raw;
-    /** The address of the server we're connecting to. */
-    private URI address;
-    /** The profile we're using. */
-    private Profile profile;
+
     /** Object used to synchronise access to myState. */
     private final Object myStateLock = new Object();
     /** The current state of this server. */
     private final ServerStatus myState = new ServerStatus(this, myStateLock);
+
+    /** The address of the server we're connecting to. */
+    @Nonnull
+    private URI address;
+    /** The profile we're using. */
+    @Nonnull
+    private Profile profile;
+
+    /** The raw frame used for this server instance. */
+    @Nonnull
+    private Optional<Raw> raw = Optional.empty();
+
     /** Our reason for being away, if any. */
     private String awayMessage;
     /** Our event handler. */
@@ -189,6 +195,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     private final ScheduledExecutorService executorService;
     /** The message encoder factory to create a message encoder with. */
     private final MessageEncoderFactory messageEncoderFactory;
+    /** Listener to use for config changes. */
+    private final ConfigChangeListener configListener = (domain, key) -> updateTitle();
     /** The future used when a who timer is scheduled. */
     private ScheduledFuture<?> whoTimerFuture;
     /** The future used when a reconnect timer is scheduled. */
@@ -214,8 +222,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             final MessageEncoderFactory messageEncoderFactory,
             final ConfigProvider userSettings,
             final ScheduledExecutorService executorService,
-            final URI uri,
-            final Profile profile,
+            @Nonnull final URI uri,
+            @Nonnull final Profile profile,
             final BackBufferFactory backBufferFactory) {
         super(null, "server-disconnected",
                 getHost(uri),
@@ -247,12 +255,14 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         eventHandler = new ServerEventHandler(this, eventBus);
 
+        this.address = uri;
+        this.profile = profile;
         setConnectionDetails(uri, profile);
 
         updateIcon();
 
-        getConfigManager().addChangeListener("formatter", "serverName", this);
-        getConfigManager().addChangeListener("formatter", "serverTitle", this);
+        getConfigManager().addChangeListener("formatter", "serverName", configListener);
+        getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
     }
 
     /**
@@ -263,7 +273,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * @param profile The profile that this server should use
      */
     private void setConnectionDetails(final URI uri, final Profile profile) {
-        this.address = uri;
+        this.address = checkNotNull(uri);
         this.protocolDescription = Optional.ofNullable(parserFactory.getDescription(uri));
         this.profile = profile;
 
@@ -293,7 +303,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     })
     @SuppressWarnings("fallthrough")
     public void connect(final URI address, final Profile profile) {
-        assert profile != null;
+        checkNotNull(address);
+        checkNotNull(profile);
 
         synchronized (myStateLock) {
             LOG.info("Connecting to {}, current state is {}", address, myState.getState());
@@ -557,24 +568,26 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public void addRaw() {
-        if (raw == null) {
-            raw = rawFactory.getRaw(this);
-            windowManager.addWindow(this, raw);
+        if (!raw.isPresent()) {
+            final Raw newRaw = rawFactory.getRaw(this);
+            windowManager.addWindow(this, newRaw);
 
             try {
                 parserLock.readLock().lock();
                 if (parser.isPresent()) {
-                    raw.registerCallbacks();
+                    newRaw.registerCallbacks();
                 }
             } finally {
                 parserLock.readLock().unlock();
             }
+
+            raw = Optional.of(newRaw);
         }
     }
 
     @Override
     public void delRaw() {
-        raw = null; //NOPMD
+        raw = Optional.empty();
     }
 
     @Override
@@ -777,12 +790,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
      * Registers callbacks.
      */
     private void doCallbacks() {
-        if (raw != null) {
-            raw.registerCallbacks();
-        }
-
+        raw.ifPresent(Raw::registerCallbacks);
         eventHandler.registerCallbacks();
-
         queries.values().forEach(Query::reregister);
     }
 
@@ -854,6 +863,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         return parser.orElse(null);
     }
 
+    @Nonnull
     @Override
     public Profile getProfile() {
         return profile;
@@ -981,7 +991,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         synchronized (myStateLock) {
             // Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();
-            getConfigManager().removeListener(this);
+            getConfigManager().removeListener(configListener);
             executorService.shutdown();
 
             // Trigger any actions necessary
@@ -994,9 +1004,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         closeQueries();
         removeInvites();
 
-        if (raw != null) {
-            raw.close();
-        }
+        raw.ifPresent(FrameContainer::close);
 
         // Inform any parents that the window is closing
         manager.unregisterServer(this);
@@ -1084,13 +1092,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             } finally {
                 parserLock.readLock().unlock();
             }
-        }
-    }
-
-    @Override
-    public void configChanged(final String domain, final String key) {
-        if ("formatter".equals(domain)) {
-            updateTitle();
         }
     }
 
@@ -1398,9 +1399,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             invites.add(invite);
 
             synchronized (listeners) {
-                for (InviteListener listener : listeners.get(InviteListener.class)) {
-                    listener.inviteReceived(this, invite);
-                }
+                listeners.getCallable(InviteListener.class).inviteReceived(this, invite);
             }
         }
     }
@@ -1449,7 +1448,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
     @Override
     public List<Invite> getInvites() {
-        return invites;
+        return Collections.unmodifiableList(invites);
     }
 
     @Override
