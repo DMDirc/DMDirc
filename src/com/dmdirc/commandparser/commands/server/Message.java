@@ -39,6 +39,8 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
@@ -82,16 +84,16 @@ public class Message extends Command implements IntelligentCommand,
             } else if (!args.isSilent() && connection.hasQuery(target)) {
                 connection.getQuery(target).sendLine(message, target);
             } else {
-                final Parser parser = connection.getParser();
+                final Optional<Parser> parser = connection.getParser();
 
-                if (parser == null) {
+                if (parser.isPresent()) {
+                    parser.get().sendMessage(target, message);
+                } else {
                     // This can happen if the server gets disconnected after
                     // the command manager has checked the @CommandOptions
                     // annotation. Yay for concurrency.
                     sendLine(origin, args.isSilent(), FORMAT_ERROR,
                             "You must be connected to use this command");
-                } else {
-                    parser.sendMessage(target, message);
                 }
             }
         }

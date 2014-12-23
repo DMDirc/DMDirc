@@ -67,14 +67,14 @@ public class Names extends Command implements IntelligentCommand,
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
-        channel.getConnection().get().getParser().sendRawMessage("NAMES "
+        channel.getConnection().get().getParser().get().sendRawMessage("NAMES "
                 + channel.getChannelInfo().getName());
     }
 
     @Override
     public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
-        server.getParser().sendRawMessage("NAMES " + channel);
+        server.getParser().get().sendRawMessage("NAMES " + channel);
     }
 
     @Override

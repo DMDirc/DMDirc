@@ -41,6 +41,9 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 /**
  * Represents an abstract connection to a remote chat system.
@@ -270,7 +273,8 @@ public interface Connection {
      *
      * @return this connection's parser
      */
-    Parser getParser();
+    @Nonnull
+    Optional<Parser> getParser();
 
     /**
      * Retrieves the profile that's in use for this server.

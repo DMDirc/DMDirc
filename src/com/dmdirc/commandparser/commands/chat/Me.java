@@ -33,9 +33,8 @@ import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.util.validators.ValidationResponse;
-
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -78,7 +77,7 @@ public class Me extends Command implements ValidatingCommand {
         final int length = 2 + arguments.getArgumentsAsString().length();
 
         return origin.getConnection()
-                .flatMap(c -> Optional.ofNullable(c.getParser()))
+                .flatMap(Connection::getParser)
                 .map(p -> p.getMaxLength("PRIVMSG", origin.getName()))
                 .map(l -> l <= length ? new ValidationResponse("Too long") : new ValidationResponse())
                 .orElse(new ValidationResponse());

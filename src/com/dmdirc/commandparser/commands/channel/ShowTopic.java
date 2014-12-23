@@ -87,9 +87,9 @@ public class ShowTopic extends Command implements ExternalCommand {
     public void execute(final FrameContainer origin, final Server server,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
-            server.getParser().sendRawMessage("TOPIC " + channel);
+            server.getParser().get().sendRawMessage("TOPIC " + channel);
         } else {
-            server.getParser().sendRawMessage("TOPIC " + channel + " :" + args.
+            server.getParser().get().sendRawMessage("TOPIC " + channel + " :" + args.
                     getArgumentsAsString());
         }
     }

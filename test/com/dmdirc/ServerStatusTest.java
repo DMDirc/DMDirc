@@ -24,6 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.parser.interfaces.Parser;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -33,7 +35,9 @@ public class ServerStatusTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testIllegalTransition() {
-        final ServerStatus status = new ServerStatus(mock(Server.class), mock(Object.class));
+        final Server server = mock(Server.class);
+        when(server.getParser()).thenReturn(Optional.empty());
+        final ServerStatus status = new ServerStatus(server, mock(Object.class));
         status.transition(ServerState.CONNECTED);
     }
 

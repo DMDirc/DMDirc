@@ -55,7 +55,7 @@ public class ModeAliasReporter {
 
     @Handler
     public void handleServerConnected(final ServerConnectedEvent event) {
-        final Parser parser = event.getConnection().getParser();
+        final Parser parser = event.getConnection().getParser().get();
         final AggregateConfigProvider configManager = event.getConnection().getWindowModel()
                 .getConfigManager();
 

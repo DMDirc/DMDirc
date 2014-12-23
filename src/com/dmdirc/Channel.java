@@ -37,6 +37,7 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
@@ -164,12 +165,12 @@ public class Channel extends MessageTarget implements GroupChat {
     @Override
     public void sendLine(final String line) {
         if (server.getState() != ServerState.CONNECTED
-                || server.getParser().getChannel(channelInfo.getName()) == null) {
+                || server.getParser().get().getChannel(channelInfo.getName()) == null) {
             // We're not in the channel/connected to the server
             return;
         }
 
-        final ClientInfo me = server.getParser().getLocalClient();
+        final ClientInfo me = server.getParser().get().getLocalClient();
         final String[] details = getDetails(channelInfo.getChannelClient(me));
 
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
@@ -186,22 +187,22 @@ public class Channel extends MessageTarget implements GroupChat {
     @Override
     public int getMaxLineLength() {
         return server.getState() == ServerState.CONNECTED
-                ? server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName())
+                ? server.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 : -1;
     }
 
     @Override
     public void sendAction(final String action) {
         if (server.getState() != ServerState.CONNECTED
-                || server.getParser().getChannel(channelInfo.getName()) == null) {
+                || server.getParser().get().getChannel(channelInfo.getName()) == null) {
             // We're not on the server/channel
             return;
         }
 
-        final ClientInfo me = server.getParser().getLocalClient();
+        final ClientInfo me = server.getParser().get().getLocalClient();
         final String[] details = getDetails(channelInfo.getChannelClient(me));
 
-        if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName())
+        if (server.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 <= action.length()) {
             addLine("actionTooLong", action.length());
         } else {
@@ -233,7 +234,7 @@ public class Channel extends MessageTarget implements GroupChat {
     public void selfJoin() {
         isOnChannel = true;
 
-        final ClientInfo me = server.getParser().getLocalClient();
+        final ClientInfo me = server.getParser().get().getLocalClient();
         addLine("channelSelfJoin", "", me.getNickname(), me.getUsername(),
                 me.getHostname(), channelInfo.getName());
 
@@ -258,7 +259,7 @@ public class Channel extends MessageTarget implements GroupChat {
 
     @Override
     public void join() {
-        server.getParser().joinChannel(channelInfo.getName());
+        server.getParser().get().joinChannel(channelInfo.getName());
     }
 
     @Override
@@ -293,9 +294,8 @@ public class Channel extends MessageTarget implements GroupChat {
         eventHandler.unregisterCallbacks();
         getConfigManager().getBinder().unbind(this);
 
-        if (server.getParser() != null) {
-            server.getParser().getCallbackManager().delAllCallback(eventHandler);
-        }
+        server.getParser().map(Parser::getCallbackManager)
+                .ifPresent(cm -> cm.delAllCallback(eventHandler));
 
         // Trigger any actions neccessary
         if (isOnChannel && server.getState() != ServerState.CLOSING) {
@@ -341,7 +341,7 @@ public class Channel extends MessageTarget implements GroupChat {
         getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK,
                 client.getClient().getNickname());
 
-        if (client.getClient().equals(server.getParser().getLocalClient())) {
+        if (client.getClient().equals(server.getParser().get().getLocalClient())) {
             resetWindow();
         }
     }
@@ -524,7 +524,7 @@ public class Channel extends MessageTarget implements GroupChat {
 
     @Override
     public int getMaxTopicLength() {
-        return server.getParser().getMaxTopicLength();
+        return server.getParser().get().getMaxTopicLength();
     }
 
     @Override

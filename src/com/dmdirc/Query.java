@@ -127,12 +127,13 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
 
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
-            server.getParser().sendMessage(target, part);
+            server.getParser().get().sendMessage(target, part);
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfMessageEvent(this, server.getParser().getLocalClient(), part),
+                    new QuerySelfMessageEvent(this, server.getParser().get().getLocalClient(),
+                            part),
                     "querySelfMessage");
-            doNotification(format, server.getParser().getLocalClient(), part);
+            doNotification(format, server.getParser().get().getLocalClient(), part);
         });
     }
 
@@ -151,7 +152,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Override
     public int getMaxLineLength() {
-        return server.getState() == ServerState.CONNECTED ? server.getParser()
+        return server.getState() == ServerState.CONNECTED ? server.getParser().get()
                 .getMaxLength("PRIVMSG", host) : -1;
     }
 
@@ -162,11 +163,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
             return;
         }
 
-        final ClientInfo client = server.getParser().getLocalClient();
-        final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
+        final ClientInfo client = server.getParser().get().getLocalClient();
+        final int maxLineLength = server.getParser().get().getMaxLength("PRIVMSG", host);
 
         if (maxLineLength >= action.length() + 2) {
-            server.getParser().sendAction(getNickname(), action);
+            server.getParser().get().sendAction(getNickname(), action);
 
             final String format = EventUtils.postDisplayable(getEventBus(),
                     new QuerySelfActionEvent(this, client, action),
@@ -209,7 +210,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * Reregisters query callbacks. Called when reconnecting to the server.
      */
     public void reregister() {
-        final CallbackManager callbackManager = server.getParser().getCallbackManager();
+        final CallbackManager callbackManager = server.getParser().get().getCallbackManager();
         final String nick = getNickname();
 
         try {
@@ -228,7 +229,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
     public void onNickChanged(final Parser parser, final Date date,
             final ClientInfo client, final String oldNick) {
         if (oldNick.equals(getNickname())) {
-            final CallbackManager callbackManager = server.getParser().getCallbackManager();
+            final CallbackManager callbackManager = server.getParser().get().getCallbackManager();
 
             callbackManager.delCallback(PrivateActionListener.class, this);
             callbackManager.delCallback(PrivateMessageListener.class, this);
@@ -294,9 +295,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         super.close();
 
         // Remove any callbacks or listeners
-        if (server.getParser() != null) {
-            server.getParser().getCallbackManager().delAllCallback(this);
-        }
+        server.getParser().map(Parser::getCallbackManager).ifPresent(cm -> cm.delAllCallback(this));
 
         // Trigger action for the window closing
         getEventBus().publishAsync(new QueryClosedEvent(this));
@@ -317,7 +316,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Override
     public void setCompositionState(final CompositionState state) {
-        server.getParser().setCompositionState(host, state);
+        server.getParser().get().setCompositionState(host, state);
     }
 
 }

@@ -98,7 +98,7 @@ public class ServerCommandParser extends GlobalCommandParser {
             if (hasCommandOptions(command) && !getCommandOptions(command).allowOffline()
                     && (server == null || (server.getState() != ServerState.CONNECTED
                     && server.getState() != ServerState.CONNECTING)
-                    || server.getParser() == null)) {
+                    || !server.getParser().isPresent())) {
                 if (!args.isSilent()) {
                     origin.addLine("commandError", "You must be connected to use this command");
                 }

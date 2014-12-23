@@ -64,7 +64,7 @@ public class Raw extends Command {
         final Connection connection = ((ServerCommandContext) context).getConnection();
         final String line = args.getArgumentsAsString();
 
-        connection.getParser().sendRawMessage(line);
+        connection.getParser().get().sendRawMessage(line);
         sendLine(origin, args.isSilent(), "rawCommand", line);
     }
 

@@ -125,7 +125,8 @@ public class ChannelEventHandler extends EventHandler implements
      * @return True if the client is ourself, false otherwise.
      */
     protected boolean isMyself(final ChannelClientInfo client) {
-        return client.getClient().equals(getConnection().getParser().getLocalClient());
+        return getConnection().getParser().map(Parser::getLocalClient)
+                .map(c -> client.getClient().equals(c)).orElse(false);
     }
 
     @Override

@@ -108,7 +108,7 @@ public class ServerStatus {
         builder.append(" [");
         builder.append(Thread.currentThread().getName());
         builder.append("] (parser #");
-        builder.append(getParserID(server.getParser()));
+        builder.append(getParserID(server.getParser().orElse(null)));
         builder.append(')');
 
         history.add(builder.toString());

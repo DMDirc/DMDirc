@@ -62,15 +62,17 @@ public class GroupListManager implements GroupListStartListener,
      *
      * @param searchTerm The term to search for
      *
-     * @see Parser#requestGroupList(java.lang.String)
+     * @see Parser#requestGroupList(String)
      */
     public void startSearch(final String searchTerm) {
         groups.clear();
 
-        connection.getParser().getCallbackManager().addCallback(GroupListStartListener.class, this);
-        connection.getParser().getCallbackManager().addCallback(GroupListEntryListener.class, this);
-        connection.getParser().getCallbackManager().addCallback(GroupListEndListener.class, this);
-        connection.getParser().requestGroupList(searchTerm);
+        connection.getParser().ifPresent(p -> {
+            p.getCallbackManager().addCallback(GroupListStartListener.class, this);
+            p.getCallbackManager().addCallback(GroupListEntryListener.class, this);
+            p.getCallbackManager().addCallback(GroupListEndListener.class, this);
+            p.requestGroupList(searchTerm);
+        });
     }
 
     @Override

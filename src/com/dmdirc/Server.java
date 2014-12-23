@@ -859,8 +859,9 @@ public class Server extends FrameContainer implements CertificateProblemListener
     }
 
     @Override
-    public Parser getParser() {
-        return parser.orElse(null);
+    @Nonnull
+    public Optional<Parser> getParser() {
+        return parser;
     }
 
     @Nonnull

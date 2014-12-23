@@ -52,7 +52,7 @@ public abstract class EventHandler implements CallbackInterface {
      * Registers all callbacks that this event handler implements with the owner's parser.
      */
     public void registerCallbacks() {
-        final CallbackManager cbm = getConnection().getParser().getCallbackManager();
+        final CallbackManager cbm = getConnection().getParser().get().getCallbackManager();
 
         try {
             for (Class<?> iface : getClass().getInterfaces()) {
@@ -70,9 +70,8 @@ public abstract class EventHandler implements CallbackInterface {
      * Unregisters all callbacks that have been registered by this event handler.
      */
     public void unregisterCallbacks() {
-        if (getConnection().getParser() != null) {
-            getConnection().getParser().getCallbackManager().delAllCallback(this);
-        }
+        getConnection().getParser().map(Parser::getCallbackManager)
+                .ifPresent(cm -> cm.delAllCallback(this));
     }
 
     /**
@@ -103,7 +102,7 @@ public abstract class EventHandler implements CallbackInterface {
      * @param parser The parser to check
      */
     protected void checkParser(final Parser parser) {
-        if (parser != getConnection().getParser()) {
+        if (parser != getConnection().getParser().orElse(null)) {
             parser.disconnect("Shouldn't be in use");
             throw new IllegalArgumentException("Event called from a parser that's not in use (#"
                     + getConnection().getStatus().getParserID(parser)

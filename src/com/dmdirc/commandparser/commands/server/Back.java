@@ -63,7 +63,7 @@ public class Back extends Command implements IntelligentCommand {
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
         final Connection connection = ((ServerCommandContext) context).getConnection();
-        connection.getParser().getLocalClient().setBack();
+        connection.getParser().get().getLocalClient().setBack();
     }
 
     @Override

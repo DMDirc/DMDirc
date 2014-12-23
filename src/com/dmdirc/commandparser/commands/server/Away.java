@@ -64,9 +64,9 @@ public class Away extends Command {
         final String line = args.getArgumentsAsString();
 
         if (line.isEmpty()) {
-            connection.getParser().getLocalClient().setBack();
+            connection.getParser().get().getLocalClient().setBack();
         } else {
-            connection.getParser().getLocalClient().setAway(line);
+            connection.getParser().get().getLocalClient().setAway(line);
         }
     }
 
