@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.ActionFactory;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
@@ -49,7 +48,6 @@ import com.dmdirc.ui.messages.UiMessagesModule;
 import com.dmdirc.ui.messages.sink.MessagesModule;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
-import com.dmdirc.updater.manager.UpdateManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.io.Downloader;
 
@@ -118,20 +116,6 @@ public class ClientModule {
             @GlobalConfig final AggregateConfigProvider globalConfig,
             final URLBuilder urlBuilder) {
         return new IconManager(globalConfig, urlBuilder);
-    }
-
-    @Provides
-    @Singleton
-    public ActionManager getActionManager(
-            final IdentityController identityController,
-            final ActionFactory actionFactory,
-            final Provider<UpdateManager> updateManagerProvider,
-            final DMDircMBassador eventBus,
-            @Directory(DirectoryType.ACTIONS) final String directory) {
-        final ActionManager actionManager = new ActionManager(identityController,
-                actionFactory, updateManagerProvider, eventBus, directory);
-        ActionManager.setActionManager(actionManager);
-        return actionManager;
     }
 
     @Provides
