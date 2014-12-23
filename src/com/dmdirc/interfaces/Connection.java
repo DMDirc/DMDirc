@@ -35,7 +35,6 @@ import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
-import com.dmdirc.tls.CertificateProblemListener;
 
 import java.net.URI;
 import java.util.Collection;
@@ -72,15 +71,6 @@ public interface Connection {
      * @param listener The listener to be added
      */
     void addAwayStateListener(final AwayStateListener listener);
-
-    /**
-     * Adds a new certificate problem listener to this server. If there is currently an on-going
-     * problem with a certificate, the listener will be called immediately before this method
-     * returns.
-     *
-     * @param listener The listener to be added
-     */
-    void addCertificateProblemListener(final CertificateProblemListener listener);
 
     /**
      * Adds a specific channel and window to this server.
@@ -442,13 +432,6 @@ public interface Connection {
      * @param listener The listener to be removed
      */
     void removeAwayStateListener(final AwayStateListener listener);
-
-    /**
-     * Removes the specified listener from this server.
-     *
-     * @param listener The listener to be removed
-     */
-    void removeCertificateProblemListener(final CertificateProblemListener listener);
 
     /**
      * Removes an invite from this server, and fires the appropriate listeners.
