@@ -1340,65 +1340,12 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             }
             join(requests.toArray(new ChannelJoinRequest[requests.size()]));
 
-            checkModeAliases();
-
             final int whoTime = getConfigManager().getOptionInt(DOMAIN_GENERAL, "whotime");
             whoTimerFuture = executorService.scheduleAtFixedRate(
                     channels.getWhoRunnable(), whoTime, whoTime, TimeUnit.MILLISECONDS);
         }
 
         getEventBus().publish(new ServerConnectedEvent(this));
-    }
-
-    /**
-     * Checks that we have the necessary mode aliases for this server.
-     */
-    private void checkModeAliases() {
-        // Check we have mode aliases
-        final String modes = parser.get().getBooleanChannelModes()
-                + parser.get().getListChannelModes()
-                + parser.get().getParameterChannelModes()
-                + parser.get().getDoubleParameterChannelModes();
-        final String umodes = parser.get().getUserModes();
-
-        final StringBuilder missingModes = new StringBuilder();
-        final StringBuilder missingUmodes = new StringBuilder();
-
-        for (char mode : modes.toCharArray()) {
-            if (!getConfigManager().hasOptionString(DOMAIN_SERVER, "mode" + mode)) {
-                missingModes.append(mode);
-            }
-        }
-
-        for (char mode : umodes.toCharArray()) {
-            if (!getConfigManager().hasOptionString(DOMAIN_SERVER, "umode" + mode)) {
-                missingUmodes.append(mode);
-            }
-        }
-
-        if (missingModes.length() + missingUmodes.length() > 0) {
-            final StringBuilder missing = new StringBuilder("Missing mode aliases: ");
-
-            if (missingModes.length() > 0) {
-                missing.append("channel: +");
-                missing.append(missingModes);
-            }
-
-            if (missingUmodes.length() > 0) {
-                if (missingModes.length() > 0) {
-                    missing.append(' ');
-                }
-
-                missing.append("user: +");
-                missing.append(missingUmodes);
-            }
-
-
-            getEventBus().publish(new AppErrorEvent(ErrorLevel.LOW, new MissingModeAliasException(
-                    getNetwork(), parser.get(),
-                    getConfigManager().getOption("identity", "modealiasversion"),
-                    missing.toString()), missing + " ["+ parser.get().getServerSoftwareType() + ']', ""));
-        }
     }
 
     @Override
