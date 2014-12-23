@@ -25,6 +25,8 @@ package com.dmdirc.actions;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
 import com.dmdirc.actions.internal.WhoisNumericFormatter;
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ClientClosedEvent;
@@ -56,7 +58,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,11 +73,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Manages all actions for the client.
  */
+@Singleton
 public class ActionManager implements ActionController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ActionManager.class);
-    /** The ActionManager Instance. */
-    private static ActionManager me;
     /** The identity manager to load configuration from. */
     private final IdentityController identityManager;
     /** The factory to use to create actions. */
@@ -111,38 +114,18 @@ public class ActionManager implements ActionController {
      * @param eventBus               The global event bus to monitor.
      * @param directory              The directory to load and save actions in.
      */
+    @Inject
     public ActionManager(
             final IdentityController identityManager,
             final ActionFactory factory,
             final Provider<UpdateManager> updateManagerProvider,
             final DMDircMBassador eventBus,
-            final String directory) {
+            @Directory(DirectoryType.ACTIONS) final String directory) {
         this.identityManager = identityManager;
         this.factory = factory;
         this.updateManagerProvider = updateManagerProvider;
         this.eventBus = eventBus;
         this.directory = directory;
-    }
-
-    /**
-     * Create the singleton instance of the Action Manager.
-     *
-     * @param actionManager The manager to return for calls to {@link #getActionManager()}.
-     *
-     * @deprecated Singleton use should be removed.
-     */
-    @Deprecated
-    public static void setActionManager(final ActionManager actionManager) {
-        me = actionManager;
-    }
-
-    /**
-     * Returns a singleton instance of the Action Manager.
-     *
-     * @return A singleton ActionManager instance
-     */
-    public static ActionManager getActionManager() {
-        return me;
     }
 
     /**
