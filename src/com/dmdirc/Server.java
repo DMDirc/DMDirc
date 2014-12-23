@@ -46,7 +46,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
-import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.common.ThreadedParser;
 import com.dmdirc.parser.interfaces.ChannelInfo;
@@ -103,7 +102,6 @@ import javax.net.ssl.TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -666,8 +664,7 @@ public class Server extends FrameContainer implements CertificateProblemListener
      */
     @Nullable
     private Parser buildParser() {
-        final MyInfo myInfo = buildMyInfo();
-        final Parser myParser = parserFactory.getParser(myInfo, address);
+        final Parser myParser = parserFactory.getParser(profile, address).orElse(null);
 
         if (myParser instanceof SecureParser) {
             certificateManager = new CertificateManager(
@@ -753,27 +750,6 @@ public class Server extends FrameContainer implements CertificateProblemListener
     @Override
     public String[] parseHostmask(final String hostmask) {
         return protocolDescription.get().parseHostmask(hostmask);
-    }
-
-    /**
-     * Retrieves the MyInfo object used for the Parser.
-     *
-     * @return The MyInfo object for our profile
-     */
-    @Precondition({
-        "The current profile is not null",
-        "The current profile specifies at least one nickname"
-    })
-    private MyInfo buildMyInfo() {
-        checkNotNull(profile);
-        checkArgument(!profile.getNicknames().isEmpty());
-
-        final MyInfo myInfo = new MyInfo();
-        myInfo.setNickname(profile.getNicknames().get(0));
-        myInfo.setRealname(profile.getRealname());
-        profile.getIdent().ifPresent(myInfo::setUsername);
-
-        return myInfo;
     }
 
     /**

@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.MyInfo;
@@ -33,9 +34,12 @@ import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceProvider;
 
 import java.net.URI;
+import java.util.Optional;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Provides a method to retrieve a parser.
@@ -56,7 +60,8 @@ public class ParserFactory {
      * @param eventBus      The event bus to post events to.
      */
     @Inject
-    public ParserFactory(final PluginManager pluginManager,
+    public ParserFactory(
+            final PluginManager pluginManager,
             final DMDircMBassador eventBus) {
         this.pluginManager = pluginManager;
         this.eventBus = eventBus;
@@ -65,21 +70,38 @@ public class ParserFactory {
     /**
      * Retrieves a parser instance.
      *
-     * @param myInfo  The client information to use
+     * @param profile The profile to use
      * @param address The address of the server to connect to
      *
      * @return An appropriately configured parser
      *
      * @since 0.6.3
      */
-    @Nullable
-    public Parser getParser(final MyInfo myInfo, final URI address) {
-        final Object obj = getExportResult(address, "getParser", myInfo, address);
+    public Optional<Parser> getParser(final Profile profile, final URI address) {
+        final Object obj = getExportResult(address, "getParser", buildMyInfo(profile), address);
 
         if (obj instanceof Parser) {
-            return (Parser) obj;
+            return Optional.of((Parser) obj);
         }
-        return null;
+
+        return Optional.empty();
+    }
+
+    /**
+     * Retrieves the MyInfo object used for the Parser.
+     *
+     * @return The MyInfo object for our profile
+     */
+    private MyInfo buildMyInfo(final Profile profile) {
+        checkNotNull(profile);
+        checkArgument(!profile.getNicknames().isEmpty());
+
+        final MyInfo myInfo = new MyInfo();
+        myInfo.setNickname(profile.getNicknames().get(0));
+        myInfo.setRealname(profile.getRealname());
+        profile.getIdent().ifPresent(myInfo::setUsername);
+
+        return myInfo;
     }
 
     /**
