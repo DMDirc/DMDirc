@@ -36,6 +36,7 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,14 +71,6 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     /** Frame buffer size. */
     private Integer frameBufferSize;
 
-    /**
-     * Creates a new instance of IRCDocument.
-     *
-     * @param configManager Config Manager for required settings.
-     * @param styliser      Styliser to style text
-     *
-     * @since 0.6.3
-     */
     public IRCDocument(final AggregateConfigProvider configManager,
             final Styliser styliser, final DMDircMBassador eventBus) {
         this.configManager = configManager;
@@ -120,6 +113,25 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         synchronized (lines) {
             return lines.get(lineNumber);
         }
+    }
+
+    /**
+     * Adds the stylised string to the canvas.
+     *
+     * @param timestamp The timestamp to show along with the text.
+     * @param text stylised string to add to the document
+     */
+    public void addText(final long timestamp, final String text) {
+        final int start;
+        synchronized (lines) {
+            start = lines.size();
+            lines.add(new Line(styliser, formatTimestamp(timestamp), text, fontSize, fontName));
+        }
+        fireLinesAdded(start, 1);
+    }
+
+    private String formatTimestamp(final long timestamp) {
+        return Formatter.formatMessage(configManager, "timestamp", new Date(timestamp));
     }
 
     /**
