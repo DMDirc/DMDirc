@@ -44,7 +44,7 @@ public class StyliserTest {
 
     @Test
     public void testStripControlCodes1() {
-        final String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
+        final String input = "This"+ (char) 2 +" is "+ (char) 17 +"a test";
 
         final String expResult = "This is a test";
         final String result = Styliser.stipControlCodes(input);
@@ -53,7 +53,7 @@ public class StyliserTest {
 
     @Test
     public void testStripControlCodes2() {
-        final String input = "This is "+((char) 3)+"5a "+((char) 4)+"FF0000test";
+        final String input = "This is "+ (char) 3 +"5a "+ (char) 4 +"FF0000test";
 
         final String expResult = "This is a test";
         final String result = Styliser.stipControlCodes(input);
@@ -62,7 +62,7 @@ public class StyliserTest {
 
     @Test
     public void testReadUntilControl1() {
-        final String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
+        final String input = "This"+ (char) 2 +" is "+ (char) 17 +"a test";
         final String expResult = "This";
         final String result = Styliser.readUntilControl(input);
         assertEquals(expResult, result);
@@ -70,7 +70,7 @@ public class StyliserTest {
 
     @Test
     public void testReadUntilControl2() {
-        final String input = "This"+((char) 17)+" is "+((char) 17)+"a test";
+        final String input = "This"+ (char) 17 +" is "+ (char) 17 +"a test";
         final String expResult = "This";
         final String result = Styliser.readUntilControl(input);
         assertEquals(expResult, result);
@@ -78,7 +78,7 @@ public class StyliserTest {
 
     @Test
     public void testReadUntilControl3() {
-        final String input = ((char) 31)+" is "+((char) 17)+"a test";
+        final String input = (char) 31 +" is "+ (char) 17 +"a test";
         final String expResult = "";
         final String result = Styliser.readUntilControl(input);
         assertEquals(expResult, result);
@@ -87,7 +87,7 @@ public class StyliserTest {
     @Test
     @Ignore("Doesn't work in a headless environment (initialises an IRCDocument)")
     public void testNegation() {
-        final String input1 = ((char) 18) + "abc" + ((char) 2) + "def" + ((char) 31) + "ghi";
+        final String input1 = (char) 18 + "abc" + (char) 2 + "def" + (char) 31 + "ghi";
         final String input2 = "abcdefghi";
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
@@ -95,10 +95,10 @@ public class StyliserTest {
                 mock(DMDircMBassador.class)));
 
         for (int i = 0; i < input2.length(); i++) {
-            final Enumeration<?> res1 = styliser.getStyledString(input1)
-                    .getLogicalStyle(i).getAttributeNames();
-            final Enumeration<?> res2 = styliser.getStyledString(input2)
-                    .getLogicalStyle(i).getAttributeNames();
+            final Enumeration<?> res1 = styliser.getStyledString(new String[]{input1},
+                    new StyledDocumentMaker()).getLogicalStyle(i).getAttributeNames();
+            final Enumeration<?> res2 = styliser.getStyledString(new String[]{input2},
+                    new StyledDocumentMaker()).getLogicalStyle(i).getAttributeNames();
 
             while (res1.hasMoreElements()) {
                 assertEquals(res1.nextElement(), res2.nextElement());

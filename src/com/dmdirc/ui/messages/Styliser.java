@@ -31,7 +31,6 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
-import javax.swing.text.StyledDocument;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -190,19 +189,6 @@ public class Styliser implements ConfigChangeListener {
                 }
             }
         }
-    }
-
-    /**
-     * Stylises the specified string.
-     *
-     * @param strings The line to be stylised
-     *
-     * @return StyledDocument for the inputted strings
-     * @deprecated Use {@link #getStyledString(String[], StyledMessageMaker)}.
-     */
-    @Deprecated
-    public StyledDocument getStyledString(final String... strings) {
-        return getStyledString(strings, new StyledDocumentMaker());
     }
 
     /**

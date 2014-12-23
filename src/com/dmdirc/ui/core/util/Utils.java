@@ -23,6 +23,7 @@
 package com.dmdirc.ui.core.util;
 
 import com.dmdirc.ui.messages.IRCTextAttribute;
+import com.dmdirc.ui.messages.StyledDocumentMaker;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Font;
@@ -60,7 +61,7 @@ public final class Utils {
     public static ExtendedAttributedString getAttributedString(final Styliser styliser,
             final String[] lineParts, final String fontName, final int fontSize) throws
             BadLocationException {
-        final StyledDocument doc = styliser.getStyledString(lineParts);
+        final StyledDocument doc = styliser.getStyledString(lineParts, new StyledDocumentMaker());
 
         final Element line = doc.getParagraphElement(0);
         final AttributedString attString = new AttributedString(line.getDocument().getText(0,
