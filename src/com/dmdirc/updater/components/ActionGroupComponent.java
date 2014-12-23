@@ -35,7 +35,11 @@ import java.nio.file.Path;
  */
 public class ActionGroupComponent implements UpdateComponent {
 
-    public ActionGroupComponent(final ActionGroup group) {
+    private final ActionManager actionManager;
+
+    public ActionGroupComponent(final ActionManager actionManager,
+            final ActionGroup group) {
+        this.actionManager = actionManager;
         this.group = group;
     }
     /** The group that this component represents. */
@@ -78,7 +82,7 @@ public class ActionGroupComponent implements UpdateComponent {
 
     @Override
     public boolean doInstall(final Path path) throws IOException {
-        ActionManager.installActionPack(path);
+        actionManager.installActionPack(path);
         return false;
     }
 

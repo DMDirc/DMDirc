@@ -282,7 +282,8 @@ public class ActionManager implements ActionController {
     private void registerComponents(final UpdateManager updateManager) {
         groups.values().stream()
                 .filter(group -> group.getComponent() != -1 && group.getVersion() != null)
-                .forEach(group -> updateManager.addComponent(new ActionGroupComponent(group)));
+                .forEach(group -> updateManager.addComponent(
+                        new ActionGroupComponent(this, group)));
     }
 
     /**
@@ -640,9 +641,9 @@ public class ActionManager implements ActionController {
      *
      * @throws IOException If the zip cannot be extracted
      */
-    public static void installActionPack(final Path path) throws IOException {
-        FileUtils.copyRecursively(path, Paths.get(getActionManager().directory));
-        getActionManager().loadUserActions();
+    public void installActionPack(final Path path) throws IOException {
+        FileUtils.copyRecursively(path, Paths.get(directory));
+        loadUserActions();
         Files.delete(path);
     }
 
