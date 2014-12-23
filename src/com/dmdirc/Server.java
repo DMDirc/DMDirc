@@ -61,10 +61,10 @@ import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.tls.CertificateProblemListener;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.EventUtils;
@@ -142,16 +142,23 @@ public class Server extends FrameContainer implements CertificateProblemListener
      * myStateLock to prevent deadlocks.
      */
     private final ReadWriteLock parserLock = new ReentrantReadWriteLock();
-    /** The raw frame used for this server instance. */
-    private Raw raw;
-    /** The address of the server we're connecting to. */
-    private URI address;
-    /** The profile we're using. */
-    private Profile profile;
+
     /** Object used to synchronise access to myState. */
     private final Object myStateLock = new Object();
     /** The current state of this server. */
     private final ServerStatus myState = new ServerStatus(this, myStateLock);
+
+    /** The address of the server we're connecting to. */
+    @Nonnull
+    private URI address;
+    /** The profile we're using. */
+    @Nonnull
+    private Profile profile;
+
+    /** The raw frame used for this server instance. */
+    @Nonnull
+    private Optional<Raw> raw = Optional.empty();
+
     /** Our reason for being away, if any. */
     private String awayMessage;
     /** Our event handler. */
@@ -215,8 +222,8 @@ public class Server extends FrameContainer implements CertificateProblemListener
             final MessageEncoderFactory messageEncoderFactory,
             final ConfigProvider userSettings,
             final ScheduledExecutorService executorService,
-            final URI uri,
-            final Profile profile,
+            @Nonnull final URI uri,
+            @Nonnull final Profile profile,
             final BackBufferFactory backBufferFactory) {
         super(null, "server-disconnected",
                 getHost(uri),
@@ -248,6 +255,8 @@ public class Server extends FrameContainer implements CertificateProblemListener
 
         eventHandler = new ServerEventHandler(this, eventBus);
 
+        this.address = uri;
+        this.profile = profile;
         setConnectionDetails(uri, profile);
 
         updateIcon();
@@ -264,7 +273,7 @@ public class Server extends FrameContainer implements CertificateProblemListener
      * @param profile The profile that this server should use
      */
     private void setConnectionDetails(final URI uri, final Profile profile) {
-        this.address = uri;
+        this.address = checkNotNull(uri);
         this.protocolDescription = Optional.ofNullable(parserFactory.getDescription(uri));
         this.profile = profile;
 
@@ -294,7 +303,8 @@ public class Server extends FrameContainer implements CertificateProblemListener
     })
     @SuppressWarnings("fallthrough")
     public void connect(final URI address, final Profile profile) {
-        assert profile != null;
+        checkNotNull(address);
+        checkNotNull(profile);
 
         synchronized (myStateLock) {
             LOG.info("Connecting to {}, current state is {}", address, myState.getState());
@@ -558,24 +568,26 @@ public class Server extends FrameContainer implements CertificateProblemListener
 
     @Override
     public void addRaw() {
-        if (raw == null) {
-            raw = rawFactory.getRaw(this);
-            windowManager.addWindow(this, raw);
+        if (!raw.isPresent()) {
+            final Raw newRaw = rawFactory.getRaw(this);
+            windowManager.addWindow(this, newRaw);
 
             try {
                 parserLock.readLock().lock();
                 if (parser.isPresent()) {
-                    raw.registerCallbacks();
+                    newRaw.registerCallbacks();
                 }
             } finally {
                 parserLock.readLock().unlock();
             }
+
+            raw = Optional.of(newRaw);
         }
     }
 
     @Override
     public void delRaw() {
-        raw = null; //NOPMD
+        raw = Optional.empty();
     }
 
     @Override
@@ -778,12 +790,8 @@ public class Server extends FrameContainer implements CertificateProblemListener
      * Registers callbacks.
      */
     private void doCallbacks() {
-        if (raw != null) {
-            raw.registerCallbacks();
-        }
-
+        raw.ifPresent(Raw::registerCallbacks);
         eventHandler.registerCallbacks();
-
         queries.values().forEach(Query::reregister);
     }
 
@@ -855,6 +863,7 @@ public class Server extends FrameContainer implements CertificateProblemListener
         return parser.orElse(null);
     }
 
+    @Nonnull
     @Override
     public Profile getProfile() {
         return profile;
@@ -995,9 +1004,7 @@ public class Server extends FrameContainer implements CertificateProblemListener
         closeQueries();
         removeInvites();
 
-        if (raw != null) {
-            raw.close();
-        }
+        raw.ifPresent(FrameContainer::close);
 
         // Inform any parents that the window is closing
         manager.unregisterServer(this);
@@ -1441,7 +1448,7 @@ public class Server extends FrameContainer implements CertificateProblemListener
 
     @Override
     public List<Invite> getInvites() {
-        return invites;
+        return Collections.unmodifiableList(invites);
     }
 
     @Override
