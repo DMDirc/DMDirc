@@ -22,24 +22,15 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.colours.Colour;
 
-import java.awt.Color;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
-import javax.swing.UIManager;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -94,12 +85,12 @@ public class Styliser implements ConfigChangeListener {
     /** Defines all characters allowed in URLs that aren't treated as trailing punct. */
     private static final String URL_NOPUNCT = "a-z0-9$\\-_@&\\+\\*\\(\\)=/#%~\\|";
     /** Defines all characters allowed in URLs per W3C specs. */
-    private static final String URL_CHARS = "[" + URL_PUNCT_LEGAL + URL_NOPUNCT
+    private static final String URL_CHARS = '[' + URL_PUNCT_LEGAL + URL_NOPUNCT
             + "]*[" + URL_NOPUNCT + "]+[" + URL_PUNCT_LEGAL + URL_NOPUNCT + "]*";
     /** The regular expression to use for marking up URLs. */
     private static final String URL_REGEXP = "(?i)((?>(?<!" + CODE_HEXCOLOUR
             + "[a-f0-9]{5})[a-f]|[g-z+])+://" + URL_CHARS
-            + "|(?<![a-z0-9:/])www\\." + URL_CHARS + ")";
+            + "|(?<![a-z0-9:/])www\\." + URL_CHARS + ')';
     /** Regular expression for intelligent handling of closing brackets. */
     private static final String URL_INT1 = "(\\([^\\)" + HYPERLINK_CHARS
             + "]*(?:[" + HYPERLINK_CHARS + "][^" + HYPERLINK_CHARS + "]*["
@@ -120,8 +111,6 @@ public class Styliser implements ConfigChangeListener {
     /** The regular expression to use for marking up channels. */
     private static final String URL_CHANNEL = "(?i)(?<![^\\s\\+@\\-<>\\(\"',])([\\Q%s\\E]"
             + RESERVED_CHARS + "+)";
-    /** The event bus to post errors to. */
-    private final DMDircMBassador eventBus;
     /** Whether or not we should style links. */
     private boolean styleURIs;
     /** Whether or not we should style channel names. */
@@ -149,12 +138,10 @@ public class Styliser implements ConfigChangeListener {
      */
     public Styliser(@Nullable final Connection connection,
             final AggregateConfigProvider configManager,
-            final ColourManager colourManager,
-            final DMDircMBassador eventBus) {
+            final ColourManager colourManager) {
         this.connection = connection;
         this.configManager = configManager;
         this.colourManager = colourManager;
-        this.eventBus = eventBus;
 
         configManager.addChangeListener("ui", "linkcolour", this);
         configManager.addChangeListener("ui", "channelcolour", this);
@@ -169,25 +156,14 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Stylises the specified strings and adds them to the specified document.
+     * Stylises the specified strings and adds them to the specified maker.
      *
-     * @param styledDoc Document to add the styled strings to
-     * @param strings   The lines to be stylised
+     * @param maker   The message maker to add styling to.
+     * @param strings The lines to be stylised
      */
-    public void addStyledString(final StyledDocument styledDoc, final String[] strings) {
-        addStyledString(styledDoc, strings, new SimpleAttributeSet());
-    }
+    public void addStyledString(final StyledMessageMaker<?> maker, final String... strings) {
+        maker.resetAllStyles();
 
-    /**
-     * Stylises the specified strings and adds them to the specified document.
-     *
-     * @param styledDoc Document to add the styled strings to
-     * @param strings   The lines to be stylised
-     * @param attribs   Base attribute set
-     */
-    public void addStyledString(final StyledDocument styledDoc,
-            final String[] strings, final SimpleAttributeSet attribs) {
-        resetAttributes(attribs);
         for (String string : strings) {
             final char[] chars = string.toCharArray();
 
@@ -197,31 +173,21 @@ public class Styliser implements ConfigChangeListener {
                 }
             }
 
-            try {
-                int offset = styledDoc.getLength();
-                int position = 0;
+            int position = 0;
 
-                final String target =
-                        doSmilies(doLinks(new String(chars).replaceAll(INTERNAL_CHARS, "")));
+            final String target =
+                    doSmilies(doLinks(new String(chars).replaceAll(INTERNAL_CHARS, "")));
+            final StyliserState state = new StyliserState();
 
-                attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
+            while (position < target.length()) {
+                final String next = readUntilControl(target.substring(position));
+                maker.appendString(next);
+                position += next.length();
 
-                while (position < target.length()) {
-                    final String next = readUntilControl(target.substring(position));
-
-                    styledDoc.insertString(offset, next, attribs);
-
-                    position += next.length();
-                    offset += next.length();
-
-                    if (position < target.length()) {
-                        position += readControlChars(target.substring(position), attribs,
-                                position == 0);
-                    }
+                if (position < target.length()) {
+                    position += readControlChars(target.substring(position), state, maker,
+                            position == 0);
                 }
-            } catch (BadLocationException ex) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                        "Unable to insert styled string: " + ex.getMessage(), ""));
             }
         }
     }
@@ -232,13 +198,23 @@ public class Styliser implements ConfigChangeListener {
      * @param strings The line to be stylised
      *
      * @return StyledDocument for the inputted strings
+     * @deprecated Use {@link #getStyledString(String[], StyledMessageMaker)}.
      */
-    public StyledDocument getStyledString(final String[] strings) {
-        final StyledDocument styledDoc = new DefaultStyledDocument();
+    @Deprecated
+    public StyledDocument getStyledString(final String... strings) {
+        return getStyledString(strings, new StyledDocumentMaker());
+    }
 
-        addStyledString(styledDoc, strings);
-
-        return styledDoc;
+    /**
+     * Stylises the specified string.
+     *
+     * @param strings The line to be stylised
+     *
+     * @return StyledDocument for the inputted strings
+     */
+    public <T> T getStyledString(final String[] strings, final StyledMessageMaker<T> maker) {
+        addStyledString(maker, strings);
+        return maker.getStyledMessage();
     }
 
     /**
@@ -362,8 +338,7 @@ public class Styliser implements ConfigChangeListener {
                 + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + "]|"
                 + CODE_HEXCOLOUR + "([A-Za-z0-9]{6}(,[A-Za-z0-9]{6})?)?|"
                 + CODE_COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "")
-                .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
-                        + CODE_TOOLTIP, "$1");
+                .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)" + CODE_TOOLTIP, "$1");
     }
 
     /**
@@ -377,7 +352,7 @@ public class Styliser implements ConfigChangeListener {
      */
     public static String stipInternalControlCodes(final String input) {
         return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK + CODE_NICKNAME
-                + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + "]", "")
+                + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + ']', "")
                 .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
                         + CODE_TOOLTIP, "$1");
     }
@@ -432,19 +407,19 @@ public class Styliser implements ConfigChangeListener {
      * applies it to the specified attribute set.
      *
      * @return The number of characters read as control characters
-     *
-     * @param string  The string to read from
-     * @param attribs The attribute set that new attributes will be applied to
+     *@param string  The string to read from
+     * @param maker The attribute set that new attributes will be applied to
      * @param isStart Whether this is at the start of the string or not
      */
     private int readControlChars(final String string,
-            final SimpleAttributeSet attribs, final boolean isStart) {
-        final boolean isNegated = attribs.containsAttribute("NegateControl", Boolean.TRUE);
+            final StyliserState state,
+            final StyledMessageMaker<?> maker, final boolean isStart) {
+        final boolean isNegated = state.isNegated;
 
         // Bold
         if (string.charAt(0) == CODE_BOLD) {
             if (!isNegated) {
-                toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
+                maker.toggleBold();
             }
 
             return 1;
@@ -453,7 +428,7 @@ public class Styliser implements ConfigChangeListener {
         // Underline
         if (string.charAt(0) == CODE_UNDERLINE) {
             if (!isNegated) {
-                toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
+                maker.toggleUnderline();
             }
 
             return 1;
@@ -462,7 +437,7 @@ public class Styliser implements ConfigChangeListener {
         // Italic
         if (string.charAt(0) == CODE_ITALIC) {
             if (!isNegated) {
-                toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
+                maker.toggleItalic();
             }
 
             return 1;
@@ -470,43 +445,44 @@ public class Styliser implements ConfigChangeListener {
 
         // Hyperlinks
         if (string.charAt(0) == CODE_HYPERLINK) {
-            if (!isNegated) {
-                toggleURI(attribs);
+            if (!isNegated && styleURIs) {
+                maker.toggleHyperlinkStyle(uriColour);
             }
 
-            if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
-                attribs.addAttribute(IRCTextAttribute.HYPERLINK,
-                        readUntilControl(string.substring(1)));
+            if (state.isInLink) {
+                maker.endHyperlink();
             } else {
-                attribs.removeAttribute(IRCTextAttribute.HYPERLINK);
+                maker.startHyperlink(readUntilControl(string.substring(1)));
             }
+            state.isInLink = !state.isInLink;
+
             return 1;
         }
 
         // Channel links
         if (string.charAt(0) == CODE_CHANNEL) {
-            if (!isNegated) {
-                toggleChannel(attribs);
+            if (!isNegated && styleChannels) {
+                maker.toggleChannelLinkStyle(channelColour);
             }
 
-            if (attribs.getAttribute(IRCTextAttribute.CHANNEL) == null) {
-                attribs.addAttribute(IRCTextAttribute.CHANNEL,
-                        readUntilControl(string.substring(1)));
+            if (state.isInLink) {
+                maker.endChannelLink();
             } else {
-                attribs.removeAttribute(IRCTextAttribute.CHANNEL);
+                maker.startChannelLink(readUntilControl(string.substring(1)));
             }
+            state.isInLink = !state.isInLink;
 
             return 1;
         }
 
         // Nickname links
         if (string.charAt(0) == CODE_NICKNAME) {
-            if (attribs.getAttribute(IRCTextAttribute.NICKNAME) == null) {
-                attribs.addAttribute(IRCTextAttribute.NICKNAME,
-                        readUntilControl(string.substring(1)));
+            if (state.isInLink) {
+                maker.endNicknameLink();
             } else {
-                attribs.removeAttribute(IRCTextAttribute.NICKNAME);
+                maker.startNicknameLink(readUntilControl(string.substring(1)));
             }
+            state.isInLink = !state.isInLink;
 
             return 1;
         }
@@ -514,12 +490,7 @@ public class Styliser implements ConfigChangeListener {
         // Fixed pitch
         if (string.charAt(0) == CODE_FIXED) {
             if (!isNegated) {
-                if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
-                    attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
-                } else {
-                    attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
-                    attribs.addAttribute(StyleConstants.FontConstants.FontFamily, "monospaced");
-                }
+                maker.toggleFixedWidth();
             }
 
             return 1;
@@ -528,7 +499,7 @@ public class Styliser implements ConfigChangeListener {
         // Stop formatting
         if (string.charAt(0) == CODE_STOP) {
             if (!isNegated) {
-                resetAttributes(attribs);
+                maker.resetAllStyles();
             }
 
             return 1;
@@ -542,15 +513,17 @@ public class Styliser implements ConfigChangeListener {
                 int foreground = string.charAt(count) - '0';
                 count++;
                 if (string.length() > count && isInt(string.charAt(count))) {
-                    foreground = foreground * 10 + (string.charAt(count) - '0');
+                    foreground = foreground * 10 + string.charAt(count) - '0';
                     count++;
                 }
                 foreground %= 16;
 
                 if (!isNegated) {
-                    setForeground(attribs, String.valueOf(foreground));
+                    maker.setForeground(colourManager.getColourFromString(
+                            String.valueOf(foreground), Colour.WHITE));
                     if (isStart) {
-                        setDefaultForeground(attribs, String.valueOf(foreground));
+                        maker.setDefaultForeground(colourManager
+                                .getColourFromString(String.valueOf(foreground), Colour.WHITE));
                     }
                 }
 
@@ -561,20 +534,22 @@ public class Styliser implements ConfigChangeListener {
                     int background = string.charAt(count + 1) - '0';
                     count += 2; // Comma and first digit
                     if (string.length() > count && isInt(string.charAt(count))) {
-                        background = background * 10 + (string.charAt(count) - '0');
+                        background = background * 10 + string.charAt(count) - '0';
                         count++;
                     }
                     background %= 16;
 
                     if (!isNegated) {
-                        setBackground(attribs, String.valueOf(background));
+                        maker.setBackground(colourManager
+                                .getColourFromString(String.valueOf(background), Colour.WHITE));
                         if (isStart) {
-                            setDefaultBackground(attribs, String.valueOf(background));
+                            maker.setDefaultBackground(colourManager
+                                    .getColourFromString(String.valueOf(background), Colour.WHITE));
                         }
                     }
                 }
             } else if (!isNegated) {
-                resetColour(attribs);
+                maker.resetColours();
             }
             return count;
         }
@@ -584,9 +559,13 @@ public class Styliser implements ConfigChangeListener {
             int count = 1;
             if (hasHexString(string, 1)) {
                 if (!isNegated) {
-                    setForeground(attribs, string.substring(1, 7).toUpperCase());
+                    maker.setForeground(
+                            colourManager.getColourFromString(string.substring(1, 7).toUpperCase(),
+                                    Colour.WHITE));
                     if (isStart) {
-                        setDefaultForeground(attribs, string.substring(1, 7).toUpperCase());
+                        maker.setDefaultForeground(
+                                colourManager.getColourFromString(
+                                        string.substring(1, 7).toUpperCase(), Colour.WHITE));
                     }
                 }
 
@@ -600,43 +579,45 @@ public class Styliser implements ConfigChangeListener {
                     count++;
 
                     if (!isNegated) {
-                        setBackground(attribs, string.substring(count, count + 6).toUpperCase());
+                        maker.setBackground(colourManager.getColourFromString(
+                                string.substring(count, count + 6).toUpperCase(), Colour.WHITE));
                         if (isStart) {
-                            setDefaultBackground(attribs,
-                                    string.substring(count, count + 6).toUpperCase());
+                            maker.setDefaultBackground(colourManager.getColourFromString(
+                                    string.substring(count, count + 6).toUpperCase(), Colour.WHITE));
                         }
                     }
 
                     count += 6;
                 }
             } else if (!isNegated) {
-                resetColour(attribs);
+                maker.resetColours();
             }
             return count;
         }
 
         // Control code negation
         if (string.charAt(0) == CODE_NEGATE) {
-            toggleAttribute(attribs, "NegateControl");
+            state.isNegated = !state.isNegated;
             return 1;
         }
 
         // Smilies!!
         if (string.charAt(0) == CODE_SMILIE) {
-            if (attribs.getAttribute(IRCTextAttribute.SMILEY) == null) {
-                final String smilie = readUntilControl(string.substring(1));
-
-                attribs.addAttribute(IRCTextAttribute.SMILEY, "smilie-" + smilie);
+            if (state.isInSmilie) {
+                maker.endSmilie();
             } else {
-                attribs.removeAttribute(IRCTextAttribute.SMILEY);
+                maker.startSmilie("smilie-" + readUntilControl(string.substring(1)));
             }
+            state.isInSmilie = !state.isInSmilie;
 
             return 1;
         }
 
         // Tooltips
         if (string.charAt(0) == CODE_TOOLTIP) {
-            if (attribs.getAttribute(IRCTextAttribute.TOOLTIP) == null) {
+            if (state.isInToolTip) {
+                maker.endToolTip();
+            } else {
                 final int index = string.indexOf(CODE_TOOLTIP, 1);
 
                 if (index == -1) {
@@ -646,12 +627,11 @@ public class Styliser implements ConfigChangeListener {
 
                 final String tooltip = string.substring(1, index);
 
-                attribs.addAttribute(IRCTextAttribute.TOOLTIP, tooltip);
+                maker.startToolTip(tooltip);
 
                 return tooltip.length() + 2;
-            } else {
-                attribs.removeAttribute(IRCTextAttribute.TOOLTIP);
             }
+            state.isInToolTip = !state.isInToolTip;
 
             return 1;
         }
@@ -678,7 +658,7 @@ public class Styliser implements ConfigChangeListener {
      * @return True iff the character is in the range [0-F], false otherwise
      */
     private static boolean isHex(final char c) {
-        return isInt(c) || (c >= 'A' && c <= 'F');
+        return isInt(c) || c >= 'A' && c <= 'F';
     }
 
     /**
@@ -702,195 +682,6 @@ public class Styliser implements ConfigChangeListener {
         return res;
     }
 
-    /**
-     * Toggles the various channel link-related attributes.
-     *
-     * @param attribs The attributes to be modified.
-     */
-    private void toggleChannel(final SimpleAttributeSet attribs) {
-        if (styleChannels) {
-            toggleLink(attribs, IRCTextAttribute.CHANNEL, channelColour);
-        }
-    }
-
-    /**
-     * Toggles the various hyperlink-related attributes.
-     *
-     * @param attribs The attributes to be modified.
-     */
-    private void toggleURI(final SimpleAttributeSet attribs) {
-        if (styleURIs) {
-            toggleLink(attribs, IRCTextAttribute.HYPERLINK, uriColour);
-        }
-    }
-
-    /**
-     * Toggles the attributes for a link.
-     *
-     * @since 0.6.4
-     * @param attribs   The attributes to modify
-     * @param attribute The attribute indicating whether the link is open or closed
-     * @param colour    The colour to colour the link
-     */
-    private void toggleLink(final SimpleAttributeSet attribs,
-            final IRCTextAttribute attribute, final Colour colour) {
-
-        if (attribs.getAttribute(attribute) == null) {
-            // Add the hyperlink style
-
-            if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
-                attribs.addAttribute("restoreUnderline", Boolean.TRUE);
-            } else {
-                attribs.addAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE);
-            }
-
-            if (colour != null) {
-                final Object foreground = attribs.getAttribute(
-                        StyleConstants.FontConstants.Foreground);
-
-                if (foreground != null) {
-                    attribs.addAttribute("restoreColour", foreground);
-                    attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
-                }
-
-                attribs.addAttribute(StyleConstants.FontConstants.Foreground, convertColour(colour));
-            }
-
-        } else {
-            // Remove the hyperlink style
-
-            if (attribs.containsAttribute("restoreUnderline", Boolean.TRUE)) {
-                attribs.removeAttribute("restoreUnderline");
-            } else {
-                attribs.removeAttribute(StyleConstants.FontConstants.Underline);
-            }
-
-            if (colour != null) {
-                attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
-                final Object foreground = attribs.getAttribute("restoreColour");
-                if (foreground != null) {
-                    attribs.addAttribute(StyleConstants.FontConstants.Foreground, foreground);
-                    attribs.removeAttribute("restoreColour");
-                }
-            }
-        }
-    }
-
-    /**
-     * Toggles the specified attribute. If the attribute exists in the attribute set, it is removed.
-     * Otherwise, it is added with a value of Boolean.True.
-     *
-     * @param attribs The attribute set to check
-     * @param attrib  The attribute to toggle
-     */
-    private static void toggleAttribute(final SimpleAttributeSet attribs,
-            final Object attrib) {
-        if (attribs.containsAttribute(attrib, Boolean.TRUE)) {
-            attribs.removeAttribute(attrib);
-        } else {
-            attribs.addAttribute(attrib, Boolean.TRUE);
-        }
-    }
-
-    /**
-     * Resets all attributes in the specified attribute list.
-     *
-     * @param attribs The attribute list whose attributes should be reset
-     */
-    private static void resetAttributes(final SimpleAttributeSet attribs) {
-        if (attribs.containsAttribute(StyleConstants.FontConstants.Bold, Boolean.TRUE)) {
-            attribs.removeAttribute(StyleConstants.FontConstants.Bold);
-        }
-        if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
-            attribs.removeAttribute(StyleConstants.FontConstants.Underline);
-        }
-        if (attribs.containsAttribute(StyleConstants.FontConstants.Italic, Boolean.TRUE)) {
-            attribs.removeAttribute(StyleConstants.FontConstants.Italic);
-        }
-        if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
-            final Object defaultFont = attribs.getAttribute("DefaultFontFamily");
-            attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
-            attribs.addAttribute(StyleConstants.FontConstants.FontFamily, defaultFont);
-        }
-        resetColour(attribs);
-    }
-
-    /**
-     * Resets the colour attributes in the specified attribute set.
-     *
-     * @param attribs The attribute set whose colour attributes should be reset
-     */
-    private static void resetColour(final SimpleAttributeSet attribs) {
-        if (attribs.isDefined(StyleConstants.Foreground)) {
-            attribs.removeAttribute(StyleConstants.Foreground);
-        }
-        if (attribs.isDefined("DefaultForeground")) {
-            attribs.addAttribute(StyleConstants.Foreground,
-                    attribs.getAttribute("DefaultForeground"));
-        }
-        if (attribs.isDefined(StyleConstants.Background)) {
-            attribs.removeAttribute(StyleConstants.Background);
-        }
-        if (attribs.isDefined("DefaultBackground")) {
-            attribs.addAttribute(StyleConstants.Background,
-                    attribs.getAttribute("DefaultBackground"));
-        }
-    }
-
-    /**
-     * Sets the foreground colour in the specified attribute set to the colour corresponding to the
-     * specified colour code or hex.
-     *
-     * @param attribs    The attribute set to modify
-     * @param foreground The colour code/hex of the new foreground colour
-     */
-    private void setForeground(final SimpleAttributeSet attribs,
-            final String foreground) {
-        if (attribs.isDefined(StyleConstants.Foreground)) {
-            attribs.removeAttribute(StyleConstants.Foreground);
-        }
-        attribs.addAttribute(StyleConstants.Foreground,
-                convertColour(colourManager.getColourFromString(foreground, Colour.WHITE)));
-    }
-
-    /**
-     * Sets the background colour in the specified attribute set to the colour corresponding to the
-     * specified colour code or hex.
-     *
-     * @param attribs    The attribute set to modify
-     * @param background The colour code/hex of the new background colour
-     */
-    private void setBackground(final SimpleAttributeSet attribs,
-            final String background) {
-        if (attribs.isDefined(StyleConstants.Background)) {
-            attribs.removeAttribute(StyleConstants.Background);
-        }
-        attribs.addAttribute(StyleConstants.Background,
-                convertColour(colourManager.getColourFromString(background, Colour.WHITE)));
-    }
-
-    /**
-     * Sets the default foreground colour (used after an empty ctrl+k or a ctrl+o).
-     *
-     * @param attribs    The attribute set to apply this default on
-     * @param foreground The default foreground colour
-     */
-    private void setDefaultForeground(final SimpleAttributeSet attribs, final String foreground) {
-        attribs.addAttribute("DefaultForeground",
-                convertColour(colourManager.getColourFromString(foreground, Colour.WHITE)));
-    }
-
-    /**
-     * Sets the default background colour (used after an empty ctrl+k or a ctrl+o).
-     *
-     * @param attribs    The attribute set to apply this default on
-     * @param background The default background colour
-     */
-    private void setDefaultBackground(final SimpleAttributeSet attribs, final String background) {
-        attribs.addAttribute("DefaultBackground",
-                convertColour(colourManager.getColourFromString(background, Colour.WHITE)));
-    }
-
     @Override
     public void configChanged(final String domain, final String key) {
         switch (key) {
@@ -911,16 +702,13 @@ public class Styliser implements ConfigChangeListener {
         }
     }
 
-    /**
-     * Converts a DMDirc {@link Colour} into an AWT-specific {@link Color} by copying the values of
-     * the red, green and blue channels.
-     *
-     * @param colour The colour to be converted
-     *
-     * @return A corresponding AWT colour
-     */
-    private static Color convertColour(final Colour colour) {
-        return new Color(colour.getRed(), colour.getGreen(), colour.getBlue());
+    private static class StyliserState {
+
+        public boolean isNegated;
+        public boolean isInLink;
+        public boolean isInSmilie;
+        public boolean isInToolTip;
+
     }
 
 }
