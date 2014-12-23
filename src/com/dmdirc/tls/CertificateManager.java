@@ -30,7 +30,6 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.util.collections.ListenerList;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,8 +72,6 @@ import com.migcomponents.migbase64.Base64;
  */
 public class CertificateManager implements X509TrustManager {
 
-    /** List of listeners. */
-    private final ListenerList listeners = new ListenerList();
     /** Connection that owns this manager. */
     private final Connection connection;
     /** The server name the user is trying to connect to. */
@@ -338,11 +335,6 @@ public class CertificateManager implements X509TrustManager {
             eventBus.publishAsync(new ServerCertificateProblemEncounteredEvent(
                     connection, this, Arrays.asList(chain), problems));
 
-            for (CertificateProblemListener listener : listeners.get(
-                    CertificateProblemListener.class)) {
-                listener.certificateProblemEncountered(chain, problems, this);
-            }
-
             try {
                 actionSem.acquire();
             } catch (InterruptedException ie) {
@@ -351,11 +343,6 @@ public class CertificateManager implements X509TrustManager {
                 problems.clear();
 
                 eventBus.publishAsync(new ServerCertificateProblemResolvedEvent(connection, this));
-
-                for (CertificateProblemListener listener : listeners.get(
-                        CertificateProblemListener.class)) {
-                    listener.certificateProblemResolved(this);
-                }
             }
 
             switch (action) {
@@ -441,24 +428,6 @@ public class CertificateManager implements X509TrustManager {
     @Override
     public X509Certificate[] getAcceptedIssuers() {
         return globalTrustedCAs.toArray(new X509Certificate[globalTrustedCAs.size()]);
-    }
-
-    /**
-     * Adds a new certificate problem listener to this manager.
-     *
-     * @param listener The listener to be added
-     */
-    public void addCertificateProblemListener(final CertificateProblemListener listener) {
-        listeners.add(CertificateProblemListener.class, listener);
-    }
-
-    /**
-     * Removes the specified listener from this manager.
-     *
-     * @param listener The listener to be removed
-     */
-    public void removeCertificateProblemListener(final CertificateProblemListener listener) {
-        listeners.remove(CertificateProblemListener.class, listener);
     }
 
 }

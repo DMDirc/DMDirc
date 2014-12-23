@@ -57,7 +57,6 @@ import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.tls.CertificateManager;
-import com.dmdirc.tls.CertificateProblemListener;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
@@ -75,8 +74,6 @@ import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -108,7 +105,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The Server class represents the client's view of a server. It maintains a list of all channels,
  * queries, etc, and handles parser callbacks pertaining to the server.
  */
-public class Server extends FrameContainer implements CertificateProblemListener, Connection {
+public class Server extends FrameContainer implements Connection {
 
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
@@ -169,8 +166,6 @@ public class Server extends FrameContainer implements CertificateProblemListener
     private final IgnoreList ignoreList = new IgnoreList();
     /** Our string convertor. */
     private StringConverter converter = new DefaultStringConverter();
-    /** The certificate manager in use, if any. */
-    private CertificateManager certificateManager;
     /** ParserFactory we use for creating parsers. */
     private final ParserFactory parserFactory;
     /** ServerManager that created us. */
@@ -667,12 +662,12 @@ public class Server extends FrameContainer implements CertificateProblemListener
         final Parser myParser = parserFactory.getParser(profile, address).orElse(null);
 
         if (myParser instanceof SecureParser) {
-            certificateManager = new CertificateManager(
-                    this, address.getHost(), getConfigManager(), userSettings, getEventBus());
+            final CertificateManager certificateManager =
+                    new CertificateManager(this, address.getHost(), getConfigManager(),
+                            userSettings, getEventBus());
             final SecureParser secureParser = (SecureParser) myParser;
             secureParser.setTrustManagers(new TrustManager[]{certificateManager});
             secureParser.setKeyManagers(certificateManager.getKeyManager());
-            certificateManager.addCertificateProblemListener(this);
         }
 
         if (myParser instanceof EncodingParser) {
@@ -1460,37 +1455,6 @@ public class Server extends FrameContainer implements CertificateProblemListener
                 }
             }
         }, "Away state listener runner").start();
-    }
-
-    @Override
-    public void addCertificateProblemListener(final CertificateProblemListener listener) {
-        listeners.add(CertificateProblemListener.class, listener);
-
-        if (certificateManager != null && !certificateManager.getProblems().isEmpty()) {
-            listener.certificateProblemEncountered(certificateManager.getChain(),
-                    certificateManager.getProblems(), certificateManager);
-        }
-    }
-
-    @Override
-    public void removeCertificateProblemListener(final CertificateProblemListener listener) {
-        listeners.remove(CertificateProblemListener.class, listener);
-    }
-
-    @Override
-    public void certificateProblemEncountered(final X509Certificate[] chain,
-            final Collection<CertificateException> problems,
-            final CertificateManager certificateManager) {
-        for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {
-            listener.certificateProblemEncountered(chain, problems, certificateManager);
-        }
-    }
-
-    @Override
-    public void certificateProblemResolved(final CertificateManager manager) {
-        for (CertificateProblemListener listener : listeners.get(CertificateProblemListener.class)) {
-            listener.certificateProblemResolved(manager);
-        }
     }
 
 }
