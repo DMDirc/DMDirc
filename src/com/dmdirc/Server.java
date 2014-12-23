@@ -166,8 +166,6 @@ public class Server extends FrameContainer implements Connection {
     private final IgnoreList ignoreList = new IgnoreList();
     /** Our string convertor. */
     private StringConverter converter = new DefaultStringConverter();
-    /** The certificate manager in use, if any. */
-    private CertificateManager certificateManager;
     /** ParserFactory we use for creating parsers. */
     private final ParserFactory parserFactory;
     /** ServerManager that created us. */
@@ -664,8 +662,9 @@ public class Server extends FrameContainer implements Connection {
         final Parser myParser = parserFactory.getParser(profile, address).orElse(null);
 
         if (myParser instanceof SecureParser) {
-            certificateManager = new CertificateManager(
-                    this, address.getHost(), getConfigManager(), userSettings, getEventBus());
+            final CertificateManager certificateManager =
+                    new CertificateManager(this, address.getHost(), getConfigManager(),
+                            userSettings, getEventBus());
             final SecureParser secureParser = (SecureParser) myParser;
             secureParser.setTrustManagers(new TrustManager[]{certificateManager});
             secureParser.setKeyManagers(certificateManager.getKeyManager());
