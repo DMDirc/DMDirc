@@ -110,8 +110,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The Server class represents the client's view of a server. It maintains a list of all channels,
  * queries, etc, and handles parser callbacks pertaining to the server.
  */
-public class Server extends FrameContainer implements ConfigChangeListener,
-        CertificateProblemListener, Connection {
+public class Server extends FrameContainer implements CertificateProblemListener, Connection {
 
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
@@ -189,6 +188,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
     private final ScheduledExecutorService executorService;
     /** The message encoder factory to create a message encoder with. */
     private final MessageEncoderFactory messageEncoderFactory;
+    /** Listener to use for config changes. */
+    private final ConfigChangeListener configListener = (domain, key) -> updateTitle();
     /** The future used when a who timer is scheduled. */
     private ScheduledFuture<?> whoTimerFuture;
     /** The future used when a reconnect timer is scheduled. */
@@ -251,8 +252,8 @@ public class Server extends FrameContainer implements ConfigChangeListener,
 
         updateIcon();
 
-        getConfigManager().addChangeListener("formatter", "serverName", this);
-        getConfigManager().addChangeListener("formatter", "serverTitle", this);
+        getConfigManager().addChangeListener("formatter", "serverName", configListener);
+        getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
     }
 
     /**
@@ -981,7 +982,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
         synchronized (myStateLock) {
             // Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();
-            getConfigManager().removeListener(this);
+            getConfigManager().removeListener(configListener);
             executorService.shutdown();
 
             // Trigger any actions necessary
@@ -1084,13 +1085,6 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             } finally {
                 parserLock.readLock().unlock();
             }
-        }
-    }
-
-    @Override
-    public void configChanged(final String domain, final String key) {
-        if ("formatter".equals(domain)) {
-            updateTitle();
         }
     }
 
@@ -1398,9 +1392,7 @@ public class Server extends FrameContainer implements ConfigChangeListener,
             invites.add(invite);
 
             synchronized (listeners) {
-                for (InviteListener listener : listeners.get(InviteListener.class)) {
-                    listener.inviteReceived(this, invite);
-                }
+                listeners.getCallable(InviteListener.class).inviteReceived(this, invite);
             }
         }
     }
