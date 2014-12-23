@@ -37,7 +37,6 @@ import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
@@ -131,24 +130,6 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
 
     private String formatTimestamp(final long timestamp) {
         return Formatter.formatMessage(configManager, "timestamp", new Date(timestamp));
-    }
-
-    /**
-     * Adds the stylised strings to the canvas. Each part of the array is treated as a separate
-     * namespace for stylising but are all added on the same line.
-     *
-     * @param text stylised strings to add to the document
-     */
-    public void addText(final List<String[]> text) {
-        final int start;
-        synchronized (lines) {
-            start = lines.size();
-            lines.addAll(text.stream()
-                    // TODO: Handle timestamps properly, don't use an array.
-                    .map(string -> new Line(styliser, string[0], string[1], fontSize, fontName))
-                    .collect(Collectors.toList()));
-        }
-        fireLinesAdded(start, text.size());
     }
 
     /**
