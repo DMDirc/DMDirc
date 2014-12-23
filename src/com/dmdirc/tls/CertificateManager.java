@@ -23,7 +23,10 @@
 package com.dmdirc.tls;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.ServerCertificateProblemEncounteredEvent;
+import com.dmdirc.events.ServerCertificateProblemResolvedEvent;
 import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
@@ -72,6 +75,8 @@ public class CertificateManager implements X509TrustManager {
 
     /** List of listeners. */
     private final ListenerList listeners = new ListenerList();
+    /** Connection that owns this manager. */
+    private final Connection connection;
     /** The server name the user is trying to connect to. */
     private final String serverName;
     /** The configuration manager to use for settings. */
@@ -106,10 +111,12 @@ public class CertificateManager implements X509TrustManager {
      * @param eventBus     The event bus to post errors to
      */
     public CertificateManager(
+            final Connection connection,
             final String serverName,
             final AggregateConfigProvider config,
             final ConfigProvider userSettings,
             final DMDircMBassador eventBus) {
+        this.connection = connection;
         this.serverName = serverName;
         this.config = config;
         this.checkDate = config.getOptionBool("ssl", "checkdate");
@@ -328,6 +335,9 @@ public class CertificateManager implements X509TrustManager {
         }
 
         if (!problems.isEmpty() && !manual) {
+            eventBus.publishAsync(new ServerCertificateProblemEncounteredEvent(
+                    connection, this, Arrays.asList(chain), problems));
+
             for (CertificateProblemListener listener : listeners.get(
                     CertificateProblemListener.class)) {
                 listener.certificateProblemEncountered(chain, problems, this);
@@ -339,6 +349,8 @@ public class CertificateManager implements X509TrustManager {
                 throw new CertificateException("Thread aborted", ie);
             } finally {
                 problems.clear();
+
+                eventBus.publishAsync(new ServerCertificateProblemResolvedEvent(connection, this));
 
                 for (CertificateProblemListener listener : listeners.get(
                         CertificateProblemListener.class)) {

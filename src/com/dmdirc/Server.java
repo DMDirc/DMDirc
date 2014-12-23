@@ -668,7 +668,7 @@ public class Server extends FrameContainer implements CertificateProblemListener
 
         if (myParser instanceof SecureParser) {
             certificateManager = new CertificateManager(
-                    address.getHost(), getConfigManager(), userSettings, getEventBus());
+                    this, address.getHost(), getConfigManager(), userSettings, getEventBus());
             final SecureParser secureParser = (SecureParser) myParser;
             secureParser.setTrustManagers(new TrustManager[]{certificateManager});
             secureParser.setKeyManagers(certificateManager.getKeyManager());
