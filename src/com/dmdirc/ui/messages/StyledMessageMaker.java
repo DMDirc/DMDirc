@@ -79,4 +79,11 @@ public interface StyledMessageMaker<T> {
     void startToolTip(String tooltip);
 
     void endToolTip();
+
+    void setDefaultFont(String fontName, int fontSize);
+
+    int getMaximumFontSize();
+
+    void clear();
+
 }

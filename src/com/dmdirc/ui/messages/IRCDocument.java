@@ -22,25 +22,18 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.collections.ListenerList;
-import com.dmdirc.util.collections.RollingList;
 
 import java.awt.Font;
 import java.io.Serializable;
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.swing.UIManager;
-import javax.swing.text.BadLocationException;
 
 /**
  * Data contained in a TextPane.
@@ -53,16 +46,10 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     private final List<Line> lines;
     /** Listener list. */
     private final ListenerList listeners;
-    /** Cached lines. */
-    private final RollingList<Line> cachedLines;
-    /** Cached attributed strings. */
-    private final RollingList<AttributedString> cachedStrings;
     /** Config Manager for getting settings. */
     private final AggregateConfigProvider configManager;
     /** This document's styliser. */
     private final Styliser styliser;
-    /** The event bus to post errors to. */
-    private final DMDircMBassador eventBus;
     /** Font size. */
     private int fontSize;
     /** Font name. */
@@ -70,17 +57,13 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     /** Frame buffer size. */
     private Integer frameBufferSize;
 
-    public IRCDocument(final AggregateConfigProvider configManager,
-            final Styliser styliser, final DMDircMBassador eventBus) {
+    public IRCDocument(final AggregateConfigProvider configManager, final Styliser styliser) {
         this.configManager = configManager;
         this.styliser = styliser;
-        this.eventBus = eventBus;
 
         lines = new ArrayList<>();
         listeners = new ListenerList();
 
-        cachedLines = new RollingList<>(50);
-        cachedStrings = new RollingList<>(50);
         frameBufferSize = configManager.getOptionInt("ui", "frameBufferSize", false);
 
         configManager.addChangeListener("ui", "textPaneFontSize", this);
@@ -225,49 +208,6 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     }
 
     /**
-     * Returns an attributed character iterator for a particular line, utilising the document cache
-     * where possible.
-     *
-     * @param line Line to be styled
-     *
-     * @return Styled line
-     */
-    protected AttributedCharacterIterator getStyledLine(final Line line) {
-        synchronized (lines) {
-            AttributedString styledLine = null;
-            if (cachedLines.contains(line)) {
-                final int index = cachedLines.getList().indexOf(line);
-                styledLine = cachedStrings.get(index);
-            }
-
-            if (styledLine == null) {
-                try {
-                    styledLine = line.getStyled();
-                } catch (BadLocationException ex) {
-                    eventBus.publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
-                            "Unable to add line: " + ex.getMessage(),  ""));
-                }
-                cachedLines.add(line);
-                cachedStrings.add(styledLine);
-            }
-            // TODO: Consider what to do if this is null from the BLE above
-            return styledLine.getIterator();
-        }
-    }
-
-    /**
-     * Returns an attributed string for a particular line, utilising the document cache where
-     * possible.
-     *
-     * @param line Line number to be styled
-     *
-     * @return Styled line
-     */
-    public AttributedCharacterIterator getStyledLine(final int line) {
-        return getStyledLine(getLine(line));
-    }
-
-    /**
      * Returns the line height of the specified line.
      *
      * @param line Line
@@ -311,8 +251,6 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
     @Override
     public void configChanged(final String domain, final String key) {
         setCachedSettings();
-        cachedLines.clear();
-        cachedStrings.clear();
         synchronized (lines) {
             for (Line line : lines) {
                 line.setFontName(fontName);

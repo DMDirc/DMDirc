@@ -219,6 +219,28 @@ public class StyledDocumentMaker implements StyledMessageMaker<StyledDocument> {
         attribs.removeAttribute(IRCTextAttribute.TOOLTIP);
     }
 
+    @Override
+    public void setDefaultFont(final String fontName, final int fontSize) {
+        // Don't care
+    }
+
+    @Override
+    public int getMaximumFontSize() {
+        // Don't track
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+        try {
+            attribs.removeAttribute("DefaultBackground");
+            attribs.removeAttribute("DefaultForeground");
+            document.remove(0, document.getLength());
+        } catch (BadLocationException ex) {
+            // Shouldn't happen
+        }
+    }
+
     /**
      * Toggles the specified attribute. If the attribute exists in the attribute set, it is removed.
      * Otherwise, it is added with a value of Boolean.True.
