@@ -23,13 +23,8 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.DisplayPropertyMap;
-import com.dmdirc.ui.core.util.ExtendedAttributedString;
-import com.dmdirc.ui.core.util.Utils;
 
-import java.text.AttributedString;
 import java.util.Arrays;
-
-import javax.swing.text.BadLocationException;
 
 /**
  * Represents a line of text in IRC.
@@ -133,11 +128,12 @@ public class Line {
      *
      * @return AttributedString representing the specified StyledDocument
      */
-    public AttributedString getStyled() throws BadLocationException {
-        final ExtendedAttributedString string = Utils.getAttributedString(
-                styliser, getLineParts(), fontName, fontSize);
-        fontSize = string.getMaxLineHeight();
-        return string.getAttributedString();
+    public <T> T getStyled(final StyledMessageMaker<T> maker) {
+        maker.clear();
+        maker.setDefaultFont(fontName, fontSize);
+        final T styledString = styliser.getStyledString(getLineParts(), maker);
+        fontSize = maker.getMaximumFontSize();
+        return styledString;
     }
 
     @Override

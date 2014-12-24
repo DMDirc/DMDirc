@@ -53,7 +53,7 @@ public class BackBuffer {
                 owner.getConnection().orElse(null),
                 owner.getConfigManager(),
                 colourManagerFactory.getColourManager(owner.getConfigManager()));
-        this.document = new IRCDocument(owner.getConfigManager(), styliser, owner.getEventBus());
+        this.document = new IRCDocument(owner.getConfigManager(), styliser);
         this.eventBus = owner.getEventBus();
         this.formatter = formatter;
         this.configProvider = owner.getConfigManager();

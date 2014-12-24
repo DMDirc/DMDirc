@@ -24,7 +24,6 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.core.util.Utils;
 
 import java.awt.Color;
 import java.awt.font.TextAttribute;
@@ -41,8 +40,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
 @Ignore("Doesn't work in a headless environment (initialises an IRCDocument)")
@@ -72,9 +71,7 @@ public class StyliserStylesTest {
         final Styliser styliser = new Styliser(null, manager, new ColourManager(manager,
                 mock(DMDircMBassador.class)));
         styliser.addStyledString(new StyledDocumentMaker(doc), input);
-        final AttributedCharacterIterator aci = Utils.getAttributedString(styliser,
-                new String[]{input, }, "dialog", 12).
-                getAttributedString().getIterator();
+        final AttributedCharacterIterator aci = null; // TODO...
 
         Map<AttributedCharacterIterator.Attribute, Object> map = null;
         char chr = aci.current();
