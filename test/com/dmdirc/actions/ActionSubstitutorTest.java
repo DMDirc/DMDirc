@@ -78,7 +78,7 @@ public class ActionSubstitutorTest {
         when(channel.getConnection()).thenReturn(Optional.of(server));
         when(channel.getConfigManager()).thenReturn(manager);
         when(server.getState()).thenReturn(ServerState.DISCONNECTED);
-        when(server.getAwayMessage()).thenReturn(Optional.of("foo"));
+        when(server.getAwayMessage()).thenReturn("foo");
         when(server.getProtocol()).thenReturn("$alpha");
 
         when(manager.getOptions(eq("actions"))).thenReturn(SETTINGS);
