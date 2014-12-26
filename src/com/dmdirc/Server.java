@@ -888,8 +888,8 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public Optional<String> getAwayMessage() {
-        return awayMessage;
+    public String getAwayMessage() {
+        return awayMessage.orElse(null);
     }
 
     @Override

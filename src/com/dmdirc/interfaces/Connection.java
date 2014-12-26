@@ -182,9 +182,9 @@ public interface Connection {
     /**
      * Gets the current away message.
      *
-     * @return Optional.empty() is the client is not away, or a textual away message if it is
+     * @return Null if the client isn't away, or a textual away message if it is
      */
-    Optional<String> getAwayMessage();
+    String getAwayMessage();
 
     /**
      * Retrieves the specified channel belonging to this server.
