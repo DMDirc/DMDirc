@@ -66,13 +66,6 @@ public interface Connection {
     void acceptInvites();
 
     /**
-     * Adds an away state lisener to this server.
-     *
-     * @param listener The listener to be added
-     */
-    void addAwayStateListener(final AwayStateListener listener);
-
-    /**
      * Adds a specific channel and window to this server.
      *
      * @param chan channel to add
@@ -189,9 +182,9 @@ public interface Connection {
     /**
      * Gets the current away message.
      *
-     * @return Null if the client isn't away, or a textual away message if it is
+     * @return Optional.empty() is the client is not away, or a textual away message if it is
      */
-    String getAwayMessage();
+    Optional<String> getAwayMessage();
 
     /**
      * Retrieves the specified channel belonging to this server.
@@ -427,13 +420,6 @@ public interface Connection {
     void reconnect();
 
     /**
-     * Removes an away state lisener from this server.
-     *
-     * @param listener The listener to be removed
-     */
-    void removeAwayStateListener(final AwayStateListener listener);
-
-    /**
      * Removes an invite from this server, and fires the appropriate listeners.
      *
      * @param invite The invite to be removed
@@ -476,9 +462,9 @@ public interface Connection {
     /**
      * Updates our away state and fires the relevant listeners.
      *
-     * @param message The away message to use, or null if we're not away.
+     * @param message The away message to use, empty is not away.
      */
-    void updateAwayState(final String message);
+    void updateAwayState(final Optional<String> message);
 
     /**
      * Updates this server's ignore list to use the entries stored in the config manager.

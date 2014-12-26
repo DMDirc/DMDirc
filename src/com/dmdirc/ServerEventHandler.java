@@ -92,6 +92,7 @@ import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
 import com.dmdirc.util.EventUtils;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -311,7 +312,7 @@ public class ServerEventHandler extends EventHandler implements
             final AwayState currentState, final String reason) {
         checkParser(parser);
 
-        owner.updateAwayState(currentState == AwayState.AWAY ? reason : null);
+        owner.updateAwayState(currentState == AwayState.AWAY ? Optional.of(reason) : Optional.empty());
 
         if (oldState == AwayState.UNKNOWN) {
             // Ignore discovered self away states

@@ -35,7 +35,6 @@ import com.dmdirc.events.ServerDisconnectedEvent;
 import com.dmdirc.events.ServerNopingEvent;
 import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.events.StatusBarMessageEvent;
-import com.dmdirc.interfaces.AwayStateListener;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -155,7 +154,7 @@ public class Server extends FrameContainer implements Connection {
     private Optional<Raw> raw = Optional.empty();
 
     /** Our reason for being away, if any. */
-    private String awayMessage;
+    private Optional<String> awayMessage;
     /** Our event handler. */
     private final ServerEventHandler eventHandler;
     /** A list of outstanding invites. */
@@ -885,11 +884,11 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public boolean isAway() {
-        return awayMessage != null;
+        return awayMessage.isPresent();
     }
 
     @Override
-    public String getAwayMessage() {
+    public Optional<String> getAwayMessage() {
         return awayMessage;
     }
 
@@ -1371,37 +1370,12 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public void addAwayStateListener(final AwayStateListener listener) {
-        synchronized (listeners) {
-            listeners.add(AwayStateListener.class, listener);
-        }
-    }
-
-    @Override
-    public void removeAwayStateListener(final AwayStateListener listener) {
-        synchronized (listeners) {
-            listeners.remove(AwayStateListener.class, listener);
-        }
-    }
-
-    @Override
-    public void updateAwayState(final String message) {
-        if (awayMessage != null && awayMessage.equals(message)
-                || awayMessage == null && message == null) {
+    public void updateAwayState(final Optional<String> message) {
+        if (awayMessage.equals(message)) {
             return;
         }
 
         awayMessage = message;
-
-        new Thread(() -> {
-            synchronized (listeners) {
-                if (message == null) {
-                    listeners.get(AwayStateListener.class).forEach(AwayStateListener::onBack);
-                } else {
-                    listeners.get(AwayStateListener.class).forEach(a -> a.onAway(message));
-                }
-            }
-        }, "Away state listener runner").start();
     }
 
 }
