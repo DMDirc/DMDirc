@@ -25,7 +25,6 @@ package com.dmdirc.events;
 import com.dmdirc.logger.ErrorLevel;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 public abstract class ErrorEvent extends DMDircEvent {
 
