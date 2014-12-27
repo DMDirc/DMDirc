@@ -60,7 +60,17 @@ public interface User {
      */
     String getRealname();
 
+    /**
+     * Retries the {@link GroupChat}s the client is a member of.
+     *
+     * @return Collection of {@link GroupChat}s, may be empty
+     */
     Collection<GroupChat> getGroupChats();
 
+    /**
+     * Returns the away message for the client, if the away message is empty the user is not away.
+     *
+     * @return Optional.empty if the user is not away, wrapped away reason if they are
+     */
     Optional<String> getAwayMessage();
 }
