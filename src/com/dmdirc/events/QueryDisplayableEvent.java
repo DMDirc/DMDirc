@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 
 import java.util.Optional;
@@ -70,4 +71,10 @@ public abstract class QueryDisplayableEvent extends QueryEvent implements
     public DisplayPropertyMap getDisplayProperties() {
         return properties;
     }
+
+    @Override
+    public FrameContainer getSource() {
+        return getQuery();
+    }
+
 }

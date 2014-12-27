@@ -22,6 +22,8 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.FrameContainer;
+
 import java.util.Optional;
 
 /**
@@ -74,4 +76,10 @@ public interface DisplayableEvent {
      * @return The timestamp the event occurred at.
      */
     long getTimestamp();
+
+    /**
+     * Gets the source of the displayable event.
+     */
+    FrameContainer getSource();
+
 }

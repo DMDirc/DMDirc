@@ -29,28 +29,28 @@ import com.dmdirc.interfaces.Connection;
  */
 public class ServerUnknownmessageEvent extends ServerDisplayableEvent {
 
-    private final String source;
+    private final String sender;
     private final String target;
     private final String message;
 
     public ServerUnknownmessageEvent(final long timestamp, final Connection connection,
-            final String source, final String target, final String message) {
+            final String sender, final String target, final String message) {
         super(timestamp, connection);
-        this.source = source;
+        this.sender = sender;
         this.target = target;
         this.message = message;
     }
 
-    public ServerUnknownmessageEvent(final Connection connection, final String source,
+    public ServerUnknownmessageEvent(final Connection connection, final String sender,
             final String target, final String message) {
         super(connection);
-        this.source = source;
+        this.sender = sender;
         this.target = target;
         this.message = message;
     }
 
-    public String getSource() {
-        return source;
+    public String getSender() {
+        return sender;
     }
 
     public String getTarget() {

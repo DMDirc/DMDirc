@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.Connection;
 
 import java.util.Optional;
@@ -69,6 +70,11 @@ public abstract class ServerDisplayableEvent extends ServerEvent implements Disp
     @Override
     public DisplayPropertyMap getDisplayProperties() {
         return properties;
+    }
+
+    @Override
+    public FrameContainer getSource() {
+        return getConnection().getWindowModel();
     }
 
 }
