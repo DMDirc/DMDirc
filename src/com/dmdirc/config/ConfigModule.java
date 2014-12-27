@@ -148,7 +148,7 @@ public class ConfigModule {
             } catch (InvalidIdentityFileException iife) {
                 // This shouldn't happen!
                 System.err.println("Unable to load global config");
-                iife.printStackTrace();;
+                iife.printStackTrace();
             }
         } catch (IOException ex) {
             final String newMessage = "DMDirc was unable to rename the "
