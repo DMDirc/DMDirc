@@ -365,7 +365,7 @@ public class Server extends FrameContainer implements Connection {
 
             doCallbacks();
 
-            updateAwayState(null);
+            updateAwayState(Optional.empty());
             removeInvites();
 
             newParser.connect();
@@ -1133,7 +1133,7 @@ public class Server extends FrameContainer implements Connection {
             }
 
             removeInvites();
-            updateAwayState(null);
+            updateAwayState(Optional.empty());
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
                     "reconnectondisconnect")
@@ -1372,6 +1372,7 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public void updateAwayState(final Optional<String> message) {
+        checkNotNull(message);
         if (awayMessage.equals(message)) {
             return;
         }
