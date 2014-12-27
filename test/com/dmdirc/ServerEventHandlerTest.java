@@ -66,6 +66,7 @@ public class ServerEventHandlerTest {
     @Mock private CallbackManager callbackManager;
     @Mock private DMDircMBassador eventBus;
     @Mock private ChannelInfo channelInfo;
+    @Mock private UserFactory userFactory;
     @Mock private ClientInfo clientInfo;
     @Mock private Query query;
     @Mock private Date date;
@@ -76,7 +77,7 @@ public class ServerEventHandlerTest {
         when(server.getState()).thenReturn(ServerState.CONNECTED);
         when(parser.getCallbackManager()).thenReturn(callbackManager);
 
-        final ServerEventHandler handler = new ServerEventHandler(server, eventBus);
+        final ServerEventHandler handler = new ServerEventHandler(server, eventBus, userFactory);
         handler.registerCallbacks();
     }
 

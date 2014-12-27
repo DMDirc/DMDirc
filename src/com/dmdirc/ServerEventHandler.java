@@ -117,6 +117,8 @@ public class ServerEventHandler extends EventHandler implements
     private final Server owner;
     /** Event bus to post events to. */
     private final DMDircMBassador eventBus;
+    /** User factory to create Users. */
+    private final UserFactory userFactory;
 
     /**
      * Creates a new instance of ServerEventHandler.
@@ -124,10 +126,12 @@ public class ServerEventHandler extends EventHandler implements
      * @param owner    The Server instance that we're handling events for
      * @param eventBus The event bus to post events to
      */
-    public ServerEventHandler(final Server owner, final DMDircMBassador eventBus) {
+    public ServerEventHandler(final Server owner, final DMDircMBassador eventBus,
+            final UserFactory userFactory) {
         super(eventBus);
         this.owner = owner;
         this.eventBus = eventBus;
+        this.userFactory = userFactory;
     }
 
     @Override
@@ -374,8 +378,12 @@ public class ServerEventHandler extends EventHandler implements
 
         if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
+            final ClientInfo me = parser.getLocalClient();
             final QuerySelfMessageEvent event = new QuerySelfMessageEvent(owner.getQuery(target),
-                    parser.getLocalClient(), message);
+                    userFactory.getUser(me.getNickname(), owner.getConnection().get(),
+                            Optional.ofNullable(me.getUsername()),
+                            Optional.ofNullable(me.getHostname()),
+                            Optional.ofNullable(me.getRealname())), message);
             final String format = EventUtils.postDisplayable(eventBus, event,
                     "querySelfExternalMessage");
             owner.getQuery(target).doNotification(format, parser.getLocalClient(), message);
@@ -394,8 +402,12 @@ public class ServerEventHandler extends EventHandler implements
 
         if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
+            final ClientInfo me = parser.getLocalClient();
             final QuerySelfActionEvent event = new QuerySelfActionEvent(owner.getQuery(target),
-                    parser.getLocalClient(), message);
+                    userFactory.getUser(me.getNickname(), owner.getConnection().get(),
+                            Optional.ofNullable(me.getUsername()),
+                            Optional.ofNullable(me.getHostname()),
+                            Optional.ofNullable(me.getRealname())), message);
             final String format = EventUtils.postDisplayable(eventBus, event,
                     "querySelfExternalAction");
             owner.getQuery(target).doNotification(format, parser.getLocalClient(), message);

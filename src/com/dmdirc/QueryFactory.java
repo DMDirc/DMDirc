@@ -42,21 +42,24 @@ public class QueryFactory {
     private final MessageSinkManager messageSinkManager;
     private final URLBuilder urlBuilder;
     private final BackBufferFactory backBufferFactory;
+    private final UserFactory userFactory;
 
     @Inject
     public QueryFactory(final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController, final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final BackBufferFactory backBufferFactory) {
+            final URLBuilder urlBuilder, final BackBufferFactory backBufferFactory,
+            final UserFactory userFactory) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;
         this.messageSinkManager = messageSinkManager;
         this.urlBuilder = urlBuilder;
         this.backBufferFactory = backBufferFactory;
+        this.userFactory = userFactory;
     }
 
     public Query getQuery(final Server server, final String host) {
         return new Query(server, host, tabCompleterFactory, commandController,
-                messageSinkManager, urlBuilder, backBufferFactory);
+                messageSinkManager, urlBuilder, backBufferFactory, userFactory);
     }
 
 }

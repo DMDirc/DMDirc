@@ -23,20 +23,20 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Query;
-import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.interfaces.User;
 
 /**
  * Base class for query message events.
  */
 public abstract class BaseQueryMessageEvent extends BaseQueryTextEvent {
 
-    public BaseQueryMessageEvent(final long timestamp, final Query query, final ClientInfo client,
+    public BaseQueryMessageEvent(final long timestamp, final Query query, final User user,
             final String message) {
-        super(timestamp, query, client, message);
+        super(timestamp, query, user, message);
     }
 
-    public BaseQueryMessageEvent(final Query query, final ClientInfo client, final String message) {
-        super(query, client, message);
+    public BaseQueryMessageEvent(final Query query, final User user, final String message) {
+        super(query, user, message);
     }
 
 }

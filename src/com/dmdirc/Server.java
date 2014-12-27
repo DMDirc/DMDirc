@@ -216,7 +216,8 @@ public class Server extends FrameContainer implements Connection {
             final ScheduledExecutorService executorService,
             @Nonnull final URI uri,
             @Nonnull final Profile profile,
-            final BackBufferFactory backBufferFactory) {
+            final BackBufferFactory backBufferFactory,
+            final UserFactory userFactory) {
         super(null, "server-disconnected",
                 getHost(uri),
                 getHost(uri),
@@ -246,7 +247,7 @@ public class Server extends FrameContainer implements Connection {
         this.messageEncoderFactory = messageEncoderFactory;
 
         awayMessage = Optional.empty();
-        eventHandler = new ServerEventHandler(this, eventBus);
+        eventHandler = new ServerEventHandler(this, eventBus, userFactory);
 
         this.address = uri;
         this.profile = profile;

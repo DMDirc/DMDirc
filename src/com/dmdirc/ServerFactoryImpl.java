@@ -60,6 +60,7 @@ public class ServerFactoryImpl {
     private final MessageEncoderFactory messageEncoderFactory;
     private final ConfigProvider userSettings;
     private final BackBufferFactory backBufferFactory;
+    private final UserFactory userFactory;
 
     @Inject
     public ServerFactoryImpl(
@@ -76,7 +77,8 @@ public class ServerFactoryImpl {
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             @ClientModule.UserConfig final ConfigProvider userSettings,
-            final BackBufferFactory backBufferFactory) {
+            final BackBufferFactory backBufferFactory,
+            final UserFactory userFactory) {
         this.manager = manager;
         this.parserFactory = parserFactory;
         this.tabCompleterFactory = tabCompleterFactory;
@@ -91,6 +93,7 @@ public class ServerFactoryImpl {
         this.messageEncoderFactory = messageEncoderFactory;
         this.userSettings = userSettings;
         this.backBufferFactory = backBufferFactory;
+        this.userFactory = userFactory;
     }
 
     public Server getServer(
@@ -103,6 +106,6 @@ public class ServerFactoryImpl {
                 tabCompleterFactory, identityFactory, messageSinkManager, windowManager,
                 channelFactory.get(), queryFactory.get(), rawFactory.get(),urlBuilder, eventBus,
                 messageEncoderFactory, userSettings, executorService, uri, profile,
-                backBufferFactory);
+                backBufferFactory, userFactory);
     }
 }

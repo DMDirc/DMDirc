@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.User;
 
@@ -36,19 +37,23 @@ import java.util.Optional;
 public class Client implements User {
 
     private final Collection<GroupChat> groupChats;
+    private final Connection connection;
     private String nickname;
     private Optional<String> username;
     private Optional<String> hostname;
     private Optional<String> realname;
     private Optional<String> awayMessage;
 
-    public Client(final String nickname) {
-        this(nickname, Optional.empty(), Optional.empty(), Optional.empty());
+    public Client(final String nickname, final Connection connection) {
+        this(nickname, connection, Optional.empty(), Optional.empty(), Optional.empty());
     }
 
-    public Client(final String nickname, final Optional<String> username,
-            final Optional<String> hostname, final Optional<String> realname) {
+    public Client(final String nickname, final Connection connection,
+            final Optional<String> username,
+            final Optional<String> hostname,
+            final Optional<String> realname) {
         this.nickname = nickname;
+        this.connection = connection;
         this.username = username;
         this.hostname = hostname;
         this.realname = realname;
@@ -119,5 +124,10 @@ public class Client implements User {
     @Override
     public void setAwayMessage(final Optional<String> awayMessage) {
         this.awayMessage = awayMessage;
+    }
+
+    @Override
+    public Connection getConnection() {
+        return connection;
     }
 }
