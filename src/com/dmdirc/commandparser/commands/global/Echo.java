@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -147,8 +146,8 @@ public class Echo extends Command implements IntelligentCommand {
 
             //Children of Current Window's server
             connection
-                    .map(c -> (Server) c)
-                    .map(Server::getChildren)
+                    .map(Connection::getWindowModel)
+                    .map(FrameContainer::getChildren)
                     .ifPresent(windowList::addAll);
 
             //Global Windows

@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.interfaces.Encoder;
 import com.dmdirc.parser.interfaces.Parser;
@@ -35,8 +36,8 @@ import java.io.UnsupportedEncodingException;
  */
 public class MessageEncoder implements Encoder {
 
-    /** The server that owns this encoder. */
-    private final Server server;
+    /** The connection that owns this encoder. */
+    private final Connection connection;
     /** The parser that this encoder will work for. */
     private final Parser parser;
     /** The event bus to post errors to. */
@@ -45,13 +46,13 @@ public class MessageEncoder implements Encoder {
     /**
      * Creates a new instance of {@link MessageEncoder}.
      *
-     * @param server   The server that owns this encoder
+     * @param connection   The connection that owns this encoder
      * @param parser   The parser that this encoder will work for
      * @param eventBus The event bus to post errors to.
      */
-    public MessageEncoder(final Server server, final Parser parser,
+    public MessageEncoder(final Connection connection, final Parser parser,
             final DMDircMBassador eventBus) {
-        this.server = server;
+        this.connection = connection;
         this.parser = parser;
         this.eventBus = eventBus;
     }
@@ -59,10 +60,11 @@ public class MessageEncoder implements Encoder {
     @Override
     public String encode(final String source, final String target,
             final byte[] message, final int offset, final int length) {
-        String encoding = server.getConfigManager().getOption("general", "encoding");
+        String encoding = connection.getWindowModel().getConfigManager()
+                .getOption("general", "encoding");
 
-        if (target != null && parser.isValidChannelName(target) && server.hasChannel(target)) {
-            final Channel channel = server.getChannel(target);
+        if (target != null && parser.isValidChannelName(target) && connection.hasChannel(target)) {
+            final Channel channel = connection.getChannel(target);
             encoding = channel.getConfigManager().getOption("general", "encoding");
         }
 
