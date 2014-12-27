@@ -24,7 +24,7 @@ package com.dmdirc.events;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Provides a map of {@link DisplayProperty}s to values, maintaining type safety.
@@ -33,7 +33,7 @@ public class DisplayPropertyMap {
 
     public static final DisplayPropertyMap EMPTY = new ReadOnlyDisplayPropertyMap();
 
-    private final Map<DisplayProperty<?>, Object> properties = new ConcurrentSkipListMap<>();
+    private final Map<DisplayProperty<?>, Object> properties = new ConcurrentHashMap<>();
 
     /**
      * Gets the value of the specified property, if present.
