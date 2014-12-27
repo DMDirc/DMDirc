@@ -20,9 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
-
-import com.dmdirc.interfaces.GroupChat;
+package com.dmdirc.interfaces;
 
 /**
  * Describes a {@link User} that is present on a {@link GroupChat}.
