@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -33,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.annotation.Nonnull;
@@ -61,12 +61,12 @@ public class ServerCommandParser extends GlobalCommandParser {
     /**
      * The server instance that this parser is attached to.
      */
-    private Server server;
+    private Connection server;
 
     @Override
     public void setOwner(final FrameContainer owner) {
-        if (server == null && owner instanceof Server) {
-            server = (Server) owner;
+        if (server == null && owner instanceof Connection) {
+            server = (Connection) owner;
         }
 
         super.setOwner(owner);

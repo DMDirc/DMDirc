@@ -22,11 +22,11 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.util.URIParser;
 
@@ -53,19 +53,19 @@ public class ChangeServerTest {
     @Mock private CommandController controller;
     @Mock private FrameContainer tiw;
     @Mock private Profile profile;
-    @Mock private Server server;
+    @Mock private Connection connection;
     private ChangeServer command;
 
     @Before
     public void setUp() {
-        when(server.getProfile()).thenReturn(profile);
+        when(connection.getProfile()).thenReturn(profile);
         command = new ChangeServer(controller, new URIParser());
     }
 
     @Test
     public void testUsageNoArgs() {
         command.execute(tiw, new CommandArguments(controller, "/server"),
-                new ServerCommandContext(null, ChangeServer.INFO, server));
+                new ServerCommandContext(null, ChangeServer.INFO, connection));
 
         verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
@@ -73,7 +73,7 @@ public class ChangeServerTest {
     @Test
     public void testInvalidPort() {
         command.execute(tiw, new CommandArguments(controller, "/server foo:abc"),
-                new ServerCommandContext(null, ChangeServer.INFO, server));
+                new ServerCommandContext(null, ChangeServer.INFO, connection));
 
         verify(tiw).addLine(eq("commandError"), anyString());
     }
@@ -81,7 +81,7 @@ public class ChangeServerTest {
     @Test
     public void testOutOfRangePort1() {
         command.execute(tiw, new CommandArguments(controller, "/server foo:0"),
-                new ServerCommandContext(null, ChangeServer.INFO, server));
+                new ServerCommandContext(null, ChangeServer.INFO, connection));
 
         verify(tiw).addLine(eq("commandError"), anyString());
     }
@@ -89,7 +89,7 @@ public class ChangeServerTest {
     @Test
     public void testOutOfRangePort2() {
         command.execute(tiw, new CommandArguments(controller, "/server foo:65537"),
-                new ServerCommandContext(null, ChangeServer.INFO, server));
+                new ServerCommandContext(null, ChangeServer.INFO, connection));
 
         verify(tiw).addLine(eq("commandError"), anyString());
     }
@@ -97,25 +97,25 @@ public class ChangeServerTest {
     @Test
     public void testExecuteBasic() throws URISyntaxException {
         command.execute(tiw, new CommandArguments(controller, "/server foo:1234"),
-                new ServerCommandContext(null, ChangeServer.INFO, server));
+                new ServerCommandContext(null, ChangeServer.INFO, connection));
 
-        verify(server).connect(eq(new URI("irc://foo:1234")), same(profile));
+        verify(connection).connect(eq(new URI("irc://foo:1234")), same(profile));
     }
 
     @Test
     public void testExecuteNoPort() throws URISyntaxException {
         command.execute(tiw, new CommandArguments(controller, "/server foo"),
-                new ServerCommandContext(null, ChangeServer.INFO, server));
+                new ServerCommandContext(null, ChangeServer.INFO, connection));
 
-        verify(server).connect(eq(new URI("irc://foo")), same(profile));
+        verify(connection).connect(eq(new URI("irc://foo")), same(profile));
     }
 
     @Test
     public void testExecuteComplex() throws URISyntaxException {
         command.execute(tiw, new CommandArguments(controller, "/server foo:+1234 password"),
-                new ServerCommandContext(null, ChangeServer.INFO, server));
+                new ServerCommandContext(null, ChangeServer.INFO, connection));
 
-        verify(server).connect(eq(new URI("ircs://password@foo:1234")), same(profile));
+        verify(connection).connect(eq(new URI("ircs://password@foo:1234")), same(profile));
     }
 
 }

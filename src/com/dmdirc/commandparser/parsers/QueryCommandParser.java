@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.parsers;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -52,13 +51,13 @@ public class QueryCommandParser extends ChatCommandParser {
     /**
      * Creates a new instance of QueryCommandParser.
      *
-     * @param server            The server this parser's query belongs to
+     * @param owner            The container this parser's query belongs to
      * @param commandController The controller to load commands from.
      * @param eventBus          Event bus to post events on
      */
-    public QueryCommandParser(final Server server, final CommandController commandController,
+    public QueryCommandParser(final FrameContainer owner, final CommandController commandController,
             final DMDircMBassador eventBus) {
-        super(server, commandController, eventBus);
+        super(owner, commandController, eventBus);
     }
 
     @Override

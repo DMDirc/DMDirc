@@ -496,4 +496,11 @@ public interface Connection {
      */
     FrameContainer getWindowModel();
 
+    /**
+     * Sends a raw line to the underlying connection.
+     *
+     * @param line The line to be sent
+     */
+    void sendLine(String line);
+
 }

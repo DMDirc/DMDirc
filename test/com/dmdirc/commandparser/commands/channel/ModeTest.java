@@ -24,11 +24,11 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 
@@ -50,14 +50,14 @@ public class ModeTest {
     @Mock private CommandController controller;
     @Mock private ChannelInfo channelinfo;
     @Mock private Channel channel;
-    @Mock private Server server;
+    @Mock private Connection connection;
     @Mock private Parser parser;
     private Mode command;
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        when(channel.getConnection()).thenReturn(Optional.of(server));
-        when(server.getParser()).thenReturn(Optional.of(parser));
+        when(channel.getConnection()).thenReturn(Optional.of(connection));
+        when(connection.getParser()).thenReturn(Optional.of(parser));
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getModes()).thenReturn("my mode string!");
         when(channelinfo.toString()).thenReturn("#chan");
@@ -83,7 +83,7 @@ public class ModeTest {
 
     @Test
     public void testExternalWithArgs() {
-        command.execute(origin, server, "#chan", false,
+        command.execute(origin, connection, "#chan", false,
                 new CommandArguments(controller, "/mode +hello -bye"));
 
         verify(parser).sendRawMessage("MODE #chan +hello -bye");
@@ -91,7 +91,7 @@ public class ModeTest {
 
     @Test
     public void testExternalWithoutArgs() {
-        command.execute(origin, server, "#chan", false,
+        command.execute(origin, connection, "#chan", false,
                 new CommandArguments(controller, "/mode"));
 
         verify(parser).sendRawMessage("MODE #chan");
