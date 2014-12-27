@@ -22,9 +22,11 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayPropertyMap;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Represents a line of text in IRC.
@@ -129,10 +131,10 @@ public class Line {
      * @return AttributedString representing the specified StyledDocument
      */
     public <T> T getStyled(final StyledMessageMaker<T> maker) {
-        maker.clear();
         maker.setDefaultFont(fontName, fontSize);
         final T styledString = styliser.getStyledString(getLineParts(), maker);
         fontSize = maker.getMaximumFontSize();
+        maker.clear();
         return styledString;
     }
 
@@ -144,6 +146,10 @@ public class Line {
     @Override
     public int hashCode() {
         return Arrays.hashCode(getLineParts());
+    }
+
+    public <T> Optional<T> getDisplayableProperty(final DisplayProperty<T> property) {
+        return displayProperties.get(property);
     }
 
 }
