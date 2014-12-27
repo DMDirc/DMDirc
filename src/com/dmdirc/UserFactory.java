@@ -22,33 +22,27 @@
 
 package com.dmdirc;
 
-import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.User;
+
+import java.util.Optional;
+
+import javax.inject.Inject;
 
 /**
- * Describes a {@link User} that is present on a {@link GroupChat}.
+ * Factory for creating {@link User}s.
  */
-public interface GroupChatUser {
+public class UserFactory {
 
-    /**
-     * Retrieves the {@link User} object which this object corresponds
-     * to.
-     *
-     * @return The User object which this object represents
-     */
-    User getUser();
+    @Inject
+    public UserFactory() {
+    }
 
-    /**
-     * Retrieves the {@link GroupChat} this {@link User} is on.
-     *
-     * @return The corresponding GroupChat object
-     */
-    GroupChat getGroupChat();
+    public User getUser(final String nickname) {
+        return new Client(nickname);
+    }
 
-    /**
-     * Returns a list of all modes known to be held by the client, in their
-     * textual form (e.g. o, v, etc)
-     *
-     * @return All modes the client holds, or an empty string
-     */
-    String getAllModes();
+    public User getUser(final String nickname, final Optional<String> username,
+            final Optional<String> hostname, final Optional<String> realname) {
+        return new Client(nickname, username, hostname, realname);
+    }
 }
