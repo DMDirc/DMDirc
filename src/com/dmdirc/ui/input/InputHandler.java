@@ -356,9 +356,7 @@ public abstract class InputHandler implements ConfigChangeListener {
      * Fires the "legalCommand" method of all validation listeners.
      */
     private void fireCommandPassed() {
-        for (InputValidationListener listener : listeners.get(InputValidationListener.class)) {
-            listener.legalCommand();
-        }
+        listeners.get(InputValidationListener.class).forEach(InputValidationListener::legalCommand);
     }
 
     /**
