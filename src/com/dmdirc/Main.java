@@ -46,14 +46,16 @@ import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.awt.GraphicsEnvironment;
 import java.security.Policy;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -64,8 +66,6 @@ import dagger.ObjectGraph;
  */
 public class Main {
 
-    /** Feedback nag delay. */
-    private static final int FEEDBACK_DELAY = 30 * 60 * 1000;
     /** The UI to use for the client. */
     private final Collection<UIController> CONTROLLERS = new HashSet<>();
     /** The identity manager the client will use. */
@@ -266,13 +266,9 @@ public class Main {
             identityManager.getUserSettings().setOption("general", "firstRun", "false");
             eventBus.publish(new FirstRunEvent());
 
-            new Timer().schedule(new TimerTask() {
-
-                @Override
-                public void run() {
-                    eventBus.publishAsync(new FeedbackNagEvent());
-                }
-            }, FEEDBACK_DELAY);
+            Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder()
+                    .setNameFormat("feedback-nag-%d").build()).schedule(
+                    () -> eventBus.publishAsync(new FeedbackNagEvent()), 5, TimeUnit.MINUTES);
         }
     }
 
