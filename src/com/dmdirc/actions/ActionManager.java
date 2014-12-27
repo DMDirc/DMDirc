@@ -227,9 +227,7 @@ public class ActionManager implements ActionController {
     public void loadUserActions() {
         actions.clear();
 
-        for (ActionGroup group : groups.values()) {
-            group.clear();
-        }
+        groups.values().forEach(ActionGroup::clear);
 
         final File dir = new File(directory);
 

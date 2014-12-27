@@ -32,7 +32,6 @@ import com.dmdirc.util.collections.ListenerList;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -52,7 +51,7 @@ import static com.google.common.base.Preconditions.checkState;
 public class WindowManager {
 
     /** A list of root windows. */
-    private final List<FrameContainer> rootWindows = new CopyOnWriteArrayList<>();
+    private final Collection<FrameContainer> rootWindows = new CopyOnWriteArrayList<>();
     /** A list of frame listeners. */
     private final ListenerList listeners = new ListenerList();
 
@@ -233,9 +232,7 @@ public class WindowManager {
         checkNotNull(window);
         checkArgument(isInHierarchy(window));
 
-        for (FrameContainer child : window.getChildren()) {
-            child.close();
-        }
+        window.getChildren().forEach(FrameContainer::close);
 
         if (rootWindows.contains(window)) {
             fireDeleteWindow(window);

@@ -167,9 +167,7 @@ public class PreferencesDialogModel {
      * Dismisses all the settings in this manager.
      */
     public void dismiss() {
-        for (PreferencesCategory category : categories) {
-            category.dismiss();
-        }
+        categories.forEach(PreferencesCategory::dismiss);
     }
 
     /**

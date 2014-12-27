@@ -257,13 +257,8 @@ public class PreferencesCategory {
      * Dismisses all the settings in this category.
      */
     public void dismiss() {
-        for (PreferencesSetting setting : settings) {
-            setting.dismiss();
-        }
-
-        for (PreferencesCategory child : getSubcats()) {
-            child.dismiss();
-        }
+        settings.forEach(PreferencesSetting::dismiss);
+        getSubcats().forEach(PreferencesCategory::dismiss);
     }
 
     /**
