@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 
 import java.util.Optional;
@@ -37,12 +38,13 @@ public class UserFactory {
     public UserFactory() {
     }
 
-    public User getUser(final String nickname) {
-        return new Client(nickname);
+    public User getUser(final String nickname, final Connection connection) {
+        return new Client(nickname, connection);
     }
 
-    public User getUser(final String nickname, final Optional<String> username,
-            final Optional<String> hostname, final Optional<String> realname) {
-        return new Client(nickname, username, hostname, realname);
+    public User getUser(final String nickname, final Connection connection,
+            final Optional<String> username, final Optional<String> hostname,
+            final Optional<String> realname) {
+        return new Client(nickname, connection, username, hostname, realname);
     }
 }

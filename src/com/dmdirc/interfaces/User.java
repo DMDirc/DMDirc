@@ -120,4 +120,11 @@ public interface User {
      * @param awayMessage Optional.empty if the user is not away, wrapped away reason if they are
      */
     void setAwayMessage(final Optional<String> awayMessage);
+
+    /**
+     * Gets the {@link Connection} for this client.
+     *
+     * @return Non-Null connection for this connection
+     */
+    Connection getConnection();
 }

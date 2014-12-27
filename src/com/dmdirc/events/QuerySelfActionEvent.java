@@ -23,20 +23,20 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Query;
-import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.interfaces.User;
 
 /**
  * Fired when a self action is sent in query.
  */
 public class QuerySelfActionEvent extends BaseQueryActionEvent {
 
-    public QuerySelfActionEvent(final long timestamp, final Query query, final ClientInfo client,
+    public QuerySelfActionEvent(final long timestamp, final Query query, final User user,
             final String message) {
-        super(timestamp, query, client, message);
+        super(timestamp, query, user, message);
     }
 
-    public QuerySelfActionEvent(final Query query, final ClientInfo client, final String message) {
-        super(query, client, message);
+    public QuerySelfActionEvent(final Query query, final User user, final String message) {
+        super(query, user, message);
     }
 
 }
