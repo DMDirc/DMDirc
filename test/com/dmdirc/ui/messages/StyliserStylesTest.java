@@ -70,7 +70,7 @@ public class StyliserStylesTest {
 
         final Styliser styliser = new Styliser(null, manager, new ColourManager(manager,
                 mock(DMDircMBassador.class)));
-        styliser.addStyledString(new StyledDocumentMaker(doc), input);
+        styliser.addStyledString(null, input);  // TODO...
         final AttributedCharacterIterator aci = null; // TODO...
 
         Map<AttributedCharacterIterator.Attribute, Object> map = null;
