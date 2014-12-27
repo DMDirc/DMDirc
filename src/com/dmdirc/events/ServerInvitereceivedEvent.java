@@ -28,19 +28,19 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 /**
  * Fired when an invite is received.
  */
-public class ServerInvitereceivedEvent extends ServerDisplayableEvent {
+public class ServerInviteReceivedEvent extends ServerDisplayableEvent {
 
     private final ClientInfo client;
     private final String channel;
 
-    public ServerInvitereceivedEvent(final long timestamp, final Connection connection,
+    public ServerInviteReceivedEvent(final long timestamp, final Connection connection,
             final ClientInfo client, final String channel) {
         super(timestamp, connection);
         this.client = client;
         this.channel = channel;
     }
 
-    public ServerInvitereceivedEvent(final Connection connection, final ClientInfo client,
+    public ServerInviteReceivedEvent(final Connection connection, final ClientInfo client,
             final String channel) {
         super(connection);
         this.client = client;
