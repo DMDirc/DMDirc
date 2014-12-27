@@ -1,5 +1,6 @@
 package com.dmdirc;
 
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.interfaces.Parser;
 
 import javax.inject.Inject;
@@ -18,8 +19,8 @@ public class MessageEncoderFactory {
         this.eventBus = eventBus;
     }
 
-    public MessageEncoder getMessageEncoder(final Server server, final Parser parser) {
-        return new MessageEncoder(server, parser, eventBus);
+    public MessageEncoder getMessageEncoder(final Connection connection, final Parser parser) {
+        return new MessageEncoder(connection, parser, eventBus);
     }
 
 }
