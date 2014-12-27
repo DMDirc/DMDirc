@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -35,6 +34,7 @@ import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
 import javax.annotation.Nonnull;
@@ -78,13 +78,13 @@ public class Invite extends Command implements ExternalCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer origin, final Connection connection,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length < 1) {
             sendLine(origin, isSilent, FORMAT_ERROR,
                     "Insufficient arguments: must specify user");
         } else {
-            server.getParser().get().sendInvite(channel, args.getArgumentsAsString());
+            connection.getParser().get().sendInvite(channel, args.getArgumentsAsString());
         }
     }
 
