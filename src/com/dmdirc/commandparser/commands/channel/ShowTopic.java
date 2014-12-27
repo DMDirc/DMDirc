@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -35,6 +34,7 @@ import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
 import javax.annotation.Nonnull;
@@ -84,12 +84,12 @@ public class ShowTopic extends Command implements ExternalCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer origin, final Connection connection,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
-            server.getParser().get().sendRawMessage("TOPIC " + channel);
+            connection.getParser().get().sendRawMessage("TOPIC " + channel);
         } else {
-            server.getParser().get().sendRawMessage("TOPIC " + channel + " :" + args.
+            connection.getParser().get().sendRawMessage("TOPIC " + channel + " :" + args.
                     getArgumentsAsString());
         }
     }

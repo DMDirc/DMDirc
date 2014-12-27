@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -36,6 +35,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -80,12 +80,12 @@ public class Mode extends Command implements IntelligentCommand,
     }
 
     @Override
-    public void execute(final FrameContainer origin, final Server server,
+    public void execute(final FrameContainer origin, final Connection connection,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
-            server.getParser().get().sendRawMessage("MODE " + channel);
+            connection.getParser().get().sendRawMessage("MODE " + channel);
         } else {
-            server.getParser().get().sendRawMessage("MODE " + channel + " " + args.getArgumentsAsString());
+            connection.getParser().get().sendRawMessage("MODE " + channel + ' ' + args.getArgumentsAsString());
         }
     }
 
