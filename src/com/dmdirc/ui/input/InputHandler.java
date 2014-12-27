@@ -44,13 +44,16 @@ import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 import com.dmdirc.util.validators.ValidationResponse;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +110,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** The current composition state. */
     private CompositionState state = CompositionState.IDLE;
     /** Timer used to manage timeouts of composition state. */
-    private Timer compositionTimer;
+    private ScheduledFuture<?> compositionTimer;
     /** Manager to use to look up tab completion services. */
     private final ServiceManager serviceManager;
     /** The controller to use to retrieve command information. */
@@ -296,7 +299,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     private void cancelTypingNotification() {
         if (compositionTimer != null) {
             LOG.debug("Cancelling composition timer");
-            compositionTimer.cancel();
+            compositionTimer.cancel(true);
         }
 
         LOG.debug("Cancelling typing notification");
@@ -307,16 +310,12 @@ public abstract class InputHandler implements ConfigChangeListener {
     private void updateTypingNotification() {
         if (compositionTimer != null) {
             LOG.debug("Cancelling composition timer");
-            compositionTimer.cancel();
+            compositionTimer.cancel(true);
         }
 
-        compositionTimer = new Timer("Composition state timer");
-        compositionTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                timeoutTypingNotification();
-            }
-        }, TYPING_TIMEOUT);
+        compositionTimer = Executors.newSingleThreadScheduledExecutor(
+                new ThreadFactoryBuilder().setNameFormat("Composition state timer-%d").build())
+                .schedule(this::timeoutTypingNotification, TYPING_TIMEOUT, TimeUnit.MILLISECONDS);
 
         LOG.debug("Setting composition state to typing. Timer scheduled for {}", TYPING_TIMEOUT);
         setCompositionState(CompositionState.TYPING);
