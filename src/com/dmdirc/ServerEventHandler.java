@@ -32,7 +32,7 @@ import com.dmdirc.events.ServerCtcpEvent;
 import com.dmdirc.events.ServerCtcprEvent;
 import com.dmdirc.events.ServerErrorEvent;
 import com.dmdirc.events.ServerGotpingEvent;
-import com.dmdirc.events.ServerInvitereceivedEvent;
+import com.dmdirc.events.ServerInviteReceivedEvent;
 import com.dmdirc.events.ServerMotdendEvent;
 import com.dmdirc.events.ServerMotdlineEvent;
 import com.dmdirc.events.ServerMotdstartEvent;
@@ -435,7 +435,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         owner.addInvite(new Invite(owner, channel, userHost));
-        final ServerInvitereceivedEvent event = new ServerInvitereceivedEvent(owner,
+        final ServerInviteReceivedEvent event = new ServerInviteReceivedEvent(owner,
                 owner.getParser().get().getClient(userHost), channel);
         final String format = EventUtils.postDisplayable(eventBus, event, "inviteReceived");
         owner.doNotification(format, owner.getParser().get().getClient(userHost), channel);

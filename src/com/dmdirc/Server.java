@@ -245,6 +245,7 @@ public class Server extends FrameContainer implements Connection {
         this.userSettings = userSettings;
         this.messageEncoderFactory = messageEncoderFactory;
 
+        awayMessage = Optional.empty();
         eventHandler = new ServerEventHandler(this, eventBus);
 
         this.address = uri;
