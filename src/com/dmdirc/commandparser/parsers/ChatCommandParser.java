@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.parsers;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -51,14 +50,14 @@ public class ChatCommandParser extends ServerCommandParser {
     /**
      * Creates a new chat command parser that belongs to a child of the specified server.
      *
-     * @param server            The server which owns this parser's container
+     * @param owner             The container which owns this parser's container
      * @param commandController The controller to load commands from.
      * @param eventBus          Event but to post events on
      */
-    public ChatCommandParser(final Server server, final CommandController commandController,
+    public ChatCommandParser(final FrameContainer owner, final CommandController commandController,
             final DMDircMBassador eventBus) {
-        super(server.getConfigManager(), commandController, eventBus);
-        super.setOwner(server);
+        super(owner.getConfigManager(), commandController, eventBus);
+        super.setOwner(owner);
     }
 
     @Override

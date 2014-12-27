@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.parsers;
 import com.dmdirc.Channel;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -51,13 +50,13 @@ public class ChannelCommandParser extends ChatCommandParser {
     /**
      * Creates a new instance of ChannelCommandParser.
      *
-     * @param server            The server this parser's query belongs to
+     * @param owner            The container this parser's query belongs to
      * @param commandController The controller to load commands from.
      * @param eventBus          Event bus to post events on
      */
-    public ChannelCommandParser(final Server server, final CommandController commandController,
+    public ChannelCommandParser(final FrameContainer owner, final CommandController commandController,
             final DMDircMBassador eventBus) {
-        super(server, commandController, eventBus);
+        super(owner, commandController, eventBus);
     }
 
     @Override

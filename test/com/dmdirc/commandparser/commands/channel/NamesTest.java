@@ -23,11 +23,11 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 
@@ -48,15 +48,15 @@ public class NamesTest {
     @Mock private CommandController controller;
     @Mock private ChannelInfo channelinfo;
     @Mock private Channel channel;
-    @Mock private Server server;
+    @Mock private Connection connection;
     @Mock private Parser parser;
 
     private Names command;
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
-        when(channel.getConnection()).thenReturn(Optional.of(server));
-        when(server.getParser()).thenReturn(Optional.of(parser));
+        when(channel.getConnection()).thenReturn(Optional.of(connection));
+        when(connection.getParser()).thenReturn(Optional.of(parser));
         when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channelinfo.getName()).thenReturn("#chan");
 
@@ -73,7 +73,7 @@ public class NamesTest {
 
     @Test
     public void testExternal() {
-        command.execute(null, server, "#chan", false,
+        command.execute(null, connection, "#chan", false,
                 new CommandArguments(controller, "/names #chan"));
 
         verify(parser).sendRawMessage("NAMES #chan");

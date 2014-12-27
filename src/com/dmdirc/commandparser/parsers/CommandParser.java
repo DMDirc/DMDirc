@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandInfoPair;
@@ -216,7 +215,7 @@ public abstract class CommandParser implements Serializable {
 
                     if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
                         ((ExternalCommand) actCommand.getValue()).execute(
-                                origin, (Server) server, channel, silent,
+                                origin, server, channel, silent,
                                 new CommandArguments(commandManager, newCommandString));
                     }
                 }

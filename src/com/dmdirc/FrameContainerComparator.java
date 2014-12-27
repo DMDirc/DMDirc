@@ -22,6 +22,9 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
+
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -108,11 +111,11 @@ public class FrameContainerComparator implements Comparator<FrameContainer>, Ser
     private static int getPosition(final FrameContainer item) {
         if (item instanceof GlobalWindow) {
             return 0;
-        } else if (item instanceof Server) {
+        } else if (item instanceof Connection) {
             return 1;
         } else if (item instanceof Raw) {
             return 2;
-        } else if (item instanceof Channel) {
+        } else if (item instanceof GroupChat) {
             return 3;
         } else if (item instanceof Query) {
             return 4;

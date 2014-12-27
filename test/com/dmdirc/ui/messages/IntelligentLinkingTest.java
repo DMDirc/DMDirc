@@ -22,7 +22,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.Server;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Arrays;
@@ -49,10 +49,10 @@ public class IntelligentLinkingTest {
         this.expected = expected;
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
-        final Server server = mock(Server.class);
-        when(server.getChannelPrefixes()).thenReturn("#&+");
+        final Connection connection = mock(Connection.class);
+        when(connection.getChannelPrefixes()).thenReturn("#&+");
 
-        styliser = new Styliser(server, manager, new ColourManager(manager,
+        styliser = new Styliser(connection, manager, new ColourManager(manager,
                 mock(DMDircMBassador.class)));
     }
 
