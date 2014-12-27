@@ -1,4 +1,4 @@
-package com.dmdirc;/*
+/*
  * Copyright (c) 2006-2014 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,6 +19,8 @@ package com.dmdirc;/*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+package com.dmdirc;
 
 import com.dmdirc.interfaces.User;
 
