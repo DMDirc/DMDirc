@@ -210,7 +210,7 @@ public class ServerEventHandlerTest {
         final ServerCtcpEvent event = getEvent(ServerCtcpEvent.class);
         assertEquals("type", event.getType());
         assertEquals("message", event.getContent());
-        assertEquals(clientInfo, event.getClient());
+        assertEquals(clientInfo, event.getUser());
     }
 
     @Test

@@ -23,32 +23,32 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.interfaces.User;
 
 /**
  * Fired when receiving a server wallops.
  */
 public class ServerWallopsEvent extends ServerDisplayableEvent {
 
-    private final ClientInfo client;
+    private final User user;
     private final String message;
 
     public ServerWallopsEvent(final long timestamp, final Connection connection,
-            final ClientInfo client, final String message) {
+            final User user, final String message) {
         super(timestamp, connection);
-        this.client = client;
+        this.user = user;
         this.message = message;
     }
 
-    public ServerWallopsEvent(final Connection connection, final ClientInfo client,
+    public ServerWallopsEvent(final Connection connection, final User user,
             final String message) {
         super(connection);
-        this.client = client;
+        this.user = user;
         this.message = message;
     }
 
-    public ClientInfo getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
     public String getMessage() {
