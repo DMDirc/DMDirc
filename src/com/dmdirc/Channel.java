@@ -33,15 +33,16 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.EventUtils;
@@ -234,7 +235,7 @@ public class Channel extends MessageTarget implements GroupChat {
     public void selfJoin() {
         isOnChannel = true;
 
-        final ClientInfo me = server.getParser().get().getLocalClient();
+        final User me = server.getLocalUser().get();
         addLine("channelSelfJoin", "", me.getNickname(), me.getUsername(),
                 me.getHostname(), channelInfo.getName());
 
