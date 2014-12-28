@@ -206,12 +206,9 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ClientInfo client = owner.getParser().get().getClient(host);
-        final ServerCtcpEvent event = new ServerCtcpEvent(owner,
-                userFactory.getUser(client.getNickname(), owner.getConnection().get(),
-                        Optional.ofNullable(client.getUsername()),
-                        Optional.ofNullable(client.getHostname()),
-                        Optional.ofNullable(client.getRealname())), type, message);
+
+        final ServerCtcpEvent event = new ServerCtcpEvent(owner, owner.getUser(host).get(),
+                type, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "privateCTCP");
         owner.doNotification(format, owner.getParser().get().getClient(host), type, message);
         if (!event.isHandled()) {
@@ -224,12 +221,8 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ClientInfo client = owner.getParser().get().getClient(host);
-        final ServerCtcprEvent event = new ServerCtcprEvent(owner,
-                userFactory.getUser(client.getNickname(), owner.getConnection().get(),
-                        Optional.ofNullable(client.getUsername()),
-                        Optional.ofNullable(client.getHostname()),
-                        Optional.ofNullable(client.getRealname())), type, message);
+        final ServerCtcprEvent event = new ServerCtcprEvent(owner, owner.getUser(host).get(),
+                type, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "privateCTCPreply");
         owner.doNotification(format, owner.getParser().get().getClient(host), type, message);
     }

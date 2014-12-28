@@ -38,7 +38,6 @@ import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
-import com.dmdirc.util.ClientInfo;
 
 import com.google.common.collect.Lists;
 
@@ -72,7 +71,6 @@ public class ServerEventHandlerTest {
     @Mock private ChannelInfo channelInfo;
     @Mock private User user;
     @Mock private UserFactory userFactory;
-    @Mock private ClientInfo clientInfo;
     @Mock private Query query;
     @Mock private Date date;
 
@@ -85,6 +83,8 @@ public class ServerEventHandlerTest {
         when(userFactory.getUser(anyString(), any(Connection.class))).thenReturn(user);
         when(userFactory.getUser(anyString(), any(Connection.class), Optional.of(anyString()),
                         Optional.of(anyString()), Optional.of(anyString()))).thenReturn(user);
+        when(server.getUser(anyString())).thenReturn(Optional.of(user));
+        when(server.getLocalUser()).thenReturn(Optional.of(user));
         final ServerEventHandler handler = new ServerEventHandler(server, eventBus, userFactory);
         handler.registerCallbacks();
     }
@@ -209,7 +209,6 @@ public class ServerEventHandlerTest {
 
     @Test
     public void testOnPrivateCTCPRaisesEvent() {
-        when(parser.getClient("host!na@me")).thenReturn(clientInfo);
         when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
@@ -223,7 +222,6 @@ public class ServerEventHandlerTest {
 
     @Test
     public void testOnPrivateCTCPSendsReplyIfEventUnhandled() {
-        when(parser.getClient("host!na@me")).thenReturn(clientInfo);
         when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);

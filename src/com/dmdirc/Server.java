@@ -37,6 +37,7 @@ import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
@@ -116,6 +117,8 @@ public class Server extends FrameContainer implements Connection {
     private final ChannelMap channels = new ChannelMap();
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
+    /** The user factory to create users from. */
+    private final UserFactory userFactory;
 
     /** The Parser instance handling this server. */
     @Nonnull
@@ -245,6 +248,7 @@ public class Server extends FrameContainer implements Connection {
         this.executorService = executorService;
         this.userSettings = userSettings;
         this.messageEncoderFactory = messageEncoderFactory;
+        this.userFactory = userFactory;
 
         awayMessage = Optional.empty();
         eventHandler = new ServerEventHandler(this, eventBus, userFactory);
@@ -505,6 +509,32 @@ public class Server extends FrameContainer implements Connection {
     @Override
     public boolean hasQuery(final String host) {
         return queries.containsKey(converter.toLowerCase(parseHostmask(host)[0]));
+    }
+
+    @Override
+    public Optional<User> getLocalUser() {
+        if (parser.isPresent()) {
+            final ClientInfo client = parser.get().getLocalClient();
+            return Optional.of(userFactory
+                    .getUser(client.getNickname(), this, Optional.ofNullable(client.getUsername()),
+                            Optional.ofNullable(client.getHostname()),
+                            Optional.ofNullable(client.getRealname())));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<User> getUser(final String details) {
+        if (parser.isPresent()) {
+            final ClientInfo client = parser.get().getClient(details);
+            return Optional.of(userFactory.getUser(client.getNickname(), this,
+                    Optional.ofNullable(client.getUsername()),
+                    Optional.ofNullable(client.getHostname()),
+                    Optional.ofNullable(client.getRealname())));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
