@@ -34,7 +34,6 @@ import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.interfaces.ProtocolDescription;
 
 import java.net.URI;
 import java.util.Collection;
@@ -407,19 +406,6 @@ public interface Connection {
      * @since 0.6.4
      */
     void join(final boolean focus, final ChannelJoinRequest... requests);
-
-    /**
-     * Parses the specified hostmask in a manner prescribed by the protocol currently used by this
-     * server.
-     *
-     * @see ProtocolDescription#parseHostmask(String)
-     * @param hostmask The hostmask to be parsed
-     *
-     * @return An array containing the nickname, username and hostname
-     *
-     * @since 0.6.4
-     */
-    String[] parseHostmask(final String hostmask);
 
     /**
      * Reconnects to the server with a specified reason.

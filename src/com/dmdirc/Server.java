@@ -710,7 +710,12 @@ public class Server extends FrameContainer implements Connection {
                 oldParser.map(op -> op.compareURI(uri)).orElse(false));
     }
 
-    @Override
+    /**
+     * Parses a hostmask into nickname, username and hostname. Should probably use
+     * {@link #getUser} instead.
+     *
+     * @param hostmask The mask to parse.
+     */
     public String[] parseHostmask(final String hostmask) {
         return protocolDescription.get().parseHostmask(hostmask);
     }
