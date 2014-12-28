@@ -495,8 +495,8 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public Channel getChannel(final String channel) {
-        return channels.get(channel).orElse(null);
+    public Optional<Channel> getChannel(final String channel) {
+        return channels.get(channel);
     }
 
     @Override
@@ -628,9 +628,11 @@ public class Server extends FrameContainer implements Connection {
 
         backgroundChannels.remove(chan.getName());
 
-        if (hasChannel(chan.getName())) {
-            getChannel(chan.getName()).setChannelInfo(chan);
-            getChannel(chan.getName()).selfJoin();
+        final Optional<Channel> channel = getChannel(chan.getName());
+        if (channel.isPresent()) {
+            channel.get().setChannelInfo(chan);
+            channel.get().selfJoin();
+            return channel.get();
         } else {
             final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
                     getProtocol(), getIrcd(), getNetwork(), getAddress(), chan.getName());
@@ -641,9 +643,8 @@ public class Server extends FrameContainer implements Connection {
 
             getTabCompleter().addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.add(newChan);
+            return newChan;
         }
-
-        return getChannel(chan.getName());
     }
 
     /**
@@ -761,7 +762,7 @@ public class Server extends FrameContainer implements Connection {
                                 + request.getName();
                     }
 
-                    if (!hasChannel(name) || !getChannel(name).isOnChannel()) {
+                    if (getChannel(name).map(Channel::isOnChannel).orElse(false)) {
                         if (!focus) {
                             backgroundChannels.add(name);
                         }

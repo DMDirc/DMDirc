@@ -192,7 +192,7 @@ public interface Connection {
      *
      * @return The appropriate channel object
      */
-    Channel getChannel(final String channel);
+    Optional<Channel> getChannel(final String channel);
 
     /**
      * Retrieves the possible channel prefixes in use on this server.
