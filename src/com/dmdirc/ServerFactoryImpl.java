@@ -54,7 +54,6 @@ public class ServerFactoryImpl {
     private final WindowManager windowManager;
     private final Provider<ChannelFactory> channelFactory;
     private final Provider<QueryFactory> queryFactory;
-    private final Provider<RawFactory> rawFactory;
     private final URLBuilder urlBuilder;
     private final DMDircMBassador eventBus;
     private final MessageEncoderFactory messageEncoderFactory;
@@ -72,7 +71,6 @@ public class ServerFactoryImpl {
             final WindowManager windowManager,
             final Provider<ChannelFactory> channelFactory,
             final Provider<QueryFactory> queryFactory,
-            final Provider<RawFactory> rawFactory,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
@@ -87,7 +85,6 @@ public class ServerFactoryImpl {
         this.windowManager = windowManager;
         this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
-        this.rawFactory = rawFactory;
         this.urlBuilder = urlBuilder;
         this.eventBus = eventBus;
         this.messageEncoderFactory = messageEncoderFactory;
@@ -104,7 +101,7 @@ public class ServerFactoryImpl {
             final Profile profile) {
         return new Server(manager.get(), configMigrator, commandParser, parserFactory,
                 tabCompleterFactory, identityFactory, messageSinkManager, windowManager,
-                channelFactory.get(), queryFactory.get(), rawFactory.get(),urlBuilder, eventBus,
+                channelFactory.get(), queryFactory.get(), urlBuilder, eventBus,
                 messageEncoderFactory, userSettings, executorService, uri, profile,
                 backBufferFactory, userFactory);
     }
