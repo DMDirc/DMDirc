@@ -32,8 +32,8 @@ import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
+import com.dmdirc.events.ServerInviteExpiredEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -1210,20 +1210,6 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public void addInviteListener(final InviteListener listener) {
-        synchronized (listeners) {
-            listeners.add(InviteListener.class, listener);
-        }
-    }
-
-    @Override
-    public void removeInviteListener(final InviteListener listener) {
-        synchronized (listeners) {
-            listeners.remove(InviteListener.class, listener);
-        }
-    }
-
-    @Override
     public void addInvite(final Invite invite) {
         synchronized (invites) {
             new ArrayList<>(invites).stream()
@@ -1231,10 +1217,6 @@ public class Server extends FrameContainer implements Connection {
                     .forEach(this::removeInvite);
 
             invites.add(invite);
-
-            synchronized (listeners) {
-                listeners.getCallable(InviteListener.class).inviteReceived(this, invite);
-            }
         }
     }
 
@@ -1271,12 +1253,7 @@ public class Server extends FrameContainer implements Connection {
     public void removeInvite(final Invite invite) {
         synchronized (invites) {
             invites.remove(invite);
-
-            synchronized (listeners) {
-                for (InviteListener listener : listeners.get(InviteListener.class)) {
-                    listener.inviteExpired(this, invite);
-                }
-            }
+            getEventBus().publishAsync(new ServerInviteExpiredEvent(this, invite));
         }
     }
 

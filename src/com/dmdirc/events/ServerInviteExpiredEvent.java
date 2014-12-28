@@ -20,32 +20,35 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces;
+package com.dmdirc.events;
 
 import com.dmdirc.Invite;
-
-import java.util.EventListener;
+import com.dmdirc.interfaces.Connection;
 
 /**
- * Defines the methods that should be implemented by classes which wish to receive information about
- * invites.
+ * Fired when an @link Invite} is expired.
  */
-public interface InviteListener extends EventListener {
+public class ServerInviteExpiredEvent extends ServerEvent {
+
+    private final Invite invite;
+
+    public ServerInviteExpiredEvent(final Connection connection, final Invite invite) {
+        super(connection);
+        this.invite = invite;
+    }
+
+    public ServerInviteExpiredEvent(final long timestamp, final Connection connection,
+            final Invite invite) {
+        super(timestamp, connection);
+        this.invite = invite;
+    }
 
     /**
-     * Called when a new invite has been received.
+     * Returns the {@link Invite} that has been expired.
      *
-     * @param connection The connection the invite was received on
-     * @param invite The invite that was received
+     * @return Expired @link Invite}
      */
-    void inviteReceived(final Connection connection, final Invite invite);
-
-    /**
-     * Called when an invite has expired or has been used.
-     *
-     * @param connection The connection the invite was initially received on
-     * @param invite The invite that has expired
-     */
-    void inviteExpired(final Connection connection, final Invite invite);
-
+    public Invite getInvite() {
+        return invite;
+    }
 }
