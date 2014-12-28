@@ -25,14 +25,15 @@ package com.dmdirc;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
@@ -73,6 +74,7 @@ public class ServerTest {
     @Mock private MessageEncoderFactory messageEncoderFactory;
     @Mock private BackBufferFactory backBufferFactory;
     @Mock private UserFactory userFactory;
+    @Mock private User user;
 
     private Server server;
 
@@ -126,16 +128,16 @@ public class ServerTest {
 
     @Test
     public void testDuplicateInviteRemoval() {
-        server.addInvite(new Invite(server, "#chan1", "a!b@c"));
-        server.addInvite(new Invite(server, "#chan1", "d!e@f"));
+        server.addInvite(new Invite(server, "#chan1", user));
+        server.addInvite(new Invite(server, "#chan1", user));
 
         assertEquals(1, server.getInvites().size());
     }
 
     @Test
     public void testRemoveInvites() {
-        server.addInvite(new Invite(server, "#chan1", "a!b@c"));
-        server.addInvite(new Invite(server, "#chan2", "d!e@f"));
+        server.addInvite(new Invite(server, "#chan1", user));
+        server.addInvite(new Invite(server, "#chan2", user));
 
         server.removeInvites("#chan1");
         assertEquals(1, server.getInvites().size());

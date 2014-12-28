@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.User;
 
 import java.util.Date;
 
@@ -38,7 +39,7 @@ public class Invite {
     /** The time this invite was created. */
     private final long timestamp;
     /** The source of this invite. */
-    private final String source;
+    private final User source;
 
     /**
      * Creates a new instance of Invite.
@@ -47,7 +48,7 @@ public class Invite {
      * @param channel    The channel that this invite is for
      * @param source     The source of this invite
      */
-    public Invite(final Connection connection, final String channel, final String source) {
+    public Invite(final Connection connection, final String channel, final User source) {
         this.connection = connection;
         this.channel = channel;
         this.source = source;
@@ -66,11 +67,9 @@ public class Invite {
      * Retrieves the source of this invite.
      *
      * @return This invite's source
-     *
-     * @see Server#parseHostmask(String)
      */
-    public String[] getSource() {
-        return connection.parseHostmask(source);
+    public User getSource() {
+        return source;
     }
 
     /**

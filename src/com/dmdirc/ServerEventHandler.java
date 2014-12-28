@@ -532,7 +532,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         final ClientInfo client = owner.getParser().get().getClient(userHost);
-        owner.addInvite(new Invite(owner, channel, userHost));
+        owner.addInvite(new Invite(owner, channel, owner.getUser(userHost).orElse(null)));
         final ServerInviteReceivedEvent event = new ServerInviteReceivedEvent(owner,
                 userFactory.getUser(client.getNickname(), owner.getConnection().get(),
                         Optional.ofNullable(client.getUsername()),
