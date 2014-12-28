@@ -32,6 +32,7 @@ import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
+import com.dmdirc.events.ServerInviteExpiredEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.interfaces.User;
@@ -1299,6 +1300,7 @@ public class Server extends FrameContainer implements Connection {
     public void removeInvite(final Invite invite) {
         synchronized (invites) {
             invites.remove(invite);
+            getEventBus().publishAsync(new ServerInviteExpiredEvent(this, invite));
 
             synchronized (listeners) {
                 for (InviteListener listener : listeners.get(InviteListener.class)) {
