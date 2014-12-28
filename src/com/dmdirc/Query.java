@@ -35,6 +35,7 @@ import com.dmdirc.events.QuerySelfMessageEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.PrivateChat;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
@@ -46,9 +47,9 @@ import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 import com.dmdirc.parser.interfaces.callbacks.QuitListener;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
@@ -68,10 +69,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
         PrivateMessageListener, NickChangeListener, QuitListener,
         CompositionStateChangeListener, PrivateChat {
 
-    /** User factory. */
-    private final UserFactory userFactory;
     /** The Server this Query is on. */
     private final Server server;
+    /** The user associated with this query. */
+    private final User user;
     /** The full host of the client associated with this query. */
     private String host;
     /** The nickname of the client associated with this query. */
@@ -94,8 +95,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
-            final BackBufferFactory backBufferFactory,
-            final UserFactory userFactory) {
+            final BackBufferFactory backBufferFactory) {
         super(newServer, "query", newServer.parseHostmask(newHost)[0],
                 newServer.parseHostmask(newHost)[0],
                 newServer.getConfigManager(),
@@ -111,10 +111,10 @@ public class Query extends MessageTarget implements PrivateActionListener,
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
 
-        this.userFactory = userFactory;
         this.server = newServer;
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
+        user = server.getUser(host).get();
         updateTitle();
     }
 
@@ -133,18 +133,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
             server.getParser().get().sendMessage(target, part);
 
-            final ClientInfo me = server.getParser().get().getLocalClient();
-            userFactory.getUser(me.getNickname(), getConnection().get(),
-                    Optional.ofNullable(me.getUsername()),
-                    Optional.ofNullable(me.getHostname()),
-                    Optional.ofNullable(me.getRealname()));
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfMessageEvent(this,
-                            userFactory.getUser(me.getNickname(), getConnection().get(),
-                            Optional.ofNullable(me.getUsername()),
-                            Optional.ofNullable(me.getHostname()),
-                            Optional.ofNullable(me.getRealname())),
-                            part),
+                    new QuerySelfMessageEvent(this, server.getLocalUser().get(), part),
                     "querySelfMessage");
             doNotification(format, server.getParser().get().getLocalClient(), part);
         });
@@ -183,11 +173,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             server.getParser().get().sendAction(getNickname(), action);
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfActionEvent(this,
-                            userFactory.getUser(client.getNickname(), getConnection().get(),
-                            Optional.ofNullable(client.getUsername()),
-                            Optional.ofNullable(client.getHostname()),
-                            Optional.ofNullable(client.getRealname())), action),
+                    new QuerySelfActionEvent(this, server.getLocalUser().get(), action),
                     "querySelfAction");
             doNotification(format, client, action);
         } else {
@@ -200,13 +186,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final String message, final String host) {
         final String[] parts = server.parseHostmask(host);
 
-        final ClientInfo client = parser.getClient(host);
         final String format = EventUtils.postDisplayable(getEventBus(),
-                new QueryMessageEvent(this,
-                        userFactory.getUser(client.getNickname(), getConnection().get(),
-                        Optional.ofNullable(client.getUsername()),
-                        Optional.ofNullable(client.getHostname()),
-                        Optional.ofNullable(client.getRealname())), message), "queryMessage");
+                new QueryMessageEvent(this, server.getLocalUser().get(), message), "queryMessage");
         addLine(format, parts[0], parts[1], parts[2], message);
     }
 
@@ -215,14 +196,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final String message, final String host) {
         final String[] parts = server.parseHostmask(host);
 
-        final ClientInfo client = parser.getClient(host);
         final String format = EventUtils.postDisplayable(getEventBus(),
-                new QueryActionEvent(this,
-                        userFactory.getUser(client.getNickname(), getConnection().get(),
-                        Optional.ofNullable(client.getUsername()),
-                        Optional.ofNullable(client.getHostname()),
-                        Optional.ofNullable(client.getRealname())), message),
-                "queryAction");
+                new QueryActionEvent(this, server.getLocalUser().get(), message), "queryAction");
         addLine(format, parts[0], parts[1], parts[2], message);
     }
 
@@ -344,6 +319,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
     @Override
     public void setCompositionState(final CompositionState state) {
         server.getParser().get().setCompositionState(host, state);
+    }
+
+    @Override
+    public User getUser() {
+        return user;
     }
 
 }
