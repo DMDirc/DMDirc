@@ -25,7 +25,6 @@ package com.dmdirc.ui.messages;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.ConfigBinding;
-import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -41,6 +40,7 @@ public class BackBuffer {
     private final DMDircMBassador eventBus;
     private final EventFormatter formatter;
     private final AggregateConfigProvider configProvider;
+    private final FrameContainer owner;
 
     @ConfigBinding(domain="dev", key="enableNewEvents")
     private boolean enabled;
@@ -49,6 +49,7 @@ public class BackBuffer {
             final FrameContainer owner,
             final ColourManagerFactory colourManagerFactory,
             final EventFormatter formatter) {
+        this.owner = owner;
         this.styliser = new Styliser(
                 owner.getConnection().orElse(null),
                 owner.getConfigManager(),
@@ -82,10 +83,9 @@ public class BackBuffer {
      */
     @Handler
     public void handleDisplayableEvent(final DisplayableEvent event) {
-        if (enabled && !event.getDisplayProperty(DisplayProperty.HANDLED).isPresent()) {
+        if (enabled && event.getSource().equals(owner)) {
             formatter.format(event).ifPresent(
                     t -> document.addText(event.getTimestamp(), event.getDisplayProperties(), t));
-            event.setDisplayProperty(DisplayProperty.HANDLED, Boolean.TRUE);
         }
     }
 
