@@ -22,28 +22,33 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.User;
+
 import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InviteTest {
 
+    @Mock
     private Server server;
+    @Mock
+    private User user;
     private Invite invite;
     private long ts;
 
     @Before
     public void setUp() {
-        server = mock(Server.class);
-
-        when(server.parseHostmask("nick!ident@host"))
-                .thenReturn(new String[] {"nick", "ident", "host"});
-
-        invite = new Invite(server, "#channel", "nick!ident@host");
+        invite = new Invite(server, "#channel", user);
         ts = new Date().getTime();
     }
 
@@ -60,10 +65,7 @@ public class InviteTest {
 
     @Test
     public void testGetSource() {
-        assertEquals(3, invite.getSource().length);
-        assertEquals("nick", invite.getSource()[0]);
-        assertEquals("ident", invite.getSource()[1]);
-        assertEquals("host", invite.getSource()[2]);
+        assertEquals(user, invite.getSource());
     }
 
     @Test
