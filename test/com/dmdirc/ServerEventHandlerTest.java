@@ -26,10 +26,11 @@ import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.DMDircEvent;
 import com.dmdirc.events.ServerCtcpEvent;
 import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
@@ -53,6 +54,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -66,8 +69,8 @@ public class ServerEventHandlerTest {
     @Mock private CallbackManager callbackManager;
     @Mock private DMDircMBassador eventBus;
     @Mock private ChannelInfo channelInfo;
+    @Mock private User user;
     @Mock private UserFactory userFactory;
-    @Mock private ClientInfo clientInfo;
     @Mock private Query query;
     @Mock private Date date;
 
@@ -76,7 +79,12 @@ public class ServerEventHandlerTest {
         when(server.getParser()).thenReturn(Optional.of(parser));
         when(server.getState()).thenReturn(ServerState.CONNECTED);
         when(parser.getCallbackManager()).thenReturn(callbackManager);
-
+        when(server.getConnection()).thenReturn(Optional.ofNullable(server));
+        when(userFactory.getUser(anyString(), any(Connection.class))).thenReturn(user);
+        when(userFactory.getUser(anyString(), any(Connection.class), Optional.of(anyString()),
+                        Optional.of(anyString()), Optional.of(anyString()))).thenReturn(user);
+        when(server.getUser(anyString())).thenReturn(Optional.of(user));
+        when(server.getLocalUser()).thenReturn(Optional.of(user));
         final ServerEventHandler handler = new ServerEventHandler(server, eventBus, userFactory);
         handler.registerCallbacks();
     }
@@ -201,7 +209,6 @@ public class ServerEventHandlerTest {
 
     @Test
     public void testOnPrivateCTCPRaisesEvent() {
-        when(parser.getClient("host!na@me")).thenReturn(clientInfo);
         when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
@@ -210,12 +217,11 @@ public class ServerEventHandlerTest {
         final ServerCtcpEvent event = getEvent(ServerCtcpEvent.class);
         assertEquals("type", event.getType());
         assertEquals("message", event.getContent());
-        assertEquals(clientInfo, event.getUser());
+        assertEquals(user, event.getUser());
     }
 
     @Test
     public void testOnPrivateCTCPSendsReplyIfEventUnhandled() {
-        when(parser.getClient("host!na@me")).thenReturn(clientInfo);
         when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
