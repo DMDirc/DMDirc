@@ -91,13 +91,6 @@ public interface Connection {
     void addInvite(final Invite invite);
 
     /**
-     * Adds an invite listener to this server.
-     *
-     * @param listener The listener to be added
-     */
-    void addInviteListener(final InviteListener listener);
-
-    /**
      * Passes the arguments to all frames for this server.
      *
      * @param messageType The type of message to send
@@ -425,13 +418,6 @@ public interface Connection {
      * @param invite The invite to be removed
      */
     void removeInvite(final Invite invite);
-
-    /**
-     * Removes an invite listener from this server.
-     *
-     * @param listener The listener to be removed
-     */
-    void removeInviteListener(final InviteListener listener);
 
     /**
      * Removes all invites for the specified channel.
