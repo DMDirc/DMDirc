@@ -85,6 +85,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -795,12 +796,7 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public int getMaxLineLength() {
-        try {
-            parserLock.readLock().lock();
-            return parser.map(Parser::getMaxLength).orElse(-1);
-        } finally {
-            parserLock.readLock().unlock();
-        }
+        return withParserReadLock(Parser::getMaxLength, -1);
     }
 
     @Override
@@ -817,22 +813,12 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public String getChannelPrefixes() {
-        try {
-            parserLock.readLock().lock();
-            return parser.map(Parser::getChannelPrefixes).orElse("#&");
-        } finally {
-            parserLock.readLock().unlock();
-        }
+        return withParserReadLock(Parser::getChannelPrefixes, "#&");
     }
 
     @Override
     public String getAddress() {
-        try {
-            parserLock.readLock().lock();
-            return parser.map(Parser::getServerName).orElse(address.getHost());
-        } finally {
-            parserLock.readLock().unlock();
-        }
+        return withParserReadLock(Parser::getServerName, address.getHost());
     }
 
     @Override
@@ -852,12 +838,7 @@ public class Server extends FrameContainer implements Connection {
     @Override
     public boolean isNetwork(final String target) {
         synchronized (myStateLock) {
-            try {
-                parserLock.readLock().lock();
-                return parser.map(p -> getNetwork().equalsIgnoreCase(target)).orElse(false);
-            } finally {
-                parserLock.readLock().unlock();
-            }
+            return withParserReadLock(p -> getNetwork().equalsIgnoreCase(target), false);
         }
     }
 
@@ -986,13 +967,8 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public boolean isValidChannelName(final String channelName) {
-        try {
-            parserLock.readLock().lock();
-            return hasChannel(channelName)
-                    || parser.map(p -> p.isValidChannelName(channelName)).orElse(false);
-        } finally {
-            parserLock.readLock().unlock();
-        }
+        return hasChannel(channelName)
+                || withParserReadLock(p -> p.isValidChannelName(channelName), false);
     }
 
     @Override
@@ -1322,6 +1298,27 @@ public class Server extends FrameContainer implements Connection {
         }
 
         awayMessage = message;
+    }
+
+    /**
+     * Utility method to get a result from the parser while holding the {@link #parserLock}
+     * read lock.
+     *
+     * @param func The function to use to retrieve information from the parser.
+     * @param orElse The value to return if the parser is otherwise not present.
+     * @param <T> The type of result returned.
+     * @return The value returned by {@code func}, if the parser is present, otherwise the
+     * {@code orElse} value.
+     */
+    private <T> T withParserReadLock(
+            final Function<? super Parser, ? extends T> func,
+            final T orElse) {
+        try {
+            parserLock.readLock().lock();
+            return parser.map(func).orElse(orElse);
+        } finally {
+            parserLock.readLock().unlock();
+        }
     }
 
 }
