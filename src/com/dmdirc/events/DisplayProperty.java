@@ -33,7 +33,5 @@ public final class DisplayProperty<T> {
     public static final DisplayProperty<Colour> FOREGROUND_COLOUR = new DisplayProperty<>();
     /** The background colour of text relating to the event. */
     public static final DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayProperty<>();
-    /** Indicates the event has been successfully handled. */
-    public static final DisplayProperty<Boolean> HANDLED = new DisplayProperty<>();
 
 }
