@@ -114,11 +114,6 @@ public class ServerManager implements ConnectionManager {
                 profile);
         registerServer(server);
         windowManager.addWindow(server);
-
-        if (configProvider.getConfigProvider().getOptionBool("general", "showrawwindow")) {
-            server.addRaw();
-        }
-
         return server;
     }
 

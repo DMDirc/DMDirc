@@ -146,10 +146,6 @@ public class Server extends FrameContainer implements Connection {
     @Nonnull
     private Profile profile;
 
-    /** The raw frame used for this server instance. */
-    @Nonnull
-    private Optional<Raw> raw = Optional.empty();
-
     /** Our reason for being away, if any. */
     private Optional<String> awayMessage;
     /** Our event handler. */
@@ -176,8 +172,6 @@ public class Server extends FrameContainer implements Connection {
     private final ChannelFactory channelFactory;
     /** Factory to use for creating queries. */
     private final QueryFactory queryFactory;
-    /** Factory to use for creating raw windows. */
-    private final RawFactory rawFactory;
     /** The config provider to write user settings to. */
     private final ConfigProvider userSettings;
     /** Executor service to use to schedule repeated events. */
@@ -207,7 +201,6 @@ public class Server extends FrameContainer implements Connection {
             final WindowManager windowManager,
             final ChannelFactory channelFactory,
             final QueryFactory queryFactory,
-            final RawFactory rawFactory,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
@@ -240,7 +233,6 @@ public class Server extends FrameContainer implements Connection {
         this.configMigrator = configMigrator;
         this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
-        this.rawFactory = rawFactory;
         this.executorService = executorService;
         this.userSettings = userSettings;
         this.messageEncoderFactory = messageEncoderFactory;
@@ -578,30 +570,6 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public void addRaw() {
-        if (!raw.isPresent()) {
-            final Raw newRaw = rawFactory.getRaw(this);
-            windowManager.addWindow(this, newRaw);
-
-            try {
-                parserLock.readLock().lock();
-                if (parser.isPresent()) {
-                    newRaw.registerCallbacks();
-                }
-            } finally {
-                parserLock.readLock().unlock();
-            }
-
-            raw = Optional.of(newRaw);
-        }
-    }
-
-    @Override
-    public void delRaw() {
-        raw = Optional.empty();
-    }
-
-    @Override
     public void delChannel(final String chan) {
         getTabCompleter().removeEntry(TabCompletionType.CHANNEL, chan);
         channels.remove(chan);
@@ -731,7 +699,6 @@ public class Server extends FrameContainer implements Connection {
      * Registers callbacks.
      */
     private void doCallbacks() {
-        raw.ifPresent(Raw::registerCallbacks);
         eventHandler.registerCallbacks();
         queries.values().forEach(Query::reregister);
     }
@@ -922,8 +889,6 @@ public class Server extends FrameContainer implements Connection {
         channels.closeAll();
         closeQueries();
         removeInvites();
-
-        raw.ifPresent(FrameContainer::close);
 
         manager.unregisterServer(this);
 

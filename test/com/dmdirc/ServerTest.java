@@ -67,7 +67,6 @@ public class ServerTest {
     @Mock private WindowManager windowManager;
     @Mock private ChannelFactory channelFactory;
     @Mock private QueryFactory queryFactory;
-    @Mock private RawFactory rawFactory;
     @Mock private URLBuilder urlBuilder;
     @Mock private DMDircMBassador eventBus;
     @Mock private ScheduledExecutorService executorService;
@@ -97,7 +96,6 @@ public class ServerTest {
                 windowManager,
                 channelFactory,
                 queryFactory,
-                rawFactory,
                 urlBuilder,
                 eventBus,
                 messageEncoderFactory,

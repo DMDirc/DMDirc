@@ -52,7 +52,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -211,20 +210,6 @@ public class ServerManagerTest {
     public void testAddsNewServersToWindowManager() {
         serverManager.connectToAddress(URI.create("irc://fobar"));
         verify(windowManager).addWindow(server);
-    }
-
-    @Test
-    public void testAddsRawWindows() {
-        when(configProvider.getOptionBool("general", "showrawwindow")).thenReturn(true);
-        serverManager.connectToAddress(URI.create("irc://fobar"));
-        verify(server).addRaw();
-    }
-
-    @Test
-    public void testDoesNotAddRawWindows() {
-        when(configProvider.getOptionBool("general", "showrawwindow")).thenReturn(false);
-        serverManager.connectToAddress(URI.create("irc://fobar"));
-        verify(server, never()).addRaw();
     }
 
 }

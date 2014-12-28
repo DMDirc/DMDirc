@@ -100,11 +100,6 @@ public interface Connection {
     void addLineToAll(final String messageType, final Date date, final Object... args);
 
     /**
-     * Adds a raw window to this server.
-     */
-    void addRaw();
-
-    /**
      * Compare the given URI to the URI we are currently using to see if they would both result in
      * the server connecting to the same place, even if the URIs do not match exactly.
      *
@@ -146,11 +141,6 @@ public interface Connection {
      * @param query The query that should be removed.
      */
     void delQuery(final Query query);
-
-    /**
-     * Removes our reference to the raw object (presumably after it has been closed).
-     */
-    void delRaw();
 
     /**
      * Disconnects from the server with the default quit message.

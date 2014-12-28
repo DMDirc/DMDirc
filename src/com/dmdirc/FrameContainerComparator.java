@@ -113,14 +113,12 @@ public class FrameContainerComparator implements Comparator<FrameContainer>, Ser
             return 0;
         } else if (item instanceof Connection) {
             return 1;
-        } else if (item instanceof Raw) {
-            return 2;
         } else if (item instanceof GroupChat) {
-            return 3;
+            return 2;
         } else if (item instanceof Query) {
-            return 4;
+            return 3;
         } else {
-            return 5;
+            return 4;
         }
     }
 
