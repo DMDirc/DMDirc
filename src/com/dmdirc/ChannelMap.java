@@ -57,17 +57,6 @@ public class ChannelMap {
     }
 
     /**
-     * Determines if the specified channel is contained in this map.
-     *
-     * @param channel The channel to check.
-     *
-     * @return True if the channel is present, false otherwise.
-     */
-    public boolean contains(final String channel) {
-        return channels.containsKey(converter.toLowerCase(channel));
-    }
-
-    /**
      * Gets the specified channel, if it exists.
      *
      * @param channel The channel to retrieve.
