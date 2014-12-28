@@ -83,8 +83,8 @@ public class ServerEventHandlerTest {
         when(userFactory.getUser(anyString(), any(Connection.class))).thenReturn(user);
         when(userFactory.getUser(anyString(), any(Connection.class), Optional.of(anyString()),
                         Optional.of(anyString()), Optional.of(anyString()))).thenReturn(user);
-        when(server.getUser(anyString())).thenReturn(Optional.of(user));
-        when(server.getLocalUser()).thenReturn(Optional.of(user));
+        when(server.getUser(anyString())).thenReturn(user);
+        when(server.getLocalUser()).thenReturn(user);
         final ServerEventHandler handler = new ServerEventHandler(server, eventBus);
         handler.registerCallbacks();
     }

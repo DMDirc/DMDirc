@@ -349,14 +349,14 @@ public interface Connection {
      *
      * @return Local user, or empty if there is no local client
      */
-    Optional<User> getLocalUser();
+    User getLocalUser();
 
     /**
      * Returns a {@link User} object representing the specified details.
      *
      * @return Retrieved user, or empty if there was no match
      */
-    Optional<User> getUser(final String details);
+    User getUser(final String details);
 
     /**
      * Returns the current away status.

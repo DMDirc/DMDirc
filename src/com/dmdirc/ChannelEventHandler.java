@@ -161,7 +161,7 @@ public class ChannelEventHandler extends EventHandler implements
                 owner.doNotification(date, format);
             } else {
                 final Topic newTopic = new Topic(channel.getTopic(),
-                        getConnection().getUser(channel.getTopicSetter()).orElse(null),
+                        getConnection().getUser(channel.getTopicSetter()),
                         channel.getTopicTime());
                 final ChannelGottopicEvent event = new ChannelGottopicEvent(owner, newTopic);
                 final String format = EventUtils.postDisplayable(eventBus, event,
@@ -191,7 +191,7 @@ public class ChannelEventHandler extends EventHandler implements
             //  - We think the current topic is empty and are discovering a new one, or
             //  - The newly discovered topic is different to what we thought the current topic was.
             owner.addTopic(new Topic(channel.getTopic(),
-                    getConnection().getUser(channel.getTopicSetter()).orElse(null),
+                    getConnection().getUser(channel.getTopicSetter()),
                     channel.getTopicTime()));
         }
     }

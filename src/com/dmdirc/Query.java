@@ -114,7 +114,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         this.server = newServer;
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
-        user = server.getUser(host).get();
+        user = server.getUser(host);
         updateTitle();
     }
 
@@ -134,7 +134,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             server.getParser().get().sendMessage(target, part);
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfMessageEvent(this, server.getLocalUser().get(), part),
+                    new QuerySelfMessageEvent(this, server.getLocalUser(), part),
                     "querySelfMessage");
             doNotification(format, server.getParser().get().getLocalClient(), part);
         });
@@ -173,7 +173,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             server.getParser().get().sendAction(getNickname(), action);
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfActionEvent(this, server.getLocalUser().get(), action),
+                    new QuerySelfActionEvent(this, server.getLocalUser(), action),
                     "querySelfAction");
             doNotification(format, client, action);
         } else {
@@ -187,7 +187,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         final String[] parts = server.parseHostmask(host);
 
         final String format = EventUtils.postDisplayable(getEventBus(),
-                new QueryMessageEvent(this, server.getLocalUser().get(), message), "queryMessage");
+                new QueryMessageEvent(this, server.getLocalUser(), message), "queryMessage");
         addLine(format, parts[0], parts[1], parts[2], message);
     }
 
@@ -197,7 +197,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         final String[] parts = server.parseHostmask(host);
 
         final String format = EventUtils.postDisplayable(getEventBus(),
-                new QueryActionEvent(this, server.getLocalUser().get(), message), "queryAction");
+                new QueryActionEvent(this, server.getLocalUser(), message), "queryAction");
         addLine(format, parts[0], parts[1], parts[2], message);
     }
 
