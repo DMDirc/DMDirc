@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
@@ -54,8 +55,8 @@ public class QueryFactory {
         this.backBufferFactory = backBufferFactory;
     }
 
-    public Query getQuery(final Server server, final String host) {
-        return new Query(server, host, tabCompleterFactory, commandController,
+    public Query getQuery(final Server server, final User user) {
+        return new Query(server, user, tabCompleterFactory, commandController,
                 messageSinkManager, urlBuilder, backBufferFactory);
     }
 
