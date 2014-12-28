@@ -23,6 +23,7 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -68,6 +69,11 @@ public abstract class ChannelDisplayableEvent extends ChannelEvent implements Di
     @Override
     public DisplayPropertyMap getDisplayProperties() {
         return properties;
+    }
+
+    @Override
+    public FrameContainer getSource() {
+        return getChannel();
     }
 
 }
