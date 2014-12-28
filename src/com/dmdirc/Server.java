@@ -505,6 +505,11 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
+    public Collection<Channel> getChannels() {
+        return channels.getAll();
+    }
+
+    @Override
     public boolean hasQuery(final String host) {
         return queries.containsKey(converter.toLowerCase(parseHostmask(host)[0]));
     }

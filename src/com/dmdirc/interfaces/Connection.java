@@ -209,6 +209,13 @@ public interface Connection {
     List<String> getChannelNames();
 
     /**
+     * Gets a collection of all channels on this connection.
+     *
+     * @return collection of channels belonging to this connection
+     */
+    Collection<Channel> getChannels();
+
+    /**
      * Retrieves this server's ignore list.
      *
      * @return This server's ignore list

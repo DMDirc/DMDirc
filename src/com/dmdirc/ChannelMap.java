@@ -28,6 +28,7 @@ import com.dmdirc.parser.interfaces.StringConverter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,15 @@ public class ChannelMap {
      */
     public List<String> getNames() {
         return new ArrayList<>(channels.keySet());
+    }
+
+    /**
+     * Gets all known channels.
+     *
+     * @return A collection of all known channels.
+     */
+    public Collection<Channel> getAll() {
+        return Collections.unmodifiableCollection(channels.values());
     }
 
     /**
