@@ -517,15 +517,15 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public Optional<User> getLocalUser() {
+    public User getLocalUser() {
         return parser.map(Parser::getLocalClient)
-                .map(this::getUserFromClientInfo);
+                .map(this::getUserFromClientInfo).get();
     }
 
     @Override
-    public Optional<User> getUser(final String details) {
+    public User getUser(final String details) {
         return parser.map(p -> p.getClient(details))
-                .map(this::getUserFromClientInfo);
+                .map(this::getUserFromClientInfo).get();
     }
 
     @Override
@@ -546,7 +546,7 @@ public class Server extends FrameContainer implements Connection {
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = queryFactory.getQuery(this, getUser(host).orElse(null));
+            final Query newQuery = queryFactory.getQuery(this, getUser(host));
             if (!getState().isDisconnected()) {
                 newQuery.reregister();
             }

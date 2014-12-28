@@ -235,7 +235,7 @@ public class Channel extends MessageTarget implements GroupChat {
     public void selfJoin() {
         isOnChannel = true;
 
-        final User me = server.getLocalUser().get();
+        final User me = server.getLocalUser();
         addLine("channelSelfJoin", "", me.getNickname(), me.getUsername(),
                 me.getHostname(), channelInfo.getName());
 
