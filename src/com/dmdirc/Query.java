@@ -73,31 +73,18 @@ public class Query extends MessageTarget implements PrivateActionListener,
     private final Server server;
     /** The user associated with this query. */
     private final User user;
-    /** The full host of the client associated with this query. */
-    private String host;
-    /** The nickname of the client associated with this query. */
-    private String nickname;
 
-    /**
-     * Creates a new instance of Query.
-     *
-     * @param newHost             host of the remove client
-     * @param newServer           The server object that this Query belongs to
-     * @param tabCompleterFactory The factory to use to create tab completers.
-     * @param commandController   The controller to load commands from.
-     * @param messageSinkManager  The sink manager to use to dispatch messages.
-     * @param urlBuilder          The URL builder to use when finding icons.
-     */
     public Query(
             final Server newServer,
-            final String newHost,
+            final User user,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final BackBufferFactory backBufferFactory) {
-        super(newServer, "query", newServer.parseHostmask(newHost)[0],
-                newServer.parseHostmask(newHost)[0],
+        super(newServer, "query",
+                user.getNickname(),
+                user.getNickname(),
                 newServer.getConfigManager(),
                 backBufferFactory,
                 new QueryCommandParser(newServer, commandController, newServer.getEventBus()),
@@ -112,9 +99,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
                         WindowComponent.INPUTFIELD.getIdentifier()));
 
         this.server = newServer;
-        this.host = newHost;
-        this.nickname = server.parseHostmask(host)[0];
-        user = server.getUser(host);
+        this.user = user;
         updateTitle();
     }
 
@@ -156,7 +141,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
     @Override
     public int getMaxLineLength() {
         return server.getState() == ServerState.CONNECTED ? server.getParser().get()
-                .getMaxLength("PRIVMSG", host) : -1;
+                .getMaxLength("PRIVMSG", getHost()) : -1;
     }
 
     @Override
@@ -167,7 +152,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         }
 
         final ClientInfo client = server.getParser().get().getLocalClient();
-        final int maxLineLength = server.getParser().get().getMaxLength("PRIVMSG", host);
+        final int maxLineLength = server.getParser().get().getMaxLength("PRIVMSG", getHost());
 
         if (maxLineLength >= action.length() + 2) {
             server.getParser().get().sendAction(getNickname(), action);
@@ -257,8 +242,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
             addLine(format, oldNick, client.getUsername(),
                     client.getHostname(), client.getNickname());
-            host = client.getNickname() + '!' + client.getUsername() + '@' + client.getHostname();
-            nickname = client.getNickname();
+            user.setNickname(client.getNickname());
             updateTitle();
 
             setName(client.getNickname());
@@ -308,17 +292,18 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Override
     public String getHost() {
-        return host;
+        // TODO: Icky, IRC specific. Kill with fire.
+        return user.getNickname() + '!' + user.getUsername() + '@' + user.getHostname();
     }
 
     @Override
     public String getNickname() {
-        return nickname;
+        return user.getNickname();
     }
 
     @Override
     public void setCompositionState(final CompositionState state) {
-        server.getParser().get().setCompositionState(host, state);
+        server.getParser().get().setCompositionState(getHost(), state);
     }
 
     @Override

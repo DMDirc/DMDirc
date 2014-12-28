@@ -87,6 +87,10 @@ public class ServerEventHandlerTest {
         when(server.getLocalUser()).thenReturn(user);
         final ServerEventHandler handler = new ServerEventHandler(server, eventBus);
         handler.registerCallbacks();
+
+        when(user.getNickname()).thenReturn("ho");
+        when(user.getUsername()).thenReturn(Optional.of("st"));
+        when(user.getHostname()).thenReturn(Optional.of("name"));
     }
 
     @Test
@@ -209,10 +213,10 @@ public class ServerEventHandlerTest {
 
     @Test
     public void testOnPrivateCTCPRaisesEvent() {
-        when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
+        when(server.getUser("ho!st@name")).thenReturn(Optional.of(user));
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
-        listener.onPrivateCTCP(parser, date, "type", "message", "host!na@me");
+        listener.onPrivateCTCP(parser, date, "type", "message", "ho!st@name");
 
         final ServerCtcpEvent event = getEvent(ServerCtcpEvent.class);
         assertEquals("type", event.getType());
@@ -222,12 +226,12 @@ public class ServerEventHandlerTest {
 
     @Test
     public void testOnPrivateCTCPSendsReplyIfEventUnhandled() {
-        when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
+        when(server.getUser("ho!st@name")).thenReturn(Optional.of(user));
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
-        listener.onPrivateCTCP(parser, date, "type", "message", "host!na@me");
+        listener.onPrivateCTCP(parser, date, "type", "message", "ho!st@name");
 
-        verify(server).sendCTCPReply("host", "type", "message");
+        verify(server).sendCTCPReply("ho", "type", "message");
     }
 
     private <T extends CallbackInterface> T getCallback(final Class<T> type) {

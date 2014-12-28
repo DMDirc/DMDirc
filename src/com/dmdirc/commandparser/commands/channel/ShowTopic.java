@@ -24,6 +24,7 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Topic;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -35,7 +36,9 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.interfaces.User;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -66,17 +69,18 @@ public class ShowTopic extends Command implements ExternalCommand {
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
         if (args.getArguments().length == 0) {
-            final ChannelInfo cChannel = channel.getChannelInfo();
-
-            if (cChannel.getTopic().isEmpty()) {
-                sendLine(origin, args.isSilent(), "channelNoTopic", cChannel);
+            final Optional<Topic> topic = channel.getCurrentTopic();
+            if (topic.isPresent()) {
+                final Optional<User> user = topic.map(Topic::getClient);
+                sendLine(origin, args.isSilent(), "channelTopicDiscovered", "",
+                        user.map(User::getNickname).orElse(""),
+                        user.flatMap(User::getUsername).orElse(""),
+                        user.flatMap(User::getHostname).orElse(""),
+                        topic.map(Topic::getTopic).orElse(""),
+                        1000 * topic.map(Topic::getTime).get(),
+                        channel.getName());
             } else {
-                final String[] parts = channel.getConnection().get().parseHostmask(
-                        cChannel.getTopicSetter());
-
-                sendLine(origin, args.isSilent(), "channelTopicDiscovered",
-                        "", parts[0], parts[1], parts[2], cChannel.getTopic(),
-                        1000 * cChannel.getTopicTime(), cChannel);
+                sendLine(origin, args.isSilent(), "channelNoTopic", channel.getName());
             }
         } else {
             channel.setTopic(args.getArgumentsAsString());
