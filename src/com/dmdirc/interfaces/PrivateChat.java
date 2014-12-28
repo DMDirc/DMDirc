@@ -54,4 +54,11 @@ public interface PrivateChat extends Chat {
      */
     void sendLine(final String line, final String target);
 
+    /**
+     * Returns the {@link User} associated with this query.
+     *
+     * @return User for this query
+     */
+    User getUser();
+
 }

@@ -35,6 +35,7 @@ import com.dmdirc.events.QuerySelfMessageEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.PrivateChat;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
@@ -46,9 +47,9 @@ import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
 import com.dmdirc.parser.interfaces.callbacks.QuitListener;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
@@ -70,6 +71,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     /** The Server this Query is on. */
     private final Server server;
+    /** The user associated with this query. */
+    private final User user;
     /** The full host of the client associated with this query. */
     private String host;
     /** The nickname of the client associated with this query. */
@@ -111,6 +114,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         this.server = newServer;
         this.host = newHost;
         this.nickname = server.parseHostmask(host)[0];
+        user = server.getUser(host).get();
         updateTitle();
     }
 
@@ -315,6 +319,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
     @Override
     public void setCompositionState(final CompositionState state) {
         server.getParser().get().setCompositionState(host, state);
+    }
+
+    @Override
+    public User getUser() {
+        return user;
     }
 
 }
