@@ -37,13 +37,10 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import net.engio.mbassy.listener.Handler;
-import net.engio.mbassy.listener.Listener;
-import net.engio.mbassy.listener.References;
 
 /**
  * Looks for highlights in messages.
  */
-@Listener(references = References.Strong)
 public class HighlightManager {
 
     private static final String REGEX_TEPLATE = "(?i).*(\\p{Space}|^|\\p{Punct})\\Q%s\\E" +
