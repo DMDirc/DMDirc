@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -69,9 +70,8 @@ public class AllChannels extends Command implements IntelligentCommand {
         final Connection server = ((ServerCommandContext) context).getConnection();
         final String command = args.getArgumentsAsString();
 
-        for (String channel : server.getChannels()) {
-            server.getChannel(channel).getCommandParser()
-                    .parseCommand(server.getChannel(channel), command);
+        for (Channel channel : server.getChannels()) {
+            channel.getCommandParser().parseCommand(channel, command);
         }
     }
 

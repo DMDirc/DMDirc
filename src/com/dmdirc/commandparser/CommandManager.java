@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.Channel;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.Query;
 import com.dmdirc.commandparser.commands.Command;
@@ -177,9 +178,8 @@ public class CommandManager implements CommandController {
 
             if (command.getType() == CommandType.TYPE_CHANNEL
                     || command.getType() == CommandType.TYPE_CHAT) {
-                for (String channelName : server.getChannels()) {
-                    registerCommandName(server.getChannel(channelName).getTabCompleter(),
-                            commandName, register);
+                for (Channel channel : server.getChannels()) {
+                    registerCommandName(channel.getTabCompleter(),commandName, register);
                 }
             }
 
