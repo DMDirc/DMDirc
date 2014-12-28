@@ -22,33 +22,42 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.User;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TopicTest {
+
+    @Mock
+    private User user;
 
     @Test
     public void testGetClient() {
-        final Topic test = new Topic("abc", "123!456@789", 1);
-        assertEquals("123!456@789", test.getClient());
+        final Topic test = new Topic("abc", user, 1);
+        assertEquals(user, test.getClient());
     }
 
     @Test
     public void testGetTime() {
-        final Topic test = new Topic("abc", "123!456@789", 1);
+        final Topic test = new Topic("abc", user, 1);
         assertEquals(1L, test.getTime());
     }
 
     @Test
     public void testGetTopic() {
-        final Topic test = new Topic("abc", "123!456@789", 1);
+        final Topic test = new Topic("abc", user, 1);
         assertEquals("abc", test.getTopic());
     }
 
     @Test
     public void testToString() {
-        final Topic test = new Topic("abc", "123!456@789", 1);
+        final Topic test = new Topic("abc", user, 1);
         assertEquals("abc", test.toString());
     }
 

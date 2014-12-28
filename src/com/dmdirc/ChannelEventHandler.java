@@ -160,7 +160,8 @@ public class ChannelEventHandler extends EventHandler implements
                 final String format = EventUtils.postDisplayable(eventBus, event, "channelNoTopic");
                 owner.doNotification(date, format);
             } else {
-                final Topic newTopic = new Topic(channel.getTopic(), channel.getTopicSetter(),
+                final Topic newTopic = new Topic(channel.getTopic(),
+                        getConnection().getUser(channel.getTopicSetter()).orElse(null),
                         channel.getTopicTime());
                 final ChannelGottopicEvent event = new ChannelGottopicEvent(owner, newTopic);
                 final String format = EventUtils.postDisplayable(eventBus, event,
@@ -189,7 +190,8 @@ public class ChannelEventHandler extends EventHandler implements
             //  - It's being set while we're in the channel (rather than discovered on join), or
             //  - We think the current topic is empty and are discovering a new one, or
             //  - The newly discovered topic is different to what we thought the current topic was.
-            owner.addTopic(new Topic(channel.getTopic(), channel.getTopicSetter(),
+            owner.addTopic(new Topic(channel.getTopic(),
+                    getConnection().getUser(channel.getTopicSetter()).orElse(null),
                     channel.getTopicTime()));
         }
     }

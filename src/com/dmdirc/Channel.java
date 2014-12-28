@@ -461,11 +461,13 @@ public class Channel extends MessageTarget implements GroupChat {
             return true;
         } else if (arg instanceof Topic) {
             // Format topics
-
+            final Topic topic = (Topic) arg;
             args.add("");
-            args.addAll(Arrays.asList(server.parseHostmask(((Topic) arg).getClient())));
-            args.add(((Topic) arg).getTopic());
-            args.add(((Topic) arg).getTime() * 1000);
+            args.add(topic.getClient().getNickname());
+            args.add(topic.getClient().getUsername().orElse(""));
+            args.add(topic.getClient().getHostname().orElse(""));
+            args.add(topic.getTopic());
+            args.add(topic.getTime() * 1000);
 
             return true;
         } else {
