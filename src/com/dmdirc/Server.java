@@ -64,6 +64,7 @@ import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.ui.messages.HighlightManager;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
@@ -190,6 +191,8 @@ public class Server extends FrameContainer implements Connection {
     private final ScheduledExecutorService executorService;
     /** The message encoder factory to create a message encoder with. */
     private final MessageEncoderFactory messageEncoderFactory;
+    /** The manager to use for highlighting. */
+    private final HighlightManager highlightManager;
     /** Listener to use for config changes. */
     private final ConfigChangeListener configListener = (domain, key) -> updateTitle();
     /** The future used when a who timer is scheduled. */
@@ -261,6 +264,9 @@ public class Server extends FrameContainer implements Connection {
 
         getConfigManager().addChangeListener("formatter", "serverName", configListener);
         getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
+
+        this.highlightManager = new HighlightManager();
+        getEventBus().subscribe(highlightManager);
     }
 
     /**
@@ -929,15 +935,12 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public void close() {
-        super.close();
-
         synchronized (myStateLock) {
-            // Remove any callbacks or listeners
             eventHandler.unregisterCallbacks();
             getConfigManager().removeListener(configListener);
+            getEventBus().unsubscribe(highlightManager);
             executorService.shutdown();
 
-            // Trigger any actions necessary
             disconnect();
 
             myState.transition(ServerState.CLOSING);
@@ -949,8 +952,9 @@ public class Server extends FrameContainer implements Connection {
 
         raw.ifPresent(FrameContainer::close);
 
-        // Inform any parents that the window is closing
         manager.unregisterServer(this);
+
+        super.close();
     }
 
     @Override
