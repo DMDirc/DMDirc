@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.User;
+
 /**
  * Stores information about a channel topic.
  */
@@ -30,7 +32,7 @@ public class Topic {
     /** Topic. */
     private final String topic;
     /** Topic client. */
-    private final String client;
+    private final User client;
     /** Topic time. */
     private final long time;
 
@@ -41,7 +43,7 @@ public class Topic {
      * @param client Topic client
      * @param time   Topic time
      */
-    public Topic(final String topic, final String client, final long time) {
+    public Topic(final String topic, final User client, final long time) {
         this.topic = topic;
         this.client = client;
         this.time = time;
@@ -50,9 +52,9 @@ public class Topic {
     /**
      * Returns the client who set the topic.
      *
-     * @return client host
+     * @return client
      */
-    public String getClient() {
+    public User getClient() {
         return client;
     }
 
