@@ -546,7 +546,7 @@ public class Server extends FrameContainer implements Connection {
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
-            final Query newQuery = queryFactory.getQuery(this, getUser(host).orElse(null));
+            final Query newQuery = queryFactory.getQuery(this, getUser(host));
             if (!getState().isDisconnected()) {
                 newQuery.reregister();
             }

@@ -52,7 +52,6 @@ import com.dmdirc.events.ServerWallusersEvent;
 import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.User;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.common.CallbackManager;
@@ -220,11 +219,7 @@ public class ServerEventHandler extends EventHandler implements
         final String format = EventUtils.postDisplayable(eventBus, event, "privateCTCP");
         owner.doNotification(format, owner.getParser().get().getClient(host), type, message);
         if (!event.isHandled()) {
-            owner.sendCTCPReply(
-                    owner.getUser(host)
-                            .map(User::getNickname)
-                            .orElseThrow(() -> new IllegalStateException("Couldn't get nickname")),
-                    type, message);
+            owner.sendCTCPReply(owner.getUser(host).getNickname(), type, message);
         }
     }
 

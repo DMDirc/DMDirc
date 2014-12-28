@@ -213,7 +213,7 @@ public class ServerEventHandlerTest {
 
     @Test
     public void testOnPrivateCTCPRaisesEvent() {
-        when(server.getUser("ho!st@name")).thenReturn(Optional.of(user));
+        when(server.getUser("ho!st@name")).thenReturn(user);
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
         listener.onPrivateCTCP(parser, date, "type", "message", "ho!st@name");
@@ -226,7 +226,7 @@ public class ServerEventHandlerTest {
 
     @Test
     public void testOnPrivateCTCPSendsReplyIfEventUnhandled() {
-        when(server.getUser("ho!st@name")).thenReturn(Optional.of(user));
+        when(server.getUser("ho!st@name")).thenReturn(user);
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
         listener.onPrivateCTCP(parser, date, "type", "message", "ho!st@name");
