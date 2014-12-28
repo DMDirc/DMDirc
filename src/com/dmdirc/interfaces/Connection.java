@@ -202,11 +202,11 @@ public interface Connection {
     String getChannelPrefixes();
 
     /**
-     * Retrieves a list of channel names belonging to this server.
+     * Gets a collection of all channels on this connection.
      *
-     * @return list of channel names belonging to this server
+     * @return collection of channels belonging to this connection
      */
-    List<String> getChannelNames();
+    Collection<Channel> getChannels();
 
     /**
      * Retrieves this server's ignore list.

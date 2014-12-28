@@ -26,10 +26,9 @@ import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.interfaces.StringConverter;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -80,12 +79,12 @@ public class ChannelMap {
     }
 
     /**
-     * Gets a list of names of all the channels in the map.
+     * Gets all known channels.
      *
-     * @return A list of lowercased names of channels in this map.
+     * @return A collection of all known channels.
      */
-    public List<String> getNames() {
-        return new ArrayList<>(channels.keySet());
+    public Collection<Channel> getAll() {
+        return Collections.unmodifiableCollection(channels.values());
     }
 
     /**
