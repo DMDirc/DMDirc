@@ -139,7 +139,8 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
 
         if (!showExisting) {
             // Only tab complete channels we're not already on
-            targets.addAll(results.stream().filter(result -> !connection.hasChannel(result))
+            targets.addAll(results.stream()
+                    .filter(result -> !connection.getChannel(result).isPresent())
                     .map(result -> prefix + result).collect(Collectors.toList()));
         }
 

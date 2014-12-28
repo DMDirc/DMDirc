@@ -34,6 +34,7 @@ import com.dmdirc.ui.WindowManager;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Provider;
@@ -69,6 +70,7 @@ public class ServerManagerTest {
     @Mock private ServerFactoryImpl serverFactoryImpl;
     @Mock private Server server;
     @Mock private DMDircMBassador eventBus;
+    @Mock private Channel channel;
 
     @Captor private ArgumentCaptor<URI> uriCaptor;
 
@@ -160,7 +162,7 @@ public class ServerManagerTest {
     public void testDevChatWithChannel() {
         final Server serverA = mock(Server.class);
         when(serverA.isNetwork("Quakenet")).thenReturn(true);
-        when(serverA.hasChannel("#DMDirc")).thenReturn(true);
+        when(serverA.getChannel("#DMDirc")).thenReturn(Optional.of(channel));
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
         serverManager.registerServer(serverA);
@@ -173,7 +175,7 @@ public class ServerManagerTest {
     public void testDevChatWithoutChannel() {
         final Server serverA = mock(Server.class);
         when(serverA.isNetwork("Quakenet")).thenReturn(true);
-        when(serverA.hasChannel("#DMDirc")).thenReturn(false);
+        when(serverA.getChannel("#DMDirc")).thenReturn(Optional.empty());
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
         serverManager.registerServer(serverA);

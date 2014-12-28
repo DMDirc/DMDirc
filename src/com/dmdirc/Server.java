@@ -491,11 +491,6 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public boolean hasChannel(final String channel) {
-        return channels.contains(channel);
-    }
-
-    @Override
     public Optional<Channel> getChannel(final String channel) {
         return channels.get(channel);
     }
@@ -967,7 +962,7 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public boolean isValidChannelName(final String channelName) {
-        return hasChannel(channelName)
+        return getChannel(channelName).isPresent()
                 || withParserReadLock(p -> p.isValidChannelName(channelName), false);
     }
 

@@ -205,7 +205,7 @@ public class ServerManager implements ConnectionManager {
             if (server.getState() == ServerState.CONNECTED) {
                 connectedServer = server;
 
-                if (server.hasChannel("#DMDirc")) {
+                if (server.getChannel("#DMDirc").isPresent()) {
                     server.join(new ChannelJoinRequest("#DMDirc"));
                     return;
                 }

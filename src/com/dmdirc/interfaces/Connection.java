@@ -326,15 +326,6 @@ public interface Connection {
     ServerStatus getStatus();
 
     /**
-     * Determines whether the server knows of the specified channel.
-     *
-     * @param channel The channel to be checked
-     *
-     * @return True iff the channel is known, false otherwise
-     */
-    boolean hasChannel(final String channel);
-
-    /**
      * Determines whether the server knows of the specified query.
      *
      * @param host The host of the query to look for

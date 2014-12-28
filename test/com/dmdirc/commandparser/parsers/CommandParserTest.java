@@ -77,7 +77,6 @@ public class CommandParserTest {
         when(container.getConnection()).thenReturn(Optional.of(connection));
         when(connection.isValidChannelName("#channel1")).thenReturn(true);
         when(connection.isValidChannelName("#channel2")).thenReturn(true);
-        when(connection.hasChannel("#channel1")).thenReturn(true);
         when(connection.getChannel("#channel1")).thenReturn(Optional.of(channel));
 
         commandParser = new TestCommandParser(configProvider, commandController, eventBus);
