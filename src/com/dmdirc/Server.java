@@ -500,7 +500,7 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public List<String> getChannels() {
+    public List<String> getChannelNames() {
         return channels.getNames();
     }
 

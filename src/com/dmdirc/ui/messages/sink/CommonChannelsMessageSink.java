@@ -60,7 +60,7 @@ public class CommonChannelsMessageSink implements MessageSink {
         final Connection connection = source.getConnection().get();
         boolean found = false;
 
-        for (String channelName : connection.getChannels()) {
+        for (String channelName : connection.getChannelNames()) {
             final Channel channel = connection.getChannel(channelName);
             if (channel.getChannelInfo().getChannelClient(user) != null) {
                 channel.addLine(messageType, date, args);
