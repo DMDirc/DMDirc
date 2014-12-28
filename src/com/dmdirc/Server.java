@@ -511,30 +511,23 @@ public class Server extends FrameContainer implements Connection {
         return queries.containsKey(converter.toLowerCase(parseHostmask(host)[0]));
     }
 
+    private User getUserFromClientInfo(final ClientInfo client) {
+        return userFactory.getUser(client.getNickname(), this,
+                Optional.ofNullable(client.getUsername()),
+                Optional.ofNullable(client.getHostname()),
+                Optional.ofNullable(client.getRealname()));
+    }
+
     @Override
     public Optional<User> getLocalUser() {
-        if (parser.isPresent()) {
-            final ClientInfo client = parser.get().getLocalClient();
-            return Optional.of(userFactory
-                    .getUser(client.getNickname(), this, Optional.ofNullable(client.getUsername()),
-                            Optional.ofNullable(client.getHostname()),
-                            Optional.ofNullable(client.getRealname())));
-        } else {
-            return Optional.empty();
-        }
+        return parser.map(Parser::getLocalClient)
+                .map(this::getUserFromClientInfo);
     }
 
     @Override
     public Optional<User> getUser(final String details) {
-        if (parser.isPresent()) {
-            final ClientInfo client = parser.get().getClient(details);
-            return Optional.of(userFactory.getUser(client.getNickname(), this,
-                    Optional.ofNullable(client.getUsername()),
-                    Optional.ofNullable(client.getHostname()),
-                    Optional.ofNullable(client.getRealname())));
-        } else {
-            return Optional.empty();
-        }
+        return parser.map(p -> p.getClient(details))
+                .map(this::getUserFromClientInfo);
     }
 
     @Override
