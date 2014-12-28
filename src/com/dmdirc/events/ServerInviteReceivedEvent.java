@@ -23,32 +23,32 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.interfaces.User;
 
 /**
  * Fired when an invite is received.
  */
 public class ServerInviteReceivedEvent extends ServerDisplayableEvent {
 
-    private final ClientInfo client;
+    private final User user;
     private final String channel;
 
     public ServerInviteReceivedEvent(final long timestamp, final Connection connection,
-            final ClientInfo client, final String channel) {
+            final User user, final String channel) {
         super(timestamp, connection);
-        this.client = client;
+        this.user = user;
         this.channel = channel;
     }
 
-    public ServerInviteReceivedEvent(final Connection connection, final ClientInfo client,
+    public ServerInviteReceivedEvent(final Connection connection, final User user,
             final String channel) {
         super(connection);
-        this.client = client;
+        this.user = user;
         this.channel = channel;
     }
 
-    public ClientInfo getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
     public String getChannel() {

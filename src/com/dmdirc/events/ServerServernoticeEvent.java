@@ -23,32 +23,32 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.interfaces.User;
 
 /**
  * Fired when receiving a server notice.
  */
 public class ServerServernoticeEvent extends ServerDisplayableEvent {
 
-    private final ClientInfo client;
+    private final User user;
     private final String message;
 
     public ServerServernoticeEvent(final long timestamp, final Connection connection,
-            final ClientInfo client, final String message) {
+            final User user, final String message) {
         super(timestamp, connection);
-        this.client = client;
+        this.user = user;
         this.message = message;
     }
 
-    public ServerServernoticeEvent(final Connection connection, final ClientInfo client,
+    public ServerServernoticeEvent(final Connection connection, final User user,
             final String message) {
         super(connection);
-        this.client = client;
+        this.user = user;
         this.message = message;
     }
 
-    public ClientInfo getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
     public String getMessage() {

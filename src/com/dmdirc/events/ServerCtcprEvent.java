@@ -23,35 +23,35 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.interfaces.User;
 
 /**
  * Fired when sending a CTCP reply.
  */
 public class ServerCtcprEvent extends ServerDisplayableEvent {
 
-    private final ClientInfo client;
+    private final User user;
     private final String type;
     private final String content;
 
     public ServerCtcprEvent(final long timestamp, final Connection connection,
-            final ClientInfo client, final String type, final String content) {
+            final User user, final String type, final String content) {
         super(timestamp, connection);
-        this.client = client;
+        this.user = user;
         this.type = type;
         this.content = content;
     }
 
-    public ServerCtcprEvent(final Connection connection, final ClientInfo client, final String type,
+    public ServerCtcprEvent(final Connection connection, final User user, final String type,
             final String content) {
         super(connection);
-        this.client = client;
+        this.user = user;
         this.type = type;
         this.content = content;
     }
 
-    public ClientInfo getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
     public String getType() {
