@@ -27,7 +27,7 @@ import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 
 /**
- *
+ * Implementation of a {@link GroupChatUser}.
  */
 public class ChannelClient implements GroupChatUser {
 

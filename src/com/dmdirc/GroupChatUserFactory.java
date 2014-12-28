@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ChannelClient;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
