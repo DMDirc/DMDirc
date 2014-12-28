@@ -60,8 +60,10 @@ public class EventFormatter {
     public Optional<String> format(final DisplayableEvent event) {
         final Optional<EventFormat> format = formatProvider.getFormat(event.getClass());
 
-        format.flatMap(EventFormat::getDefaultForegroundColour).ifPresent(
-                c -> event.setDisplayProperty(DisplayProperty.FOREGROUND_COLOUR, c));
+        if (!event.getDisplayProperty(DisplayProperty.FOREGROUND_COLOUR).isPresent()) {
+            format.flatMap(EventFormat::getDefaultForegroundColour)
+                    .ifPresent(c -> event.setDisplayProperty(DisplayProperty.FOREGROUND_COLOUR, c));
+        }
 
         return format.map(f -> {
             final StringBuilder builder = new StringBuilder(f.getTemplate());
