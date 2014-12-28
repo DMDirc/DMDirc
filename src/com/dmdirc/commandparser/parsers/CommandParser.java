@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.Channel;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
@@ -36,7 +37,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.events.UnknownCommandEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.collections.RollingList;
 
@@ -74,7 +75,8 @@ public abstract class CommandParser implements Serializable {
      * @param commandManager Command manager to load plugins from
      * @param eventBus       The event bus to post events to.
      */
-    protected CommandParser(final AggregateConfigProvider configManager,
+    protected CommandParser(
+            final ReadOnlyConfigProvider configManager,
             final CommandController commandManager,
             final DMDircMBassador eventBus) {
         this.eventBus = eventBus;
@@ -195,9 +197,9 @@ public abstract class CommandParser implements Serializable {
         }
 
         if (someValid) {
-            for (String channel : parts) {
-                if (!server.isValidChannelName(channel)) {
-                    origin.addLine("commandError", "Invalid channel name: " + channel);
+            for (String channelName : parts) {
+                if (!server.isValidChannelName(channelName)) {
+                    origin.addLine("commandError", "Invalid channel name: " + channelName);
                     continue;
                 }
 
@@ -206,16 +208,16 @@ public abstract class CommandParser implements Serializable {
                         + args.getCommandName()
                         + (cargs.length > 1 ? ' ' + args.getArgumentsAsString(1) : "");
 
-                if (server.hasChannel(channel)) {
-                    server.getChannel(channel).getCommandParser().parseCommand(origin,
-                            newCommandString, false);
+                final Optional<Channel> channel = server.getChannel(channelName);
+                if (channel.isPresent()) {
+                    channel.get().getCommandParser().parseCommand(origin, newCommandString, false);
                 } else {
                     final Map.Entry<CommandInfo, Command> actCommand = commandManager.getCommand(
                             CommandType.TYPE_CHANNEL, command);
 
                     if (actCommand != null && actCommand.getValue() instanceof ExternalCommand) {
                         ((ExternalCommand) actCommand.getValue()).execute(
-                                origin, server, channel, silent,
+                                origin, server, channelName, silent,
                                 new CommandArguments(commandManager, newCommandString));
                     }
                 }

@@ -63,9 +63,11 @@ public class MessageEncoder implements Encoder {
         String encoding = connection.getWindowModel().getConfigManager()
                 .getOption("general", "encoding");
 
-        if (target != null && parser.isValidChannelName(target) && connection.hasChannel(target)) {
-            final Channel channel = connection.getChannel(target);
-            encoding = channel.getConfigManager().getOption("general", "encoding");
+        if (target != null && parser.isValidChannelName(target)) {
+            encoding = connection.getChannel(target)
+                    .map(Channel::getConfigManager)
+                    .map(cm -> cm.getOption("general", "encoding"))
+                    .orElse(encoding);
         }
 
         try {
