@@ -32,9 +32,6 @@ import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
-import com.dmdirc.events.ServerNopingEvent;
-import com.dmdirc.events.ServerNumericEvent;
-import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.interfaces.User;
@@ -57,7 +54,6 @@ import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.tls.CertificateManager;
-import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
@@ -66,7 +62,6 @@ import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.HighlightManager;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
 
 import java.net.NoRouteToHostException;
@@ -84,7 +79,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -111,8 +105,6 @@ public class Server extends FrameContainer implements Connection {
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general";
-    /** The name of the server domain. */
-    private static final String DOMAIN_SERVER = "server";
 
     /** Open channels that currently exist on the server. */
     private final ChannelMap channels = new ChannelMap();
@@ -622,8 +614,7 @@ public class Server extends FrameContainer implements Connection {
     @Override
     public Channel addChannel(final ChannelInfo chan) {
         return addChannel(chan, !backgroundChannels.contains(chan.getName())
-                || getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                        "hidechannels"));
+                || getConfigManager().getOptionBool(DOMAIN_GENERAL, "hidechannels"));
     }
 
     @Override
@@ -1043,68 +1034,6 @@ public class Server extends FrameContainer implements Connection {
     }
 
     /**
-     * Called when the server says that the nickname we're trying to use is already in use.
-     *
-     * @param nickname The nickname that we were trying to use
-     */
-    public void onNickInUse(final String nickname) {
-        final String lastNick = parser.get().getLocalClient().getNickname();
-
-        // If our last nick is still valid, ignore the in use message
-        if (!converter.equalsIgnoreCase(lastNick, nickname)) {
-            return;
-        }
-
-        String newNick = lastNick + new Random().nextInt(10);
-
-        final List<String> alts = profile.getNicknames();
-        int offset = 0;
-
-        // Loop so we can check case sensitivity
-        for (String alt : alts) {
-            offset++;
-            if (converter.equalsIgnoreCase(alt, lastNick)) {
-                break;
-            }
-        }
-
-        if (offset < alts.size() && !alts.get(offset).isEmpty()) {
-            newNick = alts.get(offset);
-        }
-
-        parser.get().getLocalClient().setNickname(newNick);
-    }
-
-    /**
-     * Called when the server sends a numeric event.
-     *
-     * @param numeric The numeric code for the event
-     * @param tokens  The (tokenised) arguments of the event
-     */
-    public void onNumeric(final int numeric, final String[] tokens) {
-        String snumeric = String.valueOf(numeric);
-
-        if (numeric < 10) {
-            snumeric = "00" + snumeric;
-        } else if (numeric < 100) {
-            snumeric = '0' + snumeric;
-        }
-
-        final String sansIrcd = "numeric_" + snumeric;
-        String target = "";
-
-        if (getConfigManager().hasOptionString("formatter", sansIrcd)) {
-            target = sansIrcd;
-        } else if (getConfigManager().hasOptionString("formatter", "numeric_unknown")) {
-            target = "numeric_unknown";
-        }
-
-        final ServerNumericEvent event = new ServerNumericEvent(this, numeric, tokens);
-        final String format = EventUtils.postDisplayable(getEventBus(), event, target);
-        handleNotification(format, (Object[]) tokens);
-    }
-
-    /**
      * Called when the socket has been closed.
      */
     public void onSocketClosed() {
@@ -1236,25 +1165,6 @@ public class Server extends FrameContainer implements Connection {
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure")) {
                 doDelayedReconnect();
             }
-        }
-    }
-
-    /**
-     * Called when we fail to receive a ping reply within a set period of time.
-     */
-    public void onPingFailed() {
-        getEventBus().publishAsync(new StatusBarMessageEvent(new StatusMessage(
-                "No ping reply from " + getName() + " for over "
-                        + (int) Math.floor(parser.get().getPingTime() / 1000.0)
-                        + " seconds.", getConfigManager())));
-
-        getEventBus().publishAsync(new ServerNopingEvent(this, parser.get().getPingTime()));
-
-        if (parser.get().getPingTime()
-                >= getConfigManager().getOptionInt(DOMAIN_SERVER, "pingtimeout")) {
-            LOG.warn("Server appears to be stoned, reconnecting");
-            handleNotification("stonedServer", getAddress());
-            reconnect();
         }
     }
 

@@ -37,7 +37,9 @@ import com.dmdirc.events.ServerMotdendEvent;
 import com.dmdirc.events.ServerMotdlineEvent;
 import com.dmdirc.events.ServerMotdstartEvent;
 import com.dmdirc.events.ServerNickchangeEvent;
+import com.dmdirc.events.ServerNopingEvent;
 import com.dmdirc.events.ServerNoticeEvent;
+import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.events.ServerPingsentEvent;
 import com.dmdirc.events.ServerServernoticeEvent;
 import com.dmdirc.events.ServerUnknownactionEvent;
@@ -47,6 +49,7 @@ import com.dmdirc.events.ServerUsermodesEvent;
 import com.dmdirc.events.ServerWalldesyncEvent;
 import com.dmdirc.events.ServerWallopsEvent;
 import com.dmdirc.events.ServerWallusersEvent;
+import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
@@ -89,12 +92,18 @@ import com.dmdirc.parser.interfaces.callbacks.UserModeDiscoveryListener;
 import com.dmdirc.parser.interfaces.callbacks.WallDesyncListener;
 import com.dmdirc.parser.interfaces.callbacks.WallopListener;
 import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
+import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.EventUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import javax.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -112,6 +121,8 @@ public class ServerEventHandler extends EventHandler implements
         ServerErrorListener, PingSentListener, UserModeDiscoveryListener,
         ServerNoticeListener, UnknownMessageListener, UnknownActionListener,
         ServerReadyListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ServerEventHandler.class);
 
     /** The server instance that owns this event handler. */
     private final Server owner;
@@ -296,13 +307,46 @@ public class ServerEventHandler extends EventHandler implements
     public void onNumeric(final Parser parser, final Date date, final int numeric,
             final String[] token) {
         checkParser(parser);
-        owner.onNumeric(numeric, token);
+
+        String snumeric = String.valueOf(numeric);
+
+        if (numeric < 10) {
+            snumeric = "00" + snumeric;
+        } else if (numeric < 100) {
+            snumeric = '0' + snumeric;
+        }
+
+        final String sansIrcd = "numeric_" + snumeric;
+        String target = "";
+
+        if (owner.getConfigManager().hasOptionString("formatter", sansIrcd)) {
+            target = sansIrcd;
+        } else if (owner.getConfigManager().hasOptionString("formatter", "numeric_unknown")) {
+            target = "numeric_unknown";
+        }
+
+        final ServerNumericEvent event = new ServerNumericEvent(owner, numeric, token);
+        final String format = EventUtils.postDisplayable(eventBus, event, target);
+        owner.handleNotification(format, (Object[]) token);
     }
 
     @Override
     public void onPingFailed(final Parser parser, final Date date) {
         checkParser(parser);
-        owner.onPingFailed();
+
+        eventBus.publishAsync(new StatusBarMessageEvent(new StatusMessage(
+                "No ping reply from " + owner.getName() + " for over " +
+                        (int) Math.floor(parser.getPingTime() / 1000.0) + " seconds.",
+                owner.getConfigManager())));
+
+        eventBus.publishAsync(new ServerNopingEvent(owner, parser.getPingTime()));
+
+        if (parser.getPingTime()
+                >= owner.getConfigManager().getOptionInt("server", "pingtimeout")) {
+            LOG.warn("Server appears to be stoned, reconnecting");
+            owner.handleNotification("stonedServer", owner.getAddress());
+            owner.reconnect();
+        }
     }
 
     @Override
@@ -352,7 +396,32 @@ public class ServerEventHandler extends EventHandler implements
     @Override
     public void onNickInUse(final Parser parser, final Date date, final String nickname) {
         checkParser(parser);
-        owner.onNickInUse(nickname);
+
+        final String lastNick = parser.getLocalClient().getNickname();
+
+        // If our last nick is still valid, ignore the in use message
+        if (!parser.getStringConverter().equalsIgnoreCase(lastNick, nickname)) {
+            return;
+        }
+
+        String newNick = lastNick + new Random().nextInt(10);
+
+        final List<String> alts = owner.getProfile().getNicknames();
+        int offset = 0;
+
+        // Loop so we can check case sensitivity
+        for (String alt : alts) {
+            offset++;
+            if (parser.getStringConverter().equalsIgnoreCase(alt, lastNick)) {
+                break;
+            }
+        }
+
+        if (offset < alts.size() && !alts.get(offset).isEmpty()) {
+            newNick = alts.get(offset);
+        }
+
+        parser.getLocalClient().setNickname(newNick);
     }
 
     @Override
