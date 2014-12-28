@@ -177,7 +177,7 @@ public class CommandManager implements CommandController {
 
             if (command.getType() == CommandType.TYPE_CHANNEL
                     || command.getType() == CommandType.TYPE_CHAT) {
-                for (String channelName : server.getChannels()) {
+                for (String channelName : server.getChannelNames()) {
                     registerCommandName(server.getChannel(channelName).getTabCompleter(),
                             commandName, register);
                 }

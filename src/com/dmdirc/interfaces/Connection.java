@@ -206,7 +206,7 @@ public interface Connection {
      *
      * @return list of channel names belonging to this server
      */
-    List<String> getChannels();
+    List<String> getChannelNames();
 
     /**
      * Retrieves this server's ignore list.
