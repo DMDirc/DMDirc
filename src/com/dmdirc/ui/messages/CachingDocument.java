@@ -24,9 +24,6 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.util.collections.RollingList;
-import com.dmdirc.util.colours.Colour;
-
-import java.util.Optional;
 
 /**
  * Wraps an {@link IRCDocument} and caches recent lines.
@@ -67,9 +64,11 @@ public class CachingDocument<T> {
         }
 
         if (styledLine == null) {
-            final Optional<Colour> foregroundColour =
-                    line.getDisplayableProperty(DisplayProperty.FOREGROUND_COLOUR);
-            foregroundColour.ifPresent(maker::setDefaultForeground);
+            line.getDisplayableProperty(DisplayProperty.FOREGROUND_COLOUR)
+                    .ifPresent(maker::setDefaultForeground);
+            line.getDisplayableProperty(DisplayProperty.BACKGROUND_COLOUR)
+                    .ifPresent(maker::setDefaultBackground);
+
             styledLine = line.getStyled(maker);
             cachedLines.add(line);
             cachedStrings.add(styledLine);
