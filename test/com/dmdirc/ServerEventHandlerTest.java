@@ -38,6 +38,7 @@ import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
 import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
+import com.dmdirc.util.ClientInfo;
 
 import com.google.common.collect.Lists;
 
@@ -71,6 +72,7 @@ public class ServerEventHandlerTest {
     @Mock private ChannelInfo channelInfo;
     @Mock private User user;
     @Mock private UserFactory userFactory;
+    @Mock private ClientInfo clientInfo;
     @Mock private Query query;
     @Mock private Date date;
 
@@ -207,6 +209,7 @@ public class ServerEventHandlerTest {
 
     @Test
     public void testOnPrivateCTCPRaisesEvent() {
+        when(parser.getClient("host!na@me")).thenReturn(clientInfo);
         when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
@@ -220,6 +223,7 @@ public class ServerEventHandlerTest {
 
     @Test
     public void testOnPrivateCTCPSendsReplyIfEventUnhandled() {
+        when(parser.getClient("host!na@me")).thenReturn(clientInfo);
         when(server.parseHostmask("host!na@me")).thenReturn(new String[]{"host", "na", "me"});
 
         final PrivateCtcpListener listener = getCallback(PrivateCtcpListener.class);
