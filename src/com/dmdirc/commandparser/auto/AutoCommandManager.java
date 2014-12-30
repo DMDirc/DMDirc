@@ -27,6 +27,7 @@ import com.dmdirc.config.profiles.Profile;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -88,6 +89,11 @@ public class AutoCommandManager {
      */
     public void addAutoCommand(final AutoCommand autoCommand) {
         checkNotNull(autoCommand);
+
+        if (autoCommand.getType() == AutoCommandType.GLOBAL && getGlobalAutoCommand().isPresent()) {
+            throw new IllegalStateException("Only one global AutoCommand may exist");
+        }
+
         final AutoCommandHandler handler = factory.getAutoCommandHandler(autoCommand);
 
         if (started) {
@@ -121,15 +127,15 @@ public class AutoCommandManager {
     }
 
     /**
-     * Gets a set of all registered global auto commands.
+     * Returns the single global auto command, if it exists.
      *
-     * @return The set of all known global auto commands.
+     * @return The global auto-command, if it exists.
      */
-    public Set<AutoCommand> getGlobalAutoCommands() {
+    public Optional<AutoCommand> getGlobalAutoCommand() {
         return getAutoCommands()
                 .parallelStream()
-                .filter(c -> !c.getServer().isPresent() && !c.getNetwork().isPresent())
-                .collect(Collectors.toSet());
+                .filter(c -> c.getType() == AutoCommandType.GLOBAL)
+                .findAny();
     }
 
     /**
