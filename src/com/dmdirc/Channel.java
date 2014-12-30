@@ -546,7 +546,7 @@ public class Channel extends MessageTarget implements GroupChat {
     @Override
     public GroupChatUser getUser(final User user) {
         return groupChatUserFactory.getGroupChatUser(user, this,
-                getChannelInfo().getChannelClient(user.getNickname()));
+                channelInfo.getChannelClient(((Client) user).getClientInfo()));
     }
 
     public Collection<GroupChatUser> getUsers() {
