@@ -110,6 +110,11 @@ public interface GroupChatUser {
     <T> Optional<T> getDisplayProperty(final DisplayProperty<T> property);
 
     /**
+     * Removes a property relating to how this {@link GroupChatUser} should be displayed.
+     */
+    <T> void removeDisplayProperty(final DisplayProperty<T> property);
+
+    /**
      * Gets the map of all display properties for this {@link GroupChatUser}.
      *
      * @return The map of display properties.

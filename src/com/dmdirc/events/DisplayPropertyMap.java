@@ -58,6 +58,16 @@ public class DisplayPropertyMap {
         properties.put(property, value);
     }
 
+    /**
+     * Removes a value for the specified property.
+     *
+     * @param property The property to be removed
+     * @param <T> The type of value the property takes
+     */
+    public <T> void remove(final DisplayProperty<T> property) {
+        properties.remove(property);
+    }
+
     private static class ReadOnlyDisplayPropertyMap extends DisplayPropertyMap {
         @Override
         public <T> void put(final DisplayProperty<T> property, final T value) {

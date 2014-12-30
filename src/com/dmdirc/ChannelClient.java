@@ -104,6 +104,11 @@ public class ChannelClient implements GroupChatUser {
     }
 
     @Override
+    public <T> void removeDisplayProperty(final DisplayProperty<T> property) {
+        properties.remove(property);
+    }
+
+    @Override
     public DisplayPropertyMap getDisplayProperties() {
         return properties;
     }
