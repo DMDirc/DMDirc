@@ -92,6 +92,14 @@ public interface GroupChat extends Chat {
      */
     void setTopic(final String topic);
 
-    GroupChatUser getUser(final User user);
+    /**
+     * Tries to retrieve a {@link GroupChatUser} from the current {@link GroupChat} for the
+     * specified {@link User}.
+     *
+     * @param user User to finf
+     *
+     * @return User on channel, or empty if the user is not on the channel
+     */
+    Optional<GroupChatUser> getUser(final User user);
 
 }

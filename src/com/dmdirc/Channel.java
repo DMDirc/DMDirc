@@ -179,7 +179,7 @@ public class Channel extends MessageTarget implements GroupChat {
             return;
         }
 
-        final GroupChatUser me = getUser(server.getLocalUser());
+        final GroupChatUser me = getUser(server.getLocalUser()).get();
         final String[] details = getDetails(me);
 
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
@@ -209,7 +209,7 @@ public class Channel extends MessageTarget implements GroupChat {
         }
 
 
-        final GroupChatUser me = getUser(server.getLocalUser());
+        final GroupChatUser me = getUser(server.getLocalUser()).get();
         final String[] details = getDetails(me);
 
         if (server.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
@@ -544,9 +544,12 @@ public class Channel extends MessageTarget implements GroupChat {
     }
 
     @Override
-    public GroupChatUser getUser(final User user) {
-        return groupChatUserFactory.getGroupChatUser(user, this,
-                channelInfo.getChannelClient(((Client) user).getClientInfo()));
+    public Optional<GroupChatUser> getUser(final User user) {
+        final ChannelClientInfo ci = channelInfo.getChannelClient(((Client) user).getClientInfo());
+        if (ci == null) {
+            return Optional.empty();
+        }
+        return Optional.of(groupChatUserFactory.getGroupChatUser(user, this, ci));
     }
 
     public Collection<GroupChatUser> getUsers() {

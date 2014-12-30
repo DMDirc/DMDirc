@@ -161,7 +161,7 @@ public class ChannelEventHandler extends EventHandler implements
         checkParser(parser);
 
         final Topic topic = new Topic(channel.getTopic(),
-                owner.getUser(getConnection().getUser(channel.getTopicSetter())),
+                owner.getUser(getConnection().getUser(channel.getTopicSetter())).orElse(null),
                 channel.getTopicTime());
 
         if (isJoinTopic) {
