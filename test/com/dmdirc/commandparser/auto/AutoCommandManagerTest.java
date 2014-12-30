@@ -94,8 +94,13 @@ public class AutoCommandManagerTest {
 
     @Test
     public void testGetGlobalAutoCommands() {
-        assertEquals(1, autoCommandManager.getGlobalAutoCommands().size());
-        assertTrue(autoCommandManager.getGlobalAutoCommands().contains(global));
+        assertTrue(autoCommandManager.getGlobalAutoCommand().isPresent());
+        assertEquals(global, autoCommandManager.getGlobalAutoCommand().get());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testAddMultipleGlobalCommands() {
+        autoCommandManager.addAutoCommand(global);
     }
 
     @Test
