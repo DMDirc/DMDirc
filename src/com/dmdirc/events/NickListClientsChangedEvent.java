@@ -23,7 +23,7 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 import com.google.common.collect.Lists;
 
@@ -35,21 +35,21 @@ import java.util.Collections;
  */
 public class NickListClientsChangedEvent extends NickListEvent {
 
-    private final Collection<ChannelClientInfo> users;
+    private final Collection<GroupChatUser> users;
 
     public NickListClientsChangedEvent(final long timestamp, final Channel channel,
-            final Iterable<ChannelClientInfo> users) {
+            final Iterable<GroupChatUser> users) {
         super(timestamp, channel);
         this.users = Lists.newArrayList(users);
     }
 
     public NickListClientsChangedEvent(final Channel channel,
-            final Iterable<ChannelClientInfo> users) {
+            final Iterable<GroupChatUser> users) {
         super(channel);
         this.users = Lists.newArrayList(users);
     }
 
-    public Collection<ChannelClientInfo> getUsers() {
+    public Collection<GroupChatUser> getUsers() {
         return Collections.unmodifiableCollection(users);
     }
 }

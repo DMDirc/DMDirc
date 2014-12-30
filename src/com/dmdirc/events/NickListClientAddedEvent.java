@@ -23,27 +23,27 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a user is added to the list of users.
  */
 public class NickListClientAddedEvent extends NickListEvent {
 
-    private final ChannelClientInfo user;
+    private final GroupChatUser user;
 
     public NickListClientAddedEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo user) {
+            final GroupChatUser user) {
         super(timestamp, channel);
         this.user = user;
     }
 
-    public NickListClientAddedEvent(final Channel channel, final ChannelClientInfo user) {
+    public NickListClientAddedEvent(final Channel channel, final GroupChatUser user) {
         super(channel);
         this.user = user;
     }
 
-    public ChannelClientInfo getUser() {
+    public GroupChatUser getUser() {
         return user;
     }
 }

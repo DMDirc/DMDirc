@@ -76,6 +76,7 @@ import com.google.common.base.Strings;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -148,7 +149,9 @@ public class ChannelEventHandler extends EventHandler implements
     public void onChannelGotNames(final Parser parser, final Date date, final ChannelInfo channel) {
         checkParser(parser);
 
-        owner.setClients(channel.getChannelClients());
+        owner.setClients(channel.getChannelClients().stream()
+                .map(owner::getUserFromClient)
+                .collect(Collectors.toList()));
         eventBus.publishAsync(new ChannelGotnamesEvent(owner));
     }
 
@@ -192,9 +195,9 @@ public class ChannelEventHandler extends EventHandler implements
         final Optional<Topic> currentTopic = owner.getCurrentTopic();
         final boolean hasNewTopic = !Strings.isNullOrEmpty(channel.getTopic());
         if (!isJoinTopic
-                || (!currentTopic.isPresent() && hasNewTopic)
-                || (currentTopic.isPresent() && !channel.getTopic().equals(
-                        owner.getCurrentTopic().get().getTopic()))) {
+                || !currentTopic.isPresent() && hasNewTopic
+                || currentTopic.isPresent() && !channel.getTopic().equals(
+                        owner.getCurrentTopic().get().getTopic())) {
             // Only add the topic if:
             //  - It's being set while we're in the channel (rather than discovered on join), or
             //  - We think the current topic is empty and are discovering a new one, or
@@ -211,7 +214,7 @@ public class ChannelEventHandler extends EventHandler implements
         final ChannelJoinEvent event = new ChannelJoinEvent(owner, client);
         final String format = EventUtils.postDisplayable(eventBus, event, "channelJoin");
         owner.doNotification(date, format, client);
-        owner.addClient(client);
+        owner.addClient(owner.getUserFromClient(client));
     }
 
     @Override
@@ -225,7 +228,7 @@ public class ChannelEventHandler extends EventHandler implements
                 + (isMyself(client) ? "Self" : "") + "Part"
                 + (reason.isEmpty() ? "" : "Reason"));
         owner.doNotification(date, format, client, reason);
-        owner.removeClient(client);
+        owner.removeClient(owner.getUserFromClient(client));
     }
 
     @Override
@@ -238,7 +241,7 @@ public class ChannelEventHandler extends EventHandler implements
         final String format = EventUtils.postDisplayable(eventBus, event,
                 "channelKick" + (reason.isEmpty() ? "" : "Reason"));
         owner.doNotification(date, format, client, kickedClient, reason);
-        owner.removeClient(kickedClient);
+        owner.removeClient(owner.getUserFromClient(kickedClient));
     }
 
     @Override
@@ -250,7 +253,7 @@ public class ChannelEventHandler extends EventHandler implements
         final String format = EventUtils.postDisplayable(eventBus, event,
                 "channelQuit" + (reason.isEmpty() ? "" : "Reason"));
         owner.doNotification(date, format, client, reason);
-        owner.removeClient(client);
+        owner.removeClient(owner.getUserFromClient(client));
     }
 
     @Override

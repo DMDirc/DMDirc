@@ -23,27 +23,27 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a user is removed from the list of users.
  */
 public class NickListClientRemovedEvent extends NickListEvent {
 
-    private final ChannelClientInfo user;
+    private final GroupChatUser user;
 
     public NickListClientRemovedEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo user) {
+            final GroupChatUser user) {
         super(timestamp, channel);
         this.user = user;
     }
 
-    public NickListClientRemovedEvent(final Channel channel, final ChannelClientInfo user) {
+    public NickListClientRemovedEvent(final Channel channel, final GroupChatUser user) {
         super(channel);
         this.user = user;
     }
 
-    public ChannelClientInfo getUser() {
+    public GroupChatUser getUser() {
         return user;
     }
 }

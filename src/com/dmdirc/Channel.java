@@ -292,7 +292,7 @@ public class Channel extends MessageTarget implements GroupChat {
         setIcon("channel-inactive");
 
         getEventBus().publishAsync(new NickListClientsChangedEvent(this,
-                Collections.<ChannelClientInfo>emptyList()));
+                Collections.<GroupChatUser>emptyList()));
     }
 
     @Override
@@ -332,11 +332,10 @@ public class Channel extends MessageTarget implements GroupChat {
      *
      * @param client The client to be added
      */
-    public void addClient(final ChannelClientInfo client) {
+    public void addClient(final GroupChatUser client) {
         getEventBus().publishAsync(new NickListClientAddedEvent(this, client));
 
-        getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK,
-                client.getClient().getNickname());
+        getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
     }
 
     /**
@@ -344,13 +343,13 @@ public class Channel extends MessageTarget implements GroupChat {
      *
      * @param client The client to be removed
      */
-    public void removeClient(final ChannelClientInfo client) {
+    public void removeClient(final GroupChatUser client) {
         getEventBus().publishAsync(new NickListClientRemovedEvent(this, client));
 
         getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK,
-                client.getClient().getNickname());
+                client.getNickname());
 
-        if (client.getClient().equals(server.getParser().get().getLocalClient())) {
+        if (client.getUser().equals(server.getLocalUser())) {
             resetWindow();
         }
     }
@@ -360,13 +359,13 @@ public class Channel extends MessageTarget implements GroupChat {
      *
      * @param clients The list of clients to use
      */
-    public void setClients(final Collection<ChannelClientInfo> clients) {
+    public void setClients(final Collection<GroupChatUser> clients) {
         getEventBus().publishAsync(new NickListClientsChangedEvent(this, clients));
 
         getTabCompleter().clear(TabCompletionType.CHANNEL_NICK);
 
         getTabCompleter().addEntries(TabCompletionType.CHANNEL_NICK,
-            clients.stream().map(c -> c.getClient().getNickname()).collect(Collectors.toList()));
+            clients.stream().map(GroupChatUser::getNickname).collect(Collectors.toList()));
     }
 
     /**
@@ -547,6 +546,11 @@ public class Channel extends MessageTarget implements GroupChat {
     @Override
     public GroupChatUser getUser(final User user) {
         return groupChatUserFactory.getGroupChatUser(user, this);
+    }
+
+    public Collection<GroupChatUser> getUsers() {
+        return channelInfo.getChannelClients().stream().map(this::getUserFromClient)
+                .collect(Collectors.toList());
     }
 
 }
