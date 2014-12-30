@@ -71,8 +71,9 @@ public class EventFormatter {
             while (tagStart > -1) {
                 final int tagEnd = builder.indexOf("}}", tagStart);
                 final String tag = builder.substring(tagStart + 2, tagEnd);
-                builder.replace(tagStart, tagEnd + 2, getReplacement(event, tag));
-                tagStart = builder.indexOf("{{");
+                final String replacement = getReplacement(event, tag);
+                builder.replace(tagStart, tagEnd + 2, replacement);
+                tagStart = builder.indexOf("{{", tagStart + replacement.length());
             }
 
             return builder.toString();
