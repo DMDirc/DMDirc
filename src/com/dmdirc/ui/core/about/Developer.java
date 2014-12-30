@@ -30,6 +30,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Developer {
 
+    Developer() {}
+
     public abstract String getName();
     public abstract String getWebsite();
 

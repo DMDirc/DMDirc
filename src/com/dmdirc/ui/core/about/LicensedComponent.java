@@ -32,6 +32,8 @@ import java.util.List;
 @AutoValue
 public abstract class LicensedComponent {
 
+    LicensedComponent() {}
+
     public abstract String getName();
     public abstract List<Licence> getLicences();
 

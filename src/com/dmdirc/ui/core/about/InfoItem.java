@@ -31,6 +31,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class InfoItem {
 
+    InfoItem() {}
+
     public abstract String getDescription();
     public abstract String getInformation();
 

@@ -30,6 +30,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Licence {
 
+    Licence() {}
+
     public abstract String getComponent();
     public abstract String getName();
     public abstract String getBody();
