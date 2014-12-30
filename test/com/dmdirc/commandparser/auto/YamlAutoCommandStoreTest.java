@@ -54,21 +54,21 @@ public class YamlAutoCommandStoreTest {
         fs = Jimfs.newFileSystem(Configuration.unix());
         Files.copy(getClass().getResource("readtest.yml").openStream(),
                 fs.getPath("readtest.yml"));
-        command = new AutoCommand(Optional.ofNullable("server"),
+        command = AutoCommand.create(Optional.ofNullable("server"),
                 Optional.ofNullable("network"),
                 Optional.ofNullable("profile"),
                 "command");
-        command1 = new AutoCommand(Optional.ofNullable("server1"),
+        command1 = AutoCommand.create(Optional.ofNullable("server1"),
                 Optional.ofNullable("network1"),
                 Optional.ofNullable("profile1"), "command1");
-        command2 = new AutoCommand(Optional.ofNullable("server2"),
+        command2 = AutoCommand.create(Optional.ofNullable("server2"),
                 Optional.ofNullable("network2"),
                 Optional.<String>empty(),
                 "command2");
-        command3 = new AutoCommand(Optional.<String>empty(),
+        command3 = AutoCommand.create(Optional.<String>empty(),
                 Optional.ofNullable("network3"), Optional.<String>empty(),
                 "command3");
-        command4 = new AutoCommand(Optional.<String>empty(),
+        command4 = AutoCommand.create(Optional.<String>empty(),
                 Optional.<String>empty(),
                 Optional.<String>empty(),
                 "command4");

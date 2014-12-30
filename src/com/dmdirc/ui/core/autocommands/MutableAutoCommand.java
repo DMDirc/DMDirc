@@ -106,7 +106,7 @@ public class MutableAutoCommand {
     }
 
     public AutoCommand getAutoCommand() {
-        return new AutoCommand(server, network, profile, response);
+        return AutoCommand.create(server, network, profile, response);
     }
 
     @Override

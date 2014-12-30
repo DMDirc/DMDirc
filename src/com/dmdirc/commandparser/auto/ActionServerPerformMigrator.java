@@ -101,7 +101,8 @@ public class ActionServerPerformMigrator implements Migrator {
             final Optional<String> profile = getCondition(configFile,
                     "SERVER_PROFILE.IDENTITY_NAME");
 
-            autoCommandManager.addAutoCommand(new AutoCommand(server, network, profile, response));
+            autoCommandManager.addAutoCommand(
+                    AutoCommand.create(server, network, profile, response));
             return true;
         } catch (IOException | InvalidConfigFileException | NumberFormatException ex) {
             return false;

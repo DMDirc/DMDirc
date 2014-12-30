@@ -44,7 +44,7 @@ public class MutableAutoCommandTest {
 
     @Test
     public void testConstructor() {
-        final AutoCommand autoCommand = new AutoCommand(server, network, profile, response);
+        final AutoCommand autoCommand = AutoCommand.create(server, network, profile, response);
         command = new MutableAutoCommand(autoCommand);
         assertEquals(server, command.getServer());
         assertEquals(network, command.getNetwork());
@@ -122,7 +122,7 @@ public class MutableAutoCommandTest {
     public void testEqualsAutoCommand() {
         final MutableAutoCommand command1 = new MutableAutoCommand(server, network, profile,
                 response, type);
-        final AutoCommand command2 = new AutoCommand(server, network, profile, response);
+        final AutoCommand command2 = AutoCommand.create(server, network, profile, response);
         assertTrue(command1.equalsAutoCommand(command2));
     }
 

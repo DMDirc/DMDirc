@@ -35,81 +35,81 @@ public class AutoCommandTest {
 
     @Before
     public void setUp() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.empty(), Optional.empty(), "");
+        command = AutoCommand.create(Optional.empty(), Optional.empty(), Optional.empty(), "");
     }
 
     @Test
     public void testGetServer_Empty() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.empty(), Optional.empty(), "");
+        command = AutoCommand.create(Optional.empty(), Optional.empty(), Optional.empty(), "");
         assertEquals(Optional.<String>empty(), command.getServer());
     }
 
     @Test
     public void testGetServer_NotEmpty() throws Exception {
-        command = new AutoCommand(Optional.of("server"), Optional.empty(), Optional.empty(), "");
+        command = AutoCommand.create(Optional.of("server"), Optional.empty(), Optional.empty(), "");
         assertEquals(Optional.of("server"), command.getServer());
     }
 
     @Test
     public void testGetNetwork_Empty() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.empty(), Optional.empty(), "");
+        command = AutoCommand.create(Optional.empty(), Optional.empty(), Optional.empty(), "");
         assertEquals(Optional.<String>empty(), command.getNetwork());
     }
 
     @Test
     public void testGetNetwork_NotEmpty() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.of("network"), Optional.empty(), "");
+        command = AutoCommand.create(Optional.empty(), Optional.of("network"), Optional.empty(), "");
         assertEquals(Optional.of("network"), command.getNetwork());
     }
 
     @Test
     public void testGetProfile_Empty() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.empty(), Optional.empty(), "");
+        command = AutoCommand.create(Optional.empty(), Optional.empty(), Optional.empty(), "");
         assertEquals(Optional.<String>empty(), command.getProfile());
     }
 
     @Test
     public void testGetProfile_NotEmpty() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.empty(), Optional.of("profile"), "");
+        command = AutoCommand.create(Optional.empty(), Optional.empty(), Optional.of("profile"), "");
         assertEquals(Optional.of("profile"), command.getProfile());
     }
 
     @Test
     public void testGetResponse_Empty() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.empty(), Optional.empty(), "");
+        command = AutoCommand.create(Optional.empty(), Optional.empty(), Optional.empty(), "");
         assertEquals("", command.getResponse());
     }
 
     @Test
     public void testGetResponse_NotEmpty() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.empty(), Optional.empty(), "response");
+        command = AutoCommand.create(Optional.empty(), Optional.empty(), Optional.empty(), "response");
         assertEquals("response", command.getResponse());
     }
 
     @Test
     public void testGetType_Server() throws Exception {
-        command = new AutoCommand(Optional.of("server"), Optional.empty(), Optional.empty(),
+        command = AutoCommand.create(Optional.of("server"), Optional.empty(), Optional.empty(),
                 "response");
         assertEquals(AutoCommandType.SERVER, command.getType());
     }
 
     @Test
     public void testGetType_Network() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.of("network"), Optional.empty(),
+        command = AutoCommand.create(Optional.empty(), Optional.of("network"), Optional.empty(),
                 "response");
         assertEquals(AutoCommandType.NETWORK, command.getType());
     }
 
     @Test
     public void testGetType_Global() throws Exception {
-        command = new AutoCommand(Optional.empty(), Optional.empty(), Optional.of("profile"),
+        command = AutoCommand.create(Optional.empty(), Optional.empty(), Optional.of("profile"),
                 "response");
         assertEquals(AutoCommandType.GLOBAL, command.getType());
     }
 
     @Test
     public void testGetType_Unknown() throws Exception {
-        command = new AutoCommand(Optional.of("server"), Optional.of("network"), Optional.empty(),
+        command = AutoCommand.create(Optional.of("server"), Optional.of("network"), Optional.empty(),
                 "response");
         assertEquals(AutoCommandType.UNKNOWN, command.getType());
     }
