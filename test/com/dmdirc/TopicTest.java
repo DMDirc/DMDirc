@@ -24,6 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.util.Optional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -40,7 +42,7 @@ public class TopicTest {
     @Test
     public void testGetClient() {
         final Topic test = Topic.create("abc", user, 1);
-        assertEquals(user, test.getClient());
+        assertEquals(Optional.of(user), test.getClient());
     }
 
     @Test
@@ -53,12 +55,6 @@ public class TopicTest {
     public void testGetTopic() {
         final Topic test = Topic.create("abc", user, 1);
         assertEquals("abc", test.getTopic());
-    }
-
-    @Test
-    public void testToString() {
-        final Topic test = Topic.create("abc", user, 1);
-        assertEquals("abc", test.toString());
     }
 
 }
