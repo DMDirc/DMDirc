@@ -23,7 +23,7 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fire when a user sets away.
@@ -31,11 +31,11 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 public class ChannelUserAwayEvent extends ChannelUserEvent {
 
     public ChannelUserAwayEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo user) {
+            final GroupChatUser user) {
         super(timestamp, channel, user);
     }
 
-    public ChannelUserAwayEvent(final Channel channel, final ChannelClientInfo user) {
+    public ChannelUserAwayEvent(final Channel channel, final GroupChatUser user) {
         super(channel, user);
     }
 

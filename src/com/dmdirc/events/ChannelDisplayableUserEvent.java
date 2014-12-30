@@ -23,7 +23,7 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Base type for displayable events that occur in channels against users.
@@ -31,11 +31,11 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 public abstract class ChannelDisplayableUserEvent extends ChannelUserEvent {
 
     public ChannelDisplayableUserEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo user) {
+            final GroupChatUser user) {
         super(timestamp, channel, user);
     }
 
-    public ChannelDisplayableUserEvent(final Channel channel, final ChannelClientInfo user) {
+    public ChannelDisplayableUserEvent(final Channel channel, final GroupChatUser user) {
         super(channel, user);
     }
 
