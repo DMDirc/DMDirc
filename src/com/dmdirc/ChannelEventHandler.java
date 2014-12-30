@@ -186,7 +186,6 @@ public class ChannelEventHandler extends EventHandler implements
                 format = EventUtils.postDisplayable(eventBus, event,
                         "channelTopicChanged");
             }
-            eventBus.publish(event);
             owner.doNotification(date, format, channel.getChannelClient(channel.getTopicSetter(),
                     true), channel.getTopic());
         }
