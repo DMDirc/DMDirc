@@ -52,8 +52,8 @@ public class SetNickColour extends Command implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("setnickcolour",
-            "setnickcolour [--nicklist|--text] <nick> [colour] - "
-            + "set the specified person's display colour", CommandType.TYPE_CHANNEL);
+            "setnickcolour <nick> [colour] - set the specified person's display colour",
+            CommandType.TYPE_CHANNEL);
     /** Manager to use to convert colours. */
     private final ColourManagerFactory colourManagerFactory;
 
