@@ -36,7 +36,7 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.GroupChatUser;
 
 import java.util.Optional;
 
@@ -71,11 +71,11 @@ public class ShowTopic extends Command implements ExternalCommand {
         if (args.getArguments().length == 0) {
             final Optional<Topic> topic = channel.getCurrentTopic();
             if (topic.isPresent()) {
-                final Optional<User> user = topic.map(Topic::getClient);
+                final Optional<GroupChatUser> user = topic.map(Topic::getClient);
                 sendLine(origin, args.isSilent(), "channelTopicDiscovered", "",
-                        user.map(User::getNickname).orElse(""),
-                        user.flatMap(User::getUsername).orElse(""),
-                        user.flatMap(User::getHostname).orElse(""),
+                        user.map(GroupChatUser::getNickname).orElse(""),
+                        user.flatMap(GroupChatUser::getUsername).orElse(""),
+                        user.flatMap(GroupChatUser::getHostname).orElse(""),
                         topic.map(Topic::getTopic).orElse(""),
                         1000 * topic.map(Topic::getTime).get(),
                         channel.getName());

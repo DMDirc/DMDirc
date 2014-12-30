@@ -28,6 +28,7 @@ import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
+import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.NickListClientAddedEvent;
 import com.dmdirc.events.NickListClientRemovedEvent;
@@ -37,7 +38,6 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
-import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
@@ -502,9 +502,7 @@ public class Channel extends MessageTarget implements GroupChat {
         }
         updateTitle();
 
-        new Thread(
-                () -> listenerList.getCallable(TopicChangeListener.class).topicChanged(this, topic),
-                "Topic change listener runner").start();
+        getEventBus().publishAsync(new ChannelTopicChangeEvent(this, topic));
     }
 
     @Override
@@ -534,16 +532,6 @@ public class Channel extends MessageTarget implements GroupChat {
     @Override
     public int getMaxTopicLength() {
         return server.getParser().get().getMaxTopicLength();
-    }
-
-    @Override
-    public void addTopicChangeListener(final TopicChangeListener listener) {
-        listenerList.add(TopicChangeListener.class, listener);
-    }
-
-    @Override
-    public void removeTopicChangeListener(final TopicChangeListener listener) {
-        listenerList.remove(TopicChangeListener.class, listener);
     }
 
     @Override

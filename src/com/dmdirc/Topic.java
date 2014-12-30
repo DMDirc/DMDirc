@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Stores information about a channel topic.
@@ -32,7 +32,7 @@ public class Topic {
     /** Topic. */
     private final String topic;
     /** Topic client. */
-    private final User client;
+    private final GroupChatUser client;
     /** Topic time. */
     private final long time;
 
@@ -43,7 +43,7 @@ public class Topic {
      * @param client Topic client
      * @param time   Topic time
      */
-    public Topic(final String topic, final User client, final long time) {
+    public Topic(final String topic, final GroupChatUser client, final long time) {
         this.topic = topic;
         this.client = client;
         this.time = time;
@@ -54,7 +54,7 @@ public class Topic {
      *
      * @return client
      */
-    public User getClient() {
+    public GroupChatUser getClient() {
         return client;
     }
 
