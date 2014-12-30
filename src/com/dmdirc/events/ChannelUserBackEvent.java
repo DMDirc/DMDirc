@@ -23,7 +23,7 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a user sets back.
@@ -31,11 +31,11 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 public class ChannelUserBackEvent extends ChannelUserEvent {
 
     public ChannelUserBackEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo user) {
+            final GroupChatUser user) {
         super(timestamp, channel, user);
     }
 
-    public ChannelUserBackEvent(final Channel channel, final ChannelClientInfo user) {
+    public ChannelUserBackEvent(final Channel channel, final GroupChatUser user) {
         super(channel, user);
     }
 

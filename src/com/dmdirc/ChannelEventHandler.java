@@ -46,6 +46,7 @@ import com.dmdirc.events.ChannelUserBackEvent;
 import com.dmdirc.events.ChannelUserEvent;
 import com.dmdirc.events.ChannelUsermodechangeEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
@@ -345,15 +346,16 @@ public class ChannelEventHandler extends EventHandler implements
             final ClientInfo client, final AwayState oldState, final AwayState state) {
         checkParser(parser);
 
-        final ChannelClientInfo channelClient = owner.getChannelInfo().getChannelClient(client);
+        final Optional<GroupChatUser> channelClient
+                = owner.getUser(owner.getConnection().get().getUser(client.getNickname()));
 
-        if (channelClient != null) {
+        if (channelClient.isPresent()) {
             final boolean away = state == AwayState.AWAY;
             final boolean discovered = oldState == AwayState.UNKNOWN;
 
             final ChannelUserEvent event = away
-                    ? new ChannelUserAwayEvent(date.getTime(), owner, channelClient)
-                    : new ChannelUserBackEvent(date.getTime(), owner, channelClient);
+                    ? new ChannelUserAwayEvent(date.getTime(), owner, channelClient.get())
+                    : new ChannelUserBackEvent(date.getTime(), owner, channelClient.get());
             final String format = EventUtils.postDisplayable(eventBus, event,
                     (away ? "channelUserAway" : "channelUserBack")
                     + (discovered ? "Discovered" : ""));
