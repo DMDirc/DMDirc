@@ -936,7 +936,13 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
-        if (arg instanceof ClientInfo) {
+        if (arg instanceof User) {
+            final User clientInfo = (User) arg;
+            args.add(clientInfo.getNickname());
+            args.add(clientInfo.getUsername());
+            args.add(clientInfo.getHostname());
+            return true;
+        } else if (arg instanceof ClientInfo) {
             final ClientInfo clientInfo = (ClientInfo) arg;
             args.add(clientInfo.getNickname());
             args.add(clientInfo.getUsername());
