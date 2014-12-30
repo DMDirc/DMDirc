@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.Channel;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
@@ -37,6 +36,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.events.UnknownCommandEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.collections.RollingList;
@@ -208,9 +208,10 @@ public abstract class CommandParser implements Serializable {
                         + args.getCommandName()
                         + (cargs.length > 1 ? ' ' + args.getArgumentsAsString(1) : "");
 
-                final Optional<Channel> channel = server.getChannel(channelName);
+                final Optional<GroupChat> channel = server.getChannel(channelName);
                 if (channel.isPresent()) {
-                    channel.get().getCommandParser().parseCommand(origin, newCommandString, false);
+                    channel.get().getWindowModel().getCommandParser()
+                            .parseCommand(origin, newCommandString, false);
                 } else {
                     final Map.Entry<CommandInfo, Command> actCommand = commandManager.getCommand(
                             CommandType.TYPE_CHANNEL, command);

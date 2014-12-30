@@ -570,4 +570,9 @@ public class Channel extends MessageTarget implements GroupChat {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public FrameContainer getWindowModel() {
+        return this;
+    }
+
 }

@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.interfaces.Encoder;
 import com.dmdirc.parser.interfaces.Parser;
@@ -65,7 +66,8 @@ public class MessageEncoder implements Encoder {
 
         if (target != null && parser.isValidChannelName(target)) {
             encoding = connection.getChannel(target)
-                    .map(Channel::getConfigManager)
+                    .map(GroupChat::getWindowModel)
+                    .map(FrameContainer::getConfigManager)
                     .map(cm -> cm.getOption("general", "encoding"))
                     .orElse(encoding);
         }

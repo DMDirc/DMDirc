@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -36,6 +35,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -80,7 +80,7 @@ public class Message extends Command implements IntelligentCommand,
 
             // If this is a known server or channel, and this is not a silent
             // invocation, use sendLine, else send it raw to the parser.
-            final Optional<Channel> channel = connection.getChannel(target);
+            final Optional<GroupChat> channel = connection.getChannel(target);
             if (!args.isSilent() && channel.isPresent()) {
                 channel.get().sendLine(message);
             } else if (!args.isSilent() && connection.hasQuery(target)) {
