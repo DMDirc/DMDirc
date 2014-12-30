@@ -39,14 +39,6 @@ public abstract class AutoCommand {
     AutoCommand() {
     }
 
-    public AutoCommand(
-            final Optional<String> server,
-            final Optional<String> network,
-            final Optional<String> profile,
-            @Nonnull final String response) {
-
-    }
-
     public abstract Optional<String> getServer();
 
     public abstract Optional<String> getNetwork();
