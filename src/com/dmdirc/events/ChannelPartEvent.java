@@ -23,31 +23,31 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a user parts a channel.
  */
 public class ChannelPartEvent extends ChannelDisplayableEvent {
 
-    private final ChannelClientInfo client;
+    private final GroupChatUser client;
     private final String message;
 
     public ChannelPartEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client, final String message) {
+            final GroupChatUser client, final String message) {
         super(timestamp, channel);
         this.client = client;
         this.message = message;
     }
 
-    public ChannelPartEvent(final Channel channel, final ChannelClientInfo client,
+    public ChannelPartEvent(final Channel channel, final GroupChatUser client,
             final String message) {
         super(channel);
         this.client = client;
         this.message = message;
     }
 
-    public ChannelClientInfo getClient() {
+    public GroupChatUser getClient() {
         return client;
     }
 

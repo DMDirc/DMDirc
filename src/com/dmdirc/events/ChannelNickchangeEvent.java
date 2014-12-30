@@ -23,32 +23,31 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a user changes nickname in a channel.
  */
 public class ChannelNickchangeEvent extends ChannelDisplayableEvent {
 
-    private final ChannelClientInfo client;
+    private final GroupChatUser client;
     private final String oldNick;
 
     public ChannelNickchangeEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client,
-            final String oldNick) {
+            final GroupChatUser client, final String oldNick) {
         super(timestamp, channel);
         this.client = client;
         this.oldNick = oldNick;
     }
 
-    public ChannelNickchangeEvent(final Channel channel, final ChannelClientInfo client,
+    public ChannelNickchangeEvent(final Channel channel, final GroupChatUser client,
             final String oldNick) {
         super(channel);
         this.client = client;
         this.oldNick = oldNick;
     }
 
-    public ChannelClientInfo getClient() {
+    public GroupChatUser getClient() {
         return client;
     }
 

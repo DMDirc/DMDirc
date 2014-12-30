@@ -24,61 +24,28 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.GroupChatUser;
 
+import com.google.auto.value.AutoValue;
+
+import java.util.Optional;
+
 /**
  * Stores information about a channel topic.
  */
-public class Topic {
+@AutoValue
+public abstract class Topic {
+
+    Topic() {}
 
     /** Topic. */
-    private final String topic;
+    public abstract String getTopic();
     /** Topic client. */
-    private final GroupChatUser client;
+    public abstract Optional<GroupChatUser> getClient();
     /** Topic time. */
-    private final long time;
+    public abstract long getTime();
 
-    /**
-     * Creates a new topic.
-     *
-     * @param topic  Topic
-     * @param client Topic client
-     * @param time   Topic time
-     */
-    public Topic(final String topic, final GroupChatUser client, final long time) {
-        this.topic = topic;
-        this.client = client;
-        this.time = time;
+    public static Topic create(final String topic,
+            final GroupChatUser groupChatUser,
+            final long time) {
+        return new AutoValue_Topic(topic, Optional.ofNullable(groupChatUser), time);
     }
-
-    /**
-     * Returns the client who set the topic.
-     *
-     * @return client
-     */
-    public GroupChatUser getClient() {
-        return client;
-    }
-
-    /**
-     * Returns the time the topic was set.
-     *
-     * @return topic time
-     */
-    public long getTime() {
-        return time;
-    }
-
-    /**
-     * Returns the topic this object represents.
-     *
-     * @return topic
-     */
-    public String getTopic() {
-        return topic;
-    }
-
-    @Override
-    public String toString() {
-        return topic;
-    }
-
 }

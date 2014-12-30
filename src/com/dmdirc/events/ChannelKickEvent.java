@@ -23,19 +23,19 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a user is kicked from a channel.
  */
 public class ChannelKickEvent extends ChannelDisplayableEvent {
 
-    private final ChannelClientInfo client;
-    private final ChannelClientInfo victim;
+    private final GroupChatUser client;
+    private final GroupChatUser victim;
     private final String reason;
 
     public ChannelKickEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client, final ChannelClientInfo victim, final String reason) {
+            final GroupChatUser client, final GroupChatUser victim, final String reason) {
         super(timestamp, channel);
         this.client = client;
         this.victim = victim;
@@ -43,18 +43,18 @@ public class ChannelKickEvent extends ChannelDisplayableEvent {
     }
 
     public ChannelKickEvent(final Channel channel,
-            final ChannelClientInfo client, final ChannelClientInfo victim, final String reason) {
+            final GroupChatUser client, final GroupChatUser victim, final String reason) {
         super(channel);
         this.client = client;
         this.victim = victim;
         this.reason = reason;
     }
 
-    public ChannelClientInfo getClient() {
+    public GroupChatUser getClient() {
         return client;
     }
 
-    public ChannelClientInfo getVictim() {
+    public GroupChatUser getVictim() {
         return victim;
     }
 

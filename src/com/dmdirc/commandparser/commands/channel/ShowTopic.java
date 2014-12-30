@@ -71,7 +71,7 @@ public class ShowTopic extends Command implements ExternalCommand {
         if (args.getArguments().length == 0) {
             final Optional<Topic> topic = channel.getCurrentTopic();
             if (topic.isPresent()) {
-                final Optional<GroupChatUser> user = topic.map(Topic::getClient);
+                final Optional<GroupChatUser> user = topic.map(Topic::getClient).get();
                 sendLine(origin, args.isSilent(), "channelTopicDiscovered", "",
                         user.map(GroupChatUser::getNickname).orElse(""),
                         user.flatMap(GroupChatUser::getUsername).orElse(""),
