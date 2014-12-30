@@ -45,24 +45,28 @@ public class ChannelFactory {
     private final URLBuilder urlBuilder;
     private final DMDircMBassador eventBus;
     private final BackBufferFactory backBufferFactory;
+    private final GroupChatUserFactory groupChatUserFactory;
 
     @Inject
     public ChannelFactory(final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController, final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder, final DMDircMBassador eventBus,
-            final BackBufferFactory backBufferFactory) {
+            final BackBufferFactory backBufferFactory,
+            final GroupChatUserFactory groupChatUserFactory) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;
         this.messageSinkManager = messageSinkManager;
         this.urlBuilder = urlBuilder;
         this.eventBus = eventBus;
         this.backBufferFactory = backBufferFactory;
+        this.groupChatUserFactory = groupChatUserFactory;
     }
 
     public Channel getChannel(final Server server,
             final ChannelInfo channelInfo,
             final ConfigProviderMigrator configMigrator) {
         return new Channel(server, channelInfo, configMigrator, tabCompleterFactory,
-                commandController, messageSinkManager, urlBuilder, eventBus, backBufferFactory);
+                commandController, messageSinkManager, urlBuilder, eventBus, backBufferFactory,
+                groupChatUserFactory);
     }
 }

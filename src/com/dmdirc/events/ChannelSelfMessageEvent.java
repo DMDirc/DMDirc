@@ -23,7 +23,7 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a channel self message occurs.
@@ -31,11 +31,11 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 public class ChannelSelfMessageEvent extends BaseChannelMessageEvent {
 
     public ChannelSelfMessageEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client, final String message) {
+            final GroupChatUser client, final String message) {
         super(timestamp, channel, client, message);
     }
 
-    public ChannelSelfMessageEvent(final Channel channel, final ChannelClientInfo client,
+    public ChannelSelfMessageEvent(final Channel channel, final GroupChatUser client,
             final String message) {
         super(channel, client, message);
     }
