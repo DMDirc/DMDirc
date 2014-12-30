@@ -31,6 +31,7 @@ import com.dmdirc.interfaces.User;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
@@ -73,6 +74,7 @@ public class ServerEventHandlerTest {
     @Mock private UserFactory userFactory;
     @Mock private Query query;
     @Mock private Date date;
+    @Mock private ClientInfo clientInfo;
 
     @Before
     public void setUp() {
@@ -80,9 +82,10 @@ public class ServerEventHandlerTest {
         when(server.getState()).thenReturn(ServerState.CONNECTED);
         when(parser.getCallbackManager()).thenReturn(callbackManager);
         when(server.getConnection()).thenReturn(Optional.ofNullable(server));
-        when(userFactory.getUser(anyString(), any(Connection.class))).thenReturn(user);
+        when(userFactory.getUser(anyString(), any(Connection.class), eq(clientInfo))).thenReturn(user);
         when(userFactory.getUser(anyString(), any(Connection.class), Optional.of(anyString()),
-                        Optional.of(anyString()), Optional.of(anyString()))).thenReturn(user);
+                        Optional.of(anyString()), Optional.of(anyString()), eq(clientInfo)))
+                .thenReturn(user);
         when(server.getUser(anyString())).thenReturn(user);
         when(server.getLocalUser()).thenReturn(user);
         final ServerEventHandler handler = new ServerEventHandler(server, eventBus);

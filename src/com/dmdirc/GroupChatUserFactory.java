@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 import javax.inject.Inject;
 
@@ -37,7 +38,8 @@ public class GroupChatUserFactory {
     public GroupChatUserFactory() {
     }
 
-    public GroupChatUser getGroupChatUser(final User user, final GroupChat groupChat) {
-        return new ChannelClient(user, groupChat);
+    public GroupChatUser getGroupChatUser(final User user, final GroupChat groupChat,
+            final ChannelClientInfo clientInfo) {
+        return new ChannelClient(user, groupChat, clientInfo);
     }
 }

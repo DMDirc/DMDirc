@@ -501,7 +501,7 @@ public class Server extends FrameContainer implements Connection {
         return userFactory.getUser(client.getNickname(), this,
                 Optional.ofNullable(client.getUsername()),
                 Optional.ofNullable(client.getHostname()),
-                Optional.ofNullable(client.getRealname()));
+                Optional.ofNullable(client.getRealname()), client);
     }
 
     @Override

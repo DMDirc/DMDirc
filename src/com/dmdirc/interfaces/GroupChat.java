@@ -100,8 +100,21 @@ public interface GroupChat extends Chat {
      */
     String getName();
 
-    GroupChatUser getUser(final User user);
+    /**
+     * Tries to retrieve a {@link GroupChatUser} from the current {@link GroupChat} for the
+     * specified {@link User}.
+     *
+     * @param user User to find
+     *
+     * @return User on channel, or empty if the user is not on the channel
+     */
+    Optional<GroupChatUser> getUser(final User user);
 
+    /**
+     * Returns the users available on this GroupChat.
+     *
+     * @return Users in the GroupChat
+     */
     Collection<GroupChatUser> getUsers();
 
 }

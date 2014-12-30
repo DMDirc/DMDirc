@@ -27,6 +27,7 @@ import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 import java.util.Optional;
 
@@ -37,11 +38,14 @@ public class ChannelClient implements GroupChatUser {
 
     private final User user;
     private final GroupChat groupChat;
+    private final ChannelClientInfo clientInfo;
     private final DisplayPropertyMap properties;
 
-    public ChannelClient(final User user, final GroupChat groupChat) {
+    public ChannelClient(final User user, final GroupChat groupChat,
+            final ChannelClientInfo clientInfo) {
         this.user = user;
         this.groupChat = groupChat;
+        this.clientInfo = clientInfo;
         properties = new DisplayPropertyMap();
     }
 
@@ -57,14 +61,12 @@ public class ChannelClient implements GroupChatUser {
 
     @Override
     public String getImportantMode() {
-        return "";
-        // TODO: Implement this.
+        return clientInfo.getImportantModePrefix();
     }
 
     @Override
     public String getAllModes() {
-        // TODO: Implement this.
-        return "";
+        return clientInfo.getAllModes();
     }
 
     @Override
@@ -85,6 +87,10 @@ public class ChannelClient implements GroupChatUser {
     @Override
     public Optional<String> getRealname() {
         return getUser().getRealname();
+    }
+
+    public ChannelClientInfo getClientInfo() {
+        return clientInfo;
     }
 
     @Override
