@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Topic;
 import com.dmdirc.commandparser.BaseCommandInfo;
@@ -36,6 +35,7 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
 import java.util.Optional;
@@ -67,7 +67,7 @@ public class ShowTopic extends Command implements ExternalCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Channel channel = ((ChannelCommandContext) context).getChannel();
+        final GroupChat channel = ((ChannelCommandContext) context).getChannel();
         if (args.getArguments().length == 0) {
             final Optional<Topic> topic = channel.getCurrentTopic();
             if (topic.isPresent()) {
