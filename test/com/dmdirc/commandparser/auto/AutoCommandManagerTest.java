@@ -59,13 +59,13 @@ public class AutoCommandManagerTest {
     @Before
     public void setup() {
         autoCommandManager = new AutoCommandManager(eventBus, factory);
-        global = new AutoCommand(Optional.<String>empty(), Optional.<String>empty(),
+        global = AutoCommand.create(Optional.<String>empty(), Optional.<String>empty(),
                 Optional.<String>empty(), "");
-        ircquakenet = new AutoCommand(Optional.ofNullable("irc.quakenet.org"),
+        ircquakenet = AutoCommand.create(Optional.ofNullable("irc.quakenet.org"),
                 Optional.ofNullable("Quakenet"), Optional.<String>empty(), "");
-        ukquakenet = new AutoCommand(Optional.ofNullable("uk.quakenet.org"),
+        ukquakenet = AutoCommand.create(Optional.ofNullable("uk.quakenet.org"),
                 Optional.ofNullable("Quakenet"), Optional.<String>empty(), "");
-        testnet = new AutoCommand(Optional.ofNullable("irc.testnet.org"),
+        testnet = AutoCommand.create(Optional.ofNullable("irc.testnet.org"),
                 Optional.ofNullable("Testnet"), Optional.ofNullable("profileName"), "");
         when(testProfile.getName()).thenReturn("profileName");
         when(factory.getAutoCommandHandler(global)).thenReturn(globalHandler);

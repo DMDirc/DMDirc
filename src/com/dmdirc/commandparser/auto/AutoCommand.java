@@ -23,9 +23,8 @@
 package com.dmdirc.commandparser.auto;
 
 
-import com.google.common.base.MoreObjects;
+import com.google.auto.value.AutoValue;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -34,28 +33,36 @@ import javax.annotation.Nonnull;
  * Describes a command that is executed automatically in response to either the client opening, or a
  * server connecting.
  */
-public class AutoCommand {
+@AutoValue
+public abstract class AutoCommand {
 
-    /** The name of the server for connection events. */
-    private final Optional<String> server;
-    /** The name of the network for connection events. */
-    private final Optional<String> network;
-    /** The name of the profile for connection events. */
-    private final Optional<String> profile;
-    /** The commands to execute. */
-    private final String response;
-    /** The type of auto command. */
-    private final AutoCommandType type;
+    AutoCommand() {
+    }
 
     public AutoCommand(
             final Optional<String> server,
             final Optional<String> network,
             final Optional<String> profile,
             @Nonnull final String response) {
-        this.server = server;
-        this.network = network;
-        this.profile = profile;
-        this.response = response;
+
+    }
+
+    public abstract Optional<String> getServer();
+
+    public abstract Optional<String> getNetwork();
+
+    public abstract Optional<String> getProfile();
+
+    public abstract String getResponse();
+
+    public abstract AutoCommandType getType();
+
+    public static AutoCommand create(
+            final Optional<String> server,
+            final Optional<String> network,
+            final Optional<String> profile,
+            @Nonnull final String response) {
+        final AutoCommandType type;
         if (!server.isPresent() && !network.isPresent()) {
             type = AutoCommandType.GLOBAL;
         } else if (server.isPresent() && !network.isPresent()) {
@@ -65,58 +72,8 @@ public class AutoCommand {
         } else {
             type = AutoCommandType.UNKNOWN;
         }
-    }
 
-    public Optional<String> getServer() {
-        return server;
-    }
-
-    public Optional<String> getNetwork() {
-        return network;
-    }
-
-    public Optional<String> getProfile() {
-        return profile;
-    }
-
-    @Nonnull
-    public String getResponse() {
-        return response;
-    }
-
-    public AutoCommandType getType() {
-        return type;
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (object == null) {
-            return false;
-        }
-        if (getClass() != object.getClass()) {
-            return false;
-        }
-        final AutoCommand command = (AutoCommand) object;
-        return  Objects.equals(server, command.getServer())
-                && Objects.equals(network, command.getNetwork())
-                && Objects.equals(profile, command.getProfile())
-                && Objects.equals(response, command.getResponse());
-
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(server, network, profile, response);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("Connection", server)
-                .add("Network", network)
-                .add("Profile", profile)
-                .add("Response", response)
-                .toString();
+        return new AutoValue_AutoCommand(server, network, profile, response, type);
     }
 
 }

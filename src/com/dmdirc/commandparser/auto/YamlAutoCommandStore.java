@@ -87,7 +87,7 @@ public class YamlAutoCommandStore extends BaseYamlStore<AutoCommand> implements 
             final Optional<String> profile =
                     Optional.ofNullable(optionalString(map, "profile"));
             final String command = requiredString(map, "command");
-            return Optional.of(new AutoCommand(server, network, profile, command));
+            return Optional.of(AutoCommand.create(server, network, profile, command));
         } catch (IllegalArgumentException ex) {
             LOG.info("Unable to read auto command", ex);
             return Optional.empty();
