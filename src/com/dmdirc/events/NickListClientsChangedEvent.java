@@ -25,10 +25,10 @@ package com.dmdirc.events;
 import com.dmdirc.Channel;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
+import com.google.common.collect.Lists;
+
 import java.util.Collection;
 import java.util.Collections;
-
-import autovalue.shaded.com.google.common.common.collect.Lists;
 
 /**
  * Fired when there is a major change to the list of users.
