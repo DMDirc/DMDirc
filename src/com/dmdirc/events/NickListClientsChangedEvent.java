@@ -20,46 +20,36 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces;
+package com.dmdirc.events;
 
+import com.dmdirc.Channel;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
 import java.util.Collection;
+import java.util.Collections;
+
+import autovalue.shaded.com.google.common.common.collect.Lists;
 
 /**
- * Interface for objects interested in receiving updates pertaining to a channel's list of active
- * users (the 'nicklist').
- *
- * @since 0.6.5
+ * Fired when there is a major change to the list of users.
  */
-public interface NicklistListener {
+public class NickListClientsChangedEvent extends NickListEvent {
 
-    /**
-     * Called to indicate the client list has been extensively updated, and any cached data should
-     * be discarded and replaced with the specified set of clients.
-     *
-     * @param clients The new set of clients for the channel
-     */
-    void clientListUpdated(Collection<ChannelClientInfo> clients);
+    private final Collection<ChannelClientInfo> users;
 
-    /**
-     * Called to indicate a member of the channel has had their nicklist entry changed in some
-     * manner, and their display text, colours, etc, should be re-read from the object.
-     */
-    void clientListUpdated();
+    public NickListClientsChangedEvent(final long timestamp, final Channel channel,
+            final Iterable<ChannelClientInfo> users) {
+        super(timestamp, channel);
+        this.users = Lists.newArrayList(users);
+    }
 
-    /**
-     * Called to indicate a new client has been added to the nicklist
-     *
-     * @param client The new client that has been added
-     */
-    void clientAdded(ChannelClientInfo client);
+    public NickListClientsChangedEvent(final Channel channel,
+            final Iterable<ChannelClientInfo> users) {
+        super(channel);
+        this.users = Lists.newArrayList(users);
+    }
 
-    /**
-     * Called to indicate a client has been removed from the nicklist
-     *
-     * @param client The client that has been removed
-     */
-    void clientRemoved(ChannelClientInfo client);
-
+    public Collection<ChannelClientInfo> getUsers() {
+        return Collections.unmodifiableCollection(users);
+    }
 }

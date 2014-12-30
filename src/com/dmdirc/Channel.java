@@ -29,11 +29,14 @@ import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
 import com.dmdirc.events.DisplayProperty;
+import com.dmdirc.events.NickListClientAddedEvent;
+import com.dmdirc.events.NickListClientRemovedEvent;
+import com.dmdirc.events.NickListClientsChangedEvent;
+import com.dmdirc.events.NickListUpdatedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
-import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
@@ -288,8 +291,8 @@ public class Channel extends MessageTarget implements GroupChat {
 
         setIcon("channel-inactive");
 
-        listenerList.getCallable(NicklistListener.class)
-                .clientListUpdated(Collections.<ChannelClientInfo>emptyList());
+        getEventBus().publishAsync(new NickListClientsChangedEvent(this,
+                Collections.<ChannelClientInfo>emptyList()));
     }
 
     @Override
@@ -330,7 +333,7 @@ public class Channel extends MessageTarget implements GroupChat {
      * @param client The client to be added
      */
     public void addClient(final ChannelClientInfo client) {
-        listenerList.getCallable(NicklistListener.class).clientAdded(client);
+        getEventBus().publishAsync(new NickListClientAddedEvent(this, client));
 
         getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK,
                 client.getClient().getNickname());
@@ -342,7 +345,7 @@ public class Channel extends MessageTarget implements GroupChat {
      * @param client The client to be removed
      */
     public void removeClient(final ChannelClientInfo client) {
-        listenerList.getCallable(NicklistListener.class).clientRemoved(client);
+        getEventBus().publishAsync(new NickListClientRemovedEvent(this, client));
 
         getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK,
                 client.getClient().getNickname());
@@ -358,7 +361,7 @@ public class Channel extends MessageTarget implements GroupChat {
      * @param clients The list of clients to use
      */
     public void setClients(final Collection<ChannelClientInfo> clients) {
-        listenerList.getCallable(NicklistListener.class).clientListUpdated(clients);
+        getEventBus().publishAsync(new NickListClientsChangedEvent(this, clients));
 
         getTabCompleter().clear(TabCompletionType.CHANNEL_NICK);
 
@@ -387,7 +390,7 @@ public class Channel extends MessageTarget implements GroupChat {
             return;
         }
 
-        listenerList.getCallable(NicklistListener.class).clientListUpdated();
+        getEventBus().publishAsync(new NickListUpdatedEvent(this));
     }
 
     /**
@@ -531,16 +534,6 @@ public class Channel extends MessageTarget implements GroupChat {
     @Override
     public int getMaxTopicLength() {
         return server.getParser().get().getMaxTopicLength();
-    }
-
-    @Override
-    public void addNicklistListener(final NicklistListener listener) {
-        listenerList.add(NicklistListener.class, listener);
-    }
-
-    @Override
-    public void removeNicklistListener(final NicklistListener listener) {
-        listenerList.remove(NicklistListener.class, listener);
     }
 
     @Override

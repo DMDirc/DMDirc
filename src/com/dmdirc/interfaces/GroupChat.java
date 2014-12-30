@@ -34,13 +34,6 @@ import java.util.Optional;
 public interface GroupChat extends Chat {
 
     /**
-     * Adds a nicklist listener to this channel.
-     *
-     * @param listener The listener to notify about nicklist changes.
-     */
-    void addNicklistListener(final NicklistListener listener);
-
-    /**
      * Adds a topic change listener to this channel.
      *
      * @param listener The listener to notify about topic changes.
@@ -93,13 +86,6 @@ public interface GroupChat extends Chat {
      * @param reason The reason for parting the channel
      */
     void part(final String reason);
-
-    /**
-     * Removes a nicklist listener from this channel.
-     *
-     * @param listener The listener to be removed.
-     */
-    void removeNicklistListener(final NicklistListener listener);
 
     /**
      * Removes a topic change listener from this channel.
