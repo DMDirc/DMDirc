@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.events.ChannelActionEvent;
 import com.dmdirc.events.ChannelCtcpEvent;
+import com.dmdirc.events.ChannelDisplayableEvent;
 import com.dmdirc.events.ChannelGotnamesEvent;
 import com.dmdirc.events.ChannelGottopicEvent;
 import com.dmdirc.events.ChannelJoinEvent;
@@ -39,6 +40,7 @@ import com.dmdirc.events.ChannelNotopicEvent;
 import com.dmdirc.events.ChannelPartEvent;
 import com.dmdirc.events.ChannelQuitEvent;
 import com.dmdirc.events.ChannelTopicChangeEvent;
+import com.dmdirc.events.ChannelTopicUnsetEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
 import com.dmdirc.events.ChannelUserEvent;
@@ -170,13 +172,20 @@ public class ChannelEventHandler extends EventHandler implements
                 owner.doNotification(date, format, newTopic);
             }
         } else {
-            final ChannelTopicChangeEvent event = new ChannelTopicChangeEvent(owner,
-                    channel.getChannelClient(channel.getTopicSetter(), true),
-                    channel.getTopic());
-            final String format = EventUtils.postDisplayable(eventBus, event,
-                    Strings.isNullOrEmpty(channel.getTopic())
-                    ? "channelTopicRemoved" : "channelTopicChanged");
-            eventBus.publish(event);
+            final ChannelDisplayableEvent event;
+            final String format;
+            if (Strings.isNullOrEmpty(channel.getTopic())) {
+                event = new ChannelTopicChangeEvent(owner,
+                        channel.getChannelClient(channel.getTopicSetter(), true),
+                        channel.getTopic());
+                format = EventUtils.postDisplayable(eventBus, event,
+                        "channelTopicRemoved");
+            } else {
+                event = new ChannelTopicUnsetEvent(owner,
+                        channel.getChannelClient(channel.getTopicSetter(), true));
+                format = EventUtils.postDisplayable(eventBus, event,
+                        "channelTopicChanged");
+            }
             owner.doNotification(date, format, channel.getChannelClient(channel.getTopicSetter(),
                     true), channel.getTopic());
         }
