@@ -104,7 +104,7 @@ public interface GroupChat extends Chat {
      * Tries to retrieve a {@link GroupChatUser} from the current {@link GroupChat} for the
      * specified {@link User}.
      *
-     * @param user User to finf
+     * @param user User to find
      *
      * @return User on channel, or empty if the user is not on the channel
      */
