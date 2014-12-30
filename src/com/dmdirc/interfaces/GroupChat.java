@@ -34,13 +34,6 @@ import java.util.Optional;
 public interface GroupChat extends Chat {
 
     /**
-     * Adds a topic change listener to this channel.
-     *
-     * @param listener The listener to notify about topic changes.
-     */
-    void addTopicChangeListener(final TopicChangeListener listener);
-
-    /**
      * Returns the current topic for this channel.
      *
      * @return Current channel topic
@@ -86,13 +79,6 @@ public interface GroupChat extends Chat {
      * @param reason The reason for parting the channel
      */
     void part(final String reason);
-
-    /**
-     * Removes a topic change listener from this channel.
-     *
-     * @param listener The listener to be removed.
-     */
-    void removeTopicChangeListener(final TopicChangeListener listener);
 
     /**
      * Requests all available list modes for this channel.

@@ -157,27 +157,26 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final boolean isJoinTopic) {
         checkParser(parser);
 
+        final Topic topic = new Topic(channel.getTopic(),
+                owner.getUser(getConnection().getUser(channel.getTopicSetter())),
+                channel.getTopicTime());
+
         if (isJoinTopic) {
             if (Strings.isNullOrEmpty(channel.getTopic())) {
                 final ChannelNotopicEvent event = new ChannelNotopicEvent(owner);
                 final String format = EventUtils.postDisplayable(eventBus, event, "channelNoTopic");
                 owner.doNotification(date, format);
             } else {
-                final Topic newTopic = new Topic(channel.getTopic(),
-                        getConnection().getUser(channel.getTopicSetter()),
-                        channel.getTopicTime());
-                final ChannelGottopicEvent event = new ChannelGottopicEvent(owner, newTopic);
+                final ChannelGottopicEvent event = new ChannelGottopicEvent(owner, topic);
                 final String format = EventUtils.postDisplayable(eventBus, event,
                         "channelTopicDiscovered");
-                owner.doNotification(date, format, newTopic);
+                owner.doNotification(date, format, topic);
             }
         } else {
             final ChannelDisplayableEvent event;
             final String format;
             if (Strings.isNullOrEmpty(channel.getTopic())) {
-                event = new ChannelTopicChangeEvent(owner,
-                        channel.getChannelClient(channel.getTopicSetter(), true),
-                        channel.getTopic());
+                event = new ChannelTopicChangeEvent(owner, topic);
                 format = EventUtils.postDisplayable(eventBus, event,
                         "channelTopicRemoved");
             } else {
@@ -200,9 +199,7 @@ public class ChannelEventHandler extends EventHandler implements
             //  - It's being set while we're in the channel (rather than discovered on join), or
             //  - We think the current topic is empty and are discovering a new one, or
             //  - The newly discovered topic is different to what we thought the current topic was.
-            owner.addTopic(new Topic(channel.getTopic(),
-                    getConnection().getUser(channel.getTopicSetter()),
-                    channel.getTopicTime()));
+            owner.addTopic(topic);
         }
     }
 

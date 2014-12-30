@@ -23,38 +23,27 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
-
-import javax.annotation.Nullable;
+import com.dmdirc.Topic;
 
 /**
  * Fired when a topic is changed.
  */
 public class ChannelTopicChangeEvent extends ChannelDisplayableEvent {
 
-    private final ChannelClientInfo client;
-    @Nullable private final String topic;
+    private final Topic topic;
 
     public ChannelTopicChangeEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client, @Nullable final String topic) {
+            final Topic topic) {
         super(timestamp, channel);
-        this.client = client;
         this.topic = topic;
     }
 
-    public ChannelTopicChangeEvent(final Channel channel, final ChannelClientInfo client,
-            @Nullable final String topic) {
+    public ChannelTopicChangeEvent(final Channel channel, final Topic topic) {
         super(channel);
-        this.client = client;
         this.topic = topic;
     }
 
-    public ChannelClientInfo getClient() {
-        return client;
-    }
-
-    @Nullable
-    public String getTopic() {
+    public Topic getTopic() {
         return topic;
     }
 
