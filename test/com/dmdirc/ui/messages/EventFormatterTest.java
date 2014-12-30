@@ -78,4 +78,17 @@ public class EventFormatterTest {
         assertEquals("Template monkey meep", formatter.format(messageEvent).orElse(null));
     }
 
+    @Test
+    public void testFormatWithNestedSubstitutions() {
+        messageEvent = new ChannelMessageEvent(channel, null, "{{channel}}");
+
+        when(templateProvider.getFormat(ChannelMessageEvent.class))
+                .thenReturn(Optional.ofNullable(
+                        EventFormat.create("Template {{message}} meep", Optional.empty())));
+        when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "message"))
+                .thenReturn(Optional.of("{{channel}}"));
+
+        assertEquals("Template {{channel}} meep", formatter.format(messageEvent).orElse(null));
+    }
+
 }
