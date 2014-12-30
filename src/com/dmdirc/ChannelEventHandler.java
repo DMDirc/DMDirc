@@ -135,7 +135,8 @@ public class ChannelEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ChannelMessageEvent event = new ChannelMessageEvent(owner, client, message);
+        final ChannelMessageEvent event = new ChannelMessageEvent(owner,
+                owner.getUserFromClient(client), message);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 isMyself(client) ? "channelSelfExternalMessage" : "channelMessage");
         owner.doNotification(date, format, client, message);
@@ -252,7 +253,8 @@ public class ChannelEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        final ChannelActionEvent event = new ChannelActionEvent(owner, client, message);
+        final ChannelActionEvent event = new ChannelActionEvent(owner,
+                owner.getUserFromClient(client), message);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 isMyself(client) ? "channelSelfExternalAction" : "channelAction");
         owner.doNotification(date, format, client, message);
@@ -357,7 +359,8 @@ public class ChannelEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ChannelNoticeEvent event = new ChannelNoticeEvent(owner, client, message);
+        final ChannelNoticeEvent event = new ChannelNoticeEvent(owner,
+                owner.getUserFromClient(client), message);
         final String format = EventUtils.postDisplayable(eventBus, event, "channelNotice");
         owner.doNotification(date, format, client, message);
     }

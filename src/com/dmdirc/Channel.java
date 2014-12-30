@@ -28,9 +28,11 @@ import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
+import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.NicklistListener;
 import com.dmdirc.interfaces.TopicChangeListener;
 import com.dmdirc.interfaces.User;
@@ -57,7 +59,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,8 @@ public class Channel extends MessageTarget implements GroupChat {
     private final ChannelEventHandler eventHandler;
     /** The migrator to use to migrate our config provider. */
     private final ConfigProviderMigrator configMigrator;
+    /** Factory for creating {@link GroupChatUser}s */
+    private final GroupChatUserFactory groupChatUserFactory;
     /** Whether we're in this channel or not. */
     private boolean isOnChannel;
     /** Whether we should send WHO requests for this channel. */
@@ -113,7 +116,8 @@ public class Channel extends MessageTarget implements GroupChat {
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
-            final BackBufferFactory backBufferFactory) {
+            final BackBufferFactory backBufferFactory,
+            final GroupChatUserFactory groupChatUserFactory) {
         super(newServer, "channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
@@ -133,6 +137,7 @@ public class Channel extends MessageTarget implements GroupChat {
         this.configMigrator = configMigrator;
         this.channelInfo = newChannelInfo;
         this.server = newServer;
+        this.groupChatUserFactory = groupChatUserFactory;
 
         getConfigManager().getBinder().bind(this, Channel.class);
 
@@ -171,12 +176,12 @@ public class Channel extends MessageTarget implements GroupChat {
             return;
         }
 
-        final ClientInfo me = server.getParser().get().getLocalClient();
-        final String[] details = getDetails(channelInfo.getChannelClient(me));
+        final GroupChatUser me = getUser(server.getLocalUser());
+        final String[] details = getDetails(me);
 
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
             final ChannelSelfMessageEvent event =
-                    new ChannelSelfMessageEvent(this, channelInfo.getChannelClient(me), part);
+                    new ChannelSelfMessageEvent(this, me, part);
             final String format =
                     EventUtils.postDisplayable(getEventBus(), event, "channelSelfMessage");
             addLine(format, details[0], details[1], details[2], details[3], part, channelInfo);
@@ -200,15 +205,15 @@ public class Channel extends MessageTarget implements GroupChat {
             return;
         }
 
-        final ClientInfo me = server.getParser().get().getLocalClient();
-        final String[] details = getDetails(channelInfo.getChannelClient(me));
+
+        final GroupChatUser me = getUser(server.getLocalUser());
+        final String[] details = getDetails(me);
 
         if (server.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 <= action.length()) {
             addLine("actionTooLong", action.length());
         } else {
-            final ChannelSelfActionEvent event = new ChannelSelfActionEvent(this,
-                    channelInfo.getChannelClient(me), action);
+            final ChannelSelfActionEvent event = new ChannelSelfActionEvent(this, me, action);
             final String format = EventUtils.postDisplayable(getEventBus(), event,
                     "channelSelfAction");
             addLine(format, details[0], details[1], details[2], details[3], action, channelInfo);
@@ -388,16 +393,16 @@ public class Channel extends MessageTarget implements GroupChat {
     /**
      * Returns a string containing the most important mode for the specified client.
      *
-     * @param channelClient The channel client to check.
+     * @param user The channel client to check.
      *
      * @return A string containing the most important mode, or an empty string if there are no
      *         (known) modes.
      */
-    private String getModes(final ChannelClientInfo channelClient) {
-        if (channelClient == null || !showModePrefix) {
+    private String getModes(final GroupChatUser user) {
+        if (user == null || !showModePrefix) {
             return "";
         } else {
-            return channelClient.getImportantModePrefix();
+            return user.getImportantMode();
         }
     }
 
@@ -408,7 +413,7 @@ public class Channel extends MessageTarget implements GroupChat {
      *
      * @return A string[] containing displayable components
      */
-    private String[] getDetails(final ChannelClientInfo client) {
+    private String[] getDetails(final GroupChatUser client) {
         if (client == null) {
             // WTF?
             throw new UnsupportedOperationException("getDetails called with"
@@ -417,24 +422,22 @@ public class Channel extends MessageTarget implements GroupChat {
 
         final String[] res = {
             getModes(client),
-            Styliser.CODE_NICKNAME + client.getClient().getNickname() + Styliser.CODE_NICKNAME,
-            client.getClient().getUsername(),
-            client.getClient().getHostname(),};
+            Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME,
+            client.getUsername().orElse(""),
+            client.getHostname().orElse(""),};
 
         if (showColours) {
-            final Map<?, ?> map = client.getMap();
-
-            if (map.containsKey(ChannelClientProperty.TEXT_FOREGROUND)) {
+            final Optional<Colour> foreground
+                    = client.getDisplayProperty(DisplayProperty.FOREGROUND_COLOUR);
+            final Optional<Colour> background
+                    = client.getDisplayProperty(DisplayProperty.BACKGROUND_COLOUR);
+            if (foreground.isPresent()) {
                 final String prefix;
-
-                if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
-                    prefix = ',' + ColourUtils.getHex((Colour) map.get(
-                            ChannelClientProperty.TEXT_BACKGROUND));
+                if (background.isPresent()) {
+                    prefix = ',' + ColourUtils.getHex(background.get());
                 } else {
-                    prefix = Styliser.CODE_HEXCOLOUR + ColourUtils.getHex((Colour) map.get(
-                            ChannelClientProperty.TEXT_FOREGROUND));
+                    prefix = Styliser.CODE_HEXCOLOUR + ColourUtils.getHex(foreground.get());
                 }
-
                 res[1] = prefix + res[1] + Styliser.CODE_HEXCOLOUR;
             }
         }
@@ -456,7 +459,7 @@ public class Channel extends MessageTarget implements GroupChat {
         } else if (arg instanceof ChannelClientInfo) {
             // Format ChannelClientInfos
 
-            final ChannelClientInfo clientInfo = (ChannelClientInfo) arg;
+            final GroupChatUser clientInfo = getUserFromClient((ChannelClientInfo) arg);
             args.addAll(Arrays.asList(getDetails(clientInfo)));
 
             return true;
@@ -553,6 +556,16 @@ public class Channel extends MessageTarget implements GroupChat {
     @Override
     public Optional<Connection> getConnection() {
         return Optional.of(server);
+    }
+
+    public GroupChatUser getUserFromClient(final ChannelClientInfo client) {
+        return groupChatUserFactory.getGroupChatUser(
+                server.getUserFromClientInfo(client.getClient()), this);
+    }
+
+    @Override
+    public GroupChatUser getUser(final User user) {
+        return groupChatUserFactory.getGroupChatUser(user, this);
     }
 
 }
