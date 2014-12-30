@@ -552,6 +552,7 @@ public class Channel extends MessageTarget implements GroupChat {
         return Optional.of(groupChatUserFactory.getGroupChatUser(user, this, ci));
     }
 
+    @Override
     public Collection<GroupChatUser> getUsers() {
         return channelInfo.getChannelClients().stream().map(this::getUserFromClient)
                 .collect(Collectors.toList());

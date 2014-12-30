@@ -25,6 +25,7 @@ package com.dmdirc.interfaces;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Topic;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,6 +94,13 @@ public interface GroupChat extends Chat {
     void setTopic(final String topic);
 
     /**
+     * Gets the name of the chat.
+     *
+     * @return The current name of the group chat.
+     */
+    String getName();
+
+    /**
      * Tries to retrieve a {@link GroupChatUser} from the current {@link GroupChat} for the
      * specified {@link User}.
      *
@@ -101,5 +109,12 @@ public interface GroupChat extends Chat {
      * @return User on channel, or empty if the user is not on the channel
      */
     Optional<GroupChatUser> getUser(final User user);
+
+    /**
+     * Returns the users available on this GroupChat.
+     *
+     * @return Users in the GroupChat
+     */
+    Collection<GroupChatUser> getUsers();
 
 }
