@@ -24,7 +24,9 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.BaseChannelTextEvent;
 import com.dmdirc.events.BaseQueryTextEvent;
+import com.dmdirc.events.ChannelHighlightEvent;
 import com.dmdirc.events.DisplayProperty;
+import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerNickchangeEvent;
 import com.dmdirc.parser.interfaces.LocalClientInfo;
@@ -47,12 +49,14 @@ public class HighlightManager {
             "(\\p{Space}|\\p{Punct}|$).*";
 
     private final Collection<Pattern> patterns = new ArrayList<>();
+
     private Optional<Pattern> nicknamePattern = Optional.empty();
 
     @Handler
     public void handleChannelMessage(final BaseChannelTextEvent event) {
         if (patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
             event.setDisplayProperty(DisplayProperty.BACKGROUND_COLOUR, Colour.RED);
+            event.getChannel().getEventBus().publishAsync(new ChannelHighlightEvent(event));
         }
     }
 
@@ -60,6 +64,7 @@ public class HighlightManager {
     public void handleQueryMessage(final BaseQueryTextEvent event) {
         if (patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
             event.setDisplayProperty(DisplayProperty.BACKGROUND_COLOUR, Colour.RED);
+            event.getQuery().getEventBus().publishAsync(new QueryHighlightEvent(event));
         }
     }
 
