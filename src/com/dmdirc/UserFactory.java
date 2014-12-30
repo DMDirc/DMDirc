@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.parser.interfaces.ClientInfo;
 
 import java.util.Optional;
 
@@ -38,13 +39,14 @@ public class UserFactory {
     public UserFactory() {
     }
 
-    public User getUser(final String nickname, final Connection connection) {
-        return new Client(nickname, connection);
+    public User getUser(final String nickname, final Connection connection,
+            final ClientInfo clientInfo) {
+        return new Client(nickname, connection, clientInfo);
     }
 
     public User getUser(final String nickname, final Connection connection,
             final Optional<String> username, final Optional<String> hostname,
-            final Optional<String> realname) {
-        return new Client(nickname, connection, username, hostname, realname);
+            final Optional<String> realname, final ClientInfo clientInfo) {
+        return new Client(nickname, connection, username, hostname, realname, clientInfo);
     }
 }

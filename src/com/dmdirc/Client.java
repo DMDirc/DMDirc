@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.parser.interfaces.ClientInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,25 +39,28 @@ public class Client implements User {
 
     private final Collection<GroupChat> groupChats;
     private final Connection connection;
+    private final ClientInfo clientInfo;
     private String nickname;
     private Optional<String> username;
     private Optional<String> hostname;
     private Optional<String> realname;
     private Optional<String> awayMessage;
 
-    public Client(final String nickname, final Connection connection) {
-        this(nickname, connection, Optional.empty(), Optional.empty(), Optional.empty());
+    public Client(final String nickname, final Connection connection, final ClientInfo clientInfo) {
+        this(nickname, connection, Optional.empty(), Optional.empty(), Optional.empty(), clientInfo);
     }
 
     public Client(final String nickname, final Connection connection,
             final Optional<String> username,
             final Optional<String> hostname,
-            final Optional<String> realname) {
+            final Optional<String> realname,
+            final ClientInfo clientInfo) {
         this.nickname = nickname;
         this.connection = connection;
         this.username = username;
         this.hostname = hostname;
         this.realname = realname;
+        this.clientInfo = clientInfo;
         groupChats = new ArrayList<>();
         awayMessage = Optional.empty();
     }
@@ -129,5 +133,9 @@ public class Client implements User {
     @Override
     public Connection getConnection() {
         return connection;
+    }
+
+    public ClientInfo getClientInfo() {
+        return clientInfo;
     }
 }
