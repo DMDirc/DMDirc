@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.Channel;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.Query;
 import com.dmdirc.commandparser.commands.Command;
@@ -31,6 +30,7 @@ import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -178,8 +178,9 @@ public class CommandManager implements CommandController {
 
             if (command.getType() == CommandType.TYPE_CHANNEL
                     || command.getType() == CommandType.TYPE_CHAT) {
-                for (Channel channel : server.getChannels()) {
-                    registerCommandName(channel.getTabCompleter(),commandName, register);
+                for (GroupChat channel : server.getChannels()) {
+                    registerCommandName(channel.getWindowModel().getTabCompleter(),
+                            commandName, register);
                 }
             }
 

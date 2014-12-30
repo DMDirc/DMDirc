@@ -22,9 +22,10 @@
 
 package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.User;
 
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -56,13 +57,14 @@ public class CommonChannelsMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        final String user = String.format(patternMatches[0], args);
+        final String username = String.format(patternMatches[0], args);
         final Connection connection = source.getConnection().get();
+        final User user = connection.getUser(username);
         boolean found = false;
 
-        for (Channel channel : connection.getChannels()) {
-            if (channel.getChannelInfo().getChannelClient(user) != null) {
-                channel.addLine(messageType, date, args);
+        for (GroupChat channel : connection.getChannels()) {
+            if (channel.getUser(user).isPresent()) {
+                channel.getWindowModel().addLine(messageType, date, args);
                 found = true;
             }
         }

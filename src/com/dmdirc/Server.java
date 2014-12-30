@@ -87,6 +87,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -489,8 +490,10 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public Collection<Channel> getChannels() {
-        return channels.getAll();
+    public Collection<GroupChat> getChannels() {
+        return channels.getAll().parallelStream()
+                .map(c -> (GroupChat) c)
+                .collect(Collectors.toList());
     }
 
     @Override

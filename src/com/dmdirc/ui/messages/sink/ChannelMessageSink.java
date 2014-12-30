@@ -22,11 +22,12 @@
 
 package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -55,18 +56,13 @@ public class ChannelMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        final String user = String.format(patternMatches[0], args);
-        boolean found = false;
-
+        final String channelName = String.format(patternMatches[0], args);
         final Connection connection = source.getConnection().get();
-        for (Channel channel : connection.getChannels()) {
-            if (channel.getChannelInfo().getChannelClient(user) != null) {
-                channel.addLine(messageType, date, args);
-                found = true;
-            }
-        }
+        final Optional<GroupChat> channel = connection.getChannel(channelName);
 
-        if (!found) {
+        if (channel.isPresent()) {
+            channel.get().getWindowModel().addLine(messageType, date, args);
+        } else {
             if (patternMatches[1] == null) {
                 // No fallback specified
                 source.addLine(messageType, date, args);

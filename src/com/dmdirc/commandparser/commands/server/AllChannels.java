@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -34,6 +33,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
@@ -70,8 +70,9 @@ public class AllChannels extends Command implements IntelligentCommand {
         final Connection server = ((ServerCommandContext) context).getConnection();
         final String command = args.getArgumentsAsString();
 
-        for (Channel channel : server.getChannels()) {
-            channel.getCommandParser().parseCommand(channel, command);
+        for (GroupChat channel : server.getChannels()) {
+            channel.getWindowModel().getCommandParser().parseCommand(channel.getWindowModel(),
+                    command);
         }
     }
 
