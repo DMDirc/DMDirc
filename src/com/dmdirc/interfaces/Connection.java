@@ -155,7 +155,7 @@ public interface Connection {
      *
      * @return The appropriate channel object
      */
-    Optional<Channel> getChannel(final String channel);
+    Optional<GroupChat> getChannel(final String channel);
 
     /**
      * Retrieves the possible channel prefixes in use on this server.
@@ -437,17 +437,17 @@ public interface Connection {
     void updateTitle();
 
     /**
-     * Gets the core model for the input/output window for this connection.
-     *
-     * @return A model for windows based on this connection.
-     */
-    FrameContainer getWindowModel();
-
-    /**
      * Sends a raw line to the underlying connection.
      *
      * @param line The line to be sent
      */
     void sendLine(String line);
+
+    /**
+     * Gets the core model for the input/output window for this connection.
+     *
+     * @return A model for windows based on this connection.
+     */
+    FrameContainer getWindowModel();
 
 }

@@ -86,6 +86,7 @@ public class CommandParserTest {
         channelCommandParser = new TestCommandParser(configProvider, commandController, eventBus);
         channelCommandParser.registerCommand(channelCommand, channelCommandInfo);
 
+        when(channel.getWindowModel()).thenReturn(channel);
         when(channel.getCommandParser()).thenReturn(channelCommandParser);
     }
 

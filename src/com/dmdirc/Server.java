@@ -34,6 +34,7 @@ import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
 import com.dmdirc.events.ServerInviteExpiredEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -483,8 +484,8 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public Optional<Channel> getChannel(final String channel) {
-        return channels.get(channel);
+    public Optional<GroupChat> getChannel(final String channel) {
+        return channels.get(channel).map(c -> (GroupChat) c);
     }
 
     @Override
@@ -590,7 +591,7 @@ public class Server extends FrameContainer implements Connection {
 
         backgroundChannels.remove(chan.getName());
 
-        final Optional<Channel> channel = getChannel(chan.getName());
+        final Optional<Channel> channel = channels.get(chan.getName());
         if (channel.isPresent()) {
             channel.get().setChannelInfo(chan);
             channel.get().selfJoin();
@@ -723,7 +724,7 @@ public class Server extends FrameContainer implements Connection {
                                 + request.getName();
                     }
 
-                    if (getChannel(name).map(Channel::isOnChannel).orElse(false)) {
+                    if (getChannel(name).map(GroupChat::isOnChannel).orElse(false)) {
                         if (!focus) {
                             backgroundChannels.add(name);
                         }
