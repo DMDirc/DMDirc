@@ -127,7 +127,13 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Override
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
-        if (arg instanceof ClientInfo) {
+        if (arg instanceof User) {
+            final User clientInfo = (User) arg;
+            args.add(clientInfo.getNickname());
+            args.add(clientInfo.getUsername());
+            args.add(clientInfo.getHostname());
+            return true;
+        } else if (arg instanceof ClientInfo) {
             final ClientInfo clientInfo = (ClientInfo) arg;
             args.add(clientInfo.getNickname());
             args.add(clientInfo.getUsername());
@@ -151,7 +157,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
             return;
         }
 
-        final ClientInfo client = server.getParser().get().getLocalClient();
         final int maxLineLength = server.getParser().get().getMaxLength("PRIVMSG", getHost());
 
         if (maxLineLength >= action.length() + 2) {
@@ -160,7 +165,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final String format = EventUtils.postDisplayable(getEventBus(),
                     new QuerySelfActionEvent(this, server.getLocalUser(), action),
                     "querySelfAction");
-            doNotification(format, client, action);
+            doNotification(format, server.getLocalUser(), action);
         } else {
             addLine("actionTooLong", action.length());
         }
