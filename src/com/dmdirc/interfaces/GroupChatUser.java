@@ -22,6 +22,11 @@
 
 package com.dmdirc.interfaces;
 
+import com.dmdirc.events.DisplayProperty;
+import com.dmdirc.events.DisplayPropertyMap;
+
+import java.util.Optional;
+
 /**
  * Describes a {@link User} that is present on a {@link GroupChat}.
  */
@@ -43,10 +48,71 @@ public interface GroupChatUser {
     GroupChat getGroupChat();
 
     /**
+     * Returns the most important mode that the client holds in its textual
+     * form (e.g. o, v, etc)
+     *
+     * @return The most important mode the client holds, or an empty string
+     */
+    String getImportantMode();
+
+    /**
      * Returns a list of all modes known to be held by the client, in their
      * textual form (e.g. o, v, etc)
      *
      * @return All modes the client holds, or an empty string
      */
     String getAllModes();
+
+    /**
+     * Retrieves the nickname or display name used by this client.
+     *
+     * @return This client's nickname
+     */
+    String getNickname();
+
+    /**
+     * Retrieves the username or ident used by this client.
+     *
+     * @return This client's username
+     */
+    Optional<String> getUsername();
+
+    /**
+     * Retrieves the hostname that this client is connecting from.
+     *
+     * @return This client's hostname
+     */
+    Optional<String> getHostname();
+
+    /**
+     * Retrieves the full/real name of the client.
+     *
+     * @return This client's real name
+     */
+    Optional<String> getRealname();
+
+    /**
+     * Sets a property relating to how this {@link GroupChatUser} should be displayed.
+     *
+     * @param property The property to be set
+     * @param value The value of the property
+     * @param <T> The type of value that the property takes.
+     */
+    <T> void setDisplayProperty(final DisplayProperty<T> property, final T value);
+
+    /**
+     * Retrieves a property relating to how this {@link GroupChatUser} should be displayed.
+     *
+     * @param property The property to be retrieved.
+     * @param <T> The type of value that the property takes.
+     * @return An optional value for the property.
+     */
+    <T> Optional<T> getDisplayProperty(final DisplayProperty<T> property);
+
+    /**
+     * Gets the map of all display properties for this {@link GroupChatUser}.
+     *
+     * @return The map of display properties.
+     */
+    DisplayPropertyMap getDisplayProperties();
 }

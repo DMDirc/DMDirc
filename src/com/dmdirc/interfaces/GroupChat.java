@@ -106,4 +106,6 @@ public interface GroupChat extends Chat {
      */
     void setTopic(final String topic);
 
+    GroupChatUser getUser(final User user);
+
 }

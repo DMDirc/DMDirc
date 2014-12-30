@@ -22,9 +22,13 @@
 
 package com.dmdirc;
 
+import com.dmdirc.events.DisplayProperty;
+import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
+
+import java.util.Optional;
 
 /**
  * Implementation of a {@link GroupChatUser}.
@@ -33,10 +37,12 @@ public class ChannelClient implements GroupChatUser {
 
     private final User user;
     private final GroupChat groupChat;
+    private final DisplayPropertyMap properties;
 
     public ChannelClient(final User user, final GroupChat groupChat) {
         this.user = user;
         this.groupChat = groupChat;
+        properties = new DisplayPropertyMap();
     }
 
     @Override
@@ -50,8 +56,49 @@ public class ChannelClient implements GroupChatUser {
     }
 
     @Override
+    public String getImportantMode() {
+        return "";
+        // TODO: Implement this.
+    }
+
+    @Override
     public String getAllModes() {
         // TODO: Implement this.
         return "";
+    }
+
+    @Override
+    public String getNickname() {
+        return getUser().getNickname();
+    }
+
+    @Override
+    public Optional<String> getUsername() {
+        return getUser().getUsername();
+    }
+
+    @Override
+    public Optional<String> getHostname() {
+        return getUser().getHostname();
+    }
+
+    @Override
+    public Optional<String> getRealname() {
+        return getUser().getRealname();
+    }
+
+    @Override
+    public <T> void setDisplayProperty(final DisplayProperty<T> property, final T value) {
+        properties.put(property, value);
+    }
+
+    @Override
+    public <T> Optional<T> getDisplayProperty(final DisplayProperty<T> property) {
+        return properties.get(property);
+    }
+
+    @Override
+    public DisplayPropertyMap getDisplayProperties() {
+        return properties;
     }
 }

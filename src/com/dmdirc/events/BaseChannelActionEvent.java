@@ -23,7 +23,7 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Base class for channel action events.
@@ -31,11 +31,11 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 public class BaseChannelActionEvent extends BaseChannelTextEvent {
 
     public BaseChannelActionEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client, final String message) {
+            final GroupChatUser client, final String message) {
         super(timestamp, channel, client, message);
     }
 
-    public BaseChannelActionEvent(final Channel channel, final ChannelClientInfo client,
+    public BaseChannelActionEvent(final Channel channel, final GroupChatUser client,
             final String message) {
         super(channel, client, message);
     }
