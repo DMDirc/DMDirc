@@ -575,13 +575,11 @@ public class Server extends FrameContainer implements Connection {
         channels.remove(chan);
     }
 
-    @Override
     public Channel addChannel(final ChannelInfo chan) {
         return addChannel(chan, !backgroundChannels.contains(chan.getName())
                 || getConfigManager().getOptionBool(DOMAIN_GENERAL, "hidechannels"));
     }
 
-    @Override
     public Channel addChannel(final ChannelInfo chan, final boolean focus) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {

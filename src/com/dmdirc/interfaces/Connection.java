@@ -32,7 +32,6 @@ import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.IgnoreList;
-import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 
 import java.net.URI;
@@ -63,25 +62,6 @@ public interface Connection {
      * @since 0.6.4
      */
     void acceptInvites();
-
-    /**
-     * Adds a specific channel and window to this server.
-     *
-     * @param chan channel to add
-     *
-     * @return The channel that was added (may be null if closing)
-     */
-    Channel addChannel(final ChannelInfo chan);
-
-    /**
-     * Adds a specific channel and window to this server.
-     *
-     * @param chan  channel to add
-     * @param focus Whether or not to focus the channel
-     *
-     * @return The channel that was added (may be null if closing)
-     */
-    Channel addChannel(final ChannelInfo chan, final boolean focus);
 
     /**
      * Adds an invite to this server, and fires the appropriate listeners.
