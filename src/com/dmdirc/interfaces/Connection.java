@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Invite;
 import com.dmdirc.Query;
@@ -169,7 +168,7 @@ public interface Connection {
      *
      * @return collection of channels belonging to this connection
      */
-    Collection<Channel> getChannels();
+    Collection<GroupChat> getChannels();
 
     /**
      * Retrieves this server's ignore list.
