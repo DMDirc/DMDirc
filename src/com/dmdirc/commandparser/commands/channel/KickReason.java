@@ -34,9 +34,11 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -72,15 +74,15 @@ public class KickReason extends Command implements IntelligentCommand {
             return;
         }
 
-        final ChannelClientInfo victim = channel.getChannelInfo().getChannelClient(args
-                .getArguments()[0]);
+        final Optional<GroupChatUser> victim
+                = channel.getUser(channel.getConnection().get().getUser(args.getArguments()[0]));
 
-        if (victim == null) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "User not found: "
-                    + args.getArguments()[0]);
+        if (victim.isPresent()) {
+            channel.kick(victim.get(), args.getArguments().length > 1
+                    ? Optional.of(args.getArgumentsAsString(1)) : Optional.empty());
         } else {
-            victim.kick(args.getArguments().length > 1 ? args.getArgumentsAsString(1)
-                    : origin.getConfigManager().getOption("general", "kickmessage"));
+            sendLine(origin, args.isSilent(), FORMAT_ERROR,
+                    "User not found: " + args.getArguments()[0]);
         }
     }
 
