@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.interfaces.ClientInfo;
 
 import java.util.ArrayList;
@@ -128,6 +129,11 @@ public class Client implements User {
     @Override
     public void setAwayMessage(final Optional<String> awayMessage) {
         this.awayMessage = awayMessage;
+    }
+
+    @Override
+    public AwayState getAwayState() {
+        return clientInfo.getAwayState();
     }
 
     @Override

@@ -22,6 +22,8 @@
 
 package com.dmdirc.interfaces;
 
+import com.dmdirc.parser.common.AwayState;
+
 import java.util.Collection;
 import java.util.Optional;
 
@@ -120,6 +122,13 @@ public interface User {
      * @param awayMessage Optional.empty if the user is not away, wrapped away reason if they are
      */
     void setAwayMessage(final Optional<String> awayMessage);
+
+    /**
+     * Returns the away state for this user.
+     *
+     * @return The user's away state
+     */
+    AwayState getAwayState();
 
     /**
      * Gets the {@link Connection} for this client.
