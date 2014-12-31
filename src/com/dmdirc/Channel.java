@@ -411,6 +411,11 @@ public class Channel extends MessageTarget implements GroupChat {
     /**
      * Returns a string[] containing the nickname/ident/host of a channel client.
      *
+     * 0 - mode
+     * 1 - nickname
+     * 2 - ident
+     * 3 - hostname
+     *
      * @param client The channel client to check
      *
      * @return A string[] containing displayable components
@@ -434,11 +439,9 @@ public class Channel extends MessageTarget implements GroupChat {
             final Optional<Colour> background
                     = client.getDisplayProperty(DisplayProperty.BACKGROUND_COLOUR);
             if (foreground.isPresent()) {
-                final String prefix;
+                String prefix = Styliser.CODE_HEXCOLOUR + ColourUtils.getHex(foreground.get());
                 if (background.isPresent()) {
                     prefix = ',' + ColourUtils.getHex(background.get());
-                } else {
-                    prefix = Styliser.CODE_HEXCOLOUR + ColourUtils.getHex(foreground.get());
                 }
                 res[1] = prefix + res[1] + Styliser.CODE_HEXCOLOUR;
             }
