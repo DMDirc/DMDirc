@@ -114,7 +114,7 @@ public class UnreadStatusManager {
             notificationColour = Optional.of(colour);
         }
 
-        eventBus.publishAsync(new UnreadStatusChangedEvent(container, notificationColour,
+        eventBus.publishAsync(new UnreadStatusChangedEvent(container, this, notificationColour,
                 unreadLines));
     }
 
