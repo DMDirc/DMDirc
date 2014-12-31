@@ -35,6 +35,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -178,6 +179,10 @@ public class ConfigBinder {
         if (targetClass.equals(Integer.class) || targetClass.equals(Integer.TYPE)) {
             return manager.getOptionInt(getDomain(binding.domain()), binding.key(),
                     binding.fallbacks());
+        }
+
+        if (targetClass.equals(List.class)) {
+            return manager.getOptionList(getDomain(binding.domain()), binding.key());
         }
 
         return null;
