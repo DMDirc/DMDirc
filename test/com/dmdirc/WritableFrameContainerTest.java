@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -46,6 +47,7 @@ import static org.mockito.Mockito.when;
 public class WritableFrameContainerTest {
 
     @Mock private AggregateConfigProvider acp;
+    @Mock private ConfigBinder configBinder;
     @Mock private ConnectionManager connectionManager;
     @Mock private MessageSinkManager messageSinkManager;
     @Mock private URLBuilder urlBuilder;
@@ -59,6 +61,7 @@ public class WritableFrameContainerTest {
         MockitoAnnotations.initMocks(this);
         when(acp.getOption("general", "silencechar")).thenReturn(".");
         when(acp.getOption("general", "commandchar")).thenReturn("/");
+        when(acp.getBinder()).thenReturn(configBinder);
         commands = new CommandManager(connectionManager, globalWindowProvider);
     }
 

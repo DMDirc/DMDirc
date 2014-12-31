@@ -171,6 +171,9 @@ ui:
   sortrootwindows=true
   sortchildwindows=true
   typingindicator=true
+  miscellaneousNotificationColour=3
+  messageNotificationColour=12
+  highlightNotificationColour=4
 
 treeview:
   dragSelection=true

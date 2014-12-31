@@ -24,6 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.BaseChannelTextEvent;
 import com.dmdirc.events.BaseQueryTextEvent;
 import com.dmdirc.events.ChannelHighlightEvent;
@@ -43,6 +44,8 @@ public class UnreadStatusManager {
 
     private final DMDircMBassador eventBus;
     private final FrameContainer container;
+    private final ColourManager colourManager;
+
     private int unreadLines;
     private Optional<Colour> notificationColour = Optional.empty();
 
@@ -53,6 +56,7 @@ public class UnreadStatusManager {
     public UnreadStatusManager(final FrameContainer container) {
         this.container = container;
         this.eventBus = container.getEventBus();
+        this.colourManager = new ColourManager(container.getConfigManager(), eventBus);
     }
 
     @Handler
@@ -114,8 +118,7 @@ public class UnreadStatusManager {
         unreadLines = newUnreadCount;
 
         if (updated) {
-            eventBus.publishAsync(new UnreadStatusChangedEvent(container, this, notificationColour,
-                    unreadLines));
+            publishChangedEvent();
         }
     }
 
@@ -134,6 +137,44 @@ public class UnreadStatusManager {
         } else {
             return existingColour;
         }
+    }
+
+    @ConfigBinding(domain = "ui", key = "miscellaneousNotificationColour")
+    void handleMiscellaneousColour(final String colour) {
+        final Optional<Colour> newColour = Optional.ofNullable(
+                colourManager.getColourFromString(colour, Colour.GREEN));
+        if (notificationColour.equals(miscellaneousColour)) {
+            notificationColour = newColour;
+            publishChangedEvent();
+        }
+        miscellaneousColour = newColour;
+    }
+
+    @ConfigBinding(domain = "ui", key = "messageNotificationColour")
+    void handleMessageColour(final String colour) {
+        final Optional<Colour> newColour = Optional.ofNullable(
+                colourManager.getColourFromString(colour, Colour.BLUE));
+        if (notificationColour.equals(messageColour)) {
+            notificationColour = newColour;
+            publishChangedEvent();
+        }
+        messageColour = newColour;
+    }
+
+    @ConfigBinding(domain = "ui", key = "highlightNotificationColour")
+    void handleHighlightColour(final String colour) {
+        final Optional<Colour> newColour = Optional.ofNullable(
+                colourManager.getColourFromString(colour, Colour.RED));
+        if (notificationColour.equals(highlightColour)) {
+            notificationColour = newColour;
+            publishChangedEvent();
+        }
+        highlightColour = newColour;
+    }
+
+    private void publishChangedEvent() {
+        eventBus.publishAsync(new UnreadStatusChangedEvent(container, this, notificationColour,
+                unreadLines));
     }
 
 }

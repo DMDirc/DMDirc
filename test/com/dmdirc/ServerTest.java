@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -56,6 +57,7 @@ public class ServerTest {
     @Mock private ServerManager serverManager;
     @Mock private Profile profile;
     @Mock private AggregateConfigProvider configManager;
+    @Mock private ConfigBinder configBinder;
     @Mock private ConfigProvider userConfig;
     @Mock private ConfigProviderMigrator configMigrator;
     @Mock private CommandParser commandParser;
@@ -81,6 +83,7 @@ public class ServerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         when(configManager.getOptionInt(anyString(), anyString())).thenReturn(Integer.MAX_VALUE);
+        when(configManager.getBinder()).thenReturn(configBinder);
         when(configMigrator.getConfigProvider()).thenReturn(configManager);
         when(tabCompleterFactory.getTabCompleter(eq(configManager),
                 Matchers.<CommandType>anyVararg())).thenReturn(tabCompleter);
