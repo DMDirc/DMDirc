@@ -31,8 +31,6 @@ import com.dmdirc.events.FrameComponentRemovedEvent;
 import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameNameChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
-import com.dmdirc.events.NotificationClearedEvent;
-import com.dmdirc.events.NotificationSetEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -49,7 +47,6 @@ import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
-import com.dmdirc.util.colours.Colour;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,8 +70,6 @@ public abstract class FrameContainer {
 
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
-    /** The colour of our frame's notifications. */
-    private Optional<Colour> notification = Optional.empty();
     /** The children of this frame. */
     private final Collection<FrameContainer> children = new CopyOnWriteArrayList<>();
     /** The parent of this frame. */
@@ -197,10 +192,6 @@ public abstract class FrameContainer {
         this.eventBus.subscribe(unreadStatusManager);
 
         setIcon(icon);
-    }
-
-    public Optional<Colour> getNotification() {
-        return notification;
     }
 
     public Optional<FrameContainer> getParent() {
@@ -405,26 +396,6 @@ public abstract class FrameContainer {
         }
 
         return backBuffer;
-    }
-
-    /**
-     * Clears any outstanding notifications this frame has set.
-     */
-    public void clearNotification() {
-        notification = Optional.empty();
-        eventBus.publishAsync(new NotificationClearedEvent(this));
-    }
-
-    /**
-     * Sends a notification to the frame manager if this fame isn't active.
-     *
-     * @param colour The colour to use for the notification
-     */
-    public void sendNotification(final Colour colour) {
-        if (!notification.isPresent() || !colour.equals(notification.get())) {
-            notification = Optional.of(colour);
-            eventBus.publishAsync(new NotificationSetEvent(this, colour));
-        }
     }
 
     /**

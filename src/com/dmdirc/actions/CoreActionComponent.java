@@ -35,7 +35,6 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.LocalClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.colours.Colour;
 
 import java.awt.AWTKeyStroke;
 import java.awt.event.InputEvent;
@@ -236,31 +235,6 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() {
             return "name";
-        }
-    },
-    /**
-     * Returns the notification colour of the channel.
-     */
-    CHANNEL_COLOUR {
-        @Override
-        public Object get(final Object arg) {
-            // TODO: This should understand unset notifications
-            return ((FrameContainer) arg).getNotification().orElse(Colour.BLACK);
-        }
-
-        @Override
-        public Class<?> appliesTo() {
-            return Channel.class;
-        }
-
-        @Override
-        public Class<?> getType() {
-            return Colour.class;
-        }
-
-        @Override
-        public String getName() {
-            return "notification colour";
         }
     },
     /** Returns the name of a client. */
@@ -651,31 +625,6 @@ public enum CoreActionComponent implements ActionComponent {
             return "nick";
         }
     },
-    /**
-     * Returns the notification colour of the query.
-     */
-    QUERY_COLOUR {
-        @Override
-        public Object get(final Object arg) {
-            // TODO: This should understand unset notifications
-            return ((FrameContainer) arg).getNotification().orElse(Colour.BLACK);
-        }
-
-        @Override
-        public Class<?> appliesTo() {
-            return Query.class;
-        }
-
-        @Override
-        public Class<?> getType() {
-            return Colour.class;
-        }
-
-        @Override
-        public String getName() {
-            return "notification colour";
-        }
-    },
     /** The name of a window. */
     WINDOW_NAME {
         @Override
@@ -696,31 +645,6 @@ public enum CoreActionComponent implements ActionComponent {
         @Override
         public String getName() {
             return "name";
-        }
-    },
-    /**
-     * Returns the notification colour of the window.
-     */
-    WINDOW_COLOUR {
-        @Override
-        public Object get(final Object arg) {
-            // TODO: This should understand unset notifications
-            return ((FrameContainer) arg).getNotification().orElse(Colour.BLACK);
-        }
-
-        @Override
-        public Class<?> appliesTo() {
-            return FrameContainer.class;
-        }
-
-        @Override
-        public Class<?> getType() {
-            return Colour.class;
-        }
-
-        @Override
-        public String getName() {
-            return "notification colour";
         }
     },
     /**
