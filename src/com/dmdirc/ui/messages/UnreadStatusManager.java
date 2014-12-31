@@ -29,6 +29,7 @@ import com.dmdirc.events.BaseQueryTextEvent;
 import com.dmdirc.events.ChannelHighlightEvent;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.QueryHighlightEvent;
+import com.dmdirc.events.UnreadStatusChangedEvent;
 import com.dmdirc.util.colours.Colour;
 
 import java.util.Optional;
@@ -112,6 +113,9 @@ public class UnreadStatusManager {
         } else {
             notificationColour = Optional.of(colour);
         }
+
+        eventBus.publishAsync(new UnreadStatusChangedEvent(container, notificationColour,
+                unreadLines));
     }
 
 }
