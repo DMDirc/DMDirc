@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -33,12 +32,15 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.colours.Colour;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -50,8 +52,7 @@ public class SetNickColour extends Command implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("setnickcolour",
-            "setnickcolour [--nicklist|--text] <nick> [colour] - "
-            + "set the specified person's display colour",
+            "setnickcolour <nick> [colour] - set the specified person's display colour",
             CommandType.TYPE_CHANNEL);
     /** Manager to use to convert colours. */
     private final ColourManagerFactory colourManagerFactory;
@@ -74,59 +75,32 @@ public class SetNickColour extends Command implements IntelligentCommand {
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
 
-        int offset = 0;
-        boolean nicklist = true;
-        boolean text = true;
-
-        if (args.getArguments().length > offset && args.getArguments()[offset]
-                .equalsIgnoreCase("--nicklist")) {
-            text = false;
-            offset++;
-        } else if (args.getArguments().length > offset && args.getArguments()[offset]
-                .equalsIgnoreCase("--text")) {
-            nicklist = false;
-            offset++;
-        }
-
-        if (args.getArguments().length <= offset) {
-            showUsage(origin, args.isSilent(), "setnickcolour",
-                    "[--nicklist|--text] <nick> [colour]");
+        if (args.getArguments().length == 0) {
+            showUsage(origin, args.isSilent(), INFO.getName(), INFO.getHelp());
             return;
         }
 
-        final ChannelClientInfo target = channel.getChannelInfo()
-                .getChannelClient(args.getArguments()[offset]);
-        offset++;
+        final Optional<GroupChatUser> target = channel.getUser(channel.getConnection().get()
+                .getUser(args.getArguments()[0]));
 
-        if (target == null) {
+        if (!target.isPresent()) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "No such nickname ("
-                    + args.getArguments()[offset - 1] + ")!");
-        } else if (args.getArguments().length <= offset) {
+                    + args.getArguments()[0] + ")!");
+        } else if (args.getArguments().length == 1) {
             // We're removing the colour
-            if (nicklist) {
-                target.getMap().remove(ChannelClientProperty.NICKLIST_FOREGROUND);
-            }
-            if (text) {
-                target.getMap().remove(ChannelClientProperty.TEXT_FOREGROUND);
-            }
-
+            target.get().removeDisplayProperty(DisplayProperty.FOREGROUND_COLOUR);
             channel.refreshClients();
         } else {
             // We're setting the colour
             final Colour newColour = colourManagerFactory.getColourManager(origin.getConfigManager())
-                    .getColourFromString(args.getArguments()[offset], null);
+                    .getColourFromString(args.getArguments()[1], null);
             if (newColour == null) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified.");
+                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified ("
+                        + args.getArguments()[1] + ").");
                 return;
             }
 
-            if (nicklist) {
-                target.getMap().put(ChannelClientProperty.NICKLIST_FOREGROUND, newColour);
-            }
-
-            if (text) {
-                target.getMap().put(ChannelClientProperty.TEXT_FOREGROUND, newColour);
-            }
+            target.get().setDisplayProperty(DisplayProperty.FOREGROUND_COLOUR, newColour);
 
             channel.refreshClients();
         }
@@ -139,11 +113,6 @@ public class SetNickColour extends Command implements IntelligentCommand {
         targets.excludeAll();
 
         if (arg == 0) {
-            targets.include(TabCompletionType.CHANNEL_NICK);
-            targets.add("--nicklist");
-            targets.add("--text");
-        } else if (arg == 1 && (context.getPreviousArgs().get(0).equals("--text")
-                || context.getPreviousArgs().get(0).equals("--nicklist"))) {
             targets.include(TabCompletionType.CHANNEL_NICK);
         }
 

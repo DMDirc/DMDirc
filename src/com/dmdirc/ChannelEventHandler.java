@@ -161,7 +161,7 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final boolean isJoinTopic) {
         checkParser(parser);
 
-        final Topic topic = new Topic(channel.getTopic(),
+        final Topic topic = Topic.create(channel.getTopic(),
                 owner.getUser(getConnection().getUser(channel.getTopicSetter())).orElse(null),
                 channel.getTopicTime());
 
@@ -212,7 +212,7 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client) {
         checkParser(parser);
 
-        final ChannelJoinEvent event = new ChannelJoinEvent(owner, client);
+        final ChannelJoinEvent event = new ChannelJoinEvent(owner, owner.getUserFromClient(client));
         final String format = EventUtils.postDisplayable(eventBus, event, "channelJoin");
         owner.doNotification(date, format, client);
         owner.addClient(owner.getUserFromClient(client));
@@ -223,7 +223,8 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client, final String reason) {
         checkParser(parser);
 
-        final ChannelPartEvent event = new ChannelPartEvent(owner, client, reason);
+        final ChannelPartEvent event = new ChannelPartEvent(owner, owner.getUserFromClient(client),
+                reason);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 "channel"
                 + (isMyself(client) ? "Self" : "") + "Part"
@@ -238,7 +239,8 @@ public class ChannelEventHandler extends EventHandler implements
             final String reason, final String host) {
         checkParser(parser);
 
-        final ChannelKickEvent event = new ChannelKickEvent(owner, client, kickedClient, reason);
+        final ChannelKickEvent event = new ChannelKickEvent(owner, owner.getUserFromClient
+                (client), owner.getUserFromClient(kickedClient), reason);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 "channelKick" + (reason.isEmpty() ? "" : "Reason"));
         owner.doNotification(date, format, client, kickedClient, reason);
@@ -250,7 +252,8 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client, final String reason) {
         checkParser(parser);
 
-        final ChannelQuitEvent event = new ChannelQuitEvent(owner, client, reason);
+        final ChannelQuitEvent event = new ChannelQuitEvent(owner, owner.getUserFromClient(client),
+                reason);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 "channelQuit" + (reason.isEmpty() ? "" : "Reason"));
         owner.doNotification(date, format, client, reason);
@@ -275,7 +278,8 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final ChannelClientInfo client, final String oldNick) {
         checkParser(parser);
 
-        final ChannelNickchangeEvent event = new ChannelNickchangeEvent(owner, client, oldNick);
+        final ChannelNickchangeEvent event = new ChannelNickchangeEvent(owner,
+                owner.getUserFromClient(client), oldNick);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 isMyself(client) ? "channelSelfNickChange" : "channelNickChange");
         owner.doNotification(date, format, client, oldNick);
@@ -297,7 +301,8 @@ public class ChannelEventHandler extends EventHandler implements
                         modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
                 owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
             } else {
-                final ChannelModechangeEvent event = new ChannelModechangeEvent(owner, client, modes);
+                final ChannelModechangeEvent event = new ChannelModechangeEvent(owner,
+                        owner.getUserFromClient(client), modes);
                 final String format = EventUtils.postDisplayable(eventBus, event,
                         isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
                 owner.doNotification(date, format, client, modes);
@@ -391,7 +396,8 @@ public class ChannelEventHandler extends EventHandler implements
                         modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
                 owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
             } else {
-                final ChannelModechangeEvent event = new ChannelModechangeEvent(owner, client, modes);
+                final ChannelModechangeEvent event = new ChannelModechangeEvent(owner,
+                        owner.getUserFromClient(client), modes);
                 final String format = EventUtils.postDisplayable(eventBus, event,
                         isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
                 owner.doNotification(date, format, client, modes);

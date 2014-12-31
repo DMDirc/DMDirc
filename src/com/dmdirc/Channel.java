@@ -481,9 +481,9 @@ public class Channel extends MessageTarget implements GroupChat {
             // Format topics
             final Topic topic = (Topic) arg;
             args.add("");
-            args.add(topic.getClient().getNickname());
-            args.add(topic.getClient().getUsername().orElse(""));
-            args.add(topic.getClient().getHostname().orElse(""));
+            args.add(topic.getClient().map(GroupChatUser::getNickname).orElse("Unknown"));
+            args.add(topic.getClient().flatMap(GroupChatUser::getUsername).orElse(""));
+            args.add(topic.getClient().flatMap(GroupChatUser::getHostname).orElse(""));
             args.add(topic.getTopic());
             args.add(topic.getTime() * 1000);
 

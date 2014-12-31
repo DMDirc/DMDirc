@@ -23,27 +23,27 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a user joins a channel.
  */
 public class ChannelJoinEvent extends ChannelDisplayableEvent {
 
-    private final ChannelClientInfo client;
+    private final GroupChatUser client;
 
     public ChannelJoinEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client) {
+            final GroupChatUser client) {
         super(timestamp, channel);
         this.client = client;
     }
 
-    public ChannelJoinEvent(final Channel channel, final ChannelClientInfo client) {
+    public ChannelJoinEvent(final Channel channel, final GroupChatUser client) {
         super(channel);
         this.client = client;
     }
 
-    public ChannelClientInfo getClient() {
+    public GroupChatUser getClient() {
         return client;
     }
 
