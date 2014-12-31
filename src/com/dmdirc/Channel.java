@@ -84,8 +84,8 @@ public class Channel extends MessageTarget implements GroupChat {
     private final ChannelEventHandler eventHandler;
     /** The migrator to use to migrate our config provider. */
     private final ConfigProviderMigrator configMigrator;
-    /** Factory for creating {@link GroupChatUser}s */
-    private final GroupChatUserFactory groupChatUserFactory;
+    /** Manager used to retrieve {@link GroupChatUser}s */
+    private final GroupChatUserManager groupChatUserManager;
     /** Whether we're in this channel or not. */
     private boolean isOnChannel;
     /** Whether we should send WHO requests for this channel. */
@@ -120,7 +120,7 @@ public class Channel extends MessageTarget implements GroupChat {
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory,
-            final GroupChatUserFactory groupChatUserFactory) {
+            final GroupChatUserManager groupChatUserManager) {
         super(newServer, "channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
@@ -140,13 +140,13 @@ public class Channel extends MessageTarget implements GroupChat {
         this.configMigrator = configMigrator;
         this.channelInfo = newChannelInfo;
         this.server = newServer;
-        this.groupChatUserFactory = groupChatUserFactory;
+        this.groupChatUserManager = groupChatUserManager;
 
         getConfigManager().getBinder().bind(this, Channel.class);
 
         topics = new RollingList<>(getConfigManager().getOptionInt("channel", "topichistorysize"));
 
-        eventHandler = new ChannelEventHandler(this, getEventBus());
+        eventHandler = new ChannelEventHandler(this, getEventBus(), groupChatUserManager);
 
         registerCallbacks();
         updateTitle();
@@ -461,8 +461,6 @@ public class Channel extends MessageTarget implements GroupChat {
 
             return true;
         } else if (arg instanceof ClientInfo) {
-            // Format ClientInfos
-
             final ClientInfo clientInfo = (ClientInfo) arg;
             args.add(clientInfo.getNickname());
             args.add(clientInfo.getUsername());
@@ -476,7 +474,8 @@ public class Channel extends MessageTarget implements GroupChat {
 
             return true;
         } else if (arg instanceof ChannelClientInfo) {
-            final GroupChatUser clientInfo = getUserFromClient((ChannelClientInfo) arg);
+            final GroupChatUser clientInfo = groupChatUserManager.getUserFromClient(
+                    (ChannelClientInfo) arg, this);
 
             args.addAll(Arrays.asList(getDetails(clientInfo)));
 
@@ -554,23 +553,19 @@ public class Channel extends MessageTarget implements GroupChat {
         return Optional.of(server);
     }
 
-    public GroupChatUser getUserFromClient(final ChannelClientInfo client) {
-        return groupChatUserFactory.getGroupChatUser(
-                server.getUserFromClientInfo(client.getClient()), this, client);
-    }
-
     @Override
     public Optional<GroupChatUser> getUser(final User user) {
         final ChannelClientInfo ci = channelInfo.getChannelClient(((Client) user).getClientInfo());
         if (ci == null) {
             return Optional.empty();
         }
-        return Optional.of(groupChatUserFactory.getGroupChatUser(user, this, ci));
+        return Optional.of(groupChatUserManager.getUserFromClient(ci, user, this));
     }
 
     @Override
     public Collection<GroupChatUser> getUsers() {
-        return channelInfo.getChannelClients().stream().map(this::getUserFromClient)
+        return channelInfo.getChannelClients().stream()
+                .map(client -> groupChatUserManager.getUserFromClient(client, this))
                 .collect(Collectors.toList());
     }
 

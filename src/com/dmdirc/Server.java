@@ -113,8 +113,8 @@ public class Server extends FrameContainer implements Connection {
     private final ChannelMap channels = new ChannelMap();
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
-    /** The user factory to create users from. */
-    private final UserFactory userFactory;
+    /** The user manager to retrieve users from. */
+    private final UserManager userManager;
 
     /** The Parser instance handling this server. */
     @Nonnull
@@ -211,7 +211,7 @@ public class Server extends FrameContainer implements Connection {
             @Nonnull final URI uri,
             @Nonnull final Profile profile,
             final BackBufferFactory backBufferFactory,
-            final UserFactory userFactory) {
+            final UserManager userManager) {
         super(null, "server-disconnected",
                 getHost(uri),
                 getHost(uri),
@@ -238,7 +238,7 @@ public class Server extends FrameContainer implements Connection {
         this.executorService = executorService;
         this.userSettings = userSettings;
         this.messageEncoderFactory = messageEncoderFactory;
-        this.userFactory = userFactory;
+        this.userManager = userManager;
 
         awayMessage = Optional.empty();
         eventHandler = new ServerEventHandler(this, eventBus);
@@ -501,23 +501,16 @@ public class Server extends FrameContainer implements Connection {
         return queries.containsKey(converter.toLowerCase(parseHostmask(host)[0]));
     }
 
-    public User getUserFromClientInfo(final ClientInfo client) {
-        return userFactory.getUser(client.getNickname(), this,
-                Optional.ofNullable(client.getUsername()),
-                Optional.ofNullable(client.getHostname()),
-                Optional.ofNullable(client.getRealname()), client);
-    }
-
     @Override
     public User getLocalUser() {
         return parser.map(Parser::getLocalClient)
-                .map(this::getUserFromClientInfo).get();
+                .map(client -> userManager.getUserFromClientInfo(client, this)).get();
     }
 
     @Override
     public User getUser(final String details) {
         return parser.map(p -> p.getClient(details))
-                .map(this::getUserFromClientInfo).get();
+                .map(client -> userManager.getUserFromClientInfo(client, this)).get();
     }
 
     @Override
