@@ -24,9 +24,6 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.actions.ActionFactory;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionSubstitutorFactory;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ConnectionManager;
@@ -49,8 +46,6 @@ import javax.inject.Inject;
  */
 public class PluginInjectorInitialiser {
 
-    private final ActionManager actionManager;
-    private final ActionFactory actionFactory;
     private final PluginManager pluginManager;
     private final IdentityController identityController;
     private final ConnectionManager connectionManager;
@@ -63,13 +58,11 @@ public class PluginInjectorInitialiser {
     private final CorePluginExtractor corePluginExtractor;
     private final URLBuilder urlBuilder;
     private final ColourManager colourManager;
-    private final ActionSubstitutorFactory actionSubstitutorFactory;
     private final DMDircMBassador eventBus;
     private final IconManager iconManager;
 
     @Inject
-    public PluginInjectorInitialiser(final ActionManager actionManager,
-            final ActionFactory actionFactory,
+    public PluginInjectorInitialiser(
             final PluginManager pluginManager,
             final IdentityController identityController,
             final ConnectionManager connectionManager,
@@ -82,11 +75,8 @@ public class PluginInjectorInitialiser {
             final CorePluginExtractor corePluginExtractor,
             final URLBuilder urlBuilder,
             @GlobalConfig final ColourManager colourManager,
-            final ActionSubstitutorFactory actionSubstitutorFactory,
             final DMDircMBassador eventBus,
             @GlobalConfig final IconManager iconManager) {
-        this.actionManager = actionManager;
-        this.actionFactory = actionFactory;
         this.pluginManager = pluginManager;
         this.identityController = identityController;
         this.connectionManager = connectionManager;
@@ -99,7 +89,6 @@ public class PluginInjectorInitialiser {
         this.corePluginExtractor = corePluginExtractor;
         this.urlBuilder = urlBuilder;
         this.colourManager = colourManager;
-        this.actionSubstitutorFactory = actionSubstitutorFactory;
         this.eventBus = eventBus;
         this.iconManager = iconManager;
     }
@@ -110,7 +99,6 @@ public class PluginInjectorInitialiser {
      * @param injector The injector to be initialised
      */
     public void initialise(final SimpleInjector injector) {
-        injector.addParameter(actionManager);
         injector.addParameter(PluginManager.class, pluginManager);
         injector.addParameter(identityController);
         injector.addParameter(ConnectionManager.class, connectionManager);
@@ -120,11 +108,9 @@ public class PluginInjectorInitialiser {
         injector.addParameter(PreferencesManager.class, preferencesManager);
         injector.addParameter(LifecycleController.class, lifecycleController);
         injector.addParameter(corePluginExtractor);
-        injector.addParameter(actionFactory);
         injector.addParameter(themeManager);
         injector.addParameter(urlBuilder);
         injector.addParameter(colourManager);
-        injector.addParameter(actionSubstitutorFactory);
         injector.addParameter(eventBus);
         injector.addParameter(iconManager);
     }

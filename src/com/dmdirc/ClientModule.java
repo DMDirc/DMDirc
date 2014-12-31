@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
@@ -33,7 +32,6 @@ import com.dmdirc.commandparser.auto.AutoCommandModule;
 import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.ConfigModule;
 import com.dmdirc.config.profiles.ProfilesModule;
-import com.dmdirc.interfaces.ActionController;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.ConnectionManager;
@@ -118,11 +116,6 @@ public class ClientModule {
             @GlobalConfig final AggregateConfigProvider globalConfig,
             final URLBuilder urlBuilder) {
         return new IconManager(globalConfig, urlBuilder);
-    }
-
-    @Provides
-    public ActionController getActionController(final ActionManager actionManager) {
-        return actionManager;
     }
 
     @Provides

@@ -23,8 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.GlobalWindow.GlobalWindowManager;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ColourActionComparison;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.events.ClientClosedEvent;
@@ -71,8 +69,6 @@ public class Main {
     private final IdentityController identityManager;
     /** The server manager the client will use. */
     private final ConnectionManager connectionManager;
-    /** The action manager the client will use. */
-    private final ActionManager actionManager;
     /** The command-line parser used for this instance. */
     private final CommandLineParser commandLineParser;
     /** The plugin manager the client will use. */
@@ -83,8 +79,6 @@ public class Main {
     private final CommandManager commandManager;
     /** The global window manager to use. */
     private final GlobalWindowManager globalWindowManager;
-    /** The colour-based action comparisons. */
-    private final ColourActionComparison colourActionComparison;
     /** The set of known lifecycle components. */
     private final Set<SystemLifecycleComponent> lifecycleComponents;
     /** The set of migrators to execute on startup. */
@@ -103,13 +97,11 @@ public class Main {
     public Main(
             final IdentityController identityManager,
             final ConnectionManager connectionManager,
-            final ActionManager actionManager,
             final CommandLineParser commandLineParser,
             final PluginManager pluginManager,
             final CommandManager commandManager,
             final CorePluginExtractor corePluginExtractor,
             final GlobalWindowManager globalWindowManager,
-            final ColourActionComparison colourActionComparison,
             final Set<SystemLifecycleComponent> lifecycleComponents,
             final Set<Migrator> migrators,
             final DMDircMBassador eventBus,
@@ -117,13 +109,11 @@ public class Main {
             final ModeAliasReporter reporter) {
         this.identityManager = identityManager;
         this.connectionManager = connectionManager;
-        this.actionManager = actionManager;
         this.commandLineParser = commandLineParser;
         this.pluginManager = pluginManager;
         this.corePluginExtractor = corePluginExtractor;
         this.commandManager = commandManager;
         this.globalWindowManager = globalWindowManager;
-        this.colourActionComparison = colourActionComparison;
         this.lifecycleComponents = lifecycleComponents;
         this.migrators = migrators;
         this.eventBus = eventBus;
@@ -177,9 +167,7 @@ public class Main {
 
         lifecycleComponents.forEach(SystemLifecycleComponent::startUp);
 
-        actionManager.initialise(colourActionComparison);
         pluginManager.doAutoLoad();
-        actionManager.loadUserActions();
 
         eventBus.publishAsync(new ClientOpenedEvent());
         eventBus.subscribe(reporter);

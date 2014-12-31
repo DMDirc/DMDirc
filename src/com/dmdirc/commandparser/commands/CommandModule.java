@@ -43,7 +43,6 @@ import com.dmdirc.commandparser.commands.global.Ifplugin;
 import com.dmdirc.commandparser.commands.global.LoadPlugin;
 import com.dmdirc.commandparser.commands.global.NewServer;
 import com.dmdirc.commandparser.commands.global.OpenWindow;
-import com.dmdirc.commandparser.commands.global.ReloadActions;
 import com.dmdirc.commandparser.commands.global.ReloadIdentities;
 import com.dmdirc.commandparser.commands.global.ReloadPlugin;
 import com.dmdirc.commandparser.commands.global.SaveConfig;
@@ -527,18 +526,6 @@ public class CommandModule {
     @Provides(type = Provides.Type.SET)
     public CommandDetails getCommand(final OpenWindow command) {
         return new SimpleCommandDetails(command, OpenWindow.INFO);
-    }
-
-    /**
-     * Provides the /reloadactions command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
-    @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final ReloadActions command) {
-        return new SimpleCommandDetails(command, ReloadActions.INFO);
     }
 
     /**
