@@ -27,6 +27,8 @@ import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
 
+import com.google.common.collect.Table;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,6 +43,10 @@ public class PreferencesSetting {
     protected final PreferencesType type;
     /** The possible options for a multichoice setting. */
     protected final Map<String, String> comboOptions;
+    /** The headers in the table. */
+    private final Iterable<String> tableHeaders;
+    /** The possible options for a table setting. */
+    protected final Table<Integer, Integer, String> tableOptions;
     /** The validator to use to validate this setting. */
     protected final Validator<String> validator;
     /** The domain of the setting. */
@@ -82,9 +88,15 @@ public class PreferencesSetting {
             throw new IllegalArgumentException("Multi-choice preferences must "
                     + "have their options specified.");
         }
+        if (PreferencesType.TABLE == type) {
+            throw new IllegalArgumentException("Multi-choice preferences must "
+                    + "have their table options specified.");
+        }
 
         this.type = type;
         this.comboOptions = null;
+        this.tableHeaders = null;
+        this.tableOptions = null;
         this.validator = validator;
         this.domain = domain;
         this.option = option;
@@ -115,9 +127,15 @@ public class PreferencesSetting {
             throw new IllegalArgumentException("Multi-choice preferences must "
                     + "have their options specified.");
         }
+        if (PreferencesType.TABLE == type) {
+            throw new IllegalArgumentException("Multi-choice preferences must "
+                    + "have their table options specified.");
+        }
 
         this.type = type;
         this.comboOptions = null;
+        this.tableHeaders = null;
+        this.tableOptions = null;
         this.validator = new PermissiveValidator<>();
         this.domain = domain;
         this.option = option;
@@ -146,6 +164,8 @@ public class PreferencesSetting {
             final ReadOnlyConfigProvider configManager, final ConfigProvider identity) {
         this.type = PreferencesType.MULTICHOICE;
         this.comboOptions = new HashMap<>(options);
+        this.tableHeaders = null;
+        this.tableOptions = null;
         this.validator = new PermissiveValidator<>();
         this.domain = domain;
         this.option = option;
@@ -161,12 +181,52 @@ public class PreferencesSetting {
         }
     }
 
+    /**
+     * Creates a new preferences setting for table preferences.
+     *
+     * @param domain        The domain of the setting
+     * @param option        The option name of the setting
+     * @param options       A map of setting values to display names for this setting
+     * @param title         The title of this setting
+     * @param helptext      Text to display to help the user
+     * @param configManager Config Manager
+     * @param identity      Identity to save setting to
+     */
+    public PreferencesSetting(final String domain, final String option,
+            final String title, final String helptext,
+            final Iterable<String> tableHeaders,
+            final Table<Integer, Integer, String> options,
+            final ReadOnlyConfigProvider configManager,
+            final ConfigProvider identity) {
+        this.type = PreferencesType.TABLE;
+        this.comboOptions = null;
+        this.tableHeaders = tableHeaders;
+        this.tableOptions = options;
+        this.validator = new PermissiveValidator<>();
+        this.domain = domain;
+        this.option = option;
+        this.title = title;
+        this.helptext = helptext;
+        this.identity = identity;
+
+        value = configManager.getOption(domain, option);
+        original = value;
+    }
+
     public PreferencesType getType() {
         return type;
     }
 
     public Map<String, String> getComboOptions() {
         return comboOptions;
+    }
+
+    public Iterable<String> getTableHeaders() {
+        return tableHeaders;
+    }
+
+    public Table<Integer, Integer, String> getTableOptions() {
+        return tableOptions;
     }
 
     public Validator<String> getValidator() {
