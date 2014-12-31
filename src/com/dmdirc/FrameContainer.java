@@ -152,6 +152,7 @@ public abstract class FrameContainer {
         this.eventBus = eventBusManager.getChildBus();
         this.unreadStatusManager = new UnreadStatusManager(this);
         this.eventBus.subscribe(unreadStatusManager);
+        configManager.getBinder().bind(unreadStatusManager, UnreadStatusManager.class);
 
         setIcon(icon);
     }
@@ -190,6 +191,7 @@ public abstract class FrameContainer {
         this.eventBus = eventBusManager.getChildBus();
         this.unreadStatusManager = new UnreadStatusManager(this);
         this.eventBus.subscribe(unreadStatusManager);
+        configManager.getBinder().bind(unreadStatusManager, UnreadStatusManager.class);
 
         setIcon(icon);
     }
@@ -338,6 +340,7 @@ public abstract class FrameContainer {
      */
     public void close() {
         eventBus.unsubscribe(unreadStatusManager);
+        configManager.getBinder().unbind(unreadStatusManager);
         eventBus.publish(new FrameClosingEvent(this));
         eventBusManager.disconnect();
         getBackBuffer().stopAddingEvents();
