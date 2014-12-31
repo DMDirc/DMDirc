@@ -40,18 +40,22 @@ import javax.inject.Singleton;
 public class GroupChatUserManager {
 
     private final GroupChatUserFactory groupChatUserFactory;
+    private final UserManager userManager;
     private final Map<ChannelClientInfo, GroupChatUser> userCache;
 
     @Inject
-    public GroupChatUserManager(final GroupChatUserFactory groupChatUserFactory) {
+    public GroupChatUserManager(final GroupChatUserFactory groupChatUserFactory,
+            final UserManager userManager) {
         this.groupChatUserFactory = groupChatUserFactory;
+        this.userManager = userManager;
         userCache = new HashMap<>();
     }
 
     public GroupChatUser getUserFromClient(final ChannelClientInfo client,
             final GroupChat groupChat) {
-        return getUserFromClient(client, groupChat.getConnection().get()
-                .getUser(client.getClient().getNickname()), groupChat);
+        return getUserFromClient(client,
+                userManager.getUserFromClientInfo(client.getClient(),
+                        groupChat.getConnection().get()), groupChat);
     }
 
     public GroupChatUser getUserFromClient(final ChannelClientInfo client,
