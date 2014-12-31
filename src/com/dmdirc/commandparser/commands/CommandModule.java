@@ -42,7 +42,6 @@ import com.dmdirc.commandparser.commands.global.Help;
 import com.dmdirc.commandparser.commands.global.Ifplugin;
 import com.dmdirc.commandparser.commands.global.LoadPlugin;
 import com.dmdirc.commandparser.commands.global.NewServer;
-import com.dmdirc.commandparser.commands.global.Notify;
 import com.dmdirc.commandparser.commands.global.OpenWindow;
 import com.dmdirc.commandparser.commands.global.ReloadActions;
 import com.dmdirc.commandparser.commands.global.ReloadIdentities;
@@ -492,18 +491,6 @@ public class CommandModule {
     @Provides(type = Provides.Type.SET)
     public CommandDetails getCommand(final NewServer command) {
         return new SimpleCommandDetails(command, NewServer.INFO);
-    }
-
-    /**
-     * Provides the /notify command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
-    @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Notify command) {
-        return new SimpleCommandDetails(command, Notify.INFO);
     }
 
     /**
