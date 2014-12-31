@@ -44,7 +44,7 @@ public class UnreadStatusManager {
     private final DMDircMBassador eventBus;
     private final FrameContainer container;
     private int unreadLines;
-    private Optional<Colour> notificationColour;
+    private Optional<Colour> notificationColour = Optional.empty();
 
     private Colour miscellaneousColour = Colour.GREEN;
     private Colour messageColour = Colour.BLACK;
