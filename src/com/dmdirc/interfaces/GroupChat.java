@@ -132,5 +132,4 @@ public interface GroupChat extends Chat {
      * @param reason Reason for the kick
      */
     void kick(final GroupChatUser user, final Optional<String> reason);
-
 }

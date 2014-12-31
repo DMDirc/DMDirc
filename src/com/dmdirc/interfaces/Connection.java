@@ -449,4 +449,50 @@ public interface Connection {
      */
     FrameContainer getWindowModel();
 
+    /**
+     * Returns the available channel modes applicable to users.
+     *
+     * @return User modes in ascending order, or an empty string if they're not known
+     */
+    String getUserModes();
+
+    /**
+     * Returns the available boolean modes.
+     *
+     * @return Boolean modes or an empty string if they're not known
+     */
+    String getBooleanModes();
+
+    /**
+     * Returns the available list modes.
+     *
+     * @return List modes or an empty string if they're not known
+     */
+    String getListModes();
+
+    /**
+     * Returns the available parameter modes.  Parameter modes need a parameter to set, but not to
+     * unset.
+     *
+     * @return Parameter modes or an empty string if they're not known
+     */
+    String getParameterModes();
+
+    /**
+     * Returns the available double parameter modes.  Double parameter modes need a parameter to
+     * both set and unset.
+     *
+     * @return Double parameter modes or an empty string if they're not known
+     */
+    String getDoubleParameterModes();
+
+    /**
+     * Returns the maximum number list modes of a certain type that can be set.
+     *
+     * @param mode Mode to query
+     *
+     * @return Maximum modes that can be set, or -1 if they're not known
+     */
+    int getMaxListModes(final char mode);
+
 }
