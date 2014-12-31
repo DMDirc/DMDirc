@@ -1245,6 +1245,36 @@ public class Server extends FrameContainer implements Connection {
         awayMessage = message;
     }
 
+    @Override
+    public String getUserModes() {
+        return getParser().map(Parser::getChannelUserModes).orElse("");
+    }
+
+    @Override
+    public String getBooleanModes() {
+        return getParser().map(Parser::getBooleanChannelModes).orElse("");
+    }
+
+    @Override
+    public String getListModes() {
+        return getParser().map(Parser::getListChannelModes).orElse("");
+    }
+
+    @Override
+    public String getParameterModes() {
+        return getParser().map(Parser::getParameterChannelModes).orElse("");
+    }
+
+    @Override
+    public String getDoubleParameterModes() {
+        return getParser().map(Parser::getDoubleParameterChannelModes).orElse("");
+    }
+
+    @Override
+    public int getMaxListModes(final char mode) {
+        return getParser().map(p -> p.getMaxListModes(mode)).orElse(-1);
+    }
+
     /**
      * Utility method to get a result from the parser while holding the {@link #parserLock}
      * read lock.

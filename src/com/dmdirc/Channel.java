@@ -581,46 +581,4 @@ public class Channel extends MessageTarget implements GroupChat {
                 reason.orElse(getConfigManager().getOption("general", "kickmessage")));
     }
 
-    @Override
-    public String getUserModes() {
-        return getConnection()
-                .flatMap(Connection::getParser)
-                .map(Parser::getChannelUserModes).orElse("");
-    }
-
-    @Override
-    public String getBooleanModes() {
-        return getConnection()
-                .flatMap(Connection::getParser)
-                .map(Parser::getBooleanChannelModes).orElse("");
-    }
-
-    @Override
-    public String getListModes() {
-        return getConnection()
-                .flatMap(Connection::getParser)
-                .map(Parser::getListChannelModes).orElse("");
-    }
-
-    @Override
-    public String getParameterModes() {
-        return getConnection()
-                .flatMap(Connection::getParser)
-                .map(Parser::getParameterChannelModes).orElse("");
-    }
-
-    @Override
-    public String getDoubleParameterModes() {
-        return getConnection()
-                .flatMap(Connection::getParser)
-                .map(Parser::getDoubleParameterChannelModes).orElse("");
-    }
-
-    @Override
-    public int getMaxListModes(final char mode) {
-        return getConnection()
-                .flatMap(Connection::getParser)
-                .map(p -> p.getMaxListModes(mode)).orElse(-1);
-    }
-
 }
