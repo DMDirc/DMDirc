@@ -125,4 +125,12 @@ public interface GroupChat extends Chat {
      */
     FrameContainer getWindowModel();
 
+    /**
+     * Kicks the specified user, optionally with the specified message.
+     *
+     * @param user   User to kick
+     * @param reason Reason for the kick
+     */
+    void kick(final GroupChatUser user, final Optional<String> reason);
+
 }

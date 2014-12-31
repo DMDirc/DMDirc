@@ -575,4 +575,10 @@ public class Channel extends MessageTarget implements GroupChat {
         return this;
     }
 
+    @Override
+    public void kick(final GroupChatUser user, final Optional<String> reason) {
+        ((ChannelClient) user).getClientInfo().kick(
+                reason.orElse(getConfigManager().getOption("general", "kickmessage")));
+    }
+
 }

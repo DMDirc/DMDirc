@@ -27,8 +27,10 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChatUser;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
 import java.util.Optional;
@@ -43,18 +45,34 @@ import static org.mockito.Mockito.anyChar;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.matches;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KickReasonTest {
 
-    private KickReason command;
+    @Mock private Connection connection;
+    @Mock private User user1;
+    @Mock private User user2;
+    @Mock private GroupChatUser groupChatUser;
+    @Mock private Channel channel;
     @Mock private CommandController controller;
+    @Mock private FrameContainer container;
+    @Mock private ChannelInfo channelInfo;
+    @Mock private AggregateConfigProvider configProvider;
+    private KickReason command;
 
     @Before
     public void setup() {
+        when(container.getConfigManager()).thenReturn(configProvider);
+        when(configProvider.getOption("general", "kickmessage")).thenReturn("KICKREASON");
+        when(channel.getChannelInfo()).thenReturn(channelInfo);
+        when(channel.getConnection()).thenReturn(Optional.of(connection));
+        when(connection.getUser("user")).thenReturn(user1);
+        when(connection.getUser("user1")).thenReturn(user2);
+        when(groupChatUser.getHostname()).thenReturn(Optional.of("HOSTNAME"));
+        when(channel.getUser(user1)).thenReturn(Optional.of(groupChatUser));
+        when(channel.getUser(user2)).thenReturn(Optional.empty());
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
         command = new KickReason(controller);
@@ -62,67 +80,32 @@ public class KickReasonTest {
 
     @Test
     public void testUsage() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        final Channel channel = mock(Channel.class);
-
-        when(tiw.getConnection()).thenReturn(Optional.empty());
-
-        command.execute(tiw, new CommandArguments(controller, "/kick"),
+        command.execute(container, new CommandArguments(controller, "/kick"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
 
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(container).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
 
     @Test
     public void testUnknown() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        final ChannelInfo channelInfo = mock(ChannelInfo.class);
-        final Channel channel = mock(Channel.class);
-
-        when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getChannelClient(anyString())).thenReturn(null);
-        when(tiw.getConnection()).thenReturn(Optional.empty());
-
-        command.execute(tiw, new CommandArguments(controller, "/kick user1"),
+        command.execute(container, new CommandArguments(controller, "/kick user1"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
 
-        verify(tiw).addLine(eq("commandError"), matches(".*user1"));
+        verify(container).addLine(eq("commandError"), matches(".*user1"));
     }
 
     @Test
     public void testWithReason() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        final ChannelInfo channelInfo = mock(ChannelInfo.class);
-        final Channel channel = mock(Channel.class);
-        final ChannelClientInfo cci = mock(ChannelClientInfo.class);
-
-        when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getChannelClient("user1")).thenReturn(cci);
-        when(tiw.getConnection()).thenReturn(Optional.empty());
-
-        command.execute(tiw, new CommandArguments(controller, "/kick user1 reason here"),
+        command.execute(container, new CommandArguments(controller, "/kick user reason here"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
 
-        verify(cci).kick("reason here");
+        verify(channel).kick(groupChatUser, Optional.of("reason here"));
     }
 
     @Test
     public void testWithoutReason() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
-        final ChannelInfo channelInfo = mock(ChannelInfo.class);
-        final Channel channel = mock(Channel.class);
-        final ChannelClientInfo cci = mock(ChannelClientInfo.class);
-
-        when(tiw.getConfigManager()).thenReturn(manager);
-        when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getChannelClient("user1")).thenReturn(cci);
-        when(manager.getOption("general", "kickmessage")).thenReturn("reason here");
-        when(tiw.getConnection()).thenReturn(Optional.empty());
-
-        command.execute(tiw, new CommandArguments(controller, "/kick user1"),
+        command.execute(container, new CommandArguments(controller, "/kick user"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
-
-        verify(cci).kick("reason here");
+        verify(channel).kick(groupChatUser, Optional.empty());
     }
 }
