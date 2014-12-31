@@ -72,7 +72,7 @@ public class ServerTest {
     @Mock private ScheduledExecutorService executorService;
     @Mock private MessageEncoderFactory messageEncoderFactory;
     @Mock private BackBufferFactory backBufferFactory;
-    @Mock private UserFactory userFactory;
+    @Mock private UserManager userManager;
     @Mock private User user;
 
     private Server server;
@@ -104,7 +104,7 @@ public class ServerTest {
                 new URI("irc-test://255.255.255.255"),
                 profile,
                 backBufferFactory,
-                userFactory);
+                userManager);
     }
 
     @Test
