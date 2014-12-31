@@ -49,7 +49,6 @@ import com.dmdirc.ui.WarningDialog;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.awt.GraphicsEnvironment;
-import java.security.Policy;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -140,6 +139,7 @@ public class Main {
     @SuppressWarnings("PMD.AvoidCatchingThrowable")
     public static void main(final String... args) {
 
+        /* TODO: Make this not break reflection from plugins...
         try {
             Policy.setPolicy(new DMDircSecurityPolicy());
             System.setSecurityManager(new SecurityManager());
@@ -147,6 +147,7 @@ public class Main {
             System.err.println("Unable to set security policy: " + ex.getMessage());
             ex.printStackTrace();
         }
+        */
 
         try {
             final ClientModule clientModule = new ClientModule();
