@@ -57,14 +57,12 @@ public class CoreAboutDialogModelTest {
     @Mock private PluginMetaData pluginMetaData2;
     @Mock private PluginInfo pluginInfo1;
     @Mock private PluginInfo pluginInfo2;
-    private Path pluginPath1;
-    private Path pluginPath2;
     private CoreAboutDialogModel instance;
 
     @Before
     public void setUp() throws Exception {
-        pluginPath1 = FileUtils.getPathForResource(getClass().getResource("license1"));
-        pluginPath2 = FileUtils.getPathForResource(getClass().getResource("license2"));
+        final Path pluginPath1 = FileUtils.getPathForResource(getClass().getResource("license1"));
+        final Path pluginPath2 = FileUtils.getPathForResource(getClass().getResource("license2"));
         when(clientInfo.getVersionInformation()).thenReturn("DMDirc Version");
         when(clientInfo.getOperatingSystemInformation()).thenReturn("OS Version");
         when(clientInfo.getJavaInformation()).thenReturn("Java Version");
@@ -90,10 +88,17 @@ public class CoreAboutDialogModelTest {
 
     @Test
     public void testGetMainDevelopers() throws Exception {
+        final Developer MD87 = Developer.create("Chris 'MD87' Smith",
+                "https://www.md87.co.uk");
+        final Developer Greboid = Developer.create("Gregory 'Greboid' Holmes",
+                "https://www.greboid.com");
+        final Developer Dataforce = Developer.create("Shane 'Dataforce' Mc Cormack",
+                "http://home.dataforce.org.uk");
+
         assertEquals(3, instance.getMainDevelopers().size());
-        assertTrue(instance.getMainDevelopers().get(0).getName().contains("MD87"));
-        assertTrue(instance.getMainDevelopers().get(1).getName().contains("Greboid"));
-        assertTrue(instance.getMainDevelopers().get(2).getName().contains("Dataforce"));
+        assertTrue(instance.getMainDevelopers().contains(MD87));
+        assertTrue(instance.getMainDevelopers().contains(Greboid));
+        assertTrue(instance.getMainDevelopers().contains(Dataforce));
     }
 
     @Test
@@ -109,25 +114,21 @@ public class CoreAboutDialogModelTest {
 
     @Test
     public void testGetLicensedComponents() throws Exception {
+        final Licence dmdircLicense = Licence.create("dmdirc", "license4", "License4-Body");
+        final Licence pligin1Licence1 = Licence.create("component1", "license1", "License1-Body");
+        final Licence plugin1Licence2 = Licence.create("component2", "license2", "License2-Body");
+        final Licence plugin2Licence2 = Licence.create("component3", "license3", "License3-Body");
+        final LicensedComponent dmdirc = LicensedComponent.create("DMDirc",
+                Lists.newArrayList(dmdircLicense));
+        final LicensedComponent plugin1 = LicensedComponent.create("Plugin1",
+                Lists.newArrayList(pligin1Licence1, plugin1Licence2));
+        final LicensedComponent plugin2 = LicensedComponent.create("Plugin2",
+                Lists.newArrayList(plugin2Licence2));
+
         final List<LicensedComponent> licensedComponents = instance.getLicensedComponents();
         assertEquals(3, licensedComponents.size());
-        assertEquals("DMDirc", licensedComponents.get(0).getName());
-        assertEquals("Plugin1", licensedComponents.get(1).getName());
-        assertEquals("Plugin2", licensedComponents.get(2).getName());
-        assertEquals(1, licensedComponents.get(0).getLicences().size());
-        assertEquals("dmdirc", licensedComponents.get(0).getLicences().get(0).getComponent());
-        assertEquals("license4", licensedComponents.get(0).getLicences().get(0).getName());
-        assertEquals("License4-Body", licensedComponents.get(0).getLicences().get(0).getBody());
-        assertEquals(2, licensedComponents.get(1).getLicences().size());
-        assertEquals("component1", licensedComponents.get(1).getLicences().get(0).getComponent());
-        assertEquals("license1", licensedComponents.get(1).getLicences().get(0).getName());
-        assertEquals("License1-Body", licensedComponents.get(1).getLicences().get(0).getBody());
-        assertEquals("component2", licensedComponents.get(1).getLicences().get(1).getComponent());
-        assertEquals("license2", licensedComponents.get(1).getLicences().get(1).getName());
-        assertEquals("License2-Body", licensedComponents.get(1).getLicences().get(1).getBody());
-        assertEquals(1, licensedComponents.get(2).getLicences().size());
-        assertEquals("component3", licensedComponents.get(2).getLicences().get(0).getComponent());
-        assertEquals("license3", licensedComponents.get(2).getLicences().get(0).getName());
-        assertEquals("License3-Body", licensedComponents.get(2).getLicences().get(0).getBody());
+        assertTrue(licensedComponents.contains(dmdirc));
+        assertTrue(licensedComponents.contains(plugin1));
+        assertTrue(licensedComponents.contains(plugin2));
     }
 }
