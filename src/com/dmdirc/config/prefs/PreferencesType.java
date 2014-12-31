@@ -53,5 +53,7 @@ public enum PreferencesType {
     FILES_AND_DIRECTORIES,
     /** Free-form text label. */
     LABEL,
+    /** Table type. */
+    TABLE,
 
 }
