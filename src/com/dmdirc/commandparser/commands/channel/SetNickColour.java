@@ -75,32 +75,28 @@ public class SetNickColour extends Command implements IntelligentCommand {
             final CommandArguments args, final CommandContext context) {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
 
-        int offset = 0;
-
-        if (args.getArguments().length <= offset) {
-            showUsage(origin, args.isSilent(), "setnickcolour",
-                    "<nick> [colour]");
+        if (args.getArguments().length == 0) {
+            showUsage(origin, args.isSilent(), INFO.getName(), INFO.getHelp());
             return;
         }
 
         final Optional<GroupChatUser> target = channel.getUser(channel.getConnection().get()
-                .getUser(args.getArguments()[offset]));
-        offset++;
+                .getUser(args.getArguments()[0]));
 
         if (!target.isPresent()) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, "No such nickname ("
-                    + args.getArguments()[offset - 1] + ")!");
-        } else if (args.getArguments().length <= offset) {
+                    + args.getArguments()[0] + ")!");
+        } else if (args.getArguments().length == 1) {
             // We're removing the colour
             target.get().removeDisplayProperty(DisplayProperty.FOREGROUND_COLOUR);
-
             channel.refreshClients();
         } else {
             // We're setting the colour
             final Colour newColour = colourManagerFactory.getColourManager(origin.getConfigManager())
-                    .getColourFromString(args.getArguments()[offset], null);
+                    .getColourFromString(args.getArguments()[1], null);
             if (newColour == null) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified.");
+                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified ("
+                        + args.getArguments()[1] + ").");
                 return;
             }
 

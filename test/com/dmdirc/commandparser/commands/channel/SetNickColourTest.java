@@ -25,8 +25,16 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChatUser;
+import com.dmdirc.interfaces.User;
+import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.ColourManagerFactory;
+import com.dmdirc.util.colours.Colour;
+
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,18 +42,25 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyChar;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SetNickColourTest {
 
+    @Mock private Connection connection;
+    @Mock private User user1;
+    @Mock private User user2;
+    @Mock private GroupChatUser groupChatUser;
     @Mock private Channel channel;
     @Mock private ColourManagerFactory colourManagerFactory;
+    @Mock private ColourManager colourManager;
     @Mock private CommandController controller;
     private SetNickColour command;
 
@@ -54,6 +69,13 @@ public class SetNickColourTest {
         command = new SetNickColour(controller, colourManagerFactory);
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
+        when(channel.getConnection()).thenReturn(Optional.of(connection));
+        when(connection.getUser("moo")).thenReturn(user1);
+        when(connection.getUser("foo")).thenReturn(user2);
+        when(channel.getUser(user1)).thenReturn(Optional.of(groupChatUser));
+        when(channel.getUser(user2)).thenReturn(Optional.empty());
+        when(colourManagerFactory.getColourManager(any())).thenReturn(colourManager);
+        when(colourManager.getColourFromString(eq("4"), any())).thenReturn(Colour.RED);
     }
 
     @Test
@@ -66,21 +88,40 @@ public class SetNickColourTest {
     }
 
     @Test
-    public void testUsageNicklist() {
+    public void testUsageNicknameValid() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments(controller, "/foo --nicklist"),
+        command.execute(tiw, new CommandArguments(controller, "/foo moo"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
-
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(channel).refreshClients();
+        verify(groupChatUser).removeDisplayProperty(DisplayProperty.FOREGROUND_COLOUR);
     }
 
     @Test
-    public void testUsageText() {
+    public void testUsageNicknameInvalid() {
         final FrameContainer tiw = mock(FrameContainer.class);
-        command.execute(tiw, new CommandArguments(controller, "/foo --text"),
+        command.execute(tiw, new CommandArguments(controller, "/foo foo"),
+                new ChannelCommandContext(null, SetNickColour.INFO, channel));
+        verify(channel, never()).refreshClients();
+        verify(groupChatUser, never()).removeDisplayProperty(DisplayProperty.FOREGROUND_COLOUR);
+        verify(tiw).addLine(eq("commandError"), eq("No such nickname (foo)!"));
+    }
+
+    @Test
+    public void testUsageInvalidColour() {
+        final FrameContainer tiw = mock(FrameContainer.class);
+        command.execute(tiw, new CommandArguments(controller, "/foo moo omg"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
 
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(tiw).addLine(eq("commandError"), eq("Invalid colour specified (omg)."));
+    }
+
+    @Test
+    public void testUsageValidColour() {
+        final FrameContainer tiw = mock(FrameContainer.class);
+        command.execute(tiw, new CommandArguments(controller, "/foo moo 4"),
+                new ChannelCommandContext(null, SetNickColour.INFO, channel));
+        verify(channel).refreshClients();
+        verify(groupChatUser).setDisplayProperty(DisplayProperty.FOREGROUND_COLOUR, Colour.RED);
     }
 
 }
