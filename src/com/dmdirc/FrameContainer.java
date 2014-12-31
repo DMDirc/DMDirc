@@ -705,4 +705,8 @@ public abstract class FrameContainer {
         // composition should override this.
     }
 
+    public UnreadStatusManager getUnreadStatusManager() {
+        return unreadStatusManager;
+    }
+
 }
