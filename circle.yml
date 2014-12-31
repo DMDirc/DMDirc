@@ -5,6 +5,7 @@ machine:
     version: oraclejdk8
   environment:
     TERM: dumb
+    GRADLE_OPTS: -Xmx3g
 
 checkout:
   override:
