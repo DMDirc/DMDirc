@@ -346,6 +346,7 @@ public abstract class FrameContainer {
      * Closes this container (and its associated frame).
      */
     public void close() {
+        eventBus.unsubscribe(unreadStatusManager);
         eventBus.publish(new FrameClosingEvent(this));
         eventBusManager.disconnect();
         getBackBuffer().stopAddingEvents();
