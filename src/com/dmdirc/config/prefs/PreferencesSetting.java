@@ -89,7 +89,7 @@ public class PreferencesSetting {
                     + "have their options specified.");
         }
         if (PreferencesType.TABLE == type) {
-            throw new IllegalArgumentException("Multi-choice preferences must "
+            throw new IllegalArgumentException("Table preferences must "
                     + "have their table options specified.");
         }
 
@@ -128,7 +128,7 @@ public class PreferencesSetting {
                     + "have their options specified.");
         }
         if (PreferencesType.TABLE == type) {
-            throw new IllegalArgumentException("Multi-choice preferences must "
+            throw new IllegalArgumentException("Table preferences must "
                     + "have their table options specified.");
         }
 
