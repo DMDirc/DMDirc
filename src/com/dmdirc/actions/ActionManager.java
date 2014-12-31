@@ -24,7 +24,6 @@ package com.dmdirc.actions;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
-import com.dmdirc.ui.messages.WhoisNumericFormatter;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.config.ConfigBinding;
@@ -143,8 +142,6 @@ public class ActionManager implements ActionController {
         registerComparisons(CoreActionComparison.values());
         registerComparisons(colourComparisons.getComparisons());
         registerComponents(CoreActionComponent.values());
-
-        new WhoisNumericFormatter(identityManager.getAddonSettings(), eventBus).register();
 
         eventBus.subscribe(this);
     }
