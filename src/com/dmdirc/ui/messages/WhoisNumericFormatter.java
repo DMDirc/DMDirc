@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions.internal;
+package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ServerDisconnectedEvent;

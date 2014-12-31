@@ -24,7 +24,7 @@ package com.dmdirc.actions;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
-import com.dmdirc.actions.internal.WhoisNumericFormatter;
+import com.dmdirc.ui.messages.WhoisNumericFormatter;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.config.ConfigBinding;
