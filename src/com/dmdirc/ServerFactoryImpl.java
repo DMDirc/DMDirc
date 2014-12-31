@@ -59,7 +59,7 @@ public class ServerFactoryImpl {
     private final MessageEncoderFactory messageEncoderFactory;
     private final ConfigProvider userSettings;
     private final BackBufferFactory backBufferFactory;
-    private final UserFactory userFactory;
+    private final UserManager userManager;
 
     @Inject
     public ServerFactoryImpl(
@@ -76,7 +76,7 @@ public class ServerFactoryImpl {
             final MessageEncoderFactory messageEncoderFactory,
             @ClientModule.UserConfig final ConfigProvider userSettings,
             final BackBufferFactory backBufferFactory,
-            final UserFactory userFactory) {
+            final UserManager userManager) {
         this.manager = manager;
         this.parserFactory = parserFactory;
         this.tabCompleterFactory = tabCompleterFactory;
@@ -90,7 +90,7 @@ public class ServerFactoryImpl {
         this.messageEncoderFactory = messageEncoderFactory;
         this.userSettings = userSettings;
         this.backBufferFactory = backBufferFactory;
-        this.userFactory = userFactory;
+        this.userManager = userManager;
     }
 
     public Server getServer(
@@ -103,6 +103,6 @@ public class ServerFactoryImpl {
                 tabCompleterFactory, identityFactory, messageSinkManager, windowManager,
                 channelFactory.get(), queryFactory.get(), urlBuilder, eventBus,
                 messageEncoderFactory, userSettings, executorService, uri, profile,
-                backBufferFactory, userFactory);
+                backBufferFactory, userManager);
     }
 }

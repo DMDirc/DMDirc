@@ -25,6 +25,7 @@ package com.dmdirc.interfaces;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayPropertyMap;
 
+import java.util.Comparator;
 import java.util.Optional;
 
 /**
@@ -90,6 +91,13 @@ public interface GroupChatUser {
      * @return This client's real name
      */
     Optional<String> getRealname();
+
+    /**
+     * Retrieves a comparator that can compare the important modes of a client.
+     *
+     * @return Mode comparator
+     */
+    Comparator<String> getModeComparator();
 
     /**
      * Sets a property relating to how this {@link GroupChatUser} should be displayed.

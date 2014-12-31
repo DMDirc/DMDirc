@@ -29,6 +29,7 @@ import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 
+import java.util.Comparator;
 import java.util.Optional;
 
 /**
@@ -91,6 +92,11 @@ public class ChannelClient implements GroupChatUser {
 
     public ChannelClientInfo getClientInfo() {
         return clientInfo;
+    }
+
+    @Override
+    public Comparator<String> getModeComparator() {
+        return clientInfo.getImportantModeComparator();
     }
 
     @Override
