@@ -23,19 +23,19 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a channel user mode change occurs.
  */
 public class ChannelUsermodechangeEvent extends ChannelDisplayableEvent {
 
-    private final ChannelClientInfo user;
-    private final ChannelClientInfo victim;
+    private final GroupChatUser user;
+    private final GroupChatUser victim;
     private final String modes;
 
     public ChannelUsermodechangeEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo user, final ChannelClientInfo victim, final String modes) {
+            final GroupChatUser user, final GroupChatUser victim, final String modes) {
         super(timestamp, channel);
         this.user = user;
         this.victim = victim;
@@ -43,18 +43,18 @@ public class ChannelUsermodechangeEvent extends ChannelDisplayableEvent {
     }
 
     public ChannelUsermodechangeEvent(final Channel channel,
-            final ChannelClientInfo user, final ChannelClientInfo victim, final String modes) {
+            final GroupChatUser user, final GroupChatUser victim, final String modes) {
         super(channel);
         this.user = user;
         this.victim = victim;
         this.modes = modes;
     }
 
-    public ChannelClientInfo getUser() {
+    public GroupChatUser getUser() {
         return user;
     }
 
-    public ChannelClientInfo getVictim() {
+    public GroupChatUser getVictim() {
         return victim;
     }
 

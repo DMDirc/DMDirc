@@ -33,9 +33,11 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -66,15 +68,18 @@ public class Ban extends Command implements IntelligentCommand {
         final Channel channel = ((ChannelCommandContext) context).getChannel();
 
         if (args.getArguments().length == 0) {
-            showUsage(origin, args.isSilent(), "ban", "<user|host>");
+            showUsage(origin, args.isSilent(), INFO.getName(), INFO.getHelp());
             return;
         }
 
         String host = args.getArguments()[0];
-        final ChannelClientInfo user = channel.getChannelInfo().getChannelClient(host);
-        if (user != null && !user.getClient().getHostname().isEmpty()) {
+
+        final Optional<GroupChatUser> user
+                = channel.getUser(channel.getConnection().get().getUser(host));
+        final String hostname = user.flatMap(GroupChatUser::getHostname).orElse("");
+        if (!hostname.isEmpty()) {
             // TODO: Customisable ban masks, somehow.
-            host = "*!*@" + user.getClient().getHostname();
+            host = "*!*@" + hostname;
         }
 
         channel.getChannelInfo().alterMode(true, 'b', host);
