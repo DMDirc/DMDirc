@@ -46,9 +46,9 @@ public class UnreadStatusManager {
     private int unreadLines;
     private Optional<Colour> notificationColour = Optional.empty();
 
-    private Colour miscellaneousColour = Colour.GREEN;
-    private Colour messageColour = Colour.BLACK;
-    private Colour highlightColour = Colour.RED;
+    private Optional<Colour> miscellaneousColour = Optional.of(Colour.GREEN);
+    private Optional<Colour> messageColour = Optional.of(Colour.BLUE);
+    private Optional<Colour> highlightColour = Optional.of(Colour.RED);
 
     public UnreadStatusManager(final FrameContainer container) {
         this.container = container;
@@ -58,36 +58,35 @@ public class UnreadStatusManager {
     @Handler
     public void handleDisplayableEvent(final DisplayableEvent event) {
         if (event.getSource().equals(container)) {
-            unreadLines++;
-            raiseNotificationColour(miscellaneousColour);
+            updateStatus(miscellaneousColour, unreadLines + 1);
         }
     }
 
     @Handler
     public void handleChannelTextEvent(final BaseChannelTextEvent event) {
         if (event.getSource().equals(container)) {
-            raiseNotificationColour(messageColour);
+            updateStatus(messageColour);
         }
     }
 
     @Handler
     public void handleQueryTextEvent(final BaseQueryTextEvent event) {
         if (event.getSource().equals(container)) {
-            raiseNotificationColour(messageColour);
+            updateStatus(messageColour);
         }
     }
 
     @Handler
     public void handleChannelHighlightEvent(final ChannelHighlightEvent event) {
         if (event.getCause().getChannel().equals(container)) {
-            raiseNotificationColour(highlightColour);
+            updateStatus(highlightColour);
         }
     }
 
     @Handler
     public void handleQueryHighlightEvent(final QueryHighlightEvent event) {
         if (event.getCause().getQuery().equals(container)) {
-            raiseNotificationColour(highlightColour);
+            updateStatus(highlightColour);
         }
     }
 
@@ -100,22 +99,41 @@ public class UnreadStatusManager {
     }
 
     public void clearStatus() {
-        unreadLines = 0;
-        notificationColour = Optional.empty();
+        updateStatus(Optional.empty(), 0);
     }
 
-    private void raiseNotificationColour(final Colour colour) {
-        if (notificationColour.isPresent()) {
-            if (notificationColour.get().equals(miscellaneousColour)
-                    || colour.equals(highlightColour)) {
-                notificationColour = Optional.of(colour);
-            }
-        } else {
-            notificationColour = Optional.of(colour);
+    private void updateStatus(final Optional<Colour> desiredColour) {
+        updateStatus(desiredColour, unreadLines);
+    }
+
+    private void updateStatus(final Optional<Colour> desiredColour, final int newUnreadCount) {
+        final Optional<Colour> newColour = getBestColour(desiredColour, notificationColour);
+        final boolean updated = !newColour.equals(notificationColour)
+                || newUnreadCount != unreadLines;
+        notificationColour = newColour;
+        unreadLines = newUnreadCount;
+
+        if (updated) {
+            eventBus.publishAsync(new UnreadStatusChangedEvent(container, this, notificationColour,
+                    unreadLines));
+        }
+    }
+
+    private Optional<Colour> getBestColour(
+            final Optional<Colour> desiredColour,
+            final Optional<Colour> existingColour) {
+        if (!desiredColour.isPresent()) {
+            // If we're trying to explicitly reset, go with the empty one.
+            return desiredColour;
         }
 
-        eventBus.publishAsync(new UnreadStatusChangedEvent(container, this, notificationColour,
-                unreadLines));
+        if (desiredColour.equals(highlightColour)
+                || !existingColour.isPresent()
+                || existingColour.equals(miscellaneousColour)) {
+            return desiredColour;
+        } else {
+            return existingColour;
+        }
     }
 
 }
