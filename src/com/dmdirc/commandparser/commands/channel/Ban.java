@@ -37,8 +37,6 @@ import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
@@ -74,9 +72,8 @@ public class Ban extends Command implements IntelligentCommand {
 
         String host = args.getArguments()[0];
 
-        final Optional<GroupChatUser> user
-                = channel.getUser(channel.getConnection().get().getUser(host));
-        final String hostname = user.flatMap(GroupChatUser::getHostname).orElse("");
+        final String hostname = channel.getUser(channel.getConnection().get().getUser(host))
+                .flatMap(GroupChatUser::getHostname).orElse("");
         if (!hostname.isEmpty()) {
             // TODO: Customisable ban masks, somehow.
             host = "*!*@" + hostname;
