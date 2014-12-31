@@ -25,6 +25,7 @@ package com.dmdirc.config.profiles;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
+import com.dmdirc.util.SystemInfo;
 
 import com.google.common.collect.Lists;
 
@@ -42,6 +43,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProfileManagerTest {
@@ -49,12 +51,14 @@ public class ProfileManagerTest {
     @Mock private DMDircMBassador eventBus;
     @Mock private Profile profile1;
     @Mock private Profile profile2;
+    @Mock private SystemInfo systemInfo;
 
     private ProfileManager instance;
 
     @Before
     public void setUp() throws Exception {
-        instance = new ProfileManager(eventBus);
+        when(systemInfo.getProperty("user.name")).thenReturn("UserName");
+        instance = new ProfileManager(eventBus, systemInfo);
     }
 
     @Test
@@ -95,7 +99,7 @@ public class ProfileManagerTest {
 
     @Test
     public void testGetDefaultProfile_EmptyList() {
-        final String nick = System.getProperty("user.name").replace(' ', '_');
+        final String nick = "UserName";
         final Profile profile = new Profile(nick, nick, Optional.empty(), Lists.newArrayList(nick));
         assertEquals(profile, instance.getDefault());
     }

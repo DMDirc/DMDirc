@@ -25,6 +25,7 @@ package com.dmdirc.config.profiles;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
+import com.dmdirc.util.SystemInfo;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -49,10 +50,10 @@ public class ProfileManager {
     private final Profile defaultProfile;
 
     @Inject
-    public ProfileManager(final DMDircMBassador eventBus) {
+    public ProfileManager(final DMDircMBassador eventBus, final SystemInfo systemInfo) {
         this.eventBus = eventBus;
         profiles = new ArrayList<>();
-        final String nick = System.getProperty("user.name").replace(' ', '_');
+        final String nick = systemInfo.getProperty("user.name").replace(' ', '_');
         defaultProfile = new Profile(nick, nick, Optional.empty(), Lists.newArrayList(nick));
     }
 

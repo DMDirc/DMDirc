@@ -26,6 +26,7 @@ import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.InvalidURIException;
+import com.dmdirc.util.SystemInfo;
 import com.dmdirc.util.URIParser;
 
 import java.io.File;
@@ -72,6 +73,8 @@ public class CommandLineParser {
     @Nullable private final Provider<AggregateConfigProvider> globalConfigProvider;
     /** The parser to use for URIs. */
     @Nullable private final URIParser uriParser;
+    /** Used to retrieve informationa about the running system. */
+    private final SystemInfo systemInfo;
     /** Whether to disable error reporting or not. */
     private boolean disablereporting;
     /** The version string passed for the launcher. */
@@ -92,10 +95,12 @@ public class CommandLineParser {
     public CommandLineParser(
             @Nullable final Provider<ConnectionManager> serverManagerProvider,
             @Nullable @GlobalConfig final Provider<AggregateConfigProvider> globalConfigProvider,
-            @Nullable final URIParser uriParser) {
+            @Nullable final URIParser uriParser,
+            final SystemInfo systemInfo) {
         this.serverManagerProvider = serverManagerProvider;
         this.globalConfigProvider = globalConfigProvider;
         this.uriParser = uriParser;
+        this.systemInfo = systemInfo;
     }
 
     /**
@@ -237,7 +242,7 @@ public class CommandLineParser {
                 launcherVersion = param;
                 break;
             case 'p':
-                doDirectory(Paths.get(System.getProperty("user.dir")));
+                doDirectory(Paths.get(systemInfo.getProperty("user.dir")));
                 break;
             case 'r':
                 disablereporting = true;
