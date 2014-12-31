@@ -44,6 +44,7 @@ import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCDocument;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.messages.UnreadStatusManager;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.URLBuilder;
@@ -96,6 +97,8 @@ public abstract class FrameContainer {
     private final DMDircMBassador eventBus;
     /** The icon manager to use for this container. */
     private final IconManager iconManager;
+    /** The manager handling this frame's unread status. */
+    private final UnreadStatusManager unreadStatusManager;
     /** Whether or not this container is writable. */
     private final boolean writable;
     /** The back buffer factory. */
@@ -152,6 +155,8 @@ public abstract class FrameContainer {
         eventBusManager = new ChildEventBusManager(eventBus);
         eventBusManager.connect();
         this.eventBus = eventBusManager.getChildBus();
+        this.unreadStatusManager = new UnreadStatusManager(this);
+        this.eventBus.subscribe(unreadStatusManager);
 
         setIcon(icon);
     }
@@ -188,6 +193,8 @@ public abstract class FrameContainer {
         eventBusManager = new ChildEventBusManager(eventBus);
         eventBusManager.connect();
         this.eventBus = eventBusManager.getChildBus();
+        this.unreadStatusManager = new UnreadStatusManager(this);
+        this.eventBus.subscribe(unreadStatusManager);
 
         setIcon(icon);
     }
@@ -339,6 +346,7 @@ public abstract class FrameContainer {
      * Closes this container (and its associated frame).
      */
     public void close() {
+        eventBus.unsubscribe(unreadStatusManager);
         eventBus.publish(new FrameClosingEvent(this));
         eventBusManager.disconnect();
         getBackBuffer().stopAddingEvents();
