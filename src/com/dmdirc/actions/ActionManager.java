@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014 DMDirc Developers
+ * Copyright (c) 2006-2015 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@ package com.dmdirc.actions;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
-import com.dmdirc.ui.messages.WhoisNumericFormatter;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.config.ConfigBinding;
@@ -143,8 +142,6 @@ public class ActionManager implements ActionController {
         registerComparisons(CoreActionComparison.values());
         registerComparisons(colourComparisons.getComparisons());
         registerComponents(CoreActionComponent.values());
-
-        new WhoisNumericFormatter(identityManager.getAddonSettings(), eventBus).register();
 
         eventBus.subscribe(this);
     }

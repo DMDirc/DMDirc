@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014 DMDirc Developers
+ * Copyright (c) 2006-2015 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,26 +22,29 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.ClientModule;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ServerDisconnectedEvent;
 import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.ConfigProvider;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import net.engio.mbassy.listener.Handler;
-import net.engio.mbassy.listener.Listener;
-import net.engio.mbassy.listener.References;
 
 /**
  * Listens for whois-like numeric events and automatically formats them.
  *
  * @since 0.6.3
  */
-@Listener(references = References.Strong)
-public class WhoisNumericFormatter {
+@Singleton
+public class WhoisNumericFormatter implements SystemLifecycleComponent {
 
     /** The name of the target of any current whois requests. */
     private final Map<Connection, String> targets = new HashMap<>();
@@ -57,17 +60,12 @@ public class WhoisNumericFormatter {
      * @param identity The identity to write formatters to
      * @param eventBus The event bus to subscribe to events on
      */
-    public WhoisNumericFormatter(final ConfigProvider identity,
+    @Inject
+    public WhoisNumericFormatter(
+            @ClientModule.AddonConfig final ConfigProvider identity,
             final DMDircMBassador eventBus) {
         this.identity = identity;
         this.eventBus = eventBus;
-    }
-
-    /**
-     * Registers this this whois numeric formatter with the global actions manager.
-     */
-    public void register() {
-        eventBus.subscribe(this);
     }
 
     /**
@@ -107,17 +105,17 @@ public class WhoisNumericFormatter {
                         && arguments[3].equals(targets.get(server))) {
                     // This numeric should be automatically formatted.
 
-                    if (!event.getDisplayFormat().isEmpty()) {
-                        // There's a custom format. We'll see if we need to
-                        // add a formatter or notification settings for it
-                        // anyway.
-                        ensureExists(event.getDisplayFormat(), arguments.length);
-                    } else {
+                    if (event.getDisplayFormat().isEmpty()) {
                         // No custom formatter, switch it to an auto whois
                         // format and target.
                         final String target = "numeric_autowhois_" + (arguments.length - 4);
                         ensureExists(target, arguments.length);
                         event.setDisplayFormat(target);
+                    } else {
+                        // There's a custom format. We'll see if we need to
+                        // add a formatter or notification settings for it
+                        // anyway.
+                        ensureExists(event.getDisplayFormat(), arguments.length);
                     }
                 }
                 break;
@@ -147,4 +145,13 @@ public class WhoisNumericFormatter {
         }
     }
 
+    @Override
+    public void startUp() {
+        eventBus.subscribe(this);
+    }
+
+    @Override
+    public void shutDown() {
+        eventBus.unsubscribe(this);
+    }
 }

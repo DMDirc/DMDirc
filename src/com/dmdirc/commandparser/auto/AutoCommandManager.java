@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2014 DMDirc Developers
+ * Copyright (c) 2006-2015 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,14 +23,12 @@
 package com.dmdirc.commandparser.auto;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.config.profiles.Profile;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -85,13 +83,20 @@ public class AutoCommandManager {
     /**
      * Adds an auto command to this manager.
      *
+     * <p>Only one auto command may exist for each combination of network, server and profile
+     * targets. This method will throw an {@link IllegalStateException} if the given command is
+     * a duplicate.
+     *
      * @param autoCommand The command to be added.
+     * @throws IllegalStateException If a command with the same target already exists.
      */
     public void addAutoCommand(final AutoCommand autoCommand) {
         checkNotNull(autoCommand);
 
-        if (autoCommand.getType() == AutoCommandType.GLOBAL && getGlobalAutoCommand().isPresent()) {
-            throw new IllegalStateException("Only one global AutoCommand may exist");
+        if (getAutoCommand(autoCommand.getNetwork(), autoCommand.getServer(),
+                autoCommand.getProfile()).isPresent()) {
+            throw new IllegalStateException("Only one AutoCommand may exist per " +
+                    "network/server/profile");
         }
 
         final AutoCommandHandler handler = factory.getAutoCommandHandler(autoCommand);
@@ -118,6 +123,17 @@ public class AutoCommandManager {
     }
 
     /**
+     * 'Replaces' one AutoCommand with another, by removing the original and adding the replacement.
+     *
+     * @param original The original command to be replaced.
+     * @param replacement The new command to be added.
+     */
+    public void replaceAutoCommand(final AutoCommand original, final AutoCommand replacement) {
+        removeAutoCommand(original);
+        addAutoCommand(replacement);
+    }
+
+    /**
      * Gets a set of all registered auto commands.
      *
      * @return The set of all known auto commands.
@@ -132,85 +148,40 @@ public class AutoCommandManager {
      * @return The global auto-command, if it exists.
      */
     public Optional<AutoCommand> getGlobalAutoCommand() {
+        return getAutoCommand(Optional.empty(), Optional.empty(), Optional.empty());
+    }
+
+    /**
+     * Returns a single auto command matching the given parameters, if one exists.
+     *
+     * @param network The network to match
+     * @param server The server to match
+     * @param profile The profile to match
+     * @return The matched auto command, if it exists.
+     */
+    public Optional<AutoCommand> getAutoCommand(final Optional<String> network,
+            final Optional<String> server, final Optional<String> profile) {
         return getAutoCommands()
                 .parallelStream()
-                .filter(c -> c.getType() == AutoCommandType.GLOBAL)
+                .filter(c -> c.getNetwork().equals(network))
+                .filter(c -> c.getServer().equals(server))
+                .filter(c -> c.getProfile().equals(profile))
                 .findAny();
     }
 
     /**
-     * Gets a set of all registered connection auto commands.
+     * Returns a single auto command matching the given parameters, or creates a new one if it
+     * doesn't exist.
      *
-     * @return The set of all known connection auto commands.
+     * @param network The network to match
+     * @param server The server to match
+     * @param profile The profile to match
+     * @return The matched auto command, or a new auto command with the given targets.
      */
-    public Set<AutoCommand> getConnectionAutoCommands() {
-        return getAutoCommands().parallelStream()
-                .filter(c -> c.getServer().isPresent() || c.getNetwork().isPresent())
-                .collect(Collectors.toSet());
-    }
-
-    /**
-     * Gets a set of all registered connection auto commands matching the specified connection name.
-     *
-     * @param server The server name to match
-     *
-     * @return The set of all known connection auto commands.
-     */
-    public Set<AutoCommand> getConnectionAutoCommands(final String server) {
-        return getAutoCommands().parallelStream()
-                .filter(c -> c.getServer().isPresent()
-                        && c.getServer().get().equalsIgnoreCase(server))
-                .collect(Collectors.toSet());
-    }
-
-    /**
-     * Gets a set of all registered connection auto commands matching the spcified connection name
-     * and profile.
-     *
-     * @param server The server name to match
-     * @param profile The profile name to match
-     *
-     * @return The set of all known connection auto commands.
-     */
-    public Set<AutoCommand> getConnectionAutoCommands(final String server, final Profile profile) {
-        return getAutoCommands().parallelStream()
-                .filter(c -> c.getServer().isPresent() &&
-                        c.getServer().get().equalsIgnoreCase(server))
-                .filter(c -> c.getProfile().isPresent()
-                        && c.getProfile().get().equalsIgnoreCase(profile.getName()))
-                .collect(Collectors.toSet());
-    }
-
-    /**
-     * Gets a set of all registered connection auto commands matching the specified network.
-     *
-     * @param network The network name to match
-     *
-     * @return The set of all known connection auto commands.
-     */
-    public Set<AutoCommand> getNetworkAutoCommands(final String network) {
-        return getAutoCommands().parallelStream()
-                .filter(c -> c.getNetwork().isPresent() &&
-                        c.getNetwork().get().equalsIgnoreCase(network))
-                .collect(Collectors.toSet());
-    }
-
-    /**
-     * Gets a set of all registered connection auto commands matching the spcified network and
-     * profile.
-     *
-     * @param network The network name to match
-     * @param profile The profile name to match
-     *
-     * @return The set of all known connection auto commands.
-     */
-    public Set<AutoCommand> getNetworkAutoCommands(final String network, final Profile profile) {
-        return getAutoCommands().parallelStream()
-                .filter(c -> c.getNetwork().isPresent() &&
-                        c.getNetwork().get().equalsIgnoreCase(network))
-                .filter(c -> c.getProfile().isPresent()
-                        && c.getProfile().get().equalsIgnoreCase(profile.getName()))
-                .collect(Collectors.toSet());
+    public AutoCommand getOrCreateAutoCommand(final Optional<String> network,
+            final Optional<String> server, final Optional<String> profile) {
+        return getAutoCommand(network, server, profile).orElse(
+                AutoCommand.create(server, network, profile, ""));
     }
 
 }
