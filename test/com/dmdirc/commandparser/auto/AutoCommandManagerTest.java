@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.auto;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.config.profiles.Profile;
 
 import java.util.Optional;
 
@@ -35,6 +34,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -49,11 +49,10 @@ public class AutoCommandManagerTest {
     @Mock private AutoCommandHandler ircquakenetHandler;
     @Mock private AutoCommandHandler ukquakenetHandler;
     @Mock private AutoCommandHandler testnetHandler;
-    @Mock private Profile testProfile;
     private AutoCommandManager autoCommandManager;
     private AutoCommand global;
     private AutoCommand ircquakenet;
-    private AutoCommand ukquakenet;
+    private AutoCommand quakenet;
     private AutoCommand testnet;
 
     @Before
@@ -63,18 +62,17 @@ public class AutoCommandManagerTest {
                 Optional.<String>empty(), "");
         ircquakenet = AutoCommand.create(Optional.ofNullable("irc.quakenet.org"),
                 Optional.ofNullable("Quakenet"), Optional.<String>empty(), "");
-        ukquakenet = AutoCommand.create(Optional.ofNullable("uk.quakenet.org"),
+        quakenet = AutoCommand.create(Optional.empty(),
                 Optional.ofNullable("Quakenet"), Optional.<String>empty(), "");
         testnet = AutoCommand.create(Optional.ofNullable("irc.testnet.org"),
                 Optional.ofNullable("Testnet"), Optional.ofNullable("profileName"), "");
-        when(testProfile.getName()).thenReturn("profileName");
         when(factory.getAutoCommandHandler(global)).thenReturn(globalHandler);
         when(factory.getAutoCommandHandler(ircquakenet)).thenReturn(ircquakenetHandler);
-        when(factory.getAutoCommandHandler(ukquakenet)).thenReturn(ukquakenetHandler);
+        when(factory.getAutoCommandHandler(quakenet)).thenReturn(ukquakenetHandler);
         when(factory.getAutoCommandHandler(testnet)).thenReturn(testnetHandler);
         autoCommandManager.addAutoCommand(global);
         autoCommandManager.addAutoCommand(ircquakenet);
-        autoCommandManager.addAutoCommand(ukquakenet);
+        autoCommandManager.addAutoCommand(quakenet);
         autoCommandManager.addAutoCommand(testnet);
     }
 
@@ -103,39 +101,65 @@ public class AutoCommandManagerTest {
         autoCommandManager.addAutoCommand(global);
     }
 
-    @Test
-    public void testGetConnectionAutoCommands() {
-        assertEquals(3, autoCommandManager.getConnectionAutoCommands().size());
-        assertFalse(autoCommandManager.getConnectionAutoCommands().contains(global));
+    @Test(expected = IllegalStateException.class)
+    public void testAddMultipleNormalCommands() {
+        autoCommandManager.addAutoCommand(quakenet);
     }
 
     @Test
-    public void testGetConnectionAutoCommands_WithServer() {
-        assertEquals(1, autoCommandManager.getConnectionAutoCommands("irc.quakenet.org").size());
-        assertTrue(autoCommandManager.getConnectionAutoCommands("irc.quakenet.org")
-                .contains(ircquakenet));
-        assertFalse(autoCommandManager.getConnectionAutoCommands("irc.quakenet.org")
-                .contains(ukquakenet));
+    public void testGetAutoCommandWithNoProfile() {
+        final Optional<AutoCommand> autoCommand = autoCommandManager.getAutoCommand(
+                Optional.of("Quakenet"), Optional.of("irc.quakenet.org"), Optional.empty());
+        assertTrue(autoCommand.isPresent());
+        assertEquals(ircquakenet, autoCommand.get());
     }
 
     @Test
-    public void testGetConnectionAutoCommands_WithServer_WithProfile() {
-        assertEquals(1, autoCommandManager.getConnectionAutoCommands("irc.testnet.org",
-                testProfile).size());
-        assertTrue(autoCommandManager.getConnectionAutoCommands().contains(ircquakenet));
+    public void testGetAutoCommandWithOnlyNetwork() {
+        final Optional<AutoCommand> autoCommand = autoCommandManager.getAutoCommand(
+                Optional.of("Quakenet"), Optional.empty(), Optional.empty());
+        assertTrue(autoCommand.isPresent());
+        assertEquals(quakenet, autoCommand.get());
     }
 
     @Test
-    public void testGetNetworkAutoCommands() {
-        assertEquals(2, autoCommandManager.getNetworkAutoCommands("Quakenet").size());
-        assertFalse(autoCommandManager.getNetworkAutoCommands("Quakenet").contains(testnet));
+    public void testGetAutoCommandWithNoMatches() {
+        final Optional<AutoCommand> autoCommand = autoCommandManager.getAutoCommand(
+                Optional.empty(), Optional.of("irc.quakenet.org"), Optional.empty());
+        assertFalse(autoCommand.isPresent());
+    }
+
+
+    @Test
+    public void testGetAutoCommandWithAllFields() {
+        final Optional<AutoCommand> autoCommand = autoCommandManager.getAutoCommand(
+                Optional.of("Testnet"), Optional.of("irc.testnet.org"), Optional.of("profileName"));
+        assertTrue(autoCommand.isPresent());
+        assertEquals(testnet, autoCommand.get());
     }
 
     @Test
-    public void testGetNetworkAutoCommands_WithProfile() {
-        assertEquals(1, autoCommandManager.getNetworkAutoCommands("TestNet", testProfile).size());
-        assertTrue(
-                autoCommandManager.getNetworkAutoCommands("TestNet", testProfile).contains(testnet));
+    public void testGetOrCreateAutoCommandWithExisting() {
+        final AutoCommand autoCommand = autoCommandManager.getOrCreateAutoCommand(
+                Optional.of("Quakenet"), Optional.empty(), Optional.empty());
+        assertEquals(quakenet, autoCommand);
+    }
+
+    @Test
+    public void testGetOrCreateAutoCommandWithNoMatches() {
+        final AutoCommand autoCommand = autoCommandManager.getOrCreateAutoCommand(
+                Optional.empty(), Optional.of("irc.quakenet.org"), Optional.empty());
+
+        // It isn't an existing one...
+        assertNotEquals(global, autoCommand);
+        assertNotEquals(quakenet, autoCommand);
+        assertNotEquals(ircquakenet, autoCommand);
+        assertNotEquals(testnet, autoCommand);
+
+        // And it has the right targets
+        assertEquals(Optional.<String>empty(), autoCommand.getNetwork());
+        assertEquals(Optional.of("irc.quakenet.org"), autoCommand.getServer());
+        assertEquals(Optional.<String>empty(), autoCommand.getProfile());
     }
 
     @Test
