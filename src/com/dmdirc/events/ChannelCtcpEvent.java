@@ -23,27 +23,27 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired on receiving a channel CTCP request.
  */
 public class ChannelCtcpEvent extends ChannelDisplayableEvent {
 
-    private final ChannelClientInfo client;
+    private final GroupChatUser client;
     private final String type;
     private final String message;
     private boolean handled;
 
     public ChannelCtcpEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client, final String type, final String message) {
+            final GroupChatUser client, final String type, final String message) {
         super(timestamp, channel);
         this.client = client;
         this.type = type;
         this.message = message;
     }
 
-    public ChannelCtcpEvent(final Channel channel, final ChannelClientInfo client,
+    public ChannelCtcpEvent(final Channel channel, final GroupChatUser client,
             final String type, final String message) {
         super(channel);
         this.client = client;
@@ -51,7 +51,7 @@ public class ChannelCtcpEvent extends ChannelDisplayableEvent {
         this.message = message;
     }
 
-    public ChannelClientInfo getClient() {
+    public GroupChatUser getClient() {
         return client;
     }
 

@@ -184,10 +184,9 @@ public class ChannelEventHandler extends EventHandler implements
                 format = EventUtils.postDisplayable(eventBus, event,
                         "channelTopicRemoved");
             } else {
-                event = new ChannelTopicUnsetEvent(owner,
-                        channel.getChannelClient(channel.getTopicSetter(), true));
-                format = EventUtils.postDisplayable(eventBus, event,
-                        "channelTopicChanged");
+                event = new ChannelTopicUnsetEvent(owner, owner.getUser(owner.getConnection().get()
+                        .getUser(channel.getTopicSetter())).orElse(null));
+                format = EventUtils.postDisplayable(eventBus, event, "channelTopicChanged");
             }
             owner.doNotification(date, format, channel.getChannelClient(channel.getTopicSetter(),
                     true), channel.getTopic());
@@ -325,8 +324,8 @@ public class ChannelEventHandler extends EventHandler implements
                 format = "channelSplitUserMode_default";
             }
 
-            final ChannelUsermodechangeEvent event = new ChannelUsermodechangeEvent(owner, client,
-                    targetClient, mode);
+            final ChannelUsermodechangeEvent event = new ChannelUsermodechangeEvent(owner,
+                    owner.getUserFromClient(client), owner.getUserFromClient(targetClient), mode);
             final String result = EventUtils.postDisplayable(eventBus, event, format);
             owner.doNotification(date, result, client, targetClient, mode);
         }
@@ -338,7 +337,8 @@ public class ChannelEventHandler extends EventHandler implements
             final String type, final String message, final String host) {
         checkParser(parser);
 
-        final ChannelCtcpEvent event = new ChannelCtcpEvent(owner, client, type, message);
+        final ChannelCtcpEvent event = new ChannelCtcpEvent(owner, owner.getUserFromClient(client),
+                type, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "channelCTCP");
         if (!event.isHandled()) {
             getConnection().sendCTCPReply(client.getClient().getNickname(), type, message);
@@ -414,8 +414,8 @@ public class ChannelEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        final ChannelModeNoticeEvent event = new ChannelModeNoticeEvent(owner, client,
-                String.valueOf(prefix), message);
+        final ChannelModeNoticeEvent event = new ChannelModeNoticeEvent(owner,
+                owner.getUserFromClient(client), String.valueOf(prefix), message);
         final String format = EventUtils.postDisplayable(eventBus, event, "channelModeNotice");
         owner.doNotification(date, format, client, String.valueOf(prefix), message);
     }

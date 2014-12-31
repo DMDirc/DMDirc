@@ -23,26 +23,26 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
  * Fired when a channel mode is received.
  */
 public class ChannelModeNoticeEvent extends ChannelDisplayableEvent {
 
-    private final ChannelClientInfo client;
+    private final GroupChatUser client;
     private final String prefix;
     private final String message;
 
     public ChannelModeNoticeEvent(final long timestamp, final Channel channel,
-            final ChannelClientInfo client, final String prefix, final String message) {
+            final GroupChatUser client, final String prefix, final String message) {
         super(timestamp, channel);
         this.client = client;
         this.prefix = prefix;
         this.message = message;
     }
 
-    public ChannelModeNoticeEvent(final Channel channel, final ChannelClientInfo client,
+    public ChannelModeNoticeEvent(final Channel channel, final GroupChatUser client,
             final String prefix, final String message) {
         super(channel);
         this.client = client;
@@ -50,7 +50,7 @@ public class ChannelModeNoticeEvent extends ChannelDisplayableEvent {
         this.message = message;
     }
 
-    public ChannelClientInfo getClient() {
+    public GroupChatUser getClient() {
         return client;
     }
 

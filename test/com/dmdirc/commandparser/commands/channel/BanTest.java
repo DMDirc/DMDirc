@@ -27,9 +27,10 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.parser.interfaces.ChannelClientInfo;
+import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChatUser;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
 
 import java.util.Optional;
 
@@ -39,16 +40,34 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyChar;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BanTest {
 
+    @Mock private Connection connection;
+    @Mock private User user1;
+    @Mock private User user2;
+    @Mock private GroupChatUser groupChatUser;
+    @Mock private Channel channel;
     @Mock private CommandController controller;
+    @Mock private FrameContainer container;
+    @Mock private ChannelInfo channelInfo;
     private Ban command;
 
     @Before
     public void setup() {
+        when(channel.getChannelInfo()).thenReturn(channelInfo);
+        when(channel.getConnection()).thenReturn(Optional.of(connection));
+        when(connection.getUser("user")).thenReturn(user1);
+        when(connection.getUser("*!*@my.host.name")).thenReturn(user2);
+        when(groupChatUser.getHostname()).thenReturn(Optional.of("HOSTNAME"));
+        when(channel.getUser(user1)).thenReturn(Optional.of(groupChatUser));
+        when(channel.getUser(user2)).thenReturn(Optional.empty());
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
         command = new Ban(controller);
@@ -56,46 +75,25 @@ public class BanTest {
 
     @Test
     public void testUsage() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-        final Channel channel = mock(Channel.class);
-        command.execute(tiw, new CommandArguments(controller, "/ban"),
+        command.execute(container, new CommandArguments(controller, "/ban"),
                 new ChannelCommandContext(null, Ban.INFO, channel));
 
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(container).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
 
     /** Tests that the ban command uses the correct hostname if given a user. */
     @Test
     public void testKnownUser() {
-        final FrameContainer container = mock(FrameContainer.class);
-        final ChannelInfo channelInfo = mock(ChannelInfo.class);
-        final ChannelClientInfo ccInfo = mock(ChannelClientInfo.class);
-        final ClientInfo clientInfo = mock(ClientInfo.class);
-        final Channel channel = mock(Channel.class);
-
-        when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(channelInfo.getChannelClient("user")).thenReturn(ccInfo);
-        when(ccInfo.getClient()).thenReturn(clientInfo);
-        when(clientInfo.getHostname()).thenReturn("my.host.name");
-        when(container.getConnection()).thenReturn(Optional.empty());
-
         command.execute(container, new CommandArguments(controller, "/ban user"),
                 new ChannelCommandContext(null, Ban.INFO, channel));
 
-        verify(channelInfo).alterMode(true, 'b', "*!*@my.host.name");
+        verify(channelInfo).alterMode(true, 'b', "*!*@HOSTNAME");
         verify(channelInfo).flushModes();
     }
 
     /** Tests that the ban command works if given a mask not a username. */
     @Test
     public void testHostmask() {
-        final FrameContainer container = mock(FrameContainer.class);
-        final ChannelInfo channelInfo = mock(ChannelInfo.class);
-        final Channel channel = mock(Channel.class);
-
-        when(channel.getChannelInfo()).thenReturn(channelInfo);
-        when(container.getConnection()).thenReturn(Optional.empty());
-
         command.execute(container, new CommandArguments(controller, "/ban *!*@my.host.name"),
                 new ChannelCommandContext(null, Ban.INFO, channel));
 
