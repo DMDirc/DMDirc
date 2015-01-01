@@ -24,9 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.DisplayableEvent;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import net.engio.mbassy.listener.Handler;
 
@@ -39,11 +37,7 @@ public class BackBuffer {
     private final Styliser styliser;
     private final DMDircMBassador eventBus;
     private final EventFormatter formatter;
-    private final AggregateConfigProvider configProvider;
     private final FrameContainer owner;
-
-    @ConfigBinding(domain="dev", key="enableNewEvents")
-    private boolean enabled;
 
     public BackBuffer(
             final FrameContainer owner,
@@ -57,7 +51,6 @@ public class BackBuffer {
         this.document = new IRCDocument(owner.getConfigManager(), styliser);
         this.eventBus = owner.getEventBus();
         this.formatter = formatter;
-        this.configProvider = owner.getConfigManager();
     }
 
     /**
@@ -65,7 +58,6 @@ public class BackBuffer {
      */
     public void startAddingEvents() {
         eventBus.subscribe(this);
-        configProvider.getBinder().bind(this, BackBuffer.class);
     }
 
     /**
@@ -73,7 +65,6 @@ public class BackBuffer {
      */
     public void stopAddingEvents() {
         eventBus.unsubscribe(this);
-        configProvider.getBinder().unbind(this);
     }
 
     /**
@@ -83,7 +74,7 @@ public class BackBuffer {
      */
     @Handler
     public void handleDisplayableEvent(final DisplayableEvent event) {
-        if (enabled && event.getSource().equals(owner)) {
+        if (event.getSource().equals(owner)) {
             formatter.format(event).ifPresent(
                     t -> document.addText(event.getTimestamp(), event.getDisplayProperties(), t));
         }
