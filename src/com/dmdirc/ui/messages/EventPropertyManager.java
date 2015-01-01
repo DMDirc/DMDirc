@@ -56,6 +56,8 @@ public class EventPropertyManager {
                 + property.substring(1);
         try {
             final Method method = type.getMethod(methodName);
+            // TODO: This is needed for AutoValues, should probably get return types not real types
+            method.setAccessible(true);
             return Optional.ofNullable(method.invoke(object));
         } catch (ReflectiveOperationException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,

@@ -24,6 +24,7 @@ package com.dmdirc.events;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Topic;
+import com.dmdirc.interfaces.User;
 
 /**
  * Fired when a channel topic is changed.
@@ -31,19 +32,28 @@ import com.dmdirc.Topic;
 public class ChannelGottopicEvent extends ChannelDisplayableEvent {
 
     private final Topic topic;
+    private final User user;
 
-    public ChannelGottopicEvent(final long timestamp, final Channel channel, final Topic topic) {
+    public ChannelGottopicEvent(final long timestamp, final Channel channel, final Topic topic,
+            final User user) {
         super(timestamp, channel);
         this.topic = topic;
+        this.user = user;
     }
 
-    public ChannelGottopicEvent(final Channel channel, final Topic topic) {
+    public ChannelGottopicEvent(final Channel channel, final Topic topic,
+            final User user) {
         super(channel);
         this.topic = topic;
+        this.user = user;
     }
 
     public Topic getTopic() {
         return topic;
+    }
+
+    public User getUser() {
+        return user;
     }
 
 }

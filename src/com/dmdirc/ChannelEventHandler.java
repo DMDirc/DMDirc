@@ -24,7 +24,6 @@ package com.dmdirc;
 
 import com.dmdirc.events.ChannelActionEvent;
 import com.dmdirc.events.ChannelCtcpEvent;
-import com.dmdirc.events.ChannelDisplayableEvent;
 import com.dmdirc.events.ChannelGotnamesEvent;
 import com.dmdirc.events.ChannelGottopicEvent;
 import com.dmdirc.events.ChannelJoinEvent;
@@ -167,30 +166,21 @@ public class ChannelEventHandler extends EventHandler implements
 
         if (isJoinTopic) {
             if (Strings.isNullOrEmpty(channel.getTopic())) {
-                final ChannelNotopicEvent event = new ChannelNotopicEvent(owner);
-                final String format = EventUtils.postDisplayable(eventBus, event, "channelNoTopic");
-                owner.doNotification(date, format);
+                eventBus.publishAsync(new ChannelNotopicEvent(owner));
             } else {
-                final ChannelGottopicEvent event = new ChannelGottopicEvent(owner, topic);
-                final String format = EventUtils.postDisplayable(eventBus, event,
-                        "channelTopicDiscovered");
-                owner.doNotification(date, format, topic);
+                eventBus.publishAsync(new ChannelGottopicEvent(owner, topic,
+                        owner.getConnection().get().getUser(channel.getTopicSetter())));
             }
         } else {
-            final ChannelDisplayableEvent event;
-            final String format;
             if (Strings.isNullOrEmpty(channel.getTopic())) {
-                event = new ChannelTopicChangeEvent(date.getTime(), owner, topic);
-                format = EventUtils.postDisplayable(eventBus, event,
-                        "channelTopicRemoved");
-            } else {
-                event = new ChannelTopicUnsetEvent(date.getTime(), owner,
+                eventBus.publishAsync(new ChannelTopicUnsetEvent(date.getTime(), owner,
                         owner.getUser(owner.getConnection().get()
-                                .getUser(channel.getTopicSetter())).orElse(null));
-                format = EventUtils.postDisplayable(eventBus, event, "channelTopicChanged");
+                                .getUser(channel.getTopicSetter())).orElse(null)));
+            } else {
+                eventBus.publishAsync(new ChannelTopicChangeEvent(date.getTime(), owner, topic,
+                        topic.getClient().get()));
+
             }
-            owner.doNotification(date, format, channel.getChannelClient(channel.getTopicSetter(),
-                    true), channel.getTopic());
         }
 
         final Optional<Topic> currentTopic = owner.getCurrentTopic();

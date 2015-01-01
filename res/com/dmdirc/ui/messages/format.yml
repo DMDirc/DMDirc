@@ -15,13 +15,22 @@ ChannelSelfMessageEvent:
 ChannelSelfActionEvent:
   format: "* {{client.modePrefixedNickname}} {{message}}"
   colour: 6
+ChannelGottopicEvent:
+  format: "* The topic for {{channel.name}} is '{{topic.topic}}'.\nTopic was set by {{user.nickname}} at {{topic.time}}."
+  colour: 3
+ChannelTopicChangeEvent:
+  format: "* {{user.nickname}} has changed the topic to  {{topic.topic}}."
+  colour: 3
+ChannelNotopicEvent:
+  format: "* There is no topic set for {{channel.name}}."
+  colour: 3
+ChannelTopicUnsetEvent:
+  format: "* {{client.modePrefixedNickname}} has removed the topic on {{channel.name}}."
+  colour: 3
 
 # TODO:
-#  channelTopicChanged=3* %1$s%2$s has changed the topic to '%5$s'.
-#  channelTopicRemoved=3* %1$s%2$s has removed the topic on %6$s.
 #  channelModeChanged=3* %1$s%2$s sets mode: %5$s.
 #  channelSelfModeChanged=3* You set mode: %5$s.
-#  channelTopicDiscovered=3* The topic for %7$s is '%5$s'.\n3* Topic was set by %2$s at %6$tR on %6$tA, %6$tB %6$te %6$tY.
 #  channelCTCP=4-!- CTCP %5$S from %1$s%2$s
 #  channelPart=3* %1$s%2$s (%3$s@%4$s) has left %6$s.
 #  channelPartReason=3* %1$s%2$s (%3$s@%4$s) has left %6$s (%5$s).
@@ -75,7 +84,6 @@ ChannelSelfActionEvent:
 #  serverConnectInProgress=A connection attempt is in progress, please wait...
 #  authNotice=5-AUTH- %1$s
 #  away=14You are now marked as away (%1$s14).
-#  channelNoTopic=3* There is no topic set for %1$s.
 #  rawCommand=10>>> %1$s
 #  unknownCommand=14Unknown command %1$s.
 #  socketClosed=2-!- You have been disconnected from the server.
