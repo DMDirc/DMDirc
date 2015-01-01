@@ -22,8 +22,10 @@
 
 package com.dmdirc;
 
+import com.dmdirc.events.QueryOpenedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
@@ -43,21 +45,27 @@ public class QueryFactory {
     private final MessageSinkManager messageSinkManager;
     private final URLBuilder urlBuilder;
     private final BackBufferFactory backBufferFactory;
+    private final WindowManager windowManager;
 
     @Inject
     public QueryFactory(final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController, final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final BackBufferFactory backBufferFactory) {
+            final URLBuilder urlBuilder, final BackBufferFactory backBufferFactory,
+            final WindowManager windowManager) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;
         this.messageSinkManager = messageSinkManager;
         this.urlBuilder = urlBuilder;
         this.backBufferFactory = backBufferFactory;
+        this.windowManager = windowManager;
     }
 
     public Query getQuery(final Server server, final User user) {
-        return new Query(server, user, tabCompleterFactory, commandController,
+        final Query query = new Query(server, user, tabCompleterFactory, commandController,
                 messageSinkManager, urlBuilder, backBufferFactory);
+        windowManager.addWindow(server, query);
+        server.getEventBus().publish(new QueryOpenedEvent(query));
+        return query;
     }
 
 }

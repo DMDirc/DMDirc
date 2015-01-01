@@ -31,7 +31,6 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
@@ -54,7 +53,6 @@ import static org.mockito.Mockito.when;
 
 public class ServerTest {
 
-    @Mock private ServerManager serverManager;
     @Mock private Profile profile;
     @Mock private AggregateConfigProvider configManager;
     @Mock private ConfigBinder configBinder;
@@ -66,7 +64,6 @@ public class ServerTest {
     @Mock private TabCompleterFactory tabCompleterFactory;
     @Mock private TabCompleter tabCompleter;
     @Mock private MessageSinkManager messageSinkManager;
-    @Mock private WindowManager windowManager;
     @Mock private ChannelFactory channelFactory;
     @Mock private QueryFactory queryFactory;
     @Mock private URLBuilder urlBuilder;
@@ -89,14 +86,12 @@ public class ServerTest {
                 Matchers.<CommandType>anyVararg())).thenReturn(tabCompleter);
 
         server = new Server(
-                serverManager,
                 configMigrator,
                 commandParser,
                 parserFactory,
                 tabCompleterFactory,
                 identityFactory,
                 messageSinkManager,
-                windowManager,
                 channelFactory,
                 queryFactory,
                 urlBuilder,

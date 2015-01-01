@@ -26,8 +26,6 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.AppErrorEvent;
-import com.dmdirc.events.ChannelOpenedEvent;
-import com.dmdirc.events.QueryOpenedEvent;
 import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
@@ -55,7 +53,6 @@ import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.tls.CertificateManager;
-import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -162,12 +159,8 @@ public class Server extends FrameContainer implements Connection {
     private StringConverter converter = new DefaultStringConverter();
     /** ParserFactory we use for creating parsers. */
     private final ParserFactory parserFactory;
-    /** ServerManager that created us. */
-    private final ServerManager manager;
     /** Factory to use to create new identities. */
     private final IdentityFactory identityFactory;
-    /** Window manager to pas to children. */
-    private final WindowManager windowManager;
     /** The migrator to use to change our config provider. */
     private final ConfigProviderMigrator configMigrator;
     /** Factory to use for creating channels. */
@@ -193,14 +186,12 @@ public class Server extends FrameContainer implements Connection {
      * Creates a new server which will connect to the specified URL with the specified profile.
      */
     public Server(
-            final ServerManager manager,
             final ConfigProviderMigrator configMigrator,
             final CommandParser commandParser,
             final ParserFactory parserFactory,
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
-            final WindowManager windowManager,
             final ChannelFactory channelFactory,
             final QueryFactory queryFactory,
             final URLBuilder urlBuilder,
@@ -228,10 +219,8 @@ public class Server extends FrameContainer implements Connection {
                         WindowComponent.INPUTFIELD.getIdentifier(),
                         WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
 
-        this.manager = manager;
         this.parserFactory = parserFactory;
         this.identityFactory = identityFactory;
-        this.windowManager = windowManager;
         this.configMigrator = configMigrator;
         this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
@@ -535,10 +524,6 @@ public class Server extends FrameContainer implements Connection {
             if (!getState().isDisconnected()) {
                 newQuery.reregister();
             }
-
-            windowManager.addWindow(this, newQuery, focus);
-            getEventBus().publish(new QueryOpenedEvent(newQuery));
-
             getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
         }
@@ -596,10 +581,6 @@ public class Server extends FrameContainer implements Connection {
             final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
                     getProtocol(), getIrcd(), getNetwork(), getAddress(), chan.getName());
             final Channel newChan = channelFactory.getChannel(this, chan, channelConfig);
-
-            windowManager.addWindow(this, newChan, focus);
-            getEventBus().publish(new ChannelOpenedEvent(newChan));
-
             getTabCompleter().addEntry(TabCompletionType.CHANNEL, chan.getName());
             channels.add(newChan);
             return newChan;
@@ -884,8 +865,6 @@ public class Server extends FrameContainer implements Connection {
         channels.closeAll();
         closeQueries();
         removeInvites();
-
-        manager.unregisterServer(this);
 
         super.close();
     }

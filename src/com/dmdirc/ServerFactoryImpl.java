@@ -46,12 +46,10 @@ import javax.inject.Singleton;
 @Singleton
 public class ServerFactoryImpl {
 
-    private final Provider<ServerManager> manager;
     private final ParserFactory parserFactory;
     private final TabCompleterFactory tabCompleterFactory;
     private final IdentityFactory identityFactory;
     private final MessageSinkManager messageSinkManager;
-    private final WindowManager windowManager;
     private final Provider<ChannelFactory> channelFactory;
     private final Provider<QueryFactory> queryFactory;
     private final URLBuilder urlBuilder;
@@ -63,7 +61,6 @@ public class ServerFactoryImpl {
 
     @Inject
     public ServerFactoryImpl(
-            final Provider<ServerManager> manager,
             final ParserFactory parserFactory,
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
@@ -77,12 +74,10 @@ public class ServerFactoryImpl {
             @ClientModule.UserConfig final ConfigProvider userSettings,
             final BackBufferFactory backBufferFactory,
             final UserManager userManager) {
-        this.manager = manager;
         this.parserFactory = parserFactory;
         this.tabCompleterFactory = tabCompleterFactory;
         this.identityFactory = identityFactory;
         this.messageSinkManager = messageSinkManager;
-        this.windowManager = windowManager;
         this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
         this.urlBuilder = urlBuilder;
@@ -99,8 +94,8 @@ public class ServerFactoryImpl {
             final ScheduledExecutorService executorService,
             final URI uri,
             final Profile profile) {
-        return new Server(manager.get(), configMigrator, commandParser, parserFactory,
-                tabCompleterFactory, identityFactory, messageSinkManager, windowManager,
+        return new Server(configMigrator, commandParser, parserFactory,
+                tabCompleterFactory, identityFactory, messageSinkManager,
                 channelFactory.get(), queryFactory.get(), urlBuilder, eventBus,
                 messageEncoderFactory, userSettings, executorService, uri, profile,
                 backBufferFactory, userManager);
