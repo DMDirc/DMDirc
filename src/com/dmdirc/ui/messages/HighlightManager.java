@@ -22,15 +22,20 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.BaseChannelTextEvent;
 import com.dmdirc.events.BaseQueryTextEvent;
 import com.dmdirc.events.ChannelHighlightEvent;
 import com.dmdirc.events.DisplayProperty;
+import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerNickchangeEvent;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.colours.Colour;
+
+import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,33 +53,78 @@ public class HighlightManager {
             "(\\p{Space}|\\p{Punct}|$).*";
 
     private final Collection<Pattern> patterns = new ArrayList<>();
+    private final AggregateConfigProvider configProvider;
+    private final ColourManager colourManager;
 
     private Optional<Pattern> nicknamePattern = Optional.empty();
 
+    private Optional<Colour> backgroundColour = Optional.of(Colour.RED);
+    private Optional<Colour> foregroundColour = Optional.empty();
+
+    public HighlightManager(
+            final AggregateConfigProvider configProvider,
+            final ColourManager colourManager) {
+        this.configProvider = configProvider;
+        this.colourManager = colourManager;
+    }
+
+    public void init() {
+        configProvider.getBinder().bind(this, HighlightManager.class);
+    }
+
+    public void stop() {
+        configProvider.getBinder().unbind(this);
+    }
+
     @Handler
-    public void handleChannelMessage(final BaseChannelTextEvent event) {
+    void handleChannelMessage(final BaseChannelTextEvent event) {
         if (patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
-            event.setDisplayProperty(DisplayProperty.BACKGROUND_COLOUR, Colour.RED);
+            setColours(event);
             event.getChannel().getEventBus().publishAsync(new ChannelHighlightEvent(event));
         }
     }
 
     @Handler
-    public void handleQueryMessage(final BaseQueryTextEvent event) {
+    void handleQueryMessage(final BaseQueryTextEvent event) {
         if (patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
-            event.setDisplayProperty(DisplayProperty.BACKGROUND_COLOUR, Colour.RED);
+            setColours(event);
             event.getQuery().getEventBus().publishAsync(new QueryHighlightEvent(event));
         }
     }
 
     @Handler
-    public void handleNickChange(final ServerNickchangeEvent event) {
+    void handleNickChange(final ServerNickchangeEvent event) {
         setNickname(event.getNewNick());
     }
 
     @Handler
-    public void handleConnected(final ServerConnectedEvent event) {
+    void handleConnected(final ServerConnectedEvent event) {
         event.getConnection().getLocalUser().map(User::getNickname).ifPresent(this::setNickname);
+    }
+
+    @ConfigBinding(domain = "ui", key = "highlightLineForegroundColour")
+    void handleForegroundColour(final String value) {
+        if (Strings.isNullOrEmpty(value)) {
+            foregroundColour = Optional.empty();
+        } else {
+            foregroundColour = Optional.ofNullable(colourManager.getColourFromString(value, null));
+        }
+    }
+
+    @ConfigBinding(domain = "ui", key = "highlightLineBackgroundColour")
+    void handleBackgroundColour(final String value) {
+        if (Strings.isNullOrEmpty(value)) {
+            backgroundColour = Optional.empty();
+        } else {
+            backgroundColour = Optional.ofNullable(colourManager.getColourFromString(value, null));
+        }
+    }
+
+    private void setColours(final DisplayableEvent event) {
+        backgroundColour.ifPresent(
+                c -> event.setDisplayProperty(DisplayProperty.BACKGROUND_COLOUR, c));
+        foregroundColour.ifPresent(
+                c -> event.setDisplayProperty(DisplayProperty.FOREGROUND_COLOUR, c));
     }
 
     private void setNickname(final String newNick) {
