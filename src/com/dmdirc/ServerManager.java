@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
+import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
@@ -50,6 +51,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+
+import net.engio.mbassy.listener.Handler;
 
 /**
  * The ServerManager maintains a list of all servers, and provides methods to search or iterate over
@@ -97,6 +100,7 @@ public class ServerManager implements ConnectionManager {
         this.windowManager = windowManager;
         this.serverFactoryImpl = serverFactory;
         this.eventBus = eventBus;
+        this.eventBus.subscribe(this);
     }
 
     @Override
@@ -122,7 +126,7 @@ public class ServerManager implements ConnectionManager {
      *
      * @param server The server to be registered
      */
-    public void registerServer(final Server server) {
+    void registerServer(final Server server) {
         servers.add(server);
     }
 
@@ -132,7 +136,7 @@ public class ServerManager implements ConnectionManager {
      *
      * @param server The server to be unregistered
      */
-    public void unregisterServer(final Server server) {
+    void unregisterServer(final Server server) {
         servers.remove(server);
     }
 
@@ -216,6 +220,13 @@ public class ServerManager implements ConnectionManager {
             }
         } else {
             connectedServer.join(new ChannelJoinRequest("#DMDirc"));
+        }
+    }
+
+    @Handler
+    void handleWindowClosing(final FrameClosingEvent event) {
+        if (event.getContainer() instanceof Server) {
+            unregisterServer((Server) event.getContainer());
         }
     }
 

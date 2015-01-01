@@ -54,7 +54,6 @@ import static org.mockito.Mockito.when;
 
 public class ServerTest {
 
-    @Mock private ServerManager serverManager;
     @Mock private Profile profile;
     @Mock private AggregateConfigProvider configManager;
     @Mock private ConfigBinder configBinder;
@@ -89,7 +88,6 @@ public class ServerTest {
                 Matchers.<CommandType>anyVararg())).thenReturn(tabCompleter);
 
         server = new Server(
-                serverManager,
                 configMigrator,
                 commandParser,
                 parserFactory,

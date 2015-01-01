@@ -162,11 +162,9 @@ public class Server extends FrameContainer implements Connection {
     private StringConverter converter = new DefaultStringConverter();
     /** ParserFactory we use for creating parsers. */
     private final ParserFactory parserFactory;
-    /** ServerManager that created us. */
-    private final ServerManager manager;
     /** Factory to use to create new identities. */
     private final IdentityFactory identityFactory;
-    /** Window manager to pas to children. */
+    /** Window manager to pass to children. */
     private final WindowManager windowManager;
     /** The migrator to use to change our config provider. */
     private final ConfigProviderMigrator configMigrator;
@@ -193,7 +191,6 @@ public class Server extends FrameContainer implements Connection {
      * Creates a new server which will connect to the specified URL with the specified profile.
      */
     public Server(
-            final ServerManager manager,
             final ConfigProviderMigrator configMigrator,
             final CommandParser commandParser,
             final ParserFactory parserFactory,
@@ -228,7 +225,6 @@ public class Server extends FrameContainer implements Connection {
                         WindowComponent.INPUTFIELD.getIdentifier(),
                         WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
 
-        this.manager = manager;
         this.parserFactory = parserFactory;
         this.identityFactory = identityFactory;
         this.windowManager = windowManager;
@@ -884,8 +880,6 @@ public class Server extends FrameContainer implements Connection {
         channels.closeAll();
         closeQueries();
         removeInvites();
-
-        manager.unregisterServer(this);
 
         super.close();
     }
