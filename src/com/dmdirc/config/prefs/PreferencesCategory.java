@@ -24,6 +24,8 @@ package com.dmdirc.config.prefs;
 
 import com.dmdirc.util.collections.ListenerList;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -295,6 +297,11 @@ public class PreferencesCategory {
         for (CategoryChangeListener listener : listeners.get(CategoryChangeListener.class)) {
             listener.categoryDeselected(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("title", getTitle()).toString();
     }
 
 }
