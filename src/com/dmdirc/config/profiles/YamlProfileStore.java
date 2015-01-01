@@ -76,7 +76,7 @@ public class YamlProfileStore extends BaseYamlStore<Profile> implements ProfileS
             final String realname = requiredString(map, "realname");
             final Optional<String> ident = Optional.ofNullable(optionalString(map, "ident"));
             final List<String> nicknames = asList(map.get("nicknames"), s -> Optional.of(s.toString()));
-            return Optional.of(new Profile(name, realname, ident, nicknames));
+            return Optional.of(Profile.create(name, realname, ident, nicknames));
         } catch (IllegalArgumentException ex) {
             LOG.info("Unable to read profile", ex);
             return Optional.empty();

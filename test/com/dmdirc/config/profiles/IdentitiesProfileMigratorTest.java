@@ -94,7 +94,7 @@ public class IdentitiesProfileMigratorTest {
         when(identityManager.getProvidersByType("profile")).thenReturn(
                 Lists.newArrayList(configProvider1));
         instance.migrate();
-        verify(profileManager).addProfile(new Profile("name1", "realname1", Optional.empty(),
+        verify(profileManager).addProfile(Profile.create("name1", "realname1", Optional.empty(),
                 Lists.newArrayList("nickname1")));
     }
 
@@ -103,7 +103,7 @@ public class IdentitiesProfileMigratorTest {
         when(identityManager.getProvidersByType("profile")).thenReturn(
                 Lists.newArrayList(configProvider2));
         instance.migrate();
-        verify(profileManager).addProfile(new Profile("name2", "realname2", Optional.of("ident2"),
+        verify(profileManager).addProfile(Profile.create("name2", "realname2", Optional.of("ident2"),
                 Lists.newArrayList("nickname2")));
     }
 
@@ -112,7 +112,7 @@ public class IdentitiesProfileMigratorTest {
         when(identityManager.getProvidersByType("profile")).thenReturn(
                 Lists.newArrayList(configProvider3));
         instance.migrate();
-        verify(profileManager).addProfile(new Profile("name3", "realname3", Optional.of("ident3"),
+        verify(profileManager).addProfile(Profile.create("name3", "realname3", Optional.of("ident3"),
                 Lists.newArrayList("nickname31", "nickname32", "nickname33")));
     }
 }
