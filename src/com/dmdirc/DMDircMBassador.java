@@ -36,8 +36,9 @@ public class DMDircMBassador extends MBassador<DMDircEvent> {
     public DMDircMBassador() {
         super(new BusConfiguration()
                 .addFeature(Feature.SyncPubSub.Default())
-                .addFeature(Feature.AsynchronousHandlerInvocation.Default())
-                .addFeature(Feature.AsynchronousMessageDispatch.Default()));
+                .addFeature(Feature.AsynchronousHandlerInvocation.Default(1, 1))
+                .addFeature(Feature.AsynchronousMessageDispatch.Default()
+                        .setNumberOfMessageDispatchers(1)));
     }
 
     public DMDircMBassador(final BusConfiguration configuration) {
