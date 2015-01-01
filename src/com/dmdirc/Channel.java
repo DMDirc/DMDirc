@@ -28,7 +28,6 @@ import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
-import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.NickListClientAddedEvent;
 import com.dmdirc.events.NickListClientRemovedEvent;
@@ -485,8 +484,6 @@ public class Channel extends MessageTarget implements GroupChat {
             topics.add(topic);
         }
         updateTitle();
-
-        getEventBus().publishAsync(new ChannelTopicChangeEvent(this, topic));
     }
 
     @Override
