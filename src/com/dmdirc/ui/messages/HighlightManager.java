@@ -74,7 +74,7 @@ public class HighlightManager {
 
     @Handler
     public void handleConnected(final ServerConnectedEvent event) {
-        setNickname(event.getConnection().getLocalUser().map(User::getNickname).orElse("Unknown"));
+        event.getConnection().getLocalUser().map(User::getNickname).ifPresent(this::setNickname);
     }
 
     private void setNickname(final String newNick) {
