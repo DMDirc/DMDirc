@@ -1,24 +1,24 @@
 ---
 ChannelModeNoticeEvent:
-  format: "-{{client}}:{{prefix}}{{channel.name}}- {{message}}"
+  format: "-{{client.modePrefixedNickname}}:{{prefix}}{{channel.name}}- {{message}}"
   colour: 5
 ChannelNoticeEvent:
-  format: "-{{client}}:{{channel.name}}- {{message}}"
+  format: "-{{client.modePrefixedNickname}}:{{channel.name}}- {{message}}"
   colour: 5
 ChannelMessageEvent:
-  format: "<{{client}}> {{message}}"
+  format: "<{{client.modePrefixedNickname}}> {{message}}"
 ChannelActionEvent:
-  format: "* {{client}} {{message}}"
+  format: "* {{client.modePrefixedNickname}} {{message}}"
   colour: 6
 ChannelSelfMessageEvent:
-  format: "<{{client}}> {{message}}"
+  format: "<{{client.modePrefixedNickname}}> {{message}}"
 ChannelSelfActionEvent:
-  format: "* {{client}} {{message}}"
+  format: "* {{client.modePrefixedNickname}} {{message}}"
   colour: 6
 ChannelSelfExternalMessageEvent:
-  format: "<{{client}}> {{message}}"
+  format: "<{{client.modePrefixedNickname}}> {{message}}"
 ChannelSelfExternalActionEvent:
-  format: "* {{client}} {{message}}"
+  format: "* {{client.modePrefixedNickname}} {{message}}"
   colour: 6
 
 # TODO:

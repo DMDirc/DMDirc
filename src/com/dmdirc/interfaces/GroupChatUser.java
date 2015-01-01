@@ -49,8 +49,8 @@ public interface GroupChatUser {
     GroupChat getGroupChat();
 
     /**
-     * Returns the most important mode that the client holds in its textual
-     * form (e.g. o, v, etc)
+     * Returns the most important mode that the client holds in its prefix
+     * form (e.g. @, +, etc)
      *
      * @return The most important mode the client holds, or an empty string
      */
@@ -70,6 +70,14 @@ public interface GroupChatUser {
      * @return This client's nickname
      */
     String getNickname();
+
+    /**
+     * Retrieves the nickname or display name used by this client, with their most important mode
+     * prefixed.
+     *
+     * @return This client's nickname with their important mode prefixed (if any).
+     */
+    String getModePrefixedNickname();
 
     /**
      * Retrieves the username or ident used by this client.
