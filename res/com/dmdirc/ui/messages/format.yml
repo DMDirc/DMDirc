@@ -16,7 +16,7 @@ ChannelSelfActionEvent:
   format: "* {{client.modePrefixedNickname}} {{message}}"
   colour: 6
 ChannelGottopicEvent:
-  format: "* The topic for {{channel.name}} is '{{topic.topic}}'.\nTopic was set by {{user.nickname}} at {{topic.time}}."
+  format: "* The topic for {{channel.name}} is '{{topic.topic}}'.\n* Topic was set by {{user.nickname}} at {{topic.time}}."
   colour: 3
 ChannelTopicChangeEvent:
   format: "* {{user.nickname}} has changed the topic to  {{topic.topic}}."
