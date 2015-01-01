@@ -142,12 +142,8 @@ public class ChannelEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ChannelMessageEvent event = new ChannelMessageEvent(owner,
-                groupChatUserManager.getUserFromClient(client, owner), message);
-        final String format = EventUtils.postDisplayable(eventBus, event,
-                isMyself(client) ? "channelSelfExternalMessage" : "channelMessage");
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner),
-                message);
+        eventBus.publishAsync(new ChannelMessageEvent(owner,
+                groupChatUserManager.getUserFromClient(client, owner), message));
     }
 
     @Override
@@ -271,11 +267,8 @@ public class ChannelEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        final ChannelActionEvent event = new ChannelActionEvent(owner,
-                groupChatUserManager.getUserFromClient(client, owner), message);
-        final String format = EventUtils.postDisplayable(eventBus, event,
-                isMyself(client) ? "channelSelfExternalAction" : "channelAction");
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), message);
+        eventBus.publishAsync(new ChannelActionEvent(owner,
+                groupChatUserManager.getUserFromClient(client, owner), message));
     }
 
     @Override
@@ -383,10 +376,8 @@ public class ChannelEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ChannelNoticeEvent event = new ChannelNoticeEvent(owner,
-                groupChatUserManager.getUserFromClient(client, owner), message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "channelNotice");
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), message);
+        eventBus.publishAsync(new ChannelNoticeEvent(owner,
+                groupChatUserManager.getUserFromClient(client, owner), message));
     }
 
     @Override
@@ -422,11 +413,9 @@ public class ChannelEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        final ChannelModeNoticeEvent event = new ChannelModeNoticeEvent(owner,
+        eventBus.publishAsync(new ChannelModeNoticeEvent(owner,
                 groupChatUserManager.getUserFromClient(client, owner), String.valueOf(prefix),
-                message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "channelModeNotice");
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), String.valueOf(prefix), message);
+                message));
     }
 
     @Override

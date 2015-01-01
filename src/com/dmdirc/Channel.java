@@ -49,7 +49,6 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
@@ -179,15 +178,8 @@ public class Channel extends MessageTarget implements GroupChat {
         }
 
         final GroupChatUser me = getUser(server.getLocalUser().get()).get();
-        final String[] details = getDetails(me);
-
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
-            final ChannelSelfMessageEvent event =
-                    new ChannelSelfMessageEvent(this, me, part);
-            final String format =
-                    EventUtils.postDisplayable(getEventBus(), event, "channelSelfMessage");
-            addLine(format, details[0], details[1], details[2], details[3], part, channelInfo);
-
+            getEventBus().publishAsync(new ChannelSelfMessageEvent(this, me, part));
             channelInfo.sendMessage(part);
         });
     }
@@ -207,19 +199,12 @@ public class Channel extends MessageTarget implements GroupChat {
             return;
         }
 
-
-        final GroupChatUser me = getUser(server.getLocalUser().get()).get();
-        final String[] details = getDetails(me);
-
         if (server.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 <= action.length()) {
             addLine("actionTooLong", action.length());
         } else {
-            final ChannelSelfActionEvent event = new ChannelSelfActionEvent(this, me, action);
-            final String format = EventUtils.postDisplayable(getEventBus(), event,
-                    "channelSelfAction");
-            addLine(format, details[0], details[1], details[2], details[3], action, channelInfo);
-
+            final GroupChatUser me = getUser(server.getLocalUser().get()).get();
+            getEventBus().publishAsync(new ChannelSelfActionEvent(this, me, action));
             channelInfo.sendAction(action);
         }
     }
