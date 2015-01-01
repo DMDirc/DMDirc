@@ -24,6 +24,8 @@ package com.dmdirc.config.profiles;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,9 +46,17 @@ public abstract class Profile {
 
     public abstract List<String> getNicknames();
 
+    public abstract Collection<String> getHighlights();
+
     public static Profile create(final String name, final String realName,
             final Optional<String> ident, final List<String> nicknames) {
-        return new AutoValue_Profile(name, realName, ident, nicknames);
+        return create(name, realName, ident, nicknames, Collections.emptyList());
+    }
+
+    public static Profile create(final String name, final String realName,
+            final Optional<String> ident, final List<String> nicknames,
+            final Collection<String> highlights) {
+        return new AutoValue_Profile(name, realName, ident, nicknames, highlights);
     }
 
 }
