@@ -178,7 +178,7 @@ public class Channel extends MessageTarget implements GroupChat {
             return;
         }
 
-        final GroupChatUser me = getUser(server.getLocalUser()).get();
+        final GroupChatUser me = getUser(server.getLocalUser().get()).get();
         final String[] details = getDetails(me);
 
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
@@ -208,7 +208,7 @@ public class Channel extends MessageTarget implements GroupChat {
         }
 
 
-        final GroupChatUser me = getUser(server.getLocalUser()).get();
+        final GroupChatUser me = getUser(server.getLocalUser().get()).get();
         final String[] details = getDetails(me);
 
         if (server.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
@@ -242,7 +242,7 @@ public class Channel extends MessageTarget implements GroupChat {
     public void selfJoin() {
         isOnChannel = true;
 
-        final User me = server.getLocalUser();
+        final User me = server.getLocalUser().get();
         addLine("channelSelfJoin", "", me.getNickname(), me.getUsername(),
                 me.getHostname(), channelInfo.getName());
 

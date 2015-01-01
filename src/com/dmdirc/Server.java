@@ -489,9 +489,9 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public User getLocalUser() {
+    public Optional<User> getLocalUser() {
         return parser.map(Parser::getLocalClient)
-                .map(client -> userManager.getUserFromClientInfo(client, this)).get();
+                .map(client -> userManager.getUserFromClientInfo(client, this));
     }
 
     @Override
@@ -933,7 +933,7 @@ public class Server extends FrameContainer implements Connection {
                 final Object[] arguments = {
                     address.getHost(), parser.map(Parser::getServerName).orElse("Unknown"),
                     address.getPort(), parser.map(p -> getNetwork()).orElse("Unknown"),
-                    getLocalUser().getNickname()
+                    getLocalUser().map(User::getNickname).orElse("Unknown")
                 };
 
                 setName(Formatter.formatMessage(getConfigManager(),

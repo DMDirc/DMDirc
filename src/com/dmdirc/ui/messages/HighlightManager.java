@@ -29,6 +29,7 @@ import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerNickchangeEvent;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.util.colours.Colour;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class HighlightManager {
 
     @Handler
     public void handleConnected(final ServerConnectedEvent event) {
-        setNickname(event.getConnection().getLocalUser().getNickname());
+        setNickname(event.getConnection().getLocalUser().map(User::getNickname).orElse("Unknown"));
     }
 
     private void setNickname(final String newNick) {

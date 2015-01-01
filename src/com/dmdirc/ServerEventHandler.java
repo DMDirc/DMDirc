@@ -217,7 +217,7 @@ public class ServerEventHandler extends EventHandler implements
         final ServerCtcpEvent event = new ServerCtcpEvent(owner, owner.getUser(host),
                 type, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "privateCTCP");
-        owner.doNotification(format, owner.getParser().get().getClient(host), type, message);
+        owner.doNotification(format, owner.getUser(host), type, message);
         if (!event.isHandled()) {
             owner.sendCTCPReply(owner.getUser(host).getNickname(), type, message);
         }
@@ -231,7 +231,7 @@ public class ServerEventHandler extends EventHandler implements
         final ServerCtcprEvent event = new ServerCtcprEvent(owner, owner.getUser(host),
                 type, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "privateCTCPreply");
-        owner.doNotification(format, owner.getParser().get().getClient(host), type, message);
+        owner.doNotification(format, owner.getUser(host), type, message);
     }
 
     @Override
@@ -246,9 +246,10 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ServerNoticeEvent event = new ServerNoticeEvent(owner, owner.getLocalUser(), message);
+        final ServerNoticeEvent event = new ServerNoticeEvent(owner, owner.getLocalUser().get(),
+                message);
         final String format = EventUtils.postDisplayable(eventBus, event, "privateNotice");
-        owner.doNotification(format, owner.getParser().get().getClient(host), message);
+        owner.doNotification(format, owner.getUser(host), message);
     }
 
     @Override
@@ -257,9 +258,9 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         final ServerServernoticeEvent event = new ServerServernoticeEvent(owner,
-                owner.getLocalUser(), message);
+                owner.getLocalUser().get(), message);
         final String format = EventUtils.postDisplayable(eventBus, event, "serverNotice");
-        owner.doNotification(format, owner.getParser().get().getClient(host), message);
+        owner.doNotification(format, owner.getUser(host), message);
     }
 
     @Override
@@ -444,7 +445,7 @@ public class ServerEventHandler extends EventHandler implements
         if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
             final QuerySelfMessageEvent event = new QuerySelfMessageEvent(owner.getQuery(target),
-                    owner.getLocalUser(), message);
+                    owner.getLocalUser().get(), message);
             final String format = EventUtils.postDisplayable(eventBus, event,
                     "querySelfExternalMessage");
             owner.getQuery(target).doNotification(format, owner.getLocalUser(), message);
@@ -464,7 +465,7 @@ public class ServerEventHandler extends EventHandler implements
         if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
             final QuerySelfActionEvent event = new QuerySelfActionEvent(owner.getQuery(target),
-                    owner.getLocalUser(), message);
+                    owner.getLocalUser().get(), message);
             final String format = EventUtils.postDisplayable(eventBus, event,
                     "querySelfExternalAction");
             owner.getQuery(target).doNotification(format, owner.getLocalUser(), message);
@@ -482,9 +483,9 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         final ServerUsermodesEvent event = new ServerUsermodesEvent(owner,
-                owner.getUser(client.getUsername()), modes);
+                owner.getUser(client.getHostname()), modes);
         final String format = EventUtils.postDisplayable(eventBus, event, "userModeChanged");
-        owner.doNotification(format, owner.getParser().get().getClient(host), modes);
+        owner.doNotification(format, owner.getUser(client.getHostname()), modes);
     }
 
     @Override
@@ -493,10 +494,10 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         final ServerUsermodesEvent event = new ServerUsermodesEvent(owner,
-                owner.getUser(client.getUsername()), modes);
+                owner.getUser(client.getHostname()), modes);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 modes.isEmpty() || "+".equals(modes) ? "userNoModes" : "userModeDiscovered");
-        owner.doNotification(format, client, modes);
+        owner.doNotification(format, owner.getUser(client.getHostname()), modes);
     }
 
     @Override
@@ -508,7 +509,7 @@ public class ServerEventHandler extends EventHandler implements
         final ServerInviteReceivedEvent event = new ServerInviteReceivedEvent(owner,
                 owner.getUser(userHost), channel);
         final String format = EventUtils.postDisplayable(eventBus, event, "inviteReceived");
-        owner.doNotification(format, owner.getParser().get().getClient(userHost), channel);
+        owner.doNotification(format, owner.getUser(userHost), channel);
     }
 
     @Override
@@ -519,7 +520,7 @@ public class ServerEventHandler extends EventHandler implements
         final ServerWallopsEvent event = new ServerWallopsEvent(owner,
                 owner.getUser(host), message);
         final String format = EventUtils.postDisplayable(eventBus, event, "wallop");
-        owner.doNotification(format, owner.getParser().get().getClient(host), message);
+        owner.doNotification(format, owner.getUser(host), message);
 
     }
 
@@ -529,9 +530,9 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         final ServerWallusersEvent event = new ServerWallusersEvent(owner,
-                owner.getLocalUser(), message);
+                owner.getLocalUser().get(), message);
         final String format = EventUtils.postDisplayable(eventBus, event, "walluser");
-        owner.doNotification(format, owner.getParser().get().getClient(host), message);
+        owner.doNotification(format, owner.getUser(host), message);
     }
 
     @Override
@@ -540,9 +541,9 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         final ServerWalldesyncEvent event = new ServerWalldesyncEvent(owner,
-                owner.getLocalUser(), message);
+                owner.getLocalUser().get(), message);
         final String format = EventUtils.postDisplayable(eventBus, event, "walldesync");
-        owner.doNotification(format, owner.getParser().get().getClient(host), message);
+        owner.doNotification(format, owner.getUser(host), message);
     }
 
     @Override
