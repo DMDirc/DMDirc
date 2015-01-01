@@ -99,7 +99,7 @@ public class PreferencesDialogModel {
 
         addDefaultCategories();
 
-        eventBus.publishAsync(new ClientPrefsOpenedEvent(this));
+        eventBus.publish(new ClientPrefsOpenedEvent(this));
     }
 
     public AggregateConfigProvider getConfigManager() {

@@ -168,7 +168,7 @@ public class PreferencesDialogModelTest {
 
         new PreferencesDialogModel(null, null, null, null, cm, null, pluginManager, eventBus);
 
-        verify(eventBus).publishAsync(isA(ClientPrefsOpenedEvent.class));
+        verify(eventBus).publish(isA(ClientPrefsOpenedEvent.class));
     }
 
     @Test
