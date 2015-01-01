@@ -50,7 +50,6 @@ public class ServerFactoryImpl {
     private final TabCompleterFactory tabCompleterFactory;
     private final IdentityFactory identityFactory;
     private final MessageSinkManager messageSinkManager;
-    private final WindowManager windowManager;
     private final Provider<ChannelFactory> channelFactory;
     private final Provider<QueryFactory> queryFactory;
     private final URLBuilder urlBuilder;
@@ -79,7 +78,6 @@ public class ServerFactoryImpl {
         this.tabCompleterFactory = tabCompleterFactory;
         this.identityFactory = identityFactory;
         this.messageSinkManager = messageSinkManager;
-        this.windowManager = windowManager;
         this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
         this.urlBuilder = urlBuilder;
@@ -97,7 +95,7 @@ public class ServerFactoryImpl {
             final URI uri,
             final Profile profile) {
         return new Server(configMigrator, commandParser, parserFactory,
-                tabCompleterFactory, identityFactory, messageSinkManager, windowManager,
+                tabCompleterFactory, identityFactory, messageSinkManager,
                 channelFactory.get(), queryFactory.get(), urlBuilder, eventBus,
                 messageEncoderFactory, userSettings, executorService, uri, profile,
                 backBufferFactory, userManager);
