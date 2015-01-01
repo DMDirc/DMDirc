@@ -55,6 +55,7 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
+import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.HighlightManager;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
@@ -239,7 +240,9 @@ public class Server extends FrameContainer implements Connection {
         getConfigManager().addChangeListener("formatter", "serverName", configListener);
         getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
 
-        this.highlightManager = new HighlightManager();
+        this.highlightManager = new HighlightManager(getConfigManager(),
+                new ColourManager(getConfigManager(), getEventBus()));
+        highlightManager.init();
         getEventBus().subscribe(highlightManager);
     }
 
@@ -852,6 +855,7 @@ public class Server extends FrameContainer implements Connection {
         synchronized (myStateLock) {
             eventHandler.unregisterCallbacks();
             getConfigManager().removeListener(configListener);
+            highlightManager.stop();
             getEventBus().unsubscribe(highlightManager);
             executorService.shutdown();
 
