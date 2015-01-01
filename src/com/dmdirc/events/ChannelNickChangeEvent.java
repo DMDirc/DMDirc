@@ -22,28 +22,37 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.interfaces.Connection;
+import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
- * Fired on receiving an auth notice.
+ * Fired when a user changes nickname in a channel.
  */
-public class ServerAuthnoticeEvent extends ServerDisplayableEvent {
+public class ChannelNickChangeEvent extends ChannelDisplayableEvent {
 
-    private final String notice;
+    private final GroupChatUser client;
+    private final String oldNick;
 
-    public ServerAuthnoticeEvent(final long timestamp, final Connection connection,
-            final String notice) {
-        super(timestamp, connection);
-        this.notice = notice;
+    public ChannelNickChangeEvent(final long timestamp, final Channel channel,
+            final GroupChatUser client, final String oldNick) {
+        super(timestamp, channel);
+        this.client = client;
+        this.oldNick = oldNick;
     }
 
-    public ServerAuthnoticeEvent(final Connection connection, final String notice) {
-        super(connection);
-        this.notice = notice;
+    public ChannelNickChangeEvent(final Channel channel, final GroupChatUser client,
+            final String oldNick) {
+        super(channel);
+        this.client = client;
+        this.oldNick = oldNick;
     }
 
-    public String getNotice() {
-        return notice;
+    public GroupChatUser getClient() {
+        return client;
+    }
+
+    public String getOldNick() {
+        return oldNick;
     }
 
 }

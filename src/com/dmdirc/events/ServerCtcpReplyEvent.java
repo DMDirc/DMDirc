@@ -22,37 +22,43 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
-import com.dmdirc.interfaces.GroupChatUser;
+import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.User;
 
 /**
- * Fired when a channel mode is changed.
+ * Fired when sending a CTCP reply.
  */
-public class ChannelModechangeEvent extends ChannelDisplayableEvent {
+public class ServerCtcpReplyEvent extends ServerDisplayableEvent {
 
-    private final GroupChatUser client;
-    private final String modes;
+    private final User user;
+    private final String type;
+    private final String content;
 
-    public ChannelModechangeEvent(final long timestamp, final Channel channel,
-            final GroupChatUser client, final String modes) {
-        super(timestamp, channel);
-        this.client = client;
-        this.modes = modes;
+    public ServerCtcpReplyEvent(final long timestamp, final Connection connection, final User user,
+            final String type, final String content) {
+        super(timestamp, connection);
+        this.user = user;
+        this.type = type;
+        this.content = content;
     }
 
-    public ChannelModechangeEvent(final Channel channel,
-            final GroupChatUser client, final String modes) {
-        super(channel);
-        this.client = client;
-        this.modes = modes;
+    public ServerCtcpReplyEvent(final Connection connection, final User user, final String type,
+            final String content) {
+        super(connection);
+        this.user = user;
+        this.type = type;
+        this.content = content;
     }
 
-    public GroupChatUser getClient() {
-        return client;
+    public User getUser() {
+        return user;
     }
 
-    public String getModes() {
-        return modes;
+    public String getType() {
+        return type;
     }
 
+    public String getContent() {
+        return content;
+    }
 }

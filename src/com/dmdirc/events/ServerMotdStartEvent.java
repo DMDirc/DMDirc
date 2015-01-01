@@ -25,24 +25,25 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 
 /**
- * Fired when we receive a server ping reply.
+ * Fired when the MOTD starts.
  */
-public class ServerGotpingEvent extends ServerEvent {
+public class ServerMotdStartEvent extends ServerDisplayableEvent {
 
-    private final long ping;
+    private final String message;
 
-    public ServerGotpingEvent(final long timestamp, final Connection connection, final long ping) {
+    public ServerMotdStartEvent(final long timestamp, final Connection connection,
+            final String message) {
         super(timestamp, connection);
-        this.ping = ping;
+        this.message = message;
     }
 
-    public ServerGotpingEvent(final Connection connection, final long ping) {
+    public ServerMotdStartEvent(final Connection connection, final String message) {
         super(connection);
-        this.ping = ping;
+        this.message = message;
     }
 
-    public long getPing() {
-        return ping;
+    public String getMessage() {
+        return message;
     }
 
 }

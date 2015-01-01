@@ -22,28 +22,27 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.Connection;
 
 /**
- * Fired when channel list modes are retrieved.
+ * Fired when we miss a server ping reply.
  */
-public class ChannelListmodesretrievedEvent extends ChannelDisplayableEvent {
+public class ServerNoPingEvent extends ServerEvent {
 
-    private final char mode;
+    private final long ping;
 
-    public ChannelListmodesretrievedEvent(final long timestamp, final Channel channel,
-            final char mode) {
-        super(timestamp, channel);
-        this.mode = mode;
+    public ServerNoPingEvent(final long timestamp, final Connection connection, final long ping) {
+        super(timestamp, connection);
+        this.ping = ping;
     }
 
-    public ChannelListmodesretrievedEvent(final Channel channel, final char mode) {
-        super(channel);
-        this.mode = mode;
+    public ServerNoPingEvent(final Connection connection, final long ping) {
+        super(connection);
+        this.ping = ping;
     }
 
-    public char getMode() {
-        return mode;
+    public long getPing() {
+        return ping;
     }
 
 }

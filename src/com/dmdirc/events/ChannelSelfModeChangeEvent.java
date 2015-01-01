@@ -28,7 +28,7 @@ import com.dmdirc.interfaces.GroupChatUser;
 /**
  * Event raised when the local client changes a channel mode.
  */
-public class ChannelSelfModeChangeEvent extends ChannelModechangeEvent {
+public class ChannelSelfModeChangeEvent extends ChannelModeChangeEvent {
 
     public ChannelSelfModeChangeEvent(final long timestamp, final Channel channel,
             final GroupChatUser client, final String modes) {
