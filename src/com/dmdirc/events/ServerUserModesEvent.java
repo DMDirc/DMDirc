@@ -23,38 +23,32 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.User;
 
 /**
- * Fired when an unknown notice is received.
+ * Fired in on receipt of user modes.
  */
-public class ServerUnknownnoticeEvent extends ServerDisplayableEvent {
+public class ServerUserModesEvent extends ServerDisplayableEvent {
 
-    private final String sender;
-    private final String target;
+    private final User user;
     private final String message;
 
-    public ServerUnknownnoticeEvent(final long timestamp, final Connection connection,
-            final String sender, final String target, final String message) {
+    public ServerUserModesEvent(final long timestamp, final Connection connection, final User user,
+            final String message) {
         super(timestamp, connection);
-        this.sender = sender;
-        this.target = target;
+        this.user = user;
         this.message = message;
     }
 
-    public ServerUnknownnoticeEvent(final Connection connection, final String sender,
-            final String target, final String message) {
+    public ServerUserModesEvent(final Connection connection, final User user, final String
+            message) {
         super(connection);
-        this.sender = sender;
-        this.target = target;
+        this.user = user;
         this.message = message;
     }
 
-    public String getSender() {
-        return sender;
-    }
-
-    public String getTarget() {
-        return target;
+    public User getUser() {
+        return user;
     }
 
     public String getMessage() {

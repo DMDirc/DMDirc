@@ -22,38 +22,27 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
-import com.dmdirc.Topic;
-import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.Connection;
 
 /**
- * Fired when a channel topic is changed.
+ * Fired when we receive a server ping reply.
  */
-public class ChannelGottopicEvent extends ChannelDisplayableEvent {
+public class ServerGotPingEvent extends ServerEvent {
 
-    private final Topic topic;
-    private final User user;
+    private final long ping;
 
-    public ChannelGottopicEvent(final long timestamp, final Channel channel, final Topic topic,
-            final User user) {
-        super(timestamp, channel);
-        this.topic = topic;
-        this.user = user;
+    public ServerGotPingEvent(final long timestamp, final Connection connection, final long ping) {
+        super(timestamp, connection);
+        this.ping = ping;
     }
 
-    public ChannelGottopicEvent(final Channel channel, final Topic topic,
-            final User user) {
-        super(channel);
-        this.topic = topic;
-        this.user = user;
+    public ServerGotPingEvent(final Connection connection, final long ping) {
+        super(connection);
+        this.ping = ping;
     }
 
-    public Topic getTopic() {
-        return topic;
-    }
-
-    public User getUser() {
-        return user;
+    public long getPing() {
+        return ping;
     }
 
 }

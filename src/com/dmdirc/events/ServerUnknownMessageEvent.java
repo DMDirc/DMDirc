@@ -25,33 +25,40 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 
 /**
- * Fired on a change of a nickname.
+ * Fired when an unknown message is received.
  */
-public class ServerNickchangeEvent extends ServerDisplayableEvent {
+public class ServerUnknownMessageEvent extends ServerDisplayableEvent {
 
-    private final String oldNick;
-    private final String newNick;
+    private final String sender;
+    private final String target;
+    private final String message;
 
-    public ServerNickchangeEvent(final long timestamp, final Connection connection,
-            final String oldNick, final String newNick) {
+    public ServerUnknownMessageEvent(final long timestamp, final Connection connection,
+            final String sender, final String target, final String message) {
         super(timestamp, connection);
-        this.oldNick = oldNick;
-        this.newNick = newNick;
+        this.sender = sender;
+        this.target = target;
+        this.message = message;
     }
 
-    public ServerNickchangeEvent(final Connection connection, final String oldNick,
-            final String newNick) {
+    public ServerUnknownMessageEvent(final Connection connection, final String sender,
+            final String target, final String message) {
         super(connection);
-        this.oldNick = oldNick;
-        this.newNick = newNick;
+        this.sender = sender;
+        this.target = target;
+        this.message = message;
     }
 
-    public String getOldNick() {
-        return oldNick;
+    public String getSender() {
+        return sender;
     }
 
-    public String getNewNick() {
-        return newNick;
+    public String getTarget() {
+        return target;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
 }

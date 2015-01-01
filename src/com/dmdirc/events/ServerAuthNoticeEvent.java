@@ -22,28 +22,28 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.Connection;
 
 /**
- * Fired when channel modes are discovered.
+ * Fired on receiving an auth notice.
  */
-public class ChannelModesdiscoveredEvent extends ChannelDisplayableEvent {
+public class ServerAuthNoticeEvent extends ServerDisplayableEvent {
 
-    private final String modes;
+    private final String notice;
 
-    public ChannelModesdiscoveredEvent(final long timestamp, final Channel channel,
-            final String modes) {
-        super(timestamp, channel);
-        this.modes = modes;
+    public ServerAuthNoticeEvent(final long timestamp, final Connection connection,
+            final String notice) {
+        super(timestamp, connection);
+        this.notice = notice;
     }
 
-    public ChannelModesdiscoveredEvent(final Channel channel, final String modes) {
-        super(channel);
-        this.modes = modes;
+    public ServerAuthNoticeEvent(final Connection connection, final String notice) {
+        super(connection);
+        this.notice = notice;
     }
 
-    public String getModes() {
-        return modes;
+    public String getNotice() {
+        return notice;
     }
 
 }

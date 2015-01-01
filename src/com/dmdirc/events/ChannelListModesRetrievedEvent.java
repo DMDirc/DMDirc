@@ -22,28 +22,28 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.interfaces.Connection;
+import com.dmdirc.Channel;
 
 /**
- * Fired when the MOTD ends.
+ * Fired when channel list modes are retrieved.
  */
-public class ServerMotdendEvent extends ServerDisplayableEvent {
+public class ChannelListModesRetrievedEvent extends ChannelDisplayableEvent {
 
-    private final String message;
+    private final char mode;
 
-    public ServerMotdendEvent(final long timestamp, final Connection connection,
-            final String message) {
-        super(timestamp, connection);
-        this.message = message;
+    public ChannelListModesRetrievedEvent(final long timestamp, final Channel channel,
+            final char mode) {
+        super(timestamp, channel);
+        this.mode = mode;
     }
 
-    public ServerMotdendEvent(final Connection connection, final String message) {
-        super(connection);
-        this.message = message;
+    public ChannelListModesRetrievedEvent(final Channel channel, final char mode) {
+        super(channel);
+        this.mode = mode;
     }
 
-    public String getMessage() {
-        return message;
+    public char getMode() {
+        return mode;
     }
 
 }

@@ -22,43 +22,19 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.User;
+import com.dmdirc.Channel;
 
 /**
- * Fired when sending a CTCP reply.
+ * Fired when a channel names event is received.
  */
-public class ServerCtcprEvent extends ServerDisplayableEvent {
+public class ChannelGotNamesEvent extends ChannelEvent {
 
-    private final User user;
-    private final String type;
-    private final String content;
-
-    public ServerCtcprEvent(final long timestamp, final Connection connection,
-            final User user, final String type, final String content) {
-        super(timestamp, connection);
-        this.user = user;
-        this.type = type;
-        this.content = content;
+    public ChannelGotNamesEvent(final long timestamp, final Channel channel) {
+        super(timestamp, channel);
     }
 
-    public ServerCtcprEvent(final Connection connection, final User user, final String type,
-            final String content) {
-        super(connection);
-        this.user = user;
-        this.type = type;
-        this.content = content;
+    public ChannelGotNamesEvent(final Channel channel) {
+        super(channel);
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getContent() {
-        return content;
-    }
 }

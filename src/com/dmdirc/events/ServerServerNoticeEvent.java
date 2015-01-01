@@ -22,19 +22,37 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.User;
 
 /**
- * Fired when a topic is unset on a channel.
+ * Fired when receiving a server notice.
  */
-public class ChannelNotopicEvent extends ChannelDisplayableEvent {
+public class ServerServerNoticeEvent extends ServerDisplayableEvent {
 
-    public ChannelNotopicEvent(final long timestamp, final Channel channel) {
-        super(timestamp, channel);
+    private final User user;
+    private final String message;
+
+    public ServerServerNoticeEvent(final long timestamp, final Connection connection,
+            final User user, final String message) {
+        super(timestamp, connection);
+        this.user = user;
+        this.message = message;
     }
 
-    public ChannelNotopicEvent(final Channel channel) {
-        super(channel);
+    public ServerServerNoticeEvent(final Connection connection, final User user,
+            final String message) {
+        super(connection);
+        this.user = user;
+        this.message = message;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
 }

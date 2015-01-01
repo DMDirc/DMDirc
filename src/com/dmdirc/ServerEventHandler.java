@@ -25,27 +25,27 @@ package com.dmdirc;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.QuerySelfActionEvent;
 import com.dmdirc.events.QuerySelfMessageEvent;
-import com.dmdirc.events.ServerAuthnoticeEvent;
+import com.dmdirc.events.ServerAuthNoticeEvent;
 import com.dmdirc.events.ServerAwayEvent;
 import com.dmdirc.events.ServerBackEvent;
 import com.dmdirc.events.ServerCtcpEvent;
-import com.dmdirc.events.ServerCtcprEvent;
+import com.dmdirc.events.ServerCtcpReplyEvent;
 import com.dmdirc.events.ServerErrorEvent;
-import com.dmdirc.events.ServerGotpingEvent;
+import com.dmdirc.events.ServerGotPingEvent;
 import com.dmdirc.events.ServerInviteReceivedEvent;
-import com.dmdirc.events.ServerMotdendEvent;
-import com.dmdirc.events.ServerMotdlineEvent;
-import com.dmdirc.events.ServerMotdstartEvent;
-import com.dmdirc.events.ServerNickchangeEvent;
-import com.dmdirc.events.ServerNopingEvent;
+import com.dmdirc.events.ServerMotdEndEvent;
+import com.dmdirc.events.ServerMotdLineEvent;
+import com.dmdirc.events.ServerMotdStartEvent;
+import com.dmdirc.events.ServerNickChangeEvent;
+import com.dmdirc.events.ServerNoPingEvent;
 import com.dmdirc.events.ServerNoticeEvent;
 import com.dmdirc.events.ServerNumericEvent;
-import com.dmdirc.events.ServerPingsentEvent;
-import com.dmdirc.events.ServerServernoticeEvent;
-import com.dmdirc.events.ServerUnknownactionEvent;
-import com.dmdirc.events.ServerUnknownmessageEvent;
-import com.dmdirc.events.ServerUnknownnoticeEvent;
-import com.dmdirc.events.ServerUsermodesEvent;
+import com.dmdirc.events.ServerPingSentEvent;
+import com.dmdirc.events.ServerServerNoticeEvent;
+import com.dmdirc.events.ServerUnknownActionEvent;
+import com.dmdirc.events.ServerUnknownMessageEvent;
+import com.dmdirc.events.ServerUnknownNoticeEvent;
+import com.dmdirc.events.ServerUserModesEvent;
 import com.dmdirc.events.ServerWalldesyncEvent;
 import com.dmdirc.events.ServerWallopsEvent;
 import com.dmdirc.events.ServerWallusersEvent;
@@ -228,7 +228,7 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ServerCtcprEvent event = new ServerCtcprEvent(owner, owner.getUser(host),
+        final ServerCtcpReplyEvent event = new ServerCtcpReplyEvent(owner, owner.getUser(host),
                 type, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "privateCTCPreply");
         owner.doNotification(format, owner.getUser(host), type, message);
@@ -257,7 +257,7 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ServerServernoticeEvent event = new ServerServernoticeEvent(owner,
+        final ServerServerNoticeEvent event = new ServerServerNoticeEvent(owner,
                 owner.getLocalUser().get(), message);
         final String format = EventUtils.postDisplayable(eventBus, event, "serverNotice");
         owner.doNotification(format, owner.getUser(host), message);
@@ -267,7 +267,7 @@ public class ServerEventHandler extends EventHandler implements
     public void onMOTDStart(final Parser parser, final Date date, final String data) {
         checkParser(parser);
 
-        final ServerMotdstartEvent event = new ServerMotdstartEvent(owner, data);
+        final ServerMotdStartEvent event = new ServerMotdStartEvent(owner, data);
         final String format = EventUtils.postDisplayable(eventBus, event, "motdStart");
         owner.doNotification(format, data);
     }
@@ -276,7 +276,7 @@ public class ServerEventHandler extends EventHandler implements
     public void onMOTDLine(final Parser parser, final Date date, final String data) {
         checkParser(parser);
 
-        final ServerMotdlineEvent event = new ServerMotdlineEvent(owner, data);
+        final ServerMotdLineEvent event = new ServerMotdLineEvent(owner, data);
         final String format = EventUtils.postDisplayable(eventBus, event, "motdLine");
         owner.doNotification(format, data);
     }
@@ -286,7 +286,7 @@ public class ServerEventHandler extends EventHandler implements
             final boolean noMOTD, final String data) {
         checkParser(parser);
 
-        final ServerMotdendEvent event = new ServerMotdendEvent(owner, data);
+        final ServerMotdEndEvent event = new ServerMotdEndEvent(owner, data);
         final String format = EventUtils.postDisplayable(eventBus, event, "motdEnd");
         owner.doNotification(format, data);
     }
@@ -327,7 +327,7 @@ public class ServerEventHandler extends EventHandler implements
                         (int) Math.floor(parser.getPingTime() / 1000.0) + " seconds.",
                 owner.getConfigManager())));
 
-        eventBus.publishAsync(new ServerNopingEvent(owner, parser.getPingTime()));
+        eventBus.publishAsync(new ServerNoPingEvent(owner, parser.getPingTime()));
 
         if (parser.getPingTime()
                 >= owner.getConfigManager().getOptionInt("server", "pingtimeout")) {
@@ -341,14 +341,14 @@ public class ServerEventHandler extends EventHandler implements
     public void onPingSent(final Parser parser, final Date date) {
         checkParser(parser);
 
-        eventBus.publishAsync(new ServerPingsentEvent(owner));
+        eventBus.publishAsync(new ServerPingSentEvent(owner));
     }
 
     @Override
     public void onPingSuccess(final Parser parser, final Date date) {
         checkParser(parser);
 
-        eventBus.publishAsync(new ServerGotpingEvent(owner,
+        eventBus.publishAsync(new ServerGotPingEvent(owner,
                 owner.getParser().get().getServerLatency()));
     }
 
@@ -422,7 +422,7 @@ public class ServerEventHandler extends EventHandler implements
     public void onNoticeAuth(final Parser parser, final Date date, final String data) {
         checkParser(parser);
 
-        final ServerAuthnoticeEvent event = new ServerAuthnoticeEvent(owner, data);
+        final ServerAuthNoticeEvent event = new ServerAuthNoticeEvent(owner, data);
         final String format = EventUtils.postDisplayable(eventBus, event, "authNotice");
         owner.doNotification(format, data);
     }
@@ -432,7 +432,8 @@ public class ServerEventHandler extends EventHandler implements
             final String target, final String host) {
         checkParser(parser);
 
-        final ServerUnknownnoticeEvent event = new ServerUnknownnoticeEvent(owner, host, target, message);
+        final ServerUnknownNoticeEvent
+                event = new ServerUnknownNoticeEvent(owner, host, target, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "unknownNotice");
         owner.doNotification(format, host, target, message);
     }
@@ -450,8 +451,8 @@ public class ServerEventHandler extends EventHandler implements
                     "querySelfExternalMessage");
             owner.getQuery(target).doNotification(format, owner.getLocalUser(), message);
         } else {
-            final ServerUnknownmessageEvent event
-                    = new ServerUnknownmessageEvent(owner, host, target, message);
+            final ServerUnknownMessageEvent event
+                    = new ServerUnknownMessageEvent(owner, host, target, message);
             final String format = EventUtils.postDisplayable(eventBus, event, "unknownMessage");
             owner.doNotification(format, host, target, message);
         }
@@ -470,8 +471,8 @@ public class ServerEventHandler extends EventHandler implements
                     "querySelfExternalAction");
             owner.getQuery(target).doNotification(format, owner.getLocalUser(), message);
         } else {
-            final ServerUnknownactionEvent event
-                    = new ServerUnknownactionEvent(owner, host, target, message);
+            final ServerUnknownActionEvent event
+                    = new ServerUnknownActionEvent(owner, host, target, message);
             final String format = EventUtils.postDisplayable(eventBus, event, "unknownAction");
             owner.doNotification(format, host, target, message);
         }
@@ -482,7 +483,7 @@ public class ServerEventHandler extends EventHandler implements
             final ClientInfo client, final String host, final String modes) {
         checkParser(parser);
 
-        final ServerUsermodesEvent event = new ServerUsermodesEvent(owner,
+        final ServerUserModesEvent event = new ServerUserModesEvent(owner,
                 owner.getUser(client.getHostname()), modes);
         final String format = EventUtils.postDisplayable(eventBus, event, "userModeChanged");
         owner.doNotification(format, owner.getUser(client.getHostname()), modes);
@@ -493,7 +494,7 @@ public class ServerEventHandler extends EventHandler implements
             final ClientInfo client, final String modes) {
         checkParser(parser);
 
-        final ServerUsermodesEvent event = new ServerUsermodesEvent(owner,
+        final ServerUserModesEvent event = new ServerUserModesEvent(owner,
                 owner.getUser(client.getHostname()), modes);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 modes.isEmpty() || "+".equals(modes) ? "userNoModes" : "userModeDiscovered");
@@ -552,7 +553,7 @@ public class ServerEventHandler extends EventHandler implements
         checkParser(parser);
 
         if (client.equals(owner.getParser().get().getLocalClient())) {
-            final ServerNickchangeEvent event = new ServerNickchangeEvent(owner, oldNick,
+            final ServerNickChangeEvent event = new ServerNickChangeEvent(owner, oldNick,
                     client.getNickname());
             final String format = EventUtils.postDisplayable(eventBus, event, "selfNickChange");
             owner.doNotification(format, oldNick, client.getNickname());

@@ -15,19 +15,19 @@ ChannelSelfMessageEvent:
 ChannelSelfActionEvent:
   format: "* {{client.modePrefixedNickname}} {{message}}"
   colour: 6
-ChannelGottopicEvent:
+ChannelGotTopicEvent:
   format: "* The topic for {{channel.name}} is '{{topic.topic}}'.\n* Topic was set by {{user.nickname}} at {{topic.time}}."
   colour: 3
 ChannelTopicChangeEvent:
   format: "* {{user.nickname}} has changed the topic to  {{topic.topic}}."
   colour: 3
-ChannelNotopicEvent:
+ChannelNoTopicEvent:
   format: "* There is no topic set for {{channel.name}}."
   colour: 3
 ChannelTopicUnsetEvent:
   format: "* {{client.modePrefixedNickname}} has removed the topic on {{channel.name}}."
   colour: 3
-ChannelModechangeEvent:
+ChannelModeChangeEvent:
   format: "* {{client.modePrefixedNickname}} sets mode: {{modes}}."
   colour: 3
 ChannelSelfModeChangeEvent:

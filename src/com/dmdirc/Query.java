@@ -28,7 +28,7 @@ import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.QueryActionEvent;
 import com.dmdirc.events.QueryClosedEvent;
 import com.dmdirc.events.QueryMessageEvent;
-import com.dmdirc.events.QueryNickchangeEvent;
+import com.dmdirc.events.QueryNickChangeEvent;
 import com.dmdirc.events.QueryQuitEvent;
 import com.dmdirc.events.QuerySelfActionEvent;
 import com.dmdirc.events.QuerySelfMessageEvent;
@@ -234,7 +234,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             }
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QueryNickchangeEvent(this, oldNick),
+                    new QueryNickChangeEvent(this, oldNick),
                     "queryNickChanged");
 
             server.updateQuery(this, oldNick, client.getNickname());

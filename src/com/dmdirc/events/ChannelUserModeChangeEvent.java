@@ -22,27 +22,44 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Query;
+import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
- * Fired when a user changes nickname in a query.
+ * Fired when a channel user mode change occurs.
  */
-public class QueryNickchangeEvent extends QueryDisplayableEvent {
+public class ChannelUserModeChangeEvent extends ChannelDisplayableEvent {
 
-    private final String oldNick;
+    private final GroupChatUser user;
+    private final GroupChatUser victim;
+    private final String modes;
 
-    public QueryNickchangeEvent(final long timestamp, final Query query, final String oldNick) {
-        super(timestamp, query);
-        this.oldNick = oldNick;
+    public ChannelUserModeChangeEvent(final long timestamp, final Channel channel,
+            final GroupChatUser user, final GroupChatUser victim, final String modes) {
+        super(timestamp, channel);
+        this.user = user;
+        this.victim = victim;
+        this.modes = modes;
     }
 
-    public QueryNickchangeEvent(final Query query, final String oldNick) {
-        super(query);
-        this.oldNick = oldNick;
+    public ChannelUserModeChangeEvent(final Channel channel, final GroupChatUser user,
+            final GroupChatUser victim, final String modes) {
+        super(channel);
+        this.user = user;
+        this.victim = victim;
+        this.modes = modes;
     }
 
-    public String getOldNick() {
-        return oldNick;
+    public GroupChatUser getUser() {
+        return user;
+    }
+
+    public GroupChatUser getVictim() {
+        return victim;
+    }
+
+    public String getModes() {
+        return modes;
     }
 
 }
