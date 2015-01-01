@@ -45,9 +45,7 @@ import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.common.ThreadedParser;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.EncodingParser;
-import com.dmdirc.parser.interfaces.LocalClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
@@ -491,9 +489,9 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public User getLocalUser() {
+    public Optional<User> getLocalUser() {
         return parser.map(Parser::getLocalClient)
-                .map(client -> userManager.getUserFromClientInfo(client, this)).get();
+                .map(client -> userManager.getUserFromClientInfo(client, this));
     }
 
     @Override
@@ -918,12 +916,6 @@ public class Server extends FrameContainer implements Connection {
             args.add(clientInfo.getUsername());
             args.add(clientInfo.getHostname());
             return true;
-        } else if (arg instanceof ClientInfo) {
-            final ClientInfo clientInfo = (ClientInfo) arg;
-            args.add(clientInfo.getNickname());
-            args.add(clientInfo.getUsername());
-            args.add(clientInfo.getHostname());
-            return true;
         } else {
             return super.processNotificationArg(arg, args);
         }
@@ -941,8 +933,7 @@ public class Server extends FrameContainer implements Connection {
                 final Object[] arguments = {
                     address.getHost(), parser.map(Parser::getServerName).orElse("Unknown"),
                     address.getPort(), parser.map(p -> getNetwork()).orElse("Unknown"),
-                    parser.map(Parser::getLocalClient).map(LocalClientInfo::getNickname).orElse(
-                            "Unknown")
+                    getLocalUser().map(User::getNickname).orElse("Unknown")
                 };
 
                 setName(Formatter.formatMessage(getConfigManager(),

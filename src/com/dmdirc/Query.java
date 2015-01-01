@@ -119,9 +119,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
             server.getParser().get().sendMessage(target, part);
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfMessageEvent(this, server.getLocalUser(), part),
+                    new QuerySelfMessageEvent(this, server.getLocalUser().get(), part),
                     "querySelfMessage");
-            doNotification(format, server.getParser().get().getLocalClient(), part);
+            doNotification(format, server.getLocalUser().get(), part);
         });
     }
 
@@ -129,12 +129,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
         if (arg instanceof User) {
             final User clientInfo = (User) arg;
-            args.add(clientInfo.getNickname());
-            args.add(clientInfo.getUsername());
-            args.add(clientInfo.getHostname());
-            return true;
-        } else if (arg instanceof ClientInfo) {
-            final ClientInfo clientInfo = (ClientInfo) arg;
             args.add(clientInfo.getNickname());
             args.add(clientInfo.getUsername());
             args.add(clientInfo.getHostname());
@@ -163,9 +157,9 @@ public class Query extends MessageTarget implements PrivateActionListener,
             server.getParser().get().sendAction(getNickname(), action);
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfActionEvent(this, server.getLocalUser(), action),
+                    new QuerySelfActionEvent(this, server.getLocalUser().get(), action),
                     "querySelfAction");
-            doNotification(format, server.getLocalUser(), action);
+            doNotification(format, server.getLocalUser().get(), action);
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -177,7 +171,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         final String[] parts = server.parseHostmask(host);
 
         final String format = EventUtils.postDisplayable(getEventBus(),
-                new QueryMessageEvent(this, server.getLocalUser(), message), "queryMessage");
+                new QueryMessageEvent(this, server.getLocalUser().get(), message), "queryMessage");
         addLine(format, parts[0], parts[1], parts[2], message);
     }
 
@@ -187,7 +181,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         final String[] parts = server.parseHostmask(host);
 
         final String format = EventUtils.postDisplayable(getEventBus(),
-                new QueryActionEvent(this, server.getLocalUser(), message), "queryAction");
+                new QueryActionEvent(this, server.getLocalUser().get(), message), "queryAction");
         addLine(format, parts[0], parts[1], parts[2], message);
     }
 

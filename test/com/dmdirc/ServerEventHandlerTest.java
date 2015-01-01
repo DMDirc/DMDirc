@@ -87,7 +87,7 @@ public class ServerEventHandlerTest {
                         Optional.of(anyString()), Optional.of(anyString()), eq(clientInfo)))
                 .thenReturn(user);
         when(server.getUser(anyString())).thenReturn(user);
-        when(server.getLocalUser()).thenReturn(user);
+        when(server.getLocalUser()).thenReturn(Optional.of(user));
         final ServerEventHandler handler = new ServerEventHandler(server, eventBus);
         handler.registerCallbacks();
 

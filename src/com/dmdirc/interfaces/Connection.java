@@ -301,7 +301,7 @@ public interface Connection {
      *
      * @return Local user, or empty if there is no local client
      */
-    User getLocalUser();
+    Optional<User> getLocalUser();
 
     /**
      * Returns a {@link User} object representing the specified details.

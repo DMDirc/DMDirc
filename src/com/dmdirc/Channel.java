@@ -42,7 +42,6 @@ import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
@@ -179,7 +178,7 @@ public class Channel extends MessageTarget implements GroupChat {
             return;
         }
 
-        final GroupChatUser me = getUser(server.getLocalUser()).get();
+        final GroupChatUser me = getUser(server.getLocalUser().get()).get();
         final String[] details = getDetails(me);
 
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
@@ -209,7 +208,7 @@ public class Channel extends MessageTarget implements GroupChat {
         }
 
 
-        final GroupChatUser me = getUser(server.getLocalUser()).get();
+        final GroupChatUser me = getUser(server.getLocalUser().get()).get();
         final String[] details = getDetails(me);
 
         if (server.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
@@ -243,7 +242,7 @@ public class Channel extends MessageTarget implements GroupChat {
     public void selfJoin() {
         isOnChannel = true;
 
-        final User me = server.getLocalUser();
+        final User me = server.getLocalUser().get();
         addLine("channelSelfJoin", "", me.getNickname(), me.getUsername(),
                 me.getHostname(), channelInfo.getName());
 
@@ -460,22 +459,8 @@ public class Channel extends MessageTarget implements GroupChat {
             args.add(clientInfo.getHostname());
 
             return true;
-        } else if (arg instanceof ClientInfo) {
-            final ClientInfo clientInfo = (ClientInfo) arg;
-            args.add(clientInfo.getNickname());
-            args.add(clientInfo.getUsername());
-            args.add(clientInfo.getHostname());
-
-            return true;
         } else if (arg instanceof GroupChatUser) {
             final GroupChatUser clientInfo = (GroupChatUser) arg;
-
-            args.addAll(Arrays.asList(getDetails(clientInfo)));
-
-            return true;
-        } else if (arg instanceof ChannelClientInfo) {
-            final GroupChatUser clientInfo = groupChatUserManager.getUserFromClient(
-                    (ChannelClientInfo) arg, this);
 
             args.addAll(Arrays.asList(getDetails(clientInfo)));
 
