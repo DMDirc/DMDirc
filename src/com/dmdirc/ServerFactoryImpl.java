@@ -27,9 +27,8 @@ import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
 
@@ -65,7 +64,6 @@ public class ServerFactoryImpl {
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
-            final WindowManager windowManager,
             final Provider<ChannelFactory> channelFactory,
             final Provider<QueryFactory> queryFactory,
             final URLBuilder urlBuilder,
