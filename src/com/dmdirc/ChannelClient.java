@@ -76,6 +76,11 @@ public class ChannelClient implements GroupChatUser {
     }
 
     @Override
+    public String getModePrefixedNickname() {
+        return getImportantMode() + getNickname();
+    }
+
+    @Override
     public Optional<String> getUsername() {
         return getUser().getUsername();
     }
