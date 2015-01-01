@@ -38,6 +38,7 @@ import com.dmdirc.events.ChannelNoticeEvent;
 import com.dmdirc.events.ChannelNotopicEvent;
 import com.dmdirc.events.ChannelPartEvent;
 import com.dmdirc.events.ChannelQuitEvent;
+import com.dmdirc.events.ChannelSelfModeChangeEvent;
 import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.ChannelTopicUnsetEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
@@ -289,13 +290,12 @@ public class ChannelEventHandler extends EventHandler implements
                 final String format = EventUtils.postDisplayable(eventBus, event,
                         modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
                 owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
+            } else if (isMyself(client)) {
+                eventBus.publishAsync(new ChannelSelfModeChangeEvent(date.getTime(), owner,
+                        groupChatUserManager.getUserFromClient(client, owner), modes));
             } else {
-                final ChannelModechangeEvent event = new ChannelModechangeEvent(date.getTime(),
-                        owner, groupChatUserManager.getUserFromClient(client, owner), modes);
-                final String format = EventUtils.postDisplayable(eventBus, event,
-                        isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
-                owner.doNotification(date, format,
-                        groupChatUserManager.getUserFromClient(client, owner), modes);
+                eventBus.publishAsync(new ChannelModechangeEvent(date.getTime(), owner,
+                        groupChatUserManager.getUserFromClient(client, owner), modes));
             }
         }
 
@@ -386,13 +386,12 @@ public class ChannelEventHandler extends EventHandler implements
                 final String format = EventUtils.postDisplayable(eventBus, event,
                         modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
                 owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
+            } else if (isMyself(client)) {
+                eventBus.publishAsync(new ChannelSelfModeChangeEvent(date.getTime(), owner,
+                        groupChatUserManager.getUserFromClient(client, owner), modes));
             } else {
-                final ChannelModechangeEvent event = new ChannelModechangeEvent(date.getTime(),
-                        owner, groupChatUserManager.getUserFromClient(client, owner), modes);
-                final String format = EventUtils.postDisplayable(eventBus, event,
-                        isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
-                owner.doNotification(date, format,
-                        groupChatUserManager.getUserFromClient(client, owner), modes);
+                eventBus.publishAsync(new ChannelModechangeEvent(date.getTime(), owner,
+                        groupChatUserManager.getUserFromClient(client, owner), modes));
             }
         }
 
