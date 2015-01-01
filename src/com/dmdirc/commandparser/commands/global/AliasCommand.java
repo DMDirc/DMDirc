@@ -133,9 +133,9 @@ public class AliasCommand extends Command implements IntelligentCommand {
 
         if (arg == 0) {
             res.add("--remove");
-        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--remove")) {
+        } else if (arg == 1 && "--remove".equals(context.getPreviousArgs().get(0))) {
             res.addAll(aliasManager.getAliasNames());
-        } else if (arg >= 1 && !context.getPreviousArgs().get(0).equals("--remove")) {
+        } else if (arg >= 1 && !"--remove".equals(context.getPreviousArgs().get(0))) {
             return tabCompleterUtils.getIntelligentResults(arg, context, 1);
         }
 

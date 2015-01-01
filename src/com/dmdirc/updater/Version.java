@@ -103,16 +103,16 @@ public class Version implements Comparable<Version> {
                 // Chris for an explanation of what the hell is going on here.
                 // If there's a bug in this code it should probably be
                 // rewritten.
-                if ((!myExists && !thExists)
-                        || (myIsInt && thIsInt && myInt == thInt)
-                        || (myExists && thExists && !myIsInt && !thIsInt
-                        && myFirstParts[i].equals(thFirstParts[i]))) {
+                if (!myExists && !thExists
+                        || myIsInt && thIsInt && myInt == thInt
+                        || myExists && thExists && !myIsInt && !thIsInt
+                        && myFirstParts[i].equals(thFirstParts[i])) {
                     continue;
-                } else if ((!thExists && myIsInt)
-                        || (thExists && !thIsInt && (!myExists || myIsInt))) {
-                    return +1;
-                } else if ((thIsInt && !myExists)
-                        || (myExists && !myIsInt && (!thExists || thIsInt))) {
+                } else if (!thExists && myIsInt
+                        || thExists && !thIsInt && (!myExists || myIsInt)) {
+                    return 1;
+                } else if (thIsInt && !myExists
+                        || myExists && !myIsInt && (!thExists || thIsInt)) {
                     return -1;
                 } else if (thIsInt && myIsInt) {
                     return myInt - thInt;
@@ -123,12 +123,12 @@ public class Version implements Comparable<Version> {
                     if (myLetterParts[0].equals(thLetterParts[0])) {
                         return Integer.parseInt(myLetterParts[1])
                                 - Integer.parseInt(thLetterParts[1]);
-                    } else if (myLetterParts[0].equals("m")
-                            || thLetterParts[0].equals("rc")
-                            || (myLetterParts[0].equals("a") && thLetterParts[0].equals("b"))) {
+                    } else if ("m".equals(myLetterParts[0])
+                            || "rc".equals(thLetterParts[0])
+                            || "a".equals(myLetterParts[0]) && "b".equals(thLetterParts[0])) {
                         return -1;
                     } else {
-                        return +1;
+                        return 1;
                     }
                 }
             }

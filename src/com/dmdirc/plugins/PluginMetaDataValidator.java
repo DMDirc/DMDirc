@@ -126,8 +126,8 @@ public class PluginMetaDataValidator {
             final String type = bits[1];
 
             if (!knownServices.containsKey(type)
-                    || (!name.equalsIgnoreCase("any")
-                    && !knownServices.containsValue(type, name))) {
+                    || !"any".equalsIgnoreCase(name)
+                    && !knownServices.containsValue(type, name)) {
                 errors.add("Service " + name + " of type " + type
                         + " not available");
             }
