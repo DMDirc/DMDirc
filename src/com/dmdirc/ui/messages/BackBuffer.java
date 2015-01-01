@@ -75,8 +75,13 @@ public class BackBuffer {
     @Handler
     public void handleDisplayableEvent(final DisplayableEvent event) {
         if (event.getSource().equals(owner)) {
-            formatter.format(event).ifPresent(
-                    t -> document.addText(event.getTimestamp(), event.getDisplayProperties(), t));
+            formatter.format(event).map(s -> s.split("\n")).ifPresent(
+                    t -> {
+                        for (String line : t) {
+                            document.addText(event.getTimestamp(), event
+                                            .getDisplayProperties(), line);
+                        }
+                    });
         }
     }
 
