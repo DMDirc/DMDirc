@@ -27,10 +27,14 @@ ChannelNotopicEvent:
 ChannelTopicUnsetEvent:
   format: "* {{client.modePrefixedNickname}} has removed the topic on {{channel.name}}."
   colour: 3
+ChannelModechangeEvent:
+  format: "* {{client.modePrefixedNickname}} sets mode: {{modes}}."
+  colour: 3
+ChannelSelfModeChangeEvent:
+  format: "* You set mode: {{modes}}."
+  colour: 3
 
 # TODO:
-#  channelModeChanged=3* %1$s%2$s sets mode: %5$s.
-#  channelSelfModeChanged=3* You set mode: %5$s.
 #  channelCTCP=4-!- CTCP %5$S from %1$s%2$s
 #  channelPart=3* %1$s%2$s (%3$s@%4$s) has left %6$s.
 #  channelPartReason=3* %1$s%2$s (%3$s@%4$s) has left %6$s (%5$s).
