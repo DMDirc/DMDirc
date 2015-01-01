@@ -121,7 +121,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final String format = EventUtils.postDisplayable(getEventBus(),
                     new QuerySelfMessageEvent(this, server.getLocalUser().get(), part),
                     "querySelfMessage");
-            doNotification(format, server.getLocalUser(), part);
+            doNotification(format, server.getLocalUser().get(), part);
         });
     }
 
@@ -159,7 +159,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final String format = EventUtils.postDisplayable(getEventBus(),
                     new QuerySelfActionEvent(this, server.getLocalUser().get(), action),
                     "querySelfAction");
-            doNotification(format, server.getLocalUser(), action);
+            doNotification(format, server.getLocalUser().get(), action);
         } else {
             addLine("actionTooLong", action.length());
         }
