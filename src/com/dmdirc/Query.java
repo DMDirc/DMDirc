@@ -133,12 +133,6 @@ public class Query extends MessageTarget implements PrivateActionListener,
             args.add(clientInfo.getUsername());
             args.add(clientInfo.getHostname());
             return true;
-        } else if (arg instanceof ClientInfo) {
-            final ClientInfo clientInfo = (ClientInfo) arg;
-            args.add(clientInfo.getNickname());
-            args.add(clientInfo.getUsername());
-            args.add(clientInfo.getHostname());
-            return true;
         } else {
             return super.processNotificationArg(arg, args);
         }
