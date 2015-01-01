@@ -29,8 +29,6 @@ import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerNickchangeEvent;
-import com.dmdirc.parser.interfaces.LocalClientInfo;
-import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.util.colours.Colour;
 
 import java.util.ArrayList;
@@ -75,10 +73,7 @@ public class HighlightManager {
 
     @Handler
     public void handleConnected(final ServerConnectedEvent event) {
-        event.getConnection().getParser()
-                .map(Parser::getLocalClient)
-                .map(LocalClientInfo::getNickname)
-                .ifPresent(this::setNickname);
+        setNickname(event.getConnection().getLocalUser().getNickname());
     }
 
     private void setNickname(final String newNick) {

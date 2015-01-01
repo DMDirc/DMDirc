@@ -121,7 +121,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
             final String format = EventUtils.postDisplayable(getEventBus(),
                     new QuerySelfMessageEvent(this, server.getLocalUser(), part),
                     "querySelfMessage");
-            doNotification(format, server.getParser().get().getLocalClient(), part);
+            doNotification(format, server.getLocalUser(), part);
         });
     }
 

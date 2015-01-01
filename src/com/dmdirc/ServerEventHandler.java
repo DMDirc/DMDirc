@@ -447,7 +447,7 @@ public class ServerEventHandler extends EventHandler implements
                     owner.getLocalUser(), message);
             final String format = EventUtils.postDisplayable(eventBus, event,
                     "querySelfExternalMessage");
-            owner.getQuery(target).doNotification(format, parser.getLocalClient(), message);
+            owner.getQuery(target).doNotification(format, owner.getLocalUser(), message);
         } else {
             final ServerUnknownmessageEvent event
                     = new ServerUnknownmessageEvent(owner, host, target, message);
@@ -467,7 +467,7 @@ public class ServerEventHandler extends EventHandler implements
                     owner.getLocalUser(), message);
             final String format = EventUtils.postDisplayable(eventBus, event,
                     "querySelfExternalAction");
-            owner.getQuery(target).doNotification(format, parser.getLocalClient(), message);
+            owner.getQuery(target).doNotification(format, owner.getLocalUser(), message);
         } else {
             final ServerUnknownactionEvent event
                     = new ServerUnknownactionEvent(owner, host, target, message);
