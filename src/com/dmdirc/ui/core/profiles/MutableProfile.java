@@ -27,6 +27,7 @@ import com.dmdirc.config.profiles.Profile;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,17 +41,25 @@ public class MutableProfile {
     private String realname;
     private Optional<String> ident;
     private List<String> nicknames;
+    private List<String> highlights;
 
     public MutableProfile(final Profile profile) {
-        this(profile.getName(), profile.getRealname(), profile.getIdent(), profile.getNicknames());
+        this(profile.getName(), profile.getRealname(), profile.getIdent(), profile.getNicknames(),
+                profile.getHighlights());
     }
 
     public MutableProfile(final String name, final String realname, final Optional<String> ident,
             final Iterable<String> nicknames) {
+        this(name, realname, ident, nicknames, Collections.emptyList());
+    }
+
+    public MutableProfile(final String name, final String realname, final Optional<String> ident,
+            final Iterable<String> nicknames, final Iterable<String> highlights) {
         this.name = name;
         this.realname = realname;
         this.ident = ident;
         this.nicknames = Lists.newArrayList(nicknames);
+        this.highlights = Lists.newArrayList(highlights);
     }
 
     public String getName() {
@@ -97,6 +106,26 @@ public class MutableProfile {
         nicknames.add(nickname);
     }
 
+    public List<String> getHighlights() {
+        return Lists.newArrayList(highlights);
+    }
+
+    public void setHighlights(final Iterable<String> highlights) {
+        this.highlights = Lists.newArrayList(highlights);
+    }
+
+    public void setHighlight(final int index, final String newHighlight) {
+        highlights.set(index, newHighlight);
+    }
+
+    public void removeHighlight(final String highlight) {
+        highlights.remove(highlight);
+    }
+
+    public void addHighlight(final String highlight) {
+        highlights.add(highlight);
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -104,6 +133,7 @@ public class MutableProfile {
                 .add("Realname", realname)
                 .add("Ident", ident)
                 .add("Nicknames", nicknames)
+                .add("Highlights", highlights)
                 .toString();
     }
 
@@ -122,11 +152,12 @@ public class MutableProfile {
         return Objects.equals(name, profile.getName())
                 && Objects.equals(realname, profile.getRealname())
                 && Objects.equals(ident, profile.getIdent())
-                && Objects.equals(nicknames, profile.getNicknames());
+                && Objects.equals(nicknames, profile.getNicknames())
+                && Objects.equals(highlights, profile.getHighlights());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, realname, ident, nicknames);
+        return Objects.hash(name, realname, ident, nicknames, highlights);
     }
 }
