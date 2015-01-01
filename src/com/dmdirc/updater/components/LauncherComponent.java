@@ -112,8 +112,8 @@ public class LauncherComponent implements UpdateComponent {
     @Override
     public boolean doInstall(final Path path) throws IOException {
         final File tmpFile = path.toFile();
-        if (platform.equalsIgnoreCase("Linux")
-                || platform.equalsIgnoreCase("unix")) {
+        if ("Linux".equalsIgnoreCase(platform)
+                || "unix".equalsIgnoreCase(platform)) {
             final File targetFile = new File(tmpFile.getParent()
                     + File.separator + ".launcher.sh");
 

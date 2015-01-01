@@ -134,9 +134,9 @@ public class Echo extends Command implements IntelligentCommand {
         if (arg == 0) {
             targets.add("--target");
             targets.add("--ts");
-        } else if ((arg == 1 && context.getPreviousArgs().get(0).equals("--target"))
-                || (arg == 3 && context.getPreviousArgs().get(2).equals("--target")
-                && context.getPreviousArgs().get(0).equals("--ts"))) {
+        } else if (arg == 1 && "--target".equals(context.getPreviousArgs().get(0))
+                || arg == 3 && "--target".equals(context.getPreviousArgs().get(2))
+                && "--ts".equals(context.getPreviousArgs().get(0))) {
 
             final Collection<FrameContainer> windowList = new ArrayList<>();
             final Optional<Connection> connection = context.getWindow().getConnection();
@@ -157,7 +157,7 @@ public class Echo extends Command implements IntelligentCommand {
                             .map(FrameContainer::getName).collect(Collectors.toList()));
 
             targets.excludeAll();
-        } else if (arg == 1 && context.getPreviousArgs().get(0).equals("--ts")) {
+        } else if (arg == 1 && "--ts".equals(context.getPreviousArgs().get(0))) {
             targets.add(String.valueOf(new Date().getTime()));
             targets.excludeAll();
         }
