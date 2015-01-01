@@ -100,7 +100,7 @@ public class ProfileManagerTest {
     @Test
     public void testGetDefaultProfile_EmptyList() {
         final String nick = "UserName";
-        final Profile profile = new Profile(nick, nick, Optional.empty(), Lists.newArrayList(nick));
+        final Profile profile = Profile.create(nick, nick, Optional.empty(), Lists.newArrayList(nick));
         assertEquals(profile, instance.getDefault());
     }
 

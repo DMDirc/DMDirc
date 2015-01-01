@@ -54,7 +54,7 @@ public class ProfileManager {
         this.eventBus = eventBus;
         profiles = new ArrayList<>();
         final String nick = systemInfo.getProperty("user.name").replace(' ', '_');
-        defaultProfile = new Profile(nick, nick, Optional.empty(), Lists.newArrayList(nick));
+        defaultProfile = Profile.create(nick, nick, Optional.empty(), Lists.newArrayList(nick));
     }
 
     /**

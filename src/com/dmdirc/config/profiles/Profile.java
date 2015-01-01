@@ -22,80 +22,31 @@
 
 package com.dmdirc.config.profiles;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.Lists;
+import com.google.auto.value.AutoValue;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
  * Describes a profile, used to describe the settings associated with the local client on a
  * connection.
  */
-public class Profile {
+@AutoValue
+public abstract class Profile {
 
-    /** Profile Name, must be a sanitised filename. */
-    private final String name;
-    /** Real name. */
-    private final String realname;
-    /** Ident. */
-    private final Optional<String> ident;
-    /** Nicknames. */
-    private final List<String> nicknames;
+    Profile() {}
 
-    public Profile(final String name, final String realname, final Optional<String> ident,
-            final Iterable<String> nicknames) {
-        this.name = name;
-        this.realname = realname;
-        this.ident = ident;
-        this.nicknames = Lists.newArrayList(nicknames);
+    public abstract String getName();
+
+    public abstract String getRealname();
+
+    public abstract Optional<String> getIdent();
+
+    public abstract List<String> getNicknames();
+
+    public static Profile create(final String name, final String realName,
+            final Optional<String> ident, final List<String> nicknames) {
+        return new AutoValue_Profile(name, realName, ident, nicknames);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getRealname() {
-        return realname;
-    }
-
-    public Optional<String> getIdent() {
-        return ident;
-    }
-
-    public List<String> getNicknames() {
-        return Collections.unmodifiableList(nicknames);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("name", name)
-                .add("realname", realname)
-                .add("ident", ident)
-                .add("nicknames", nicknames)
-                .toString();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final Profile profile = (Profile) o;
-        return Objects.equals(name, profile.getName())
-                && Objects.equals(realname, profile.getRealname())
-                && Objects.equals(ident, profile.getIdent())
-                && Objects.equals(nicknames, profile.getNicknames());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, realname, ident, nicknames);
-    }
 }
