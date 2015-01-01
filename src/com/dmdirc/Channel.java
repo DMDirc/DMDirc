@@ -49,7 +49,6 @@ import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
-import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.colours.ColourUtils;
@@ -69,8 +68,6 @@ import java.util.stream.Collectors;
  */
 public class Channel extends MessageTarget implements GroupChat {
 
-    /** List of registered listeners. */
-    private final ListenerList listenerList = new ListenerList();
     /** The parser's pChannel class. */
     private ChannelInfo channelInfo;
     /** The server this channel is on. */
