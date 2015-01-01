@@ -142,7 +142,7 @@ public class ChannelEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        eventBus.publishAsync(new ChannelMessageEvent(owner,
+        eventBus.publishAsync(new ChannelMessageEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner), message));
     }
 
@@ -153,7 +153,7 @@ public class ChannelEventHandler extends EventHandler implements
         owner.setClients(channel.getChannelClients().stream()
                 .map(client -> groupChatUserManager.getUserFromClient(client, owner))
                 .collect(Collectors.toList()));
-        eventBus.publishAsync(new ChannelGotnamesEvent(owner));
+        eventBus.publishAsync(new ChannelGotnamesEvent(date.getTime(), owner));
     }
 
     @Override
@@ -180,12 +180,13 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelDisplayableEvent event;
             final String format;
             if (Strings.isNullOrEmpty(channel.getTopic())) {
-                event = new ChannelTopicChangeEvent(owner, topic);
+                event = new ChannelTopicChangeEvent(date.getTime(), owner, topic);
                 format = EventUtils.postDisplayable(eventBus, event,
                         "channelTopicRemoved");
             } else {
-                event = new ChannelTopicUnsetEvent(owner, owner.getUser(owner.getConnection().get()
-                        .getUser(channel.getTopicSetter())).orElse(null));
+                event = new ChannelTopicUnsetEvent(date.getTime(), owner,
+                        owner.getUser(owner.getConnection().get()
+                                .getUser(channel.getTopicSetter())).orElse(null));
                 format = EventUtils.postDisplayable(eventBus, event, "channelTopicChanged");
             }
             owner.doNotification(date, format, channel.getChannelClient(channel.getTopicSetter(),
@@ -211,7 +212,7 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client) {
         checkParser(parser);
 
-        final ChannelJoinEvent event = new ChannelJoinEvent(owner,
+        final ChannelJoinEvent event = new ChannelJoinEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner));
         final String format = EventUtils.postDisplayable(eventBus, event, "channelJoin");
         owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner));
@@ -223,7 +224,7 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client, final String reason) {
         checkParser(parser);
 
-        final ChannelPartEvent event = new ChannelPartEvent(owner,
+        final ChannelPartEvent event = new ChannelPartEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner), reason);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 "channel"
@@ -239,7 +240,7 @@ public class ChannelEventHandler extends EventHandler implements
             final String reason, final String host) {
         checkParser(parser);
 
-        final ChannelKickEvent event = new ChannelKickEvent(owner,
+        final ChannelKickEvent event = new ChannelKickEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner),
                 groupChatUserManager.getUserFromClient(kickedClient, owner), reason);
         final String format = EventUtils.postDisplayable(eventBus, event,
@@ -253,7 +254,7 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client, final String reason) {
         checkParser(parser);
 
-        final ChannelQuitEvent event = new ChannelQuitEvent(owner,
+        final ChannelQuitEvent event = new ChannelQuitEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner), reason);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 "channelQuit" + (reason.isEmpty() ? "" : "Reason"));
@@ -267,7 +268,7 @@ public class ChannelEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        eventBus.publishAsync(new ChannelActionEvent(owner,
+        eventBus.publishAsync(new ChannelActionEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner), message));
     }
 
@@ -276,7 +277,7 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final ChannelClientInfo client, final String oldNick) {
         checkParser(parser);
 
-        final ChannelNickchangeEvent event = new ChannelNickchangeEvent(owner,
+        final ChannelNickchangeEvent event = new ChannelNickchangeEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner), oldNick);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 isMyself(client) ? "channelSelfNickChange" : "channelNickChange");
@@ -293,17 +294,18 @@ public class ChannelEventHandler extends EventHandler implements
         if (!owner.getConfigManager().getOptionBool("channel", "splitusermodes")
                 || !owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
             if (host.isEmpty()) {
-                final ChannelModesdiscoveredEvent event = new ChannelModesdiscoveredEvent(owner,
-                        modes.length() <= 1 ? "" : modes);
+                final ChannelModesdiscoveredEvent event = new ChannelModesdiscoveredEvent(
+                        date.getTime(), owner, modes.length() <= 1 ? "" : modes);
                 final String format = EventUtils.postDisplayable(eventBus, event,
                         modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
                 owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
             } else {
-                final ChannelModechangeEvent event = new ChannelModechangeEvent(owner,
-                        groupChatUserManager.getUserFromClient(client, owner), modes);
+                final ChannelModechangeEvent event = new ChannelModechangeEvent(date.getTime(),
+                        owner, groupChatUserManager.getUserFromClient(client, owner), modes);
                 final String format = EventUtils.postDisplayable(eventBus, event,
                         isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
-                owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), modes);
+                owner.doNotification(date, format,
+                        groupChatUserManager.getUserFromClient(client, owner), modes);
             }
         }
 
@@ -323,8 +325,8 @@ public class ChannelEventHandler extends EventHandler implements
                 format = "channelSplitUserMode_default";
             }
 
-            final ChannelUsermodechangeEvent event = new ChannelUsermodechangeEvent(owner,
-                    groupChatUserManager.getUserFromClient(client, owner),
+            final ChannelUsermodechangeEvent event = new ChannelUsermodechangeEvent(date.getTime(),
+                    owner, groupChatUserManager.getUserFromClient(client, owner),
                     groupChatUserManager.getUserFromClient(targetClient, owner), mode);
             final String result = EventUtils.postDisplayable(eventBus, event, format);
             owner.doNotification(date, result, groupChatUserManager.getUserFromClient(client, owner),
@@ -338,7 +340,7 @@ public class ChannelEventHandler extends EventHandler implements
             final String type, final String message, final String host) {
         checkParser(parser);
 
-        final ChannelCtcpEvent event = new ChannelCtcpEvent(owner,
+        final ChannelCtcpEvent event = new ChannelCtcpEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner),type, message);
         final String format = EventUtils.postDisplayable(eventBus, event, "channelCTCP");
         if (!event.isHandled()) {
@@ -376,7 +378,7 @@ public class ChannelEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        eventBus.publishAsync(new ChannelNoticeEvent(owner,
+        eventBus.publishAsync(new ChannelNoticeEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner), message));
     }
 
@@ -389,17 +391,18 @@ public class ChannelEventHandler extends EventHandler implements
         if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")
                 && owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
             if (host.isEmpty()) {
-                final ChannelModesdiscoveredEvent event = new ChannelModesdiscoveredEvent(owner,
-                        modes.length() <= 1 ? "" : modes);
+                final ChannelModesdiscoveredEvent event = new ChannelModesdiscoveredEvent(
+                        date.getTime(), owner, modes.length() <= 1 ? "" : modes);
                 final String format = EventUtils.postDisplayable(eventBus, event,
                         modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
                 owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
             } else {
-                final ChannelModechangeEvent event = new ChannelModechangeEvent(owner,
-                        groupChatUserManager.getUserFromClient(client, owner), modes);
+                final ChannelModechangeEvent event = new ChannelModechangeEvent(date.getTime(),
+                        owner, groupChatUserManager.getUserFromClient(client, owner), modes);
                 final String format = EventUtils.postDisplayable(eventBus, event,
                         isMyself(client) ? "channelSelfModeChanged" : "channelModeChanged");
-                owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), modes);
+                owner.doNotification(date, format,
+                        groupChatUserManager.getUserFromClient(client, owner), modes);
             }
         }
 
@@ -413,7 +416,7 @@ public class ChannelEventHandler extends EventHandler implements
             final String host) {
         checkParser(parser);
 
-        eventBus.publishAsync(new ChannelModeNoticeEvent(owner,
+        eventBus.publishAsync(new ChannelModeNoticeEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner), String.valueOf(prefix),
                 message));
     }
@@ -423,7 +426,8 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final char mode) {
         checkParser(parser);
 
-        final ChannelListmodesretrievedEvent event = new ChannelListmodesretrievedEvent(owner, mode);
+        final ChannelListmodesretrievedEvent event = new ChannelListmodesretrievedEvent(
+                date.getTime(), owner, mode);
         final String format = EventUtils.postDisplayable(eventBus, event,
                 "channelListModeRetrieved");
         owner.doNotification(date, format, mode);
