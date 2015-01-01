@@ -15,11 +15,6 @@ ChannelSelfMessageEvent:
 ChannelSelfActionEvent:
   format: "* {{client.modePrefixedNickname}} {{message}}"
   colour: 6
-ChannelSelfExternalMessageEvent:
-  format: "<{{client.modePrefixedNickname}}> {{message}}"
-ChannelSelfExternalActionEvent:
-  format: "* {{client.modePrefixedNickname}} {{message}}"
-  colour: 6
 
 # TODO:
 #  channelTopicChanged=3* %1$s%2$s has changed the topic to '%5$s'.
