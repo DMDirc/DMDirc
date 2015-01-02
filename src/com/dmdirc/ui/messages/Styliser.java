@@ -615,6 +615,7 @@ public class Styliser implements ConfigChangeListener {
 
                 maker.startToolTip(tooltip);
 
+                state.isInToolTip = !state.isInToolTip;
                 return tooltip.length() + 2;
             }
             state.isInToolTip = !state.isInToolTip;

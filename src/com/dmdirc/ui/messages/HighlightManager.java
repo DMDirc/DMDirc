@@ -30,7 +30,7 @@ import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.ServerConnectedEvent;
-import com.dmdirc.events.ServerNickchangeEvent;
+import com.dmdirc.events.ServerNickChangeEvent;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.colours.Colour;
@@ -93,7 +93,7 @@ public class HighlightManager {
     }
 
     @Handler
-    void handleNickChange(final ServerNickchangeEvent event) {
+    void handleNickChange(final ServerNickChangeEvent event) {
         setNickname(event.getNewNick());
     }
 

@@ -26,33 +26,33 @@ import com.dmdirc.Channel;
 import com.dmdirc.interfaces.GroupChatUser;
 
 /**
- * Fired when a user changes nickname in a channel.
+ * Fired when a channel mode is changed.
  */
-public class ChannelNickchangeEvent extends ChannelDisplayableEvent {
+public class ChannelModeChangeEvent extends ChannelDisplayableEvent {
 
     private final GroupChatUser client;
-    private final String oldNick;
+    private final String modes;
 
-    public ChannelNickchangeEvent(final long timestamp, final Channel channel,
-            final GroupChatUser client, final String oldNick) {
+    public ChannelModeChangeEvent(final long timestamp, final Channel channel,
+            final GroupChatUser client, final String modes) {
         super(timestamp, channel);
         this.client = client;
-        this.oldNick = oldNick;
+        this.modes = modes;
     }
 
-    public ChannelNickchangeEvent(final Channel channel, final GroupChatUser client,
-            final String oldNick) {
+    public ChannelModeChangeEvent(final Channel channel, final GroupChatUser client,
+            final String modes) {
         super(channel);
         this.client = client;
-        this.oldNick = oldNick;
+        this.modes = modes;
     }
 
     public GroupChatUser getClient() {
         return client;
     }
 
-    public String getOldNick() {
-        return oldNick;
+    public String getModes() {
+        return modes;
     }
 
 }

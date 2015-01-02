@@ -25,16 +25,40 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 
 /**
- * Fired when sending a server ping request.
+ * Fired when an unknown notice is received.
  */
-public class ServerPingsentEvent extends ServerEvent {
+public class ServerUnknownNoticeEvent extends ServerDisplayableEvent {
 
-    public ServerPingsentEvent(final long timestamp, final Connection connection) {
+    private final String sender;
+    private final String target;
+    private final String message;
+
+    public ServerUnknownNoticeEvent(final long timestamp, final Connection connection,
+            final String sender, final String target, final String message) {
         super(timestamp, connection);
+        this.sender = sender;
+        this.target = target;
+        this.message = message;
     }
 
-    public ServerPingsentEvent(final Connection connection) {
+    public ServerUnknownNoticeEvent(final Connection connection, final String sender,
+            final String target, final String message) {
         super(connection);
+        this.sender = sender;
+        this.target = target;
+        this.message = message;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
 }

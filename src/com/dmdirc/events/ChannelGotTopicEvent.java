@@ -22,28 +22,37 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.interfaces.Connection;
+import com.dmdirc.Channel;
+import com.dmdirc.Topic;
+import com.dmdirc.interfaces.User;
 
 /**
- * Fired when the MOTD line is received.
+ * Fired when a channel topic is changed.
  */
-public class ServerMotdlineEvent extends ServerDisplayableEvent {
+public class ChannelGotTopicEvent extends ChannelDisplayableEvent {
 
-    private final String message;
+    private final Topic topic;
+    private final User user;
 
-    public ServerMotdlineEvent(final long timestamp, final Connection connection,
-            final String message) {
-        super(timestamp, connection);
-        this.message = message;
+    public ChannelGotTopicEvent(final long timestamp, final Channel channel, final Topic topic,
+            final User user) {
+        super(timestamp, channel);
+        this.topic = topic;
+        this.user = user;
     }
 
-    public ServerMotdlineEvent(final Connection connection, final String message) {
-        super(connection);
-        this.message = message;
+    public ChannelGotTopicEvent(final Channel channel, final Topic topic, final User user) {
+        super(channel);
+        this.topic = topic;
+        this.user = user;
     }
 
-    public String getMessage() {
-        return message;
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public User getUser() {
+        return user;
     }
 
 }

@@ -23,19 +23,16 @@
 package com.dmdirc.config.profiles;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,11 +51,11 @@ public class YamlProfileStoreTest {
 
     @Before
     public void setup() {
-        profile1 = new Profile("profile1", "realname1", Optional.empty(),
+        profile1 = Profile.create("profile1", "realname1", Optional.empty(),
                 Lists.newArrayList("nickname1", "nickname2"));
-        profile2 = new Profile("profile2", "realname2", Optional.of("ident2"),
+        profile2 = Profile.create("profile2", "realname2", Optional.of("ident2"),
                 Lists.newArrayList("nickname1", "nickname3"));
-        profile3 = new Profile("profile3", "realname3", Optional.empty(),
+        profile3 = Profile.create("profile3", "realname3", Optional.empty(),
                 Lists.newArrayList("nickname3"));
     }
 
@@ -68,7 +65,6 @@ public class YamlProfileStoreTest {
                 .getResource("profiles.yml").toURI()));
         final Collection<Profile> profiles = store.readProfiles();
         assertEquals(3, profiles.size());
-        profiles.forEach(System.out::println);
         assertTrue(profiles.contains(profile1));
         assertTrue(profiles.contains(profile2));
         assertTrue(profiles.contains(profile3));
@@ -81,8 +77,6 @@ public class YamlProfileStoreTest {
                     .resolve("profiles.yml"));
             final List<Profile> profiles = Lists.newArrayList(profile1, profile2, profile3);
             store.writeProfiles(profiles);
-            System.out.println(Files.readAllLines(fs.getPath("/")
-                    .resolve("profiles.yml")));
             final Collection<Profile> readProfiles = store.readProfiles();
             assertEquals(3, readProfiles.size());
             assertTrue(readProfiles.contains(profile1));

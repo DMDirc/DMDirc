@@ -131,7 +131,8 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         final List<Profile> profileList = Lists.newArrayList(profileManager.getProfiles());
         profileList.forEach(profileManager::deleteProfile);
         profiles.values().forEach(p -> profileManager.addProfile(
-                new Profile(p.getName(), p.getRealname(), p.getIdent(), p.getNicknames())));
+                Profile.create(p.getName(), p.getRealname(), p.getIdent(),
+                        p.getNicknames(), p.getHighlights())));
     }
 
     @Override

@@ -28,19 +28,19 @@ import com.dmdirc.interfaces.User;
 /**
  * Fired when receiving a server notice.
  */
-public class ServerServernoticeEvent extends ServerDisplayableEvent {
+public class ServerServerNoticeEvent extends ServerDisplayableEvent {
 
     private final User user;
     private final String message;
 
-    public ServerServernoticeEvent(final long timestamp, final Connection connection,
+    public ServerServerNoticeEvent(final long timestamp, final Connection connection,
             final User user, final String message) {
         super(timestamp, connection);
         this.user = user;
         this.message = message;
     }
 
-    public ServerServernoticeEvent(final Connection connection, final User user,
+    public ServerServerNoticeEvent(final Connection connection, final User user,
             final String message) {
         super(connection);
         this.user = user;

@@ -22,19 +22,27 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.Connection;
 
 /**
- * Fired when a channel names event is received.
+ * Fired when we miss a server ping reply.
  */
-public class ChannelGotnamesEvent extends ChannelEvent {
+public class ServerNoPingEvent extends ServerEvent {
 
-    public ChannelGotnamesEvent(final long timestamp, final Channel channel) {
-        super(timestamp, channel);
+    private final long ping;
+
+    public ServerNoPingEvent(final long timestamp, final Connection connection, final long ping) {
+        super(timestamp, connection);
+        this.ping = ping;
     }
 
-    public ChannelGotnamesEvent(final Channel channel) {
-        super(channel);
+    public ServerNoPingEvent(final Connection connection, final long ping) {
+        super(connection);
+        this.ping = ping;
+    }
+
+    public long getPing() {
+        return ping;
     }
 
 }

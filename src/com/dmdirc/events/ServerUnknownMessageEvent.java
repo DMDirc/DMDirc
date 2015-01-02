@@ -22,19 +22,43 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.Connection;
 
 /**
- * Fired when a topic is unset on a channel.
+ * Fired when an unknown message is received.
  */
-public class ChannelNotopicEvent extends ChannelDisplayableEvent {
+public class ServerUnknownMessageEvent extends ServerDisplayableEvent {
 
-    public ChannelNotopicEvent(final long timestamp, final Channel channel) {
-        super(timestamp, channel);
+    private final String sender;
+    private final String target;
+    private final String message;
+
+    public ServerUnknownMessageEvent(final long timestamp, final Connection connection,
+            final String sender, final String target, final String message) {
+        super(timestamp, connection);
+        this.sender = sender;
+        this.target = target;
+        this.message = message;
     }
 
-    public ChannelNotopicEvent(final Channel channel) {
-        super(channel);
+    public ServerUnknownMessageEvent(final Connection connection, final String sender,
+            final String target, final String message) {
+        super(connection);
+        this.sender = sender;
+        this.target = target;
+        this.message = message;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
 }

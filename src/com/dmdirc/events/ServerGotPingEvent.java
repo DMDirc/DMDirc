@@ -23,36 +23,26 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.User;
 
 /**
- * Fired when receiving a server walldesync.
+ * Fired when we receive a server ping reply.
  */
-public class ServerWalldesyncEvent extends ServerDisplayableEvent {
+public class ServerGotPingEvent extends ServerEvent {
 
-    private final User user;
-    private final String message;
+    private final long ping;
 
-    public ServerWalldesyncEvent(final long timestamp, final Connection connection, final User user,
-            final String message) {
+    public ServerGotPingEvent(final long timestamp, final Connection connection, final long ping) {
         super(timestamp, connection);
-        this.user = user;
-        this.message = message;
+        this.ping = ping;
     }
 
-    public ServerWalldesyncEvent(final Connection connection, final User user, final String
-            message) {
+    public ServerGotPingEvent(final Connection connection, final long ping) {
         super(connection);
-        this.user = user;
-        this.message = message;
+        this.ping = ping;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public String getMessage() {
-        return message;
+    public long getPing() {
+        return ping;
     }
 
 }

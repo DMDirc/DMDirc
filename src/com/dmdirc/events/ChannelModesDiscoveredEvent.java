@@ -22,37 +22,28 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.User;
+import com.dmdirc.Channel;
 
 /**
- * Fired in on receipt of user modes.
+ * Fired when channel modes are discovered.
  */
-public class ServerUsermodesEvent extends ServerDisplayableEvent {
+public class ChannelModesDiscoveredEvent extends ChannelDisplayableEvent {
 
-    private final User user;
-    private final String message;
+    private final String modes;
 
-    public ServerUsermodesEvent(final long timestamp, final Connection connection,
-            final User user, final String message) {
-        super(timestamp, connection);
-        this.user = user;
-        this.message = message;
+    public ChannelModesDiscoveredEvent(final long timestamp, final Channel channel,
+            final String modes) {
+        super(timestamp, channel);
+        this.modes = modes;
     }
 
-    public ServerUsermodesEvent(final Connection connection, final User user,
-            final String message) {
-        super(connection);
-        this.user = user;
-        this.message = message;
+    public ChannelModesDiscoveredEvent(final Channel channel, final String modes) {
+        super(channel);
+        this.modes = modes;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public String getMessage() {
-        return message;
+    public String getModes() {
+        return modes;
     }
 
 }

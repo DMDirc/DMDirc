@@ -81,7 +81,7 @@ public class CoreProfilesDialogModelTest {
     }
 
     private Profile getProfile(final int name) {
-        return new Profile("profile" + name, "realname" + name, Optional.of("ident" + name),
+        return Profile.create("profile" + name, "realname" + name, Optional.of("ident" + name),
                 Lists.newArrayList("nickname" + name + '1', "nickname" + name + '2',
                         "nickname" + name + '3'));
     }

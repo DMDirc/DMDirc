@@ -25,24 +25,33 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 
 /**
- * Fired when we miss a server ping reply.
+ * Fired on a change of a nickname.
  */
-public class ServerNopingEvent extends ServerEvent {
+public class ServerNickChangeEvent extends ServerDisplayableEvent {
 
-    private final long ping;
+    private final String oldNick;
+    private final String newNick;
 
-    public ServerNopingEvent(final long timestamp, final Connection connection, final long ping) {
+    public ServerNickChangeEvent(final long timestamp, final Connection connection,
+            final String oldNick, final String newNick) {
         super(timestamp, connection);
-        this.ping = ping;
+        this.oldNick = oldNick;
+        this.newNick = newNick;
     }
 
-    public ServerNopingEvent(final Connection connection, final long ping) {
+    public ServerNickChangeEvent(final Connection connection, final String oldNick,
+            final String newNick) {
         super(connection);
-        this.ping = ping;
+        this.oldNick = oldNick;
+        this.newNick = newNick;
     }
 
-    public long getPing() {
-        return ping;
+    public String getOldNick() {
+        return oldNick;
+    }
+
+    public String getNewNick() {
+        return newNick;
     }
 
 }

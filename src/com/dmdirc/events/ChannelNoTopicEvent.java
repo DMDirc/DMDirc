@@ -23,37 +23,18 @@
 package com.dmdirc.events;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Topic;
-import com.dmdirc.interfaces.User;
 
 /**
- * Fired when a channel topic is changed.
+ * Fired when a topic is unset on a channel.
  */
-public class ChannelGottopicEvent extends ChannelDisplayableEvent {
+public class ChannelNoTopicEvent extends ChannelDisplayableEvent {
 
-    private final Topic topic;
-    private final User user;
-
-    public ChannelGottopicEvent(final long timestamp, final Channel channel, final Topic topic,
-            final User user) {
+    public ChannelNoTopicEvent(final long timestamp, final Channel channel) {
         super(timestamp, channel);
-        this.topic = topic;
-        this.user = user;
     }
 
-    public ChannelGottopicEvent(final Channel channel, final Topic topic,
-            final User user) {
+    public ChannelNoTopicEvent(final Channel channel) {
         super(channel);
-        this.topic = topic;
-        this.user = user;
-    }
-
-    public Topic getTopic() {
-        return topic;
-    }
-
-    public User getUser() {
-        return user;
     }
 
 }

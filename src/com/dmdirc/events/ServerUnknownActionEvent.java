@@ -27,13 +27,13 @@ import com.dmdirc.interfaces.Connection;
 /**
  * Fired when an unknown action is received.
  */
-public class ServerUnknownactionEvent extends ServerDisplayableEvent {
+public class ServerUnknownActionEvent extends ServerDisplayableEvent {
 
     private final String sender;
     private final String target;
     private final String message;
 
-    public ServerUnknownactionEvent(final long timestamp, final Connection connection,
+    public ServerUnknownActionEvent(final long timestamp, final Connection connection,
             final String sender, final String target, final String message) {
         super(timestamp, connection);
         this.sender = sender;
@@ -41,7 +41,7 @@ public class ServerUnknownactionEvent extends ServerDisplayableEvent {
         this.message = message;
     }
 
-    public ServerUnknownactionEvent(final Connection connection, final String sender,
+    public ServerUnknownActionEvent(final Connection connection, final String sender,
             final String target, final String message) {
         super(connection);
         this.sender = sender;

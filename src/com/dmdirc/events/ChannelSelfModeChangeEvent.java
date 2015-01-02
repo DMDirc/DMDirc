@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2014 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +22,22 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.interfaces.Connection;
+import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChatUser;
 
 /**
- * Fired on a change of a nickname.
+ * Event raised when the local client changes a channel mode.
  */
-public class ServerNickchangeEvent extends ServerDisplayableEvent {
+public class ChannelSelfModeChangeEvent extends ChannelModeChangeEvent {
 
-    private final String oldNick;
-    private final String newNick;
-
-    public ServerNickchangeEvent(final long timestamp, final Connection connection,
-            final String oldNick, final String newNick) {
-        super(timestamp, connection);
-        this.oldNick = oldNick;
-        this.newNick = newNick;
+    public ChannelSelfModeChangeEvent(final long timestamp, final Channel channel,
+            final GroupChatUser client, final String modes) {
+        super(timestamp, channel, client, modes);
     }
 
-    public ServerNickchangeEvent(final Connection connection, final String oldNick,
-            final String newNick) {
-        super(connection);
-        this.oldNick = oldNick;
-        this.newNick = newNick;
-    }
-
-    public String getOldNick() {
-        return oldNick;
-    }
-
-    public String getNewNick() {
-        return newNick;
+    public ChannelSelfModeChangeEvent(final Channel channel, final GroupChatUser client,
+            final String modes) {
+        super(channel, client, modes);
     }
 
 }

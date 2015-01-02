@@ -26,6 +26,7 @@ import com.dmdirc.util.BaseYamlStore;
 
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,8 +76,13 @@ public class YamlProfileStore extends BaseYamlStore<Profile> implements ProfileS
             final String name = requiredString(map, "name");
             final String realname = requiredString(map, "realname");
             final Optional<String> ident = Optional.ofNullable(optionalString(map, "ident"));
-            final List<String> nicknames = asList(map.get("nicknames"), s -> Optional.of(s.toString()));
-            return Optional.of(new Profile(name, realname, ident, nicknames));
+            final List<String> nicknames =
+                    asList(map.get("nicknames"), s -> Optional.of(s.toString()));
+            final List<String> highlights =
+                    map.containsKey("highlights")
+                            ? asList(map.get("highlights"), s -> Optional.of(s.toString()))
+                            : Collections.emptyList();
+            return Optional.of(Profile.create(name, realname, ident, nicknames, highlights));
         } catch (IllegalArgumentException ex) {
             LOG.info("Unable to read profile", ex);
             return Optional.empty();
@@ -89,6 +95,7 @@ public class YamlProfileStore extends BaseYamlStore<Profile> implements ProfileS
         map.put("name", object.getName());
         map.put("realname", object.getRealname());
         map.put("nicknames", object.getNicknames().toArray());
+        map.put("highlights", object.getHighlights().toArray());
         object.getIdent().ifPresent(v -> map.put("ident", v));
         return map;
     }
