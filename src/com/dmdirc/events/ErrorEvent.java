@@ -32,7 +32,6 @@ public abstract class ErrorEvent extends DMDircEvent {
     private final Throwable throwable;
     private final String message;
     private final String details;
-    private boolean handled;
 
     public ErrorEvent(final ErrorLevel level,
             final Throwable throwable,
@@ -59,14 +58,6 @@ public abstract class ErrorEvent extends DMDircEvent {
 
     public String getDetails() {
         return details;
-    }
-
-    public boolean isHandled() {
-        return handled;
-    }
-
-    public void setHandled() {
-        this.handled = true;
     }
 
     @Override
