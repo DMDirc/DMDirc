@@ -495,4 +495,11 @@ public interface Connection {
      */
     int getMaxListModes(final char mode);
 
+    /**
+     * Gets the manager that handles this connection's group chats.
+     *
+     * @return The group chat manager for this connection.
+     */
+    GroupChatManager getGroupChatManager();
+
 }
