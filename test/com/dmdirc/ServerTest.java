@@ -66,7 +66,8 @@ public class ServerTest {
     @Mock private TabCompleterFactory tabCompleterFactory;
     @Mock private TabCompleter tabCompleter;
     @Mock private MessageSinkManager messageSinkManager;
-    @Mock private ChannelFactory channelFactory;
+    @Mock private GroupChatManagerImplFactory groupChatManagerImplFactory;
+    @Mock private GroupChatManagerImpl groupChatManager;
     @Mock private QueryFactory queryFactory;
     @Mock private URLBuilder urlBuilder;
     @Mock private DMDircMBassador eventBus;
@@ -88,6 +89,7 @@ public class ServerTest {
         when(tabCompleterFactory.getTabCompleter(eq(configManager),
                 Matchers.<CommandType>anyVararg())).thenReturn(tabCompleter);
         when(backBufferFactory.getBackBuffer(any())).thenReturn(backBuffer);
+        when(groupChatManagerImplFactory.create(any(), any())).thenReturn(groupChatManager);
 
         server = new Server(
                 configMigrator,
@@ -96,12 +98,12 @@ public class ServerTest {
                 tabCompleterFactory,
                 identityFactory,
                 messageSinkManager,
-                channelFactory,
                 queryFactory,
                 urlBuilder,
                 eventBus,
                 messageEncoderFactory,
                 userConfig,
+                groupChatManagerImplFactory,
                 executorService,
                 new URI("irc-test://255.255.255.255"),
                 profile,

@@ -126,6 +126,8 @@ public class ServerEventHandler extends EventHandler implements
 
     /** The server instance that owns this event handler. */
     private final Server owner;
+    /** Group chat manager to poke for channel events. */
+    private final GroupChatManagerImpl groupChatManager;
     /** Event bus to post events to. */
     private final DMDircMBassador eventBus;
 
@@ -135,9 +137,11 @@ public class ServerEventHandler extends EventHandler implements
      * @param owner    The Server instance that we're handling events for
      * @param eventBus The event bus to post events to
      */
-    public ServerEventHandler(final Server owner, final DMDircMBassador eventBus) {
+    public ServerEventHandler(final Server owner, final GroupChatManagerImpl groupChatManager,
+            final DMDircMBassador eventBus) {
         super(eventBus);
         this.owner = owner;
+        this.groupChatManager = groupChatManager;
         this.eventBus = eventBus;
     }
 
@@ -157,7 +161,7 @@ public class ServerEventHandler extends EventHandler implements
     @Override
     public void onChannelSelfJoin(final Parser parser, final Date date, final ChannelInfo channel) {
         checkParser(parser);
-        owner.addChannel(channel);
+        groupChatManager.addChannel(channel);
     }
 
     @Override
