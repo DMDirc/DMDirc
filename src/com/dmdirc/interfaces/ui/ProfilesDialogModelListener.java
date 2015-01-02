@@ -88,4 +88,33 @@ public interface ProfilesDialogModelListener {
      */
     void selectedProfileNicknameRemoved(String nickname);
 
+    /**
+     * Called when the selected profile's selected highlight is changed
+     *
+     * @param highlight Optional selected profile's selected highlight
+     */
+    void selectedHighlightChanged(Optional<String> highlight);
+
+    /**
+     * Called when a highlight in the selected profile is changed.
+     *
+     * @param oldHighlight Old highlight
+     * @param newHighlight New highlight
+     */
+    void selectedProfileHighlightEdited(String oldHighlight, String newHighlight);
+
+    /**
+     * Called when a highlight is added to the selected profile.
+     *
+     * @param highlight New highlight
+     */
+    void selectedProfileHighlightAdded(String highlight);
+
+    /**
+     * Called when a highlight is removed from the selected profile.
+     *
+     * @param highlight Old highlight
+     */
+    void selectedProfileHighlightRemoved(String highlight);
+
 }

@@ -27,27 +27,27 @@ import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.util.validators.Validator;
 
 /**
- * Validates a nickname that is being edited in the model.
+ * Validates a highlight that is being edited in the model.
  */
-public class EditSelectedNicknameValidator implements Validator<String> {
+public class EditSelectedHighlightValidator implements Validator<String> {
 
     private final ProfilesDialogModel model;
 
-    public EditSelectedNicknameValidator(final ProfilesDialogModel model) {
+    public EditSelectedHighlightValidator(final ProfilesDialogModel model) {
         this.model = model;
     }
 
     @Override
     public ValidationResponse validate(final String object) {
         if (model.getSelectedProfile().isPresent()
-                && model.getSelectedProfileNicknames().isPresent()) {
-            for (String nickname : model.getSelectedProfileNicknames().get()) {
-                if (model.getSelectedProfileSelectedNickname().isPresent()
-                        && model.getSelectedProfileSelectedNickname().get().equals(object)) {
+                && model.getSelectedProfileHighlights().isPresent()) {
+            for (String highlight : model.getSelectedProfileHighlights().get()) {
+                if (model.getSelectedProfileSelectedHighlight().isPresent()
+                        && model.getSelectedProfileSelectedHighlight().get().equals(object)) {
                     continue;
                 }
-                if (nickname.equals(object)) {
-                    return new ValidationResponse("This nickname already exists.");
+                if (highlight.equals(object)) {
+                    return new ValidationResponse("This highlight already exists.");
                 }
             }
         }

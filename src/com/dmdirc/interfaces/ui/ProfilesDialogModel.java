@@ -142,6 +142,20 @@ public interface ProfilesDialogModel {
     Validator<List<String>> getSelectedProfileNicknamesValidator();
 
     /**
+     * Gets the selected profile's list of highlight terms.
+     *
+     * @return Optional selected profile's list of highlight terms
+     */
+    Optional<List<String>> getSelectedProfileHighlights();
+
+    /**
+     * Gets the selected profile's list of highlight terms validator.
+     *
+     * @return The selected profile's highlight terms validator
+     */
+    Validator<List<String>> getSelectedProfileHighlightsValidator();
+
+    /**
      * Gets the selected profile's realname.
      *
      * @return Optional selected profile's realname
@@ -161,6 +175,13 @@ public interface ProfilesDialogModel {
      * @return Optional selected profile's selected nickname
      */
     Optional<String> getSelectedProfileSelectedNickname();
+
+    /**
+     * Gets the selected profile's selected highlight.
+     *
+     * @return Optional selected profile's selected highlight
+     */
+    Optional<String> getSelectedProfileSelectedHighlight();
 
     /**
      * Is the profile list valid?
@@ -189,6 +210,13 @@ public interface ProfilesDialogModel {
      * @return true of false
      */
     boolean isSelectedProfileNicknamesValid();
+
+    /**
+     * Is the selected profile's list of highlight terms valid?
+     *
+     * @return true of false
+     */
+    boolean isSelectedProfileHighlightsValid();
 
     /**
      * Is the selected profile's realname valid.
@@ -245,6 +273,13 @@ public interface ProfilesDialogModel {
     void setSelectedProfileNicknames(Optional<List<String>> nicknames);
 
     /**
+     * Sets the selected profile's list of highlight terms.
+     *
+     * @param highlights New selected profile's list of highlight terms
+     */
+    void setSelectedProfileHighlights(Optional<List<String>> highlights);
+
+    /**
      * Sets the selected profile's realname.
      *
      * @param realname New selected profile's realname
@@ -257,6 +292,13 @@ public interface ProfilesDialogModel {
      * @param selectedNickname New selected profile's selected nickname
      */
     void setSelectedProfileSelectedNickname(Optional<String> selectedNickname);
+
+    /**
+     * Sets the selected profile's selected highlight.
+     *
+     * @param selectedHighlight New selected profile's selected highlight
+     */
+    void setSelectedProfileSelectedHighlight(Optional<String> selectedHighlight);
 
     /**
      * Adds a nickname to the selected profile.
@@ -295,6 +337,42 @@ public interface ProfilesDialogModel {
     Validator<String> getSelectedProfileEditNicknameValidator();
 
     /**
+     * Adds a highlight to the selected profile.
+     *
+     * @param highlight Highlight to add
+     */
+    void addSelectedProfileHighlight(final String highlight);
+
+    /**
+     * Removes a highlight from the selected profile.
+     *
+     * @param highlight Highlight to remove
+     */
+    void removeSelectedProfileHighlight(final String highlight);
+
+    /**
+     * Gets the selected profile's add highlight validator.
+     *
+     * @return Selected profile's add highlight validator
+     */
+    Validator<String> getSelectedProfileAddHighlightValidator();
+
+    /**
+     * Gets the selected profile's edit highlight validator.
+     *
+     * @param oldHighlight Old highlight
+     * @param newHighlight New highlight
+     */
+    void editSelectedProfileHighlight(final String oldHighlight, final String newHighlight);
+
+    /**
+     * Gets the selected profile's edit highlight validator.
+     *
+     * @return Selected profile's edit highlight validator
+     */
+    Validator<String> getSelectedProfileEditHighlightValidator();
+
+    /**
      * Are we allowed to change profile?
      *
      * @return true or false
@@ -316,6 +394,8 @@ public interface ProfilesDialogModel {
     Validator<String> getNameValidator();
 
     Validator<List<String>> getNicknamesValidator();
+
+    Validator<List<String>> getHighlightsValidator();
 
     Validator<String> getRealnameValidator();
 

@@ -61,4 +61,20 @@ public class ProfilesDialogModelAdapter implements ProfilesDialogModelListener {
     public void selectedProfileNicknameRemoved(final String nickname) {
     }
 
+    @Override
+    public void selectedHighlightChanged(final Optional<String> highlight) {
+    }
+
+    @Override
+    public void selectedProfileHighlightEdited(final String oldHighlight, final String newHighlight) {
+    }
+
+    @Override
+    public void selectedProfileHighlightAdded(final String highlight) {
+    }
+
+    @Override
+    public void selectedProfileHighlightRemoved(final String highlight) {
+    }
+
 }
