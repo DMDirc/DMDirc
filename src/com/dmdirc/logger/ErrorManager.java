@@ -40,7 +40,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -73,8 +72,6 @@ public class ErrorManager {
     private final List<ProgramError> errors;
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
-    /** Next error ID. */
-    private final AtomicLong nextErrorID;
     /** Thread used for sending errors. */
     private ExecutorService reportThread;
     /** Directory to store errors in. */
@@ -85,7 +82,6 @@ public class ErrorManager {
     @Inject
     public ErrorManager() {
         errors = new LinkedList<>();
-        nextErrorID = new AtomicLong();
     }
 
     /**
@@ -213,8 +209,7 @@ public class ErrorManager {
      */
     protected ProgramError getError(final ErrorLevel level, final String message,
             final Throwable exception, final String details) {
-        return new ProgramError(nextErrorID.getAndIncrement(), level, message, exception,
-                details, new Date(), clientInfo, this);
+        return new ProgramError(level, message, exception, details, new Date(), clientInfo, this);
     }
 
     /**
