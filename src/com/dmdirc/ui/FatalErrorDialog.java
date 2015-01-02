@@ -241,10 +241,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         }
         if (!sendReports) {
             countDownLatch.countDown();
-            countDownLatch.countDown();
-        } else {
-            countDownLatch.countDown();
         }
+        countDownLatch.countDown();
     }
 
     /**
