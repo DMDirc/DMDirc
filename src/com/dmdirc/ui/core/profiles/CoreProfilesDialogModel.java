@@ -33,6 +33,7 @@ import com.dmdirc.util.validators.ListNotEmptyValidator;
 import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
+import com.dmdirc.util.validators.ValidatorChain;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -381,12 +382,18 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public Validator<String> getSelectedProfileNameValidator() {
-        return new EditSelectedProfileNameValidator(this);
+        return ValidatorChain.<String>builder()
+                .addValidator(new EditSelectedProfileNameValidator(this))
+                .addValidator(new FileNameValidator())
+                .build();
     }
 
     @Override
     public Validator<String> getNewProfileNameValidator() {
-        return new NewProfileNameValidator(this);
+        return ValidatorChain.<String>builder()
+                .addValidator(new NewProfileNameValidator(this))
+                .addValidator(new FileNameValidator())
+                .build();
     }
 
     @Override
@@ -469,11 +476,6 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     @Override
     public Validator<String> getSelectedProfileEditHighlightValidator() {
         return new EditSelectedHighlightValidator(this);
-    }
-
-    @Override
-    public Validator<String> getNameValidator() {
-        return new FileNameValidator();
     }
 
     @Override
