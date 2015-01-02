@@ -30,15 +30,16 @@ import com.dmdirc.events.ChannelJoinEvent;
 import com.dmdirc.events.ChannelKickEvent;
 import com.dmdirc.events.ChannelListModesRetrievedEvent;
 import com.dmdirc.events.ChannelMessageEvent;
-import com.dmdirc.events.ChannelModeNoticeEvent;
 import com.dmdirc.events.ChannelModeChangeEvent;
+import com.dmdirc.events.ChannelModeNoticeEvent;
 import com.dmdirc.events.ChannelModesDiscoveredEvent;
 import com.dmdirc.events.ChannelNickChangeEvent;
-import com.dmdirc.events.ChannelNoticeEvent;
 import com.dmdirc.events.ChannelNoTopicEvent;
+import com.dmdirc.events.ChannelNoticeEvent;
 import com.dmdirc.events.ChannelPartEvent;
 import com.dmdirc.events.ChannelQuitEvent;
 import com.dmdirc.events.ChannelSelfModeChangeEvent;
+import com.dmdirc.events.ChannelSelfPartEvent;
 import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.ChannelTopicUnsetEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
@@ -213,13 +214,13 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client, final String reason) {
         checkParser(parser);
 
-        final ChannelPartEvent event = new ChannelPartEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner), reason);
-        final String format = EventUtils.postDisplayable(eventBus, event,
-                "channel"
-                + (isMyself(client) ? "Self" : "") + "Part"
-                + (reason.isEmpty() ? "" : "Reason"));
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), reason);
+        if (isMyself(client)) {
+            eventBus.publishAsync(new ChannelSelfPartEvent(date.getTime(), owner,
+                    groupChatUserManager.getUserFromClient(client, owner), reason));
+        } else {
+            eventBus.publishAsync(new ChannelPartEvent(date.getTime(), owner,
+                    groupChatUserManager.getUserFromClient(client, owner), reason));
+        }
         owner.removeClient(groupChatUserManager.getUserFromClient(client, owner));
     }
 
@@ -243,11 +244,8 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client, final String reason) {
         checkParser(parser);
 
-        final ChannelQuitEvent event = new ChannelQuitEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner), reason);
-        final String format = EventUtils.postDisplayable(eventBus, event,
-                "channelQuit" + (reason.isEmpty() ? "" : "Reason"));
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), reason);
+        eventBus.publishAsync(new ChannelQuitEvent(date.getTime(), owner,
+                groupChatUserManager.getUserFromClient(client, owner), reason));
         owner.removeClient(groupChatUserManager.getUserFromClient(client, owner));
     }
 
