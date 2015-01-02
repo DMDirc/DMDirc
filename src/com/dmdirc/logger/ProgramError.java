@@ -36,6 +36,7 @@ import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,6 +63,8 @@ public final class ProgramError implements Serializable {
     private final String message;
     /** Underlying exception. */
     private final Throwable exception;
+    /** The trace for this exception. */
+    private final List<String> trace;
     /** Underlying details message. */
     private final String details;
     /** Date/time error first occurred. */
@@ -85,11 +88,13 @@ public final class ProgramError implements Serializable {
      * @param level     Error level
      * @param message   Error message
      * @param exception The exception that caused the error, if any.
+     * @param trace     The textual trace for this error
      * @param details   The detailed cause of the error, if any.
      * @param date      Error time and date
      */
     public ProgramError(final ErrorLevel level, final String message,
             @Nullable final Throwable exception,
+            final List<String> trace,
             @Nullable final String details,
             final Date date,
             final ClientInfo clientInfo,
@@ -102,6 +107,7 @@ public final class ProgramError implements Serializable {
         this.level = level;
         this.message = message;
         this.exception = exception;
+        this.trace = trace;
         this.details = details;
         this.firstDate = (Date) date.clone();
         this.lastDate = (Date) date.clone();
@@ -142,9 +148,8 @@ public final class ProgramError implements Serializable {
      *
      * @return Error trace
      */
-    public String[] getTrace() {
-        return exception == null ? (message == null ? new String[0] : new String[]{message})
-                : getTrace(exception);
+    public List<String> getTrace() {
+        return trace;
     }
 
     /**
@@ -277,39 +282,6 @@ public final class ProgramError implements Serializable {
     }
 
     /**
-     * Determines whether or not the stack trace associated with this error is from a valid source.
-     * A valid source is one that is within a DMDirc package (com.dmdirc), and is not the DMDirc
-     * event queue.
-     *
-     * @return True if the source is valid, false otherwise
-     */
-    public boolean isValidSource() {
-        final String line = getSourceLine();
-
-        return line.startsWith("com.dmdirc")
-                && !line.startsWith("com.dmdirc.addons.ui_swing.DMDircEventQueue");
-    }
-
-    /**
-     * Returns the "source line" of this error, which is defined as the first line starting with a
-     * DMDirc package name (com.dmdirc). If no such line is found, returns the first line of the
-     * message.
-     *
-     * @return This error's source line
-     */
-    public String getSourceLine() {
-        final String[] trace = getTrace();
-
-        for (String line : trace) {
-            if (line.startsWith("com.dmdirc")) {
-                return line;
-            }
-        }
-
-        return trace[0];
-    }
-
-    /**
      * Updates the last date this error occurred.
      */
     public void updateLastDate() {
@@ -392,44 +364,6 @@ public final class ProgramError implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(level, message, exception, details);
-    }
-
-    /**
-     * Converts an exception into a string array.
-     *
-     * @param throwable Exception to convert
-     *
-     * @since 0.6.3m1
-     * @return Exception string array
-     */
-    private static String[] getTrace(final Throwable throwable) {
-        String[] trace;
-
-        if (throwable == null) {
-            trace = new String[0];
-        } else {
-            final StackTraceElement[] traceElements = throwable.getStackTrace();
-            trace = new String[traceElements.length + 1];
-
-            trace[0] = throwable.toString();
-
-            for (int i = 0; i < traceElements.length; i++) {
-                trace[i + 1] = traceElements[i].toString();
-            }
-
-            if (throwable.getCause() != null) {
-                final String[] causeTrace = getTrace(throwable.getCause());
-                final String[] newTrace = new String[trace.length + causeTrace.length];
-                trace[0] = "\nWhich caused: " + trace[0];
-
-                System.arraycopy(causeTrace, 0, newTrace, 0, causeTrace.length);
-                System.arraycopy(trace, 0, newTrace, causeTrace.length, trace.length);
-
-                trace = newTrace;
-            }
-        }
-
-        return trace;
     }
 
 }

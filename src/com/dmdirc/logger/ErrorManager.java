@@ -35,6 +35,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.awt.GraphicsEnvironment;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -154,7 +155,7 @@ public class ErrorManager {
             if (dupe) {
                 error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             }
-        } else if (!canReport || appError && !error.isValidSource() || !appError || dupe) {
+        } else if (!canReport || appError && !isValidSource(error) || !appError || dupe) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
         } else if (sendReports) {
             sendError(error);
@@ -171,6 +172,39 @@ public class ErrorManager {
                 fireErrorAdded(error);
             }
         }
+    }
+
+
+
+    /**
+     * Determines whether or not the stack trace associated with this error is from a valid source.
+     * A valid source is one that is within a DMDirc package (com.dmdirc), and is not the DMDirc
+     * event queue.
+     *
+     * @return True if the source is valid, false otherwise
+     */
+    public boolean isValidSource(final ProgramError error) {
+        final String line = getSourceLine(error);
+
+        return line.startsWith("com.dmdirc")
+                && !line.startsWith("com.dmdirc.addons.ui_swing.DMDircEventQueue");
+    }
+
+    /**
+     * Returns the "source line" of this error, which is defined as the first line starting with a
+     * DMDirc package name (com.dmdirc). If no such line is found, returns the first line of the
+     * message.
+     *
+     * @return This error's source line
+     */
+    public String getSourceLine(final ProgramError error) {
+        for (String line : error.getTrace()) {
+            if (line.startsWith("com.dmdirc")) {
+                return line;
+            }
+        }
+
+        return error.getTrace().get(0);
     }
 
     /**
@@ -209,7 +243,8 @@ public class ErrorManager {
      */
     protected ProgramError getError(final ErrorLevel level, final String message,
             final Throwable exception, final String details) {
-        return new ProgramError(level, message, exception, details, new Date(), clientInfo, this);
+        return new ProgramError(level, message, exception, getTrace(message, exception), details,
+                new Date(), clientInfo, this);
     }
 
     /**
@@ -419,5 +454,53 @@ public class ErrorManager {
     public void handleNoErrorReporting(final boolean value) {
         tempNoErrors = value;
         sendReports = submitReports && !tempNoErrors;
+    }
+
+    /**
+     * Returns this errors trace.
+     *
+     * @return Error trace
+     */
+    public List<String> getTrace(final String message, final Throwable exception) {
+        return Arrays.asList(exception == null ? message == null ? new String[0]
+                : new String[]{message} : getTrace(exception));
+    }
+
+    /**
+     * Converts an exception into a string array.
+     *
+     * @param throwable Exception to convert
+     *
+     * @since 0.6.3m1
+     * @return Exception string array
+     */
+    private static String[] getTrace(final Throwable throwable) {
+        String[] trace;
+
+        if (throwable == null) {
+            trace = new String[0];
+        } else {
+            final StackTraceElement[] traceElements = throwable.getStackTrace();
+            trace = new String[traceElements.length + 1];
+
+            trace[0] = throwable.toString();
+
+            for (int i = 0; i < traceElements.length; i++) {
+                trace[i + 1] = traceElements[i].toString();
+            }
+
+            if (throwable.getCause() != null) {
+                final String[] causeTrace = getTrace(throwable.getCause());
+                final String[] newTrace = new String[trace.length + causeTrace.length];
+                trace[0] = "\nWhich caused: " + trace[0];
+
+                System.arraycopy(causeTrace, 0, newTrace, 0, causeTrace.length);
+                System.arraycopy(trace, 0, newTrace, causeTrace.length, trace.length);
+
+                trace = newTrace;
+            }
+        }
+
+        return trace;
     }
 }
