@@ -33,6 +33,7 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.URLBuilder;
@@ -47,6 +48,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -71,6 +73,7 @@ public class ServerTest {
     @Mock private ScheduledExecutorService executorService;
     @Mock private MessageEncoderFactory messageEncoderFactory;
     @Mock private BackBufferFactory backBufferFactory;
+    @Mock private BackBuffer backBuffer;
     @Mock private UserManager userManager;
     @Mock private User user;
 
@@ -84,6 +87,7 @@ public class ServerTest {
         when(configMigrator.getConfigProvider()).thenReturn(configManager);
         when(tabCompleterFactory.getTabCompleter(eq(configManager),
                 Matchers.<CommandType>anyVararg())).thenReturn(tabCompleter);
+        when(backBufferFactory.getBackBuffer(any())).thenReturn(backBuffer);
 
         server = new Server(
                 configMigrator,
