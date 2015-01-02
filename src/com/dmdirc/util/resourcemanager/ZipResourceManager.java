@@ -119,7 +119,6 @@ public final class ZipResourceManager extends ResourceManager {
         try (BufferedInputStream inputStream = new BufferedInputStream(zipFile.getInputStream
                 (zipEntry))) {
             if (inputStream.read(bytes) != bytes.length) {
-                inputStream.close();
                 return new byte[0];
             }
         } catch (IOException ex) {

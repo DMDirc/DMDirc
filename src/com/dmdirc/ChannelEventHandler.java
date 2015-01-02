@@ -357,7 +357,6 @@ public class ChannelEventHandler extends EventHandler implements
                     (away ? "channelUserAway" : "channelUserBack")
                     + (discovered ? "Discovered" : ""));
             owner.doNotification(date, format, channelClient);
-
         }
     }
 
