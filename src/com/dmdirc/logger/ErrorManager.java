@@ -113,7 +113,6 @@ public class ErrorManager {
             try {
                 Files.createDirectories(errorsDirectory);
             } catch (IOException ex) {
-                // TODO: When ErrorManager writes errors, obey this.
                 directoryError = true;
             }
         }
@@ -164,12 +163,8 @@ public class ErrorManager {
             final ProgramError error,
             final boolean appError,
             final boolean canReport) {
-        final boolean dupe = addError(error);
-        if (error.getLevel() == ErrorLevel.FATAL) {
-            if (dupe) {
-                error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
-            }
-        } else if (!canReport || appError && !isValidSource(error) || !appError || dupe) {
+        addError(error);
+        if (!canReport || appError && !isValidSource(error) || !appError) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
         } else if (sendReports) {
             sendError(error);
@@ -178,13 +173,10 @@ public class ErrorManager {
         if (logReports) {
             saveError(error);
         }
-
-        if (!dupe) {
-            if (error.getLevel() == ErrorLevel.FATAL) {
-                fireFatalError(error);
-            } else {
-                fireErrorAdded(error);
-            }
+        if (error.getLevel() == ErrorLevel.FATAL) {
+            fireFatalError(error);
+        } else {
+            fireErrorAdded(error);
         }
     }
 
@@ -226,22 +218,11 @@ public class ErrorManager {
      * added.
      *
      * @param error The error to be added
-     *
-     * @return True if a duplicate error has already been registered, false otherwise
      */
-    protected boolean addError(final ProgramError error) {
-        final int index;
-
+    protected void addError(final ProgramError error) {
         synchronized (errors) {
-            index = errors.indexOf(error);
-            if (index == -1) {
-                errors.add(error);
-            } else {
-                errors.get(index).updateLastDate();
-            }
+            errors.add(error);
         }
-
-        return index > -1;
     }
 
     /**
@@ -258,7 +239,7 @@ public class ErrorManager {
     protected ProgramError getError(final ErrorLevel level, final String message,
             final Throwable exception, final String details) {
         return new ProgramError(level, message, exception, getTrace(message, exception), details,
-                new Date(), clientInfo, this);
+                new Date(), this);
     }
 
     /**
@@ -297,7 +278,7 @@ public class ErrorManager {
         }
         error.setReportStatus(ErrorReportStatus.QUEUED);
 
-        reportThread.submit(new ErrorReportingRunnable(error));
+        reportThread.submit(new ErrorReportingRunnable(error, clientInfo));
     }
 
     /**

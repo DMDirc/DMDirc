@@ -22,17 +22,14 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.util.ClientInfo;
-
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.Lists;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nullable;
 
@@ -45,9 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class ProgramError implements Serializable {
 
     /** A version number for this class. */
-    private static final long serialVersionUID = 3;
-    /** The reporter to use to send this error. */
-    private final ErrorReporter reporter;
+    private static final long serialVersionUID = 4;
     /** Error icon. */
     private final ErrorLevel level;
     /** Error message. */
@@ -62,10 +57,6 @@ public final class ProgramError implements Serializable {
     private final Date firstDate;
     /** The error manager to register with. */
     private final ErrorManager errorManager;
-    /** Date/time error last occurred. */
-    private Date lastDate;
-    /** Number of occurrences. */
-    private final AtomicInteger count;
     /** Error report Status. */
     private ErrorReportStatus reportStatus;
     /** Has the error been output. */
@@ -83,10 +74,9 @@ public final class ProgramError implements Serializable {
      */
     public ProgramError(final ErrorLevel level, final String message,
             @Nullable final Throwable exception,
-            final List<String> trace,
+            final Iterable<String> trace,
             @Nullable final String details,
             final Date date,
-            final ClientInfo clientInfo,
             final ErrorManager errorManager) {
         checkNotNull(level);
         checkNotNull(message);
@@ -96,13 +86,10 @@ public final class ProgramError implements Serializable {
         this.level = level;
         this.message = message;
         this.exception = exception;
-        this.trace = trace;
+        this.trace = Lists.newArrayList(trace);
         this.details = details;
         this.firstDate = (Date) date.clone();
-        this.lastDate = (Date) date.clone();
-        this.count = new AtomicInteger(1);
         this.reportStatus = ErrorReportStatus.WAITING;
-        this.reporter = new ErrorReporter(clientInfo);
         this.errorManager = errorManager;
     }
 
@@ -138,7 +125,7 @@ public final class ProgramError implements Serializable {
      * @return Error trace
      */
     public List<String> getTrace() {
-        return trace;
+        return Collections.unmodifiableList(trace);
     }
 
     /**
@@ -148,24 +135,6 @@ public final class ProgramError implements Serializable {
      */
     public Date getDate() {
         return (Date) firstDate.clone();
-    }
-
-    /**
-     * Returns the number of times this error has occurred.
-     *
-     * @return Error count
-     */
-    public int getCount() {
-        return count.get();
-    }
-
-    /**
-     * Returns the last time this error occurred.
-     *
-     * @return Last occurrence
-     */
-    public Date getLastDate() {
-        return (Date) lastDate.clone();
     }
 
     /**
@@ -190,53 +159,6 @@ public final class ProgramError implements Serializable {
             synchronized (this) {
                 notifyAll();
             }
-        }
-    }
-
-    /**
-     * Sends this error report to the DMDirc developers.
-     */
-    public void send() {
-        setReportStatus(ErrorReportStatus.SENDING);
-        reporter.sendException(message, level, firstDate, exception, details);
-        setReportStatus(ErrorReportStatus.FINISHED);
-    }
-
-    /**
-     * Updates the last date this error occurred.
-     */
-    public void updateLastDate() {
-        updateLastDate(new Date());
-    }
-
-    /**
-     * Updates the last date this error occurred.
-     *
-     * @param date Date error occurred
-     */
-    public void updateLastDate(final Date date) {
-        lastDate = date;
-        count.getAndIncrement();
-        errorManager.fireErrorStatusChanged(this);
-
-        synchronized (this) {
-            notifyAll();
-        }
-    }
-
-    /**
-     * Returns a human readable string describing the number of times this error occurred and when
-     * these occurrences were.
-     *
-     * @return Occurrences description
-     */
-    public String occurrencesString() {
-        final DateFormat format = new SimpleDateFormat("MMM dd hh:mm aa");
-        if (count.get() == 1) {
-            return "1 occurrence on " + format.format(getDate());
-        } else {
-            return count.get() + " occurrences between " + format.format(
-                    getDate()) + " and " + format.format(getLastDate()) + '.';
         }
     }
 
