@@ -22,8 +22,6 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.util.ClientInfo;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
@@ -45,8 +43,6 @@ public final class ProgramError implements Serializable {
 
     /** A version number for this class. */
     private static final long serialVersionUID = 4;
-    /** The reporter to use to send this error. */
-    private final ErrorReporter reporter;
     /** Error icon. */
     private final ErrorLevel level;
     /** Error message. */
@@ -81,7 +77,6 @@ public final class ProgramError implements Serializable {
             final Iterable<String> trace,
             @Nullable final String details,
             final Date date,
-            final ClientInfo clientInfo,
             final ErrorManager errorManager) {
         checkNotNull(level);
         checkNotNull(message);
@@ -95,7 +90,6 @@ public final class ProgramError implements Serializable {
         this.details = details;
         this.firstDate = (Date) date.clone();
         this.reportStatus = ErrorReportStatus.WAITING;
-        this.reporter = new ErrorReporter(clientInfo);
         this.errorManager = errorManager;
     }
 
@@ -166,15 +160,6 @@ public final class ProgramError implements Serializable {
                 notifyAll();
             }
         }
-    }
-
-    /**
-     * Sends this error report to the DMDirc developers.
-     */
-    public void send() {
-        setReportStatus(ErrorReportStatus.SENDING);
-        reporter.sendException(message, level, firstDate, exception, details);
-        setReportStatus(ErrorReportStatus.FINISHED);
     }
 
     /**
