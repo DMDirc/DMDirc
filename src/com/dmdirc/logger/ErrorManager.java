@@ -254,7 +254,7 @@ public class ErrorManager {
     protected ProgramError getError(final ErrorLevel level, final String message,
             final Throwable exception, final String details) {
         return new ProgramError(level, message, exception, getTrace(message, exception), details,
-                new Date(), this);
+                new Date(), this, eventBus);
     }
 
     /**
@@ -381,8 +381,8 @@ public class ErrorManager {
                     listener.errorAdded(event.getError());
                 });
         if (!event.isHandled()) {
-            System.err.println(
-                    "An error has occurred: " + event.getError().getLevel() + ": " + event.getError().getMessage());
+            System.err.println("An error has occurred: " + event.getError().getLevel() + ": "
+                            + event.getError().getMessage());
 
             for (String line : event.getError().getTrace()) {
                 System.err.println("\t" + line);

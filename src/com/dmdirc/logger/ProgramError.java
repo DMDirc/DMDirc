@@ -22,6 +22,9 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.ProgramErrorStatusEvent;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
@@ -57,6 +60,8 @@ public final class ProgramError implements Serializable {
     private final Date firstDate;
     /** The error manager to register with. */
     private final ErrorManager errorManager;
+    /** The eventbus to post status changes to. */
+    private final DMDircMBassador eventBus;
     /** Error report Status. */
     private ErrorReportStatus reportStatus;
     /** Has the error been output. */
@@ -71,13 +76,15 @@ public final class ProgramError implements Serializable {
      * @param trace     The textual trace for this error
      * @param details   The detailed cause of the error, if any.
      * @param date      Error time and date
+     * @param eventBus  The event bus to post status changes to
      */
     public ProgramError(final ErrorLevel level, final String message,
             @Nullable final Throwable exception,
             final Iterable<String> trace,
             @Nullable final String details,
             final Date date,
-            final ErrorManager errorManager) {
+            final ErrorManager errorManager,
+            final DMDircMBassador eventBus) {
         checkNotNull(level);
         checkNotNull(message);
         checkNotNull(date);
@@ -91,6 +98,7 @@ public final class ProgramError implements Serializable {
         this.firstDate = (Date) date.clone();
         this.reportStatus = ErrorReportStatus.WAITING;
         this.errorManager = errorManager;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -152,14 +160,10 @@ public final class ProgramError implements Serializable {
      * @param newStatus new ErrorReportStatus for the error
      */
     public void setReportStatus(final ErrorReportStatus newStatus) {
-        // TODO: Shift this into ErrorManager and use the event not the listeners
         if (newStatus != null && reportStatus != newStatus) {
             reportStatus = newStatus;
+            eventBus.publishAsync(new ProgramErrorStatusEvent(this));
             errorManager.fireErrorStatusChanged(this);
-
-            synchronized (this) {
-                notifyAll();
-            }
         }
     }
 
