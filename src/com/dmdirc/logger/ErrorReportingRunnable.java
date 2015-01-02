@@ -22,26 +22,33 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.util.ClientInfo;
+
 /**
  * Runnable that reports an error.
  */
 public class ErrorReportingRunnable implements Runnable {
 
     private final ProgramError error;
+    private final ClientInfo clientInfo;
 
     /**
      * Runnable used to report errors.
      *
      * @param error Error to report
      */
-    public ErrorReportingRunnable(final ProgramError error) {
+    public ErrorReportingRunnable(final ProgramError error, final ClientInfo clientInfo) {
         this.error = error;
+        this.clientInfo = clientInfo;
     }
 
     @Override
     public void run() {
         do {
-            error.send();
+            error.setReportStatus(ErrorReportStatus.SENDING);
+            new ErrorReporter(clientInfo).sendException(error.getMessage(), error.getLevel(), error
+                    .getDate(), error.getThrowable(), error.getDetails());
+            error.setReportStatus(ErrorReportStatus.FINISHED);
         } while (error.getReportStatus() == ErrorReportStatus.QUEUED);
     }
 

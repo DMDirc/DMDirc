@@ -113,7 +113,6 @@ public class ErrorManager {
             try {
                 Files.createDirectories(errorsDirectory);
             } catch (IOException ex) {
-                // TODO: When ErrorManager writes errors, obey this.
                 directoryError = true;
             }
         }
@@ -240,7 +239,7 @@ public class ErrorManager {
     protected ProgramError getError(final ErrorLevel level, final String message,
             final Throwable exception, final String details) {
         return new ProgramError(level, message, exception, getTrace(message, exception), details,
-                new Date(), clientInfo, this);
+                new Date(), this);
     }
 
     /**
@@ -279,7 +278,7 @@ public class ErrorManager {
         }
         error.setReportStatus(ErrorReportStatus.QUEUED);
 
-        reportThread.submit(new ErrorReportingRunnable(error));
+        reportThread.submit(new ErrorReportingRunnable(error, clientInfo));
     }
 
     /**
