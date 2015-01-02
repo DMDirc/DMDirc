@@ -240,6 +240,7 @@ public class Server extends FrameContainer implements Connection {
         getConfigManager().addChangeListener("formatter", "serverName", configListener);
         getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
 
+        initBackBuffer();
         this.highlightManager = new HighlightManager(getConfigManager(),
                 new ColourManager(getConfigManager(), getEventBus()));
         highlightManager.init();

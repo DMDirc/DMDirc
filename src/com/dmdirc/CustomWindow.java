@@ -48,6 +48,7 @@ public class CustomWindow extends FrameContainer {
         super(parent, "custom", name, title, parent.getConfigManager(), backBufferFactory,
                 urlBuilder, parent.getEventBus(),
                 Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
+        initBackBuffer();
     }
 
     /**
@@ -62,6 +63,7 @@ public class CustomWindow extends FrameContainer {
             final BackBufferFactory backBufferFactory) {
         super(null, "custom", name, title, configProvider, backBufferFactory, urlBuilder,
                 eventBus, Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
+        initBackBuffer();
     }
 
     @Override

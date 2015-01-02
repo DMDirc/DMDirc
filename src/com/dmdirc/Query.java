@@ -101,6 +101,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
         this.server = newServer;
         this.user = user;
         updateTitle();
+        initBackBuffer();
     }
 
     @Override

@@ -143,6 +143,7 @@ public class Channel extends MessageTarget implements GroupChat {
 
         eventHandler = new ChannelEventHandler(this, getEventBus(), groupChatUserManager);
 
+        initBackBuffer();
         registerCallbacks();
         updateTitle();
         selfJoin();

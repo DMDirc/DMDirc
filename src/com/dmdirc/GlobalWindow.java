@@ -61,6 +61,7 @@ public class GlobalWindow extends FrameContainer {
                 messageSinkManager, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
+        initBackBuffer();
     }
 
     @Override
