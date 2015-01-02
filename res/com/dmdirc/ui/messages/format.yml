@@ -19,6 +19,20 @@ ChannelJoinEvent:
 ChannelSelfJoinEvent:
   format: "* You are now talking in {{channel.name}}."
   colour: 3
+ChannelPartEvent:
+  format: >
+             * {{client.modePrefixedNickname}} ({{client.username}}@{{client.hostname}})
+             has left {{channel.name}}{{message|bracketed}}.
+  colour: 3
+ChannelSelfPartEvent:
+  format: >
+             * You have left {{channel.name}}{{message|bracketed}}.
+  colour: 3
+ChannelQuitEvent:
+  format: >
+             * {{client.modePrefixedNickname}} ({{client.username}}@{{client.hostname}})
+             has quit IRC{{message|bracketed}}.
+  colour: 2
 
 ################## Channel message events ##########################################################
 
@@ -66,12 +80,6 @@ ChannelSelfModeChangeEvent:
   colour: 3
 
 # TODO:
-#  channelPart=3* %1$s%2$s (%3$s@%4$s) has left %6$s.
-#  channelPartReason=3* %1$s%2$s (%3$s@%4$s) has left %6$s (%5$s).
-#  channelQuit=2* %1$s%2$s (%3$s@%4$s) has quit IRC.
-#  channelQuitReason=2* %1$s%2$s (%3$s@%4$s) has quit IRC (%5$s).
-#  channelSelfPart=3* You have left the channel.
-#  channelSelfPartReason=3* You have left the channel.
 #  channelNickChange=3* %1$s%5$s is now known as %2$s.
 #  channelSelfNickChange=3* You are now known as %2$s.
 #  channelUserAway=14-- %1$s%2$s is now away.
