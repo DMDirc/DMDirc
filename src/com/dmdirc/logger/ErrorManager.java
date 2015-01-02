@@ -31,13 +31,15 @@ import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.collections.ListenerList;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.awt.GraphicsEnvironment;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
@@ -67,16 +69,14 @@ public class ErrorManager {
     private boolean submitReports;
     /** Temp no error reporting. */
     private boolean tempNoErrors;
-    /** Queue of errors to be reported. */
-    private final BlockingQueue<ProgramError> reportQueue = new LinkedBlockingQueue<>();
-    /** Thread used for sending errors. */
-    private volatile Thread reportThread;
     /** Error list. */
     private final List<ProgramError> errors;
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
     /** Next error ID. */
     private final AtomicLong nextErrorID;
+    /** Thread used for sending errors. */
+    private ExecutorService reportThread;
     /** Directory to store errors in. */
     private Path errorsDirectory;
     private ClientInfo clientInfo;
@@ -100,6 +100,8 @@ public class ErrorManager {
         this.clientInfo = clientInfo;
         eventBus.subscribe(this);
         RavenFactory.registerFactory(new DefaultRavenFactory());
+        reportThread = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+                .setNameFormat("error-thread-%d").build());
 
         globalConfig.getBinder().bind(this, ErrorManager.class);
 
@@ -249,15 +251,9 @@ public class ErrorManager {
                 && error.getReportStatus() != ErrorReportStatus.WAITING) {
             return;
         }
-
         error.setReportStatus(ErrorReportStatus.QUEUED);
 
-        reportQueue.add(error);
-
-        if (reportThread == null || !reportThread.isAlive()) {
-            reportThread = new ErrorReportingThread(reportQueue);
-            reportThread.start();
-        }
+        reportThread.submit(new ErrorReportingThread(error));
     }
 
     /**
