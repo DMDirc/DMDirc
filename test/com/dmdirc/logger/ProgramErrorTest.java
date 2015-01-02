@@ -22,6 +22,7 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.util.ClientInfo;
 
 import com.google.common.collect.Lists;
@@ -41,42 +42,44 @@ import static org.junit.Assert.assertTrue;
 public class ProgramErrorTest {
 
     @Mock private ErrorManager errorManager;
+    @Mock private DMDircMBassador eventBus;
     @Mock private ClientInfo clientInfo;
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullErrorLevel() {
-        new ProgramError(null, "moo", null, Lists.newArrayList(), null, new Date(), errorManager);
+        new ProgramError(null, "moo", null, Lists.newArrayList(), null, new Date(), errorManager,
+                eventBus);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullMessage() {
         new ProgramError(ErrorLevel.HIGH, null, null, Lists.newArrayList(), null, new Date(),
-                errorManager);
+                errorManager, eventBus);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorEmptyMessage() {
         new ProgramError(ErrorLevel.HIGH, "", null, Lists.newArrayList(), null, new Date(),
-                errorManager);
+                errorManager, eventBus);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullDate() {
         new ProgramError(ErrorLevel.HIGH, "moo", null, Lists.newArrayList(), null, null,
-                errorManager);
+                errorManager, eventBus);
     }
 
     @Test
     public void testConstructorGood() {
         new ProgramError(ErrorLevel.HIGH, "moo", new UnsupportedOperationException(),
-                Lists.newArrayList(), null, new Date(), errorManager);
+                Lists.newArrayList(), null, new Date(), errorManager, eventBus);
     }
 
     @Test
     public void testGetLevel() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
-                errorManager);
+                errorManager, eventBus);
         assertEquals(ErrorLevel.HIGH, pe.getLevel());
     }
 
@@ -84,7 +87,7 @@ public class ProgramErrorTest {
     public void testGetMessage() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
-                errorManager);
+                errorManager, eventBus);
         assertEquals("moo", pe.getMessage());
     }
 
@@ -93,7 +96,7 @@ public class ProgramErrorTest {
         final Date date = new Date();
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, date,
-                errorManager);
+                errorManager, eventBus);
         assertEquals(date, pe.getDate());
     }
 
@@ -101,7 +104,7 @@ public class ProgramErrorTest {
     public void testReportStatus() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
-                errorManager);
+                errorManager, eventBus);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
         pe.setReportStatus(null);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
@@ -115,7 +118,7 @@ public class ProgramErrorTest {
     public void testToString() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
-                errorManager);
+                errorManager, eventBus);
         assertTrue(pe.toString().contains("moo"));
     }
 
@@ -123,15 +126,15 @@ public class ProgramErrorTest {
     public void testEquals() {
         final Exception ex = new UnsupportedOperationException();
         final ProgramError pe1 = new ProgramError(ErrorLevel.LOW, "moo",
-                ex, Lists.newArrayList(), null, new Date(), errorManager);
+                ex, Lists.newArrayList(), null, new Date(), errorManager, eventBus);
         final ProgramError pe2 = new ProgramError(ErrorLevel.LOW, "moo",
-                ex, Lists.newArrayList(), null, new Date(), errorManager);
+                ex, Lists.newArrayList(), null, new Date(), errorManager, eventBus);
         final ProgramError pe3 = new ProgramError(ErrorLevel.MEDIUM, "moo",
-                ex, Lists.newArrayList(), null, new Date(), errorManager);
+                ex, Lists.newArrayList(), null, new Date(), errorManager, eventBus);
         final ProgramError pe4 = new ProgramError(ErrorLevel.LOW, "bar",
-                ex, Lists.newArrayList(), null, new Date(), errorManager);
+                ex, Lists.newArrayList(), null, new Date(), errorManager, eventBus);
         final ProgramError pe5 = new ProgramError(ErrorLevel.LOW, "moo",
-                null, Lists.newArrayList(), "Hello", new Date(), errorManager);
+                null, Lists.newArrayList(), "Hello", new Date(), errorManager, eventBus);
 
         assertFalse(pe1.equals(null)); // NOPMD
         assertFalse(pe1.equals("moo"));
