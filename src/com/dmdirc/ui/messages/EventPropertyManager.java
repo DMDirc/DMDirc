@@ -61,7 +61,13 @@ public class EventPropertyManager {
             final Method method = type.getMethod(methodName);
             // TODO: This is needed for AutoValues, should probably get return types not real types
             method.setAccessible(true);
-            return Optional.ofNullable(method.invoke(object));
+            final Object result = method.invoke(object);
+
+            if (result instanceof Optional<?>) {
+                return Optional.ofNullable(((Optional<?>) result).orElse(null));
+            }
+
+            return Optional.ofNullable(result);
         } catch (ReflectiveOperationException ex) {
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
                     "Unable to format event: could not retrieve property " + property,
