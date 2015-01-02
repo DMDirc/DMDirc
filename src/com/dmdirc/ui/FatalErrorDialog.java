@@ -33,7 +33,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -84,7 +84,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     /** Stack trace scroll pane. */
     private JScrollPane scrollPane;
     /** Error status semaphore. */
-    private final Semaphore errorSemaphore;
+    private final CountDownLatch errorSemaphore;
 
     /**
      * Creates a new fatal error dialog.
@@ -92,7 +92,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      * @param error Error
      */
     public FatalErrorDialog(final ProgramError error, final ErrorManager errorManager,
-            final Semaphore errorSemaphore) {
+            final CountDownLatch errorSemaphore) {
         super(null, Dialog.ModalityType.TOOLKIT_MODAL);
 
         setModal(true);
@@ -236,7 +236,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         } else {
             dispose();
         }
-        errorSemaphore.release();
+        errorSemaphore.countDown();
     }
 
     /**
@@ -305,7 +305,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
                 restartButton.setEnabled(status.isTerminal());
                 updateSendButtonText(status);
             });
-            errorSemaphore.release();
+            errorSemaphore.countDown();
         }
     }
 

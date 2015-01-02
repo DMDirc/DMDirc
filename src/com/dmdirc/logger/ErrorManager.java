@@ -47,9 +47,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -75,7 +75,7 @@ public class ErrorManager {
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
     /** Semaphore used to wait for fatal error to report. */
-    private final Semaphore errorSemaphore = new Semaphore(2);
+    private final CountDownLatch errorSemaphore = new CountDownLatch(2);
     /** Event bus to subscribe and publish errors on. */
     private DMDircMBassador eventBus;
     /** Whether or not to send error reports. */
@@ -408,12 +408,13 @@ public class ErrorManager {
             }
             restart = false;
         } else {
-            errorSemaphore.acquireUninterruptibly(2);
             final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this, errorSemaphore);
             fed.setVisible(true);
-            //Wait for error status change to release semaphore
-            errorSemaphore.acquireUninterruptibly(2);
-            errorSemaphore.release();
+            try {
+                errorSemaphore.await();
+            } catch (InterruptedException ex) {
+                //Nevermind, carry on
+            }
             restart = fed.getRestart();
         }
 
