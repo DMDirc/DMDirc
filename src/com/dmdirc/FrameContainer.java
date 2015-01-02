@@ -100,8 +100,6 @@ public abstract class FrameContainer {
     private final BackBufferFactory backBufferFactory;
     /** The back buffer for this container. */
     private BackBuffer backBuffer;
-    /** Lock for access to {@link #backBuffer}. */
-    private final Object backBufferLock = new Object();
 
     /**
      * The command parser used for commands in this container.
@@ -194,6 +192,11 @@ public abstract class FrameContainer {
         configManager.getBinder().bind(unreadStatusManager, UnreadStatusManager.class);
 
         setIcon(icon);
+    }
+
+    protected void initBackBuffer() {
+        backBuffer = backBufferFactory.getBackBuffer(this);
+        backBuffer.startAddingEvents();
     }
 
     public Optional<FrameContainer> getParent() {
@@ -391,13 +394,6 @@ public abstract class FrameContainer {
      * @return This container's back buffer.
      */
     public BackBuffer getBackBuffer() {
-        synchronized (backBufferLock) {
-            if (backBuffer == null) {
-                backBuffer = backBufferFactory.getBackBuffer(this);
-                backBuffer.startAddingEvents();
-            }
-        }
-
         return backBuffer;
     }
 
