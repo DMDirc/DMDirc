@@ -31,9 +31,13 @@ import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.collections.ListenerList;
 
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Date;
@@ -69,6 +73,8 @@ public class ErrorManager {
     private boolean submitReports;
     /** Temp no error reporting. */
     private boolean tempNoErrors;
+    /** Error creating directory, don't write to disk. */
+    private boolean directoryError;
     /** Error list. */
     private final List<ProgramError> errors;
     /** Listener list. */
@@ -103,6 +109,14 @@ public class ErrorManager {
         globalConfig.getBinder().bind(this, ErrorManager.class);
 
         errorsDirectory = directory;
+        if (!Files.exists(directory)) {
+            try {
+                Files.createDirectories(errorsDirectory);
+            } catch (IOException ex) {
+                // TODO: When ErrorManager writes errors, obey this.
+                directoryError = true;
+            }
+        }
 
         // Loop through any existing errors and send/save them per the config.
         for (ProgramError error : errors) {
@@ -111,7 +125,7 @@ public class ErrorManager {
             }
 
             if (logReports) {
-                error.save(errorsDirectory);
+                saveError(error);
             }
         }
     }
@@ -162,7 +176,7 @@ public class ErrorManager {
         }
 
         if (logReports) {
-            error.save(errorsDirectory);
+            saveError(error);
         }
 
         if (!dupe) {
@@ -502,5 +516,23 @@ public class ErrorManager {
         }
 
         return trace;
+    }
+
+    private void saveError(final ProgramError error) {
+        if (directoryError) {
+            return;
+        }
+        final String logName = error.getDate().getTime() + "-" + error.getLevel();
+        final Path errorFile = errorsDirectory.resolve(logName + ".log");
+        final List<String> data = Lists.newArrayList("Date: " + error.getDate(),
+                "Level: " + error.getLevel(),
+                "Description: " + error.getMessage(),
+                "Details: ");
+        error.getTrace().forEach(line -> data.add('\t' + line));
+        try {
+            Files.write(errorFile, data, Charset.forName("UTF-8"));
+        } catch (IOException ex) {
+            //Not really anything we can do at this point, so don't try.
+        }
     }
 }
