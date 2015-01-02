@@ -270,6 +270,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
                 "New nickname must not exist");
         final int index = selectedProfile.get().getNicknames().indexOf(oldName);
         selectedProfile.get().setNickname(index, newName);
+        selectedNickname = Optional.of(newName);
         listeners.getCallable(ProfilesDialogModelListener.class)
                 .selectedProfileNicknameEdited(oldName, newName);
     }
@@ -307,7 +308,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         }
         this.selectedHighlight = selectedHighlight;
         listeners.getCallable(ProfilesDialogModelListener.class)
-                .selectedNicknameChanged(selectedNickname);
+                .selectedHighlightChanged(selectedNickname);
     }
 
     @Override
@@ -467,8 +468,9 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
                 "Old highlight must exist");
         checkArgument(!selectedProfile.get().getHighlights().contains(newHighlight),
                 "New highlight must not exist");
-        final int index = selectedProfile.get().getNicknames().indexOf(oldHighlight);
+        final int index = selectedProfile.get().getHighlights().indexOf(oldHighlight);
         selectedProfile.get().setHighlight(index, newHighlight);
+        selectedHighlight = Optional.of(newHighlight);
         listeners.getCallable(ProfilesDialogModelListener.class)
                 .selectedProfileHighlightEdited(oldHighlight, newHighlight);
     }
