@@ -139,16 +139,17 @@ public class GroupChatManagerImpl implements GroupChatManager {
         channels.remove(chan);
     }
 
-    public Channel addChannel(final ChannelInfo chan) {
-        return addChannel(chan, !backgroundChannels.contains(chan.getName())
-                || connection.getWindowModel().getConfigManager()
-                .getOptionBool("general", "hidechannels"));
+    public void addChannel(final ChannelInfo chan) {
+        addChannel(chan,
+                !backgroundChannels.contains(chan.getName())
+                        || connection.getWindowModel().getConfigManager()
+                        .getOptionBool("general", "hidechannels"));
     }
 
-    public Channel addChannel(final ChannelInfo chan, final boolean focus) {
+    public void addChannel(final ChannelInfo chan, final boolean focus) {
         if (connection.getState() == ServerState.CLOSING) {
             // Can't join channels while the server is closing
-            return null;
+            return;
         }
 
         backgroundChannels.remove(chan.getName());
@@ -157,7 +158,6 @@ public class GroupChatManagerImpl implements GroupChatManager {
         if (channel.isPresent()) {
             channel.get().setChannelInfo(chan);
             channel.get().selfJoin();
-            return channel.get();
         } else {
             final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
                     connection.getProtocol(), connection.getIrcd(), connection.getNetwork(),
@@ -168,7 +168,6 @@ public class GroupChatManagerImpl implements GroupChatManager {
             connection.getWindowModel().getTabCompleter().addEntry(TabCompletionType.CHANNEL,
                     chan.getName());
             channels.add(newChan);
-            return newChan;
         }
     }
 
