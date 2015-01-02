@@ -70,7 +70,7 @@ public class AllChannels extends Command implements IntelligentCommand {
         final Connection server = ((ServerCommandContext) context).getConnection();
         final String command = args.getArgumentsAsString();
 
-        for (GroupChat channel : server.getChannels()) {
+        for (GroupChat channel : server.getGroupChatManager().getChannels()) {
             channel.getWindowModel().getCommandParser().parseCommand(channel.getWindowModel(),
                     command);
         }

@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.harness.TestCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Optional;
@@ -59,6 +60,7 @@ public class CommandParserTest {
     @Mock private FrameContainer container;
     @Mock private Channel channel;
     @Mock private Connection connection;
+    @Mock private GroupChatManager groupChatManager;
     @Mock private DMDircMBassador eventBus;
     private TestCommandParser commandParser;
     private TestCommandParser channelCommandParser;
@@ -75,9 +77,10 @@ public class CommandParserTest {
         when(configProvider.getOptionInt("general", "commandhistory")).thenReturn(10);
 
         when(container.getConnection()).thenReturn(Optional.of(connection));
-        when(connection.isValidChannelName("#channel1")).thenReturn(true);
-        when(connection.isValidChannelName("#channel2")).thenReturn(true);
-        when(connection.getChannel("#channel1")).thenReturn(Optional.of(channel));
+        when(connection.getGroupChatManager()).thenReturn(groupChatManager);
+        when(groupChatManager.isValidChannelName("#channel1")).thenReturn(true);
+        when(groupChatManager.isValidChannelName("#channel2")).thenReturn(true);
+        when(groupChatManager.getChannel("#channel1")).thenReturn(Optional.of(channel));
 
         commandParser = new TestCommandParser(configProvider, commandController, eventBus);
         commandParser.registerCommand(command, commandInfo);

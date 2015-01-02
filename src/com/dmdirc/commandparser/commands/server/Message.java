@@ -80,7 +80,7 @@ public class Message extends Command implements IntelligentCommand,
 
             // If this is a known server or channel, and this is not a silent
             // invocation, use sendLine, else send it raw to the parser.
-            final Optional<GroupChat> channel = connection.getChannel(target);
+            final Optional<GroupChat> channel = connection.getGroupChatManager().getChannel(target);
             if (!args.isSilent() && channel.isPresent()) {
                 channel.get().sendLine(message);
             } else if (!args.isSilent() && connection.hasQuery(target)) {

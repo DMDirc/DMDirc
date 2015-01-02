@@ -62,7 +62,7 @@ public class CommonChannelsMessageSink implements MessageSink {
         final User user = connection.getUser(username);
         boolean found = false;
 
-        for (GroupChat channel : connection.getChannels()) {
+        for (GroupChat channel : connection.getGroupChatManager().getChannels()) {
             if (channel.getUser(user).isPresent()) {
                 channel.getWindowModel().addLine(messageType, date, args);
                 found = true;

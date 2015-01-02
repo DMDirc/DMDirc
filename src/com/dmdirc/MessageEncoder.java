@@ -65,7 +65,7 @@ public class MessageEncoder implements Encoder {
                 .getOption("general", "encoding");
 
         if (target != null && parser.isValidChannelName(target)) {
-            encoding = connection.getChannel(target)
+            encoding = connection.getGroupChatManager().getChannel(target)
                     .map(GroupChat::getWindowModel)
                     .map(FrameContainer::getConfigManager)
                     .map(cm -> cm.getOption("general", "encoding"))

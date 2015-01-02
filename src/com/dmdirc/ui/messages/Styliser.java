@@ -261,7 +261,7 @@ public class Styliser implements ConfigChangeListener {
     public String doLinks(final String string) {
         String target = string;
         final String prefixes = connection == null ? null
-                : connection.getChannelPrefixes();
+                : connection.getGroupChatManager().getChannelPrefixes();
 
         String target2 = target;
         target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);

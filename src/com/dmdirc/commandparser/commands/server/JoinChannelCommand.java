@@ -100,7 +100,8 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
             }
         }
 
-        connection.join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[channels.size()]));
+        connection.getGroupChatManager()
+                .join(!args.isSilent(), channels.toArray(new ChannelJoinRequest[channels.size()]));
     }
 
     @Handler
@@ -140,11 +141,12 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
         if (!showExisting) {
             // Only tab complete channels we're not already on
             targets.addAll(results.stream()
-                    .filter(result -> !connection.getChannel(result).isPresent())
+                    .filter(result -> !connection.getGroupChatManager()
+                            .getChannel(result).isPresent())
                     .map(result -> prefix + result).collect(Collectors.toList()));
         }
 
-        for (char chPrefix : connection.getChannelPrefixes().toCharArray()) {
+        for (char chPrefix : connection.getGroupChatManager().getChannelPrefixes().toCharArray()) {
             // Let them tab complete the prefixes as well
             targets.add(prefix + chPrefix);
         }
