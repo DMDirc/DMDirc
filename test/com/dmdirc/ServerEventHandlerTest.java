@@ -66,6 +66,7 @@ import static org.mockito.Mockito.when;
 public class ServerEventHandlerTest {
 
     @Mock private Server server;
+    @Mock private GroupChatManagerImpl groupChatManager;
     @Mock private Parser parser;
     @Mock private CallbackManager callbackManager;
     @Mock private DMDircMBassador eventBus;
@@ -88,7 +89,8 @@ public class ServerEventHandlerTest {
                 .thenReturn(user);
         when(server.getUser(anyString())).thenReturn(user);
         when(server.getLocalUser()).thenReturn(Optional.of(user));
-        final ServerEventHandler handler = new ServerEventHandler(server, eventBus);
+        final ServerEventHandler handler = new ServerEventHandler(server, groupChatManager,
+                eventBus);
         handler.registerCallbacks();
 
         when(user.getNickname()).thenReturn("ho");
@@ -100,7 +102,7 @@ public class ServerEventHandlerTest {
     public void testSelfJoinAddsChannel() {
         final ChannelSelfJoinListener listener = getCallback(ChannelSelfJoinListener.class);
         listener.onChannelSelfJoin(parser, date, channelInfo);
-        verify(server).addChannel(channelInfo);
+        verify(groupChatManager).addChannel(channelInfo);
     }
 
     @Test

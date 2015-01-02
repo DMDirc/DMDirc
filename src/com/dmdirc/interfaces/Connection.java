@@ -107,13 +107,6 @@ public interface Connection {
     void connect(final URI address, final Profile profile);
 
     /**
-     * Removes a specific channel and window from this server.
-     *
-     * @param chan channel to remove
-     */
-    void delChannel(final String chan);
-
-    /**
      * Deletes a query from this server.
      *
      * @param query The query that should be removed.

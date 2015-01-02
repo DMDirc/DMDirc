@@ -49,13 +49,13 @@ public class ServerFactoryImpl {
     private final TabCompleterFactory tabCompleterFactory;
     private final IdentityFactory identityFactory;
     private final MessageSinkManager messageSinkManager;
-    private final Provider<ChannelFactory> channelFactory;
     private final Provider<QueryFactory> queryFactory;
     private final URLBuilder urlBuilder;
     private final DMDircMBassador eventBus;
     private final MessageEncoderFactory messageEncoderFactory;
     private final ConfigProvider userSettings;
     private final BackBufferFactory backBufferFactory;
+    private final GroupChatManagerImplFactory groupChatManagerFactory;
     private final UserManager userManager;
 
     @Inject
@@ -64,25 +64,25 @@ public class ServerFactoryImpl {
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
-            final Provider<ChannelFactory> channelFactory,
             final Provider<QueryFactory> queryFactory,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             @ClientModule.UserConfig final ConfigProvider userSettings,
             final BackBufferFactory backBufferFactory,
+            final GroupChatManagerImplFactory groupChatManagerFactory,
             final UserManager userManager) {
         this.parserFactory = parserFactory;
         this.tabCompleterFactory = tabCompleterFactory;
         this.identityFactory = identityFactory;
         this.messageSinkManager = messageSinkManager;
-        this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
         this.urlBuilder = urlBuilder;
         this.eventBus = eventBus;
         this.messageEncoderFactory = messageEncoderFactory;
         this.userSettings = userSettings;
         this.backBufferFactory = backBufferFactory;
+        this.groupChatManagerFactory = groupChatManagerFactory;
         this.userManager = userManager;
     }
 
@@ -94,8 +94,8 @@ public class ServerFactoryImpl {
             final Profile profile) {
         return new Server(configMigrator, commandParser, parserFactory,
                 tabCompleterFactory, identityFactory, messageSinkManager,
-                channelFactory.get(), queryFactory.get(), urlBuilder, eventBus,
-                messageEncoderFactory, userSettings, executorService, uri, profile,
-                backBufferFactory, userManager);
+                queryFactory.get(), urlBuilder, eventBus,
+                messageEncoderFactory, userSettings, groupChatManagerFactory, executorService,
+                uri, profile, backBufferFactory, userManager);
     }
 }

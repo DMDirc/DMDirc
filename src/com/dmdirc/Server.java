@@ -32,7 +32,6 @@ import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
 import com.dmdirc.events.ServerInviteExpiredEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -45,7 +44,6 @@ import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.common.ThreadedParser;
-import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.EncodingParser;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
@@ -73,7 +71,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,7 +81,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -100,14 +96,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The Server class represents the client's view of a server. It maintains a list of all channels,
  * queries, etc, and handles parser callbacks pertaining to the server.
  */
-public class Server extends FrameContainer implements Connection, GroupChatManager {
+public class Server extends FrameContainer implements Connection {
 
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general";
 
-    /** Open channels that currently exist on the server. */
-    private final ChannelMap channels = new ChannelMap();
+    /** Manager of group chats. */
+    private final GroupChatManagerImpl groupChatManager;
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
     /** The user manager to retrieve users from. */
@@ -151,8 +147,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
     private final ServerEventHandler eventHandler;
     /** A list of outstanding invites. */
     private final List<Invite> invites = new ArrayList<>();
-    /** A set of channels we want to join without focusing. */
-    private final Collection<String> backgroundChannels = new HashSet<>();
     /** Our ignore list. */
     private final IgnoreList ignoreList = new IgnoreList();
     /** Our string convertor. */
@@ -163,8 +157,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
     private final IdentityFactory identityFactory;
     /** The migrator to use to change our config provider. */
     private final ConfigProviderMigrator configMigrator;
-    /** Factory to use for creating channels. */
-    private final ChannelFactory channelFactory;
     /** Factory to use for creating queries. */
     private final QueryFactory queryFactory;
     /** The config provider to write user settings to. */
@@ -177,8 +169,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
     private final HighlightManager highlightManager;
     /** Listener to use for config changes. */
     private final ConfigChangeListener configListener = (domain, key) -> updateTitle();
-    /** The future used when a who timer is scheduled. */
-    private ScheduledFuture<?> whoTimerFuture;
     /** The future used when a reconnect timer is scheduled. */
     private ScheduledFuture<?> reconnectTimerFuture;
 
@@ -192,12 +182,12 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
-            final ChannelFactory channelFactory,
             final QueryFactory queryFactory,
             final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             final ConfigProvider userSettings,
+            final GroupChatManagerImplFactory groupChatManagerFactory,
             final ScheduledExecutorService executorService,
             @Nonnull final URI uri,
             @Nonnull final Profile profile,
@@ -222,15 +212,15 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
         this.parserFactory = parserFactory;
         this.identityFactory = identityFactory;
         this.configMigrator = configMigrator;
-        this.channelFactory = channelFactory;
         this.queryFactory = queryFactory;
         this.executorService = executorService;
         this.userSettings = userSettings;
         this.messageEncoderFactory = messageEncoderFactory;
         this.userManager = userManager;
+        this.groupChatManager = groupChatManagerFactory.create(this, executorService);
 
         awayMessage = Optional.empty();
-        eventHandler = new ServerEventHandler(this, eventBus);
+        eventHandler = new ServerEventHandler(this, groupChatManager, eventBus);
 
         this.address = uri;
         this.profile = profile;
@@ -412,8 +402,7 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
                     break;
             }
 
-            channels.resetAll();
-            backgroundChannels.clear();
+            groupChatManager.handleDisconnect();
 
             try {
                 parserLock.readLock().lock();
@@ -429,10 +418,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
                 }
             } finally {
                 parserLock.readLock().unlock();
-            }
-
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closechannelsonquit")) {
-                channels.closeAll();
             }
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closequeriesonquit")) {
@@ -474,18 +459,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
             myState.transition(ServerState.RECONNECT_WAIT);
             updateIcon();
         }
-    }
-
-    @Override
-    public Optional<GroupChat> getChannel(final String channel) {
-        return channels.get(channel).map(c -> (GroupChat) c);
-    }
-
-    @Override
-    public Collection<GroupChat> getChannels() {
-        return channels.getAll().parallelStream()
-                .map(c -> (GroupChat) c)
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -552,42 +525,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
     public void delQuery(final Query query) {
         getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
         queries.remove(converter.toLowerCase(query.getNickname()));
-    }
-
-    @Override
-    public void delChannel(final String chan) {
-        getTabCompleter().removeEntry(TabCompletionType.CHANNEL, chan);
-        channels.remove(chan);
-    }
-
-    public Channel addChannel(final ChannelInfo chan) {
-        return addChannel(chan, !backgroundChannels.contains(chan.getName())
-                || getConfigManager().getOptionBool(DOMAIN_GENERAL, "hidechannels"));
-    }
-
-    public Channel addChannel(final ChannelInfo chan, final boolean focus) {
-        synchronized (myStateLock) {
-            if (myState.getState() == ServerState.CLOSING) {
-                // Can't join channels while the server is closing
-                return null;
-            }
-        }
-
-        backgroundChannels.remove(chan.getName());
-
-        final Optional<Channel> channel = channels.get(chan.getName());
-        if (channel.isPresent()) {
-            channel.get().setChannelInfo(chan);
-            channel.get().selfJoin();
-            return channel.get();
-        } else {
-            final ConfigProviderMigrator channelConfig = identityFactory.createMigratableConfig(
-                    getProtocol(), getIrcd(), getNetwork(), getAddress(), chan.getName());
-            final Channel newChan = channelFactory.getChannel(this, chan, channelConfig);
-            getTabCompleter().addEntry(TabCompletionType.CHANNEL, chan.getName());
-            channels.add(newChan);
-            return newChan;
-        }
     }
 
     /**
@@ -683,43 +620,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
     }
 
     @Override
-    public void join(final ChannelJoinRequest... requests) {
-        join(true, requests);
-    }
-
-    @Override
-    public void join(final boolean focus, final ChannelJoinRequest... requests) {
-        synchronized (myStateLock) {
-            if (myState.getState() == ServerState.CONNECTED) {
-                final Collection<ChannelJoinRequest> pending = new ArrayList<>();
-
-                for (ChannelJoinRequest request : requests) {
-                    removeInvites(request.getName());
-
-                    final String name;
-                    if (parser.get().isValidChannelName(request.getName())) {
-                        name = request.getName();
-                    } else {
-                        name = parser.get().getChannelPrefixes().substring(0, 1)
-                                + request.getName();
-                    }
-
-                    if (!getChannel(name).map(GroupChat::isOnChannel).orElse(false)) {
-                        if (!focus) {
-                            backgroundChannels.add(name);
-                        }
-
-                        pending.add(request);
-                    }
-                }
-
-                parser.get().joinChannels(pending.toArray(new ChannelJoinRequest[pending.size()]));
-            }
-            // TODO: otherwise: address.getChannels().add(channel);
-        }
-    }
-
-    @Override
     public void sendLine(final String line) {
         synchronized (myStateLock) {
             try {
@@ -750,11 +650,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
     @Override
     public Profile getProfile() {
         return profile;
-    }
-
-    @Override
-    public String getChannelPrefixes() {
-        return withParserReadLock(Parser::getChannelPrefixes, "#&");
     }
 
     @Override
@@ -866,7 +761,7 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
             myState.transition(ServerState.CLOSING);
         }
 
-        channels.closeAll();
+        groupChatManager.closeAll();
         closeQueries();
         removeInvites();
 
@@ -881,7 +776,7 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
     @Override
     public void addLineToAll(final String messageType, final Date date,
             final Object... args) {
-        channels.addLineToAll(messageType, date, args);
+        groupChatManager.addLineToAll(messageType, date, args);
 
         for (Query query : queries.values()) {
             query.addLine(messageType, date, args);
@@ -901,12 +796,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
         } else if ("CLIENTINFO".equalsIgnoreCase(type)) {
             parser.get().sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
-    }
-
-    @Override
-    public boolean isValidChannelName(final String channelName) {
-        return getChannel(channelName).isPresent()
-                || withParserReadLock(p -> p.isValidChannelName(channelName), false);
     }
 
     @Override
@@ -958,10 +847,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
     public void onSocketClosed() {
         LOG.info("Received socket closed event, state: {}", myState.getState());
 
-        if (whoTimerFuture != null) {
-            whoTimerFuture.cancel(false);
-        }
-
         if (Thread.holdsLock(myStateLock)) {
             LOG.info("State lock contended: rerunning on a new thread");
 
@@ -988,7 +873,7 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
                 myState.transition(ServerState.TRANSIENTLY_DISCONNECTED);
             }
 
-            channels.resetAll();
+            groupChatManager.handleSocketClosed();
 
             try {
                 parserLock.writeLock().lock();
@@ -999,10 +884,6 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
             }
 
             updateIcon();
-
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closechannelsondisconnect")) {
-                channels.closeAll();
-            }
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closequeriesondisconnect")) {
                 closeQueries();
@@ -1109,17 +990,7 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
             updateIgnoreList();
 
             converter = parser.get().getStringConverter();
-            channels.setStringConverter(converter);
-
-            final List<ChannelJoinRequest> requests = new ArrayList<>();
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "rejoinchannels")) {
-                requests.addAll(channels.asJoinRequests());
-            }
-            join(requests.toArray(new ChannelJoinRequest[requests.size()]));
-
-            final int whoTime = getConfigManager().getOptionInt(DOMAIN_GENERAL, "whotime");
-            whoTimerFuture = executorService.scheduleAtFixedRate(
-                    channels.getWhoRunnable(), whoTime, whoTime, TimeUnit.MILLISECONDS);
+            groupChatManager.handleConnected();
         }
 
         getEventBus().publish(new ServerConnectedEvent(this));
@@ -1170,7 +1041,7 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
             requests[i] = new ChannelJoinRequest(invites[i].getChannel());
         }
 
-        join(requests);
+        getGroupChatManager().join(requests);
     }
 
     @Override
@@ -1246,7 +1117,7 @@ public class Server extends FrameContainer implements Connection, GroupChatManag
 
     @Override
     public GroupChatManager getGroupChatManager() {
-        return this;
+        return groupChatManager;
     }
 
     /**
