@@ -332,11 +332,10 @@ public class ChannelEventHandler extends EventHandler implements
 
         final ChannelCtcpEvent event = new ChannelCtcpEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner),type, message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "channelCTCP");
+        eventBus.publish(event);
         if (!event.isHandled()) {
             getConnection().sendCTCPReply(client.getClient().getNickname(), type, message);
         }
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), type, message);
     }
 
     @Override

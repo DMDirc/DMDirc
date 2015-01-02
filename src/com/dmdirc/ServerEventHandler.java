@@ -213,11 +213,9 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-
         final ServerCtcpEvent event = new ServerCtcpEvent(owner, owner.getUser(host),
                 type, message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "privateCTCP");
-        owner.doNotification(format, owner.getUser(host), type, message);
+        eventBus.publish(event);
         if (!event.isHandled()) {
             owner.sendCTCPReply(owner.getUser(host).getNickname(), type, message);
         }
@@ -228,10 +226,7 @@ public class ServerEventHandler extends EventHandler implements
             final String message, final String host) {
         checkParser(parser);
 
-        final ServerCtcpReplyEvent event = new ServerCtcpReplyEvent(owner, owner.getUser(host),
-                type, message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "privateCTCPreply");
-        owner.doNotification(format, owner.getUser(host), type, message);
+        eventBus.publish(new ServerCtcpReplyEvent(owner, owner.getUser(host), type, message));
     }
 
     @Override

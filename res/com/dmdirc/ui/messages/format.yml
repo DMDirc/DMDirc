@@ -19,7 +19,7 @@ ChannelGotTopicEvent:
   format: "* The topic for {{channel.name}} is '{{topic.topic}}'.\n* Topic was set by {{user.nickname}} at {{topic.time}}."
   colour: 3
 ChannelTopicChangeEvent:
-  format: "* {{user.nickname}} has changed the topic to  {{topic.topic}}."
+  format: "* {{user.nickname}} has changed the topic to {{topic.topic}}."
   colour: 3
 ChannelNoTopicEvent:
   format: "* There is no topic set for {{channel.name}}."
@@ -33,9 +33,17 @@ ChannelModeChangeEvent:
 ChannelSelfModeChangeEvent:
   format: "* You set mode: {{modes}}."
   colour: 3
+ChannelCtcpEvent:
+  format: "-!- CTCP {{type}} from {{client.modePrefixedNickname}}."
+  colour: 4
+ServerCtcpEvent:
+  format: "-!- CTCP {{type}} from {{user.nickname}}."
+  colour: 4
+ServerCtcpReplyEvent:
+  format: "-!- CTCP {{type}} reply from {{user.nickname}}: {{content}}."
+  colour: 4
 
 # TODO:
-#  channelCTCP=4-!- CTCP %5$S from %1$s%2$s
 #  channelPart=3* %1$s%2$s (%3$s@%4$s) has left %6$s.
 #  channelPartReason=3* %1$s%2$s (%3$s@%4$s) has left %6$s (%5$s).
 #  channelQuit=2* %1$s%2$s (%3$s@%4$s) has quit IRC.
@@ -55,8 +63,6 @@ ChannelSelfModeChangeEvent:
 #  channelSplitUserMode_default=3* %1$s%2$s sets mode %9$s on %6$s.
 #  channelNoModes=3* There are no channel modes for %2$s.
 #  channelModeDiscovered=3* Channel modes for %2$s are: %1$s.
-#  privateCTCP=4-!- CTCP %4$S from %1$s
-#  privateCTCPreply=4-!- CTCP %4$S reply from %1$s: %5$s
 #  privateNotice=5-%1$s- %4$s
 #  serverNotice=5-%1$s- %4$s
 #  queryMessage=<%1$s> %4$s
