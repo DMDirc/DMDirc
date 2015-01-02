@@ -32,6 +32,7 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -148,10 +149,10 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
 
         stacktraceField.setEditable(false);
 
-        final String[] trace = error.getTrace();
-        if (trace.length > 0) {
+        final List<String> trace = error.getTrace();
+        if (!trace.isEmpty()) {
             for (String line : trace) {
-                stacktraceField.append(line + "\n");
+                stacktraceField.append(line + '\n');
             }
             stacktraceField.setCaretPosition(0);
         }
