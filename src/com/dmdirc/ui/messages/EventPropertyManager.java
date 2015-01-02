@@ -26,6 +26,8 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
 
+import com.google.common.base.Strings;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +50,7 @@ public class EventPropertyManager {
         functions.put("uppercase", String::toUpperCase);
         functions.put("lowercase", String::toLowerCase);
         functions.put("trim", String::trim);
+        functions.put("bracketed", s -> Strings.isNullOrEmpty(s) ? "" : " (" + s + ')');
     }
 
     public <S> Optional<Object> getProperty(final S object, final Class<? extends S> type,

@@ -1,22 +1,42 @@
 ---
+
+################## Server events ###################################################################
+
+ServerCtcpEvent:
+  format: "-!- CTCP {{type}} from {{user.nickname}}."
+  colour: 4
+ServerCtcpReplyEvent:
+  format: "-!- CTCP {{type}} reply from {{user.nickname}}: {{content}}."
+  colour: 4
+
+################## Channel message events ##########################################################
+
+ChannelActionEvent:
+  format: "* {{client.modePrefixedNickname}} {{message}}"
+  colour: 6
+ChannelSelfActionEvent:
+  format: "* {{client.modePrefixedNickname}} {{message}}"
+  colour: 6
+ChannelMessageEvent:
+  format: "<{{client.modePrefixedNickname}}> {{message}}"
+ChannelSelfMessageEvent:
+  format: "<{{client.modePrefixedNickname}}> {{message}}"
 ChannelModeNoticeEvent:
   format: "-{{client.modePrefixedNickname}}:{{prefix}}{{channel.name}}- {{message}}"
   colour: 5
 ChannelNoticeEvent:
   format: "-{{client.modePrefixedNickname}}:{{channel.name}}- {{message}}"
   colour: 5
-ChannelMessageEvent:
-  format: "<{{client.modePrefixedNickname}}> {{message}}"
-ChannelActionEvent:
-  format: "* {{client.modePrefixedNickname}} {{message}}"
-  colour: 6
-ChannelSelfMessageEvent:
-  format: "<{{client.modePrefixedNickname}}> {{message}}"
-ChannelSelfActionEvent:
-  format: "* {{client.modePrefixedNickname}} {{message}}"
-  colour: 6
+ChannelCtcpEvent:
+  format: "-!- CTCP {{type}} from {{client.modePrefixedNickname}}."
+  colour: 4
+
+################## Channel topic/mode events #######################################################
+
 ChannelGotTopicEvent:
-  format: "* The topic for {{channel.name}} is '{{topic.topic}}'.\n* Topic was set by {{user.nickname}} at {{topic.time}}."
+  format: |
+            * The topic for {{channel.name}} is '{{topic.topic}}'.
+            * Topic was set by {{user.nickname}} at {{topic.time}}.
   colour: 3
 ChannelTopicChangeEvent:
   format: "* {{user.nickname}} has changed the topic to {{topic.topic}}."
@@ -33,15 +53,6 @@ ChannelModeChangeEvent:
 ChannelSelfModeChangeEvent:
   format: "* You set mode: {{modes}}."
   colour: 3
-ChannelCtcpEvent:
-  format: "-!- CTCP {{type}} from {{client.modePrefixedNickname}}."
-  colour: 4
-ServerCtcpEvent:
-  format: "-!- CTCP {{type}} from {{user.nickname}}."
-  colour: 4
-ServerCtcpReplyEvent:
-  format: "-!- CTCP {{type}} reply from {{user.nickname}}: {{content}}."
-  colour: 4
 
 # TODO:
 #  channelPart=3* %1$s%2$s (%3$s@%4$s) has left %6$s.
