@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
@@ -531,8 +530,7 @@ public class ErrorManager {
                 "Details: ");
         error.getTrace().forEach(line -> data.add('\t' + line));
         try {
-            Files.write(errorFile, data, Charset.forName("UTF-8"),
-                    StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(errorFile, data, Charset.forName("UTF-8"));
         } catch (IOException ex) {
             //Not really anything we can do at this point, so don't try.
         }
