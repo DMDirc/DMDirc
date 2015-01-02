@@ -25,7 +25,7 @@ package com.dmdirc.logger;
 /**
  * Runnable that reports an error.
  */
-public class ErrorReportingThread implements Runnable {
+public class ErrorReportingRunnable implements Runnable {
 
     private final ProgramError error;
 
@@ -34,7 +34,7 @@ public class ErrorReportingThread implements Runnable {
      *
      * @param error Error to report
      */
-    public ErrorReportingThread(final ProgramError error) {
+    public ErrorReportingRunnable(final ProgramError error) {
         this.error = error;
     }
 

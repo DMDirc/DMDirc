@@ -253,7 +253,7 @@ public class ErrorManager {
         }
         error.setReportStatus(ErrorReportStatus.QUEUED);
 
-        reportThread.submit(new ErrorReportingThread(error));
+        reportThread.submit(new ErrorReportingRunnable(error));
     }
 
     /**
