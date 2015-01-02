@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
@@ -68,6 +69,7 @@ public class ServerManagerTest {
     @Mock private WindowManager windowManager;
     @Mock private ServerFactoryImpl serverFactoryImpl;
     @Mock private Server server;
+    @Mock private GroupChatManager groupChatManager;
     @Mock private DMDircMBassador eventBus;
     @Mock private Channel channel;
 
@@ -81,6 +83,7 @@ public class ServerManagerTest {
                 commandControllerProvider, windowManager, serverFactoryImpl, eventBus);
 
         when(server.getState()).thenReturn(ServerState.DISCONNECTED);
+        when(server.getGroupChatManager()).thenReturn(groupChatManager);
         when(commandControllerProvider.get()).thenReturn(commandController);
 
         when(profileManager.getProfiles()).thenReturn(Collections.singletonList(profile));
@@ -160,27 +163,29 @@ public class ServerManagerTest {
     @Test
     public void testDevChatWithChannel() {
         final Server serverA = mock(Server.class);
+        when(serverA.getGroupChatManager()).thenReturn(groupChatManager);
         when(serverA.isNetwork("Quakenet")).thenReturn(true);
-        when(serverA.getChannel("#DMDirc")).thenReturn(Optional.of(channel));
+        when(groupChatManager.getChannel("#DMDirc")).thenReturn(Optional.of(channel));
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
         serverManager.registerServer(serverA);
         serverManager.joinDevChat();
 
-        verify(serverA).join(new ChannelJoinRequest("#DMDirc"));
+        verify(groupChatManager).join(new ChannelJoinRequest("#DMDirc"));
     }
 
     @Test
     public void testDevChatWithoutChannel() {
         final Server serverA = mock(Server.class);
         when(serverA.isNetwork("Quakenet")).thenReturn(true);
-        when(serverA.getChannel("#DMDirc")).thenReturn(Optional.empty());
+        when(serverA.getGroupChatManager()).thenReturn(groupChatManager);
+        when(groupChatManager.getChannel("#DMDirc")).thenReturn(Optional.empty());
         when(serverA.getState()).thenReturn(ServerState.CONNECTED);
 
         serverManager.registerServer(serverA);
         serverManager.joinDevChat();
 
-        verify(serverA).join(new ChannelJoinRequest("#DMDirc"));
+        verify(groupChatManager).join(new ChannelJoinRequest("#DMDirc"));
     }
 
     @Test

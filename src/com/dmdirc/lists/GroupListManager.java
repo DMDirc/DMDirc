@@ -98,7 +98,7 @@ public class GroupListManager implements GroupListStartListener,
      * @param entry Group list entry to join
      */
     public void joinGroupListEntry(final GroupListEntry entry) {
-        connection.join(new ChannelJoinRequest(entry.getName()));
+        connection.getGroupChatManager().join(new ChannelJoinRequest(entry.getName()));
     }
 
     /**

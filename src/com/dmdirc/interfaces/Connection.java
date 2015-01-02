@@ -29,7 +29,6 @@ import com.dmdirc.ServerState;
 import com.dmdirc.ServerStatus;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.interfaces.Parser;
 
@@ -146,29 +145,6 @@ public interface Connection {
      * @return Null if the client isn't away, or a textual away message if it is
      */
     String getAwayMessage();
-
-    /**
-     * Retrieves the specified channel belonging to this server.
-     *
-     * @param channel The channel to be retrieved
-     *
-     * @return The appropriate channel object
-     */
-    Optional<GroupChat> getChannel(final String channel);
-
-    /**
-     * Retrieves the possible channel prefixes in use on this server.
-     *
-     * @return This server's possible channel prefixes
-     */
-    String getChannelPrefixes();
-
-    /**
-     * Gets a collection of all channels on this connection.
-     *
-     * @return collection of channels belonging to this connection
-     */
-    Collection<GroupChat> getChannels();
 
     /**
      * Retrieves this server's ignore list.
@@ -327,38 +303,6 @@ public interface Connection {
      * @since 0.6.3m1rc3
      */
     boolean isNetwork(final String target);
-
-    /**
-     * Determines if the specified channel name is valid. A channel name is valid if we already have
-     * an existing Channel with the same name, or we have a valid parser instance and the parser
-     * says it's valid.
-     *
-     * @param channelName The name of the channel to test
-     *
-     * @return True if the channel name is valid, false otherwise
-     */
-    boolean isValidChannelName(final String channelName);
-
-    /**
-     * Attempts to join the specified channels. If channels with the same name already exist, they
-     * are (re)joined and their windows activated.
-     *
-     * @param requests The channel join requests to process
-     *
-     * @since 0.6.4
-     */
-    void join(final ChannelJoinRequest... requests);
-
-    /**
-     * Attempts to join the specified channels. If channels with the same name already exist, they
-     * are (re)joined.
-     *
-     * @param focus    Whether or not to focus any new channels
-     * @param requests The channel join requests to process
-     *
-     * @since 0.6.4
-     */
-    void join(final boolean focus, final ChannelJoinRequest... requests);
 
     /**
      * Reconnects to the server with a specified reason.

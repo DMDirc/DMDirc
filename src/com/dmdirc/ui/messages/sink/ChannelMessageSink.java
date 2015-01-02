@@ -58,7 +58,8 @@ public class ChannelMessageSink implements MessageSink {
             final String messageType, final Object... args) {
         final String channelName = String.format(patternMatches[0], args);
         final Connection connection = source.getConnection().get();
-        final Optional<GroupChat> channel = connection.getChannel(channelName);
+        final Optional<GroupChat> channel = connection.getGroupChatManager()
+                .getChannel(channelName);
 
         if (channel.isPresent()) {
             channel.get().getWindowModel().addLine(messageType, date, args);

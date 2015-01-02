@@ -188,7 +188,8 @@ public class ServerManager implements ConnectionManager {
         } else {
             final Collection<? extends ChannelJoinRequest> joinRequests =
                     server.getParser().get().extractChannels(uri);
-            server.join(joinRequests.toArray(new ChannelJoinRequest[joinRequests.size()]));
+            server.getGroupChatManager()
+                    .join(joinRequests.toArray(new ChannelJoinRequest[joinRequests.size()]));
         }
 
         return server;
@@ -204,8 +205,8 @@ public class ServerManager implements ConnectionManager {
             if (server.getState() == ServerState.CONNECTED) {
                 connectedServer = server;
 
-                if (server.getChannel("#DMDirc").isPresent()) {
-                    server.join(new ChannelJoinRequest("#DMDirc"));
+                if (server.getGroupChatManager().getChannel("#DMDirc").isPresent()) {
+                    server.getGroupChatManager().join(new ChannelJoinRequest("#DMDirc"));
                     return;
                 }
             }
@@ -219,7 +220,7 @@ public class ServerManager implements ConnectionManager {
                         "Unable to construct new server", ""));
             }
         } else {
-            connectedServer.join(new ChannelJoinRequest("#DMDirc"));
+            connectedServer.getGroupChatManager().join(new ChannelJoinRequest("#DMDirc"));
         }
     }
 

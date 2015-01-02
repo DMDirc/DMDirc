@@ -178,7 +178,7 @@ public class CommandManager implements CommandController {
 
             if (command.getType() == CommandType.TYPE_CHANNEL
                     || command.getType() == CommandType.TYPE_CHAT) {
-                for (GroupChat channel : server.getChannels()) {
+                for (GroupChat channel : server.getGroupChatManager().getChannels()) {
                     registerCommandName(channel.getWindowModel().getTabCompleter(),
                             commandName, register);
                 }

@@ -193,12 +193,12 @@ public abstract class CommandParser implements Serializable {
         final String[] parts = cargs[0].split(",");
         boolean someValid = false;
         for (String part : parts) {
-            someValid |= server.isValidChannelName(part);
+            someValid |= server.getGroupChatManager().isValidChannelName(part);
         }
 
         if (someValid) {
             for (String channelName : parts) {
-                if (!server.isValidChannelName(channelName)) {
+                if (!server.getGroupChatManager().isValidChannelName(channelName)) {
                     origin.addLine("commandError", "Invalid channel name: " + channelName);
                     continue;
                 }
@@ -208,7 +208,8 @@ public abstract class CommandParser implements Serializable {
                         + args.getCommandName()
                         + (cargs.length > 1 ? ' ' + args.getArgumentsAsString(1) : "");
 
-                final Optional<GroupChat> channel = server.getChannel(channelName);
+                final Optional<GroupChat> channel = server.getGroupChatManager()
+                        .getChannel(channelName);
                 if (channel.isPresent()) {
                     channel.get().getWindowModel().getCommandParser()
                             .parseCommand(origin, newCommandString, false);

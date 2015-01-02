@@ -23,6 +23,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Arrays;
@@ -50,7 +51,9 @@ public class IntelligentLinkingTest {
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
         final Connection connection = mock(Connection.class);
-        when(connection.getChannelPrefixes()).thenReturn("#&+");
+        final GroupChatManager groupChatManager = mock(GroupChatManager.class);
+        when(connection.getGroupChatManager()).thenReturn(groupChatManager);
+        when(groupChatManager.getChannelPrefixes()).thenReturn("#&+");
 
         styliser = new Styliser(connection, manager, new ColourManager(manager,
                 mock(DMDircMBassador.class)));
