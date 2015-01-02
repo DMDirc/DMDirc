@@ -58,6 +58,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     private final SortedMap<String, MutableProfile> profiles;
     private Optional<MutableProfile> selectedProfile = Optional.empty();
     private Optional<String> selectedNickname = Optional.empty();
+    private Optional<String> selectedHighlight = Optional.empty();
 
     @Inject
     public CoreProfilesDialogModel(final ProfileManager profileManager) {
@@ -208,10 +209,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public Optional<List<String>> getSelectedProfileNicknames() {
-        if (selectedProfile.isPresent()) {
-            return Optional.of(selectedProfile.get().getNicknames());
-        }
-        return Optional.empty();
+        return selectedProfile.map(MutableProfile::getNicknames);
     }
 
     @Override
@@ -222,6 +220,19 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
             selectedProfile.get().setNicknames(nicknames.get());
         } else {
             selectedProfile.get().setNicknames(Lists.newArrayList());
+        }
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .profileEdited(selectedProfile.get());
+    }
+
+    @Override
+    public void setSelectedProfileHighlights(final Optional<List<String>> highlights) {
+        checkNotNull(highlights, "highlights cannot be null");
+        checkState(selectedProfile.isPresent(), "There must be a profile selected");
+        if (highlights.isPresent()) {
+            selectedProfile.get().setHighlights(highlights.get());
+        } else {
+            selectedProfile.get().setHighlights(Lists.newArrayList());
         }
         listeners.getCallable(ProfilesDialogModelListener.class)
                 .profileEdited(selectedProfile.get());
@@ -269,6 +280,11 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     }
 
     @Override
+    public Optional<String> getSelectedProfileSelectedHighlight() {
+        return selectedHighlight;
+    }
+
+    @Override
     public void setSelectedProfileSelectedNickname(final Optional<String> selectedNickname) {
         checkNotNull(selectedNickname, "Nickname cannot be null");
         checkState(selectedProfile.isPresent(), "There must be a profile selected");
@@ -277,6 +293,19 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
                     "Nickname must exist in nicknames list");
         }
         this.selectedNickname = selectedNickname;
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .selectedNicknameChanged(selectedNickname);
+    }
+
+    @Override
+    public void setSelectedProfileSelectedHighlight(final Optional<String> selectedHighlight) {
+        checkNotNull(selectedHighlight, "Highlight cannot be null");
+        checkState(selectedProfile.isPresent(), "There must be a profile selected");
+        if (selectedHighlight.isPresent()) {
+            checkArgument(selectedProfile.get().getHighlights().contains(selectedHighlight.get()),
+                    "Nickname must exist in nicknames list");
+        }
+        this.selectedHighlight = selectedHighlight;
         listeners.getCallable(ProfilesDialogModelListener.class)
                 .selectedNicknameChanged(selectedNickname);
     }
@@ -311,6 +340,13 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     public boolean isSelectedProfileNicknamesValid() {
         return !getSelectedProfileNicknames().isPresent() || !getSelectedProfileNicknamesValidator()
                 .validate(getSelectedProfileNicknames().get()).isFailure();
+    }
+
+    @Override
+    public boolean isSelectedProfileHighlightsValid() {
+        return !getSelectedProfileHighlights().isPresent() ||
+                !getSelectedProfileHighlightsValidator().validate(
+                        getSelectedProfileHighlights().get()).isFailure();
     }
 
     @Override
@@ -376,6 +412,16 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     }
 
     @Override
+    public Optional<List<String>> getSelectedProfileHighlights() {
+        return selectedProfile.map(MutableProfile::getHighlights);
+    }
+
+    @Override
+    public Validator<List<String>> getSelectedProfileHighlightsValidator() {
+        return new PermissiveValidator<>();
+    }
+
+    @Override
     public Validator<String> getSelectedProfileAddNicknameValidator() {
         return new AddNicknameValidator(this);
     }
@@ -386,8 +432,60 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     }
 
     @Override
+    public void addSelectedProfileHighlight(final String highlight) {
+        checkNotNull(highlight, "highlight cannot be null");
+        checkState(selectedProfile.isPresent(), "There must be a profile selected");
+        if (!selectedProfile.get().getHighlights().contains(highlight)) {
+            selectedProfile.get().addHighlight(highlight);
+            listeners.getCallable(ProfilesDialogModelListener.class)
+                    .selectedProfileHighlightAdded(highlight);
+        }
+    }
+
+    @Override
+    public void removeSelectedProfileHighlight(final String highlight) {
+        checkNotNull(highlight, "highlight cannot be null");
+        checkState(selectedProfile.isPresent(), "There must be a profile selected");
+        if (selectedProfile.get().getHighlights().contains(highlight)) {
+            selectedProfile.get().removeHighlight(highlight);
+            listeners.getCallable(ProfilesDialogModelListener.class)
+                    .selectedProfileHighlightRemoved(highlight);
+        }
+    }
+
+    @Override
+    public Validator<String> getSelectedProfileAddHighlightValidator() {
+        return new NotEmptyValidator();
+    }
+
+    @Override
+    public void editSelectedProfileHighlight(final String oldHighlight, final String newHighlight) {
+        checkNotNull(oldHighlight, "Highlight cannot be null");
+        checkNotNull(newHighlight, "Highlight cannot be null");
+        checkState(selectedProfile.isPresent(), "There must be a profile selected");
+        checkArgument(selectedProfile.get().getHighlights().contains(oldHighlight),
+                "Old highlight must exist");
+        checkArgument(!selectedProfile.get().getHighlights().contains(newHighlight),
+                "New highlight must not exist");
+        final int index = selectedProfile.get().getNicknames().indexOf(oldHighlight);
+        selectedProfile.get().setHighlight(index, newHighlight);
+        listeners.getCallable(ProfilesDialogModelListener.class)
+                .selectedProfileHighlightEdited(oldHighlight, newHighlight);
+    }
+
+    @Override
+    public Validator<String> getSelectedProfileEditHighlightValidator() {
+        return new EditSelectedHighlightValidator(this);
+    }
+
+    @Override
     public Validator<List<String>> getNicknamesValidator() {
         return new ListNotEmptyValidator<>();
+    }
+
+    @Override
+    public Validator<List<String>> getHighlightsValidator() {
+        return new PermissiveValidator<>();
     }
 
     @Override
