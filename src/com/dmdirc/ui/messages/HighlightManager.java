@@ -99,7 +99,16 @@ public class HighlightManager {
 
     @Handler
     void handleConnected(final ServerConnectedEvent event) {
-        event.getConnection().getLocalUser().map(User::getNickname).ifPresent(this::setNickname);
+        patterns.clear();
+
+        event.getConnection().getProfile().getHighlights()
+                .parallelStream()
+                .map(this::compile)
+                .map(patterns::add);
+
+        event.getConnection().getLocalUser()
+                .map(User::getNickname)
+                .ifPresent(this::setNickname);
     }
 
     @ConfigBinding(domain = "ui", key = "highlightLineForegroundColour")
