@@ -100,22 +100,6 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     }
 
     @Override
-    public void editProfile(final MutableProfile profile, final String name, final String realname,
-            final String ident, final List<String> nicknames) {
-        checkNotNull(name, "Name cannot be null");
-        checkArgument(profiles.containsValue(profile), "Name must already exist");
-        if (!profile.getName().equals(name)) {
-            profiles.remove(profile.getName());
-            profiles.put(name, profile);
-        }
-        profile.setName(name);
-        profile.setRealname(realname);
-        profile.setIdent(Optional.of(ident));
-        profile.setNicknames(Lists.newArrayList(nicknames));
-        listeners.getCallable(ProfilesDialogModelListener.class).profileEdited(profile);
-    }
-
-    @Override
     public void removeProfile(final String name) {
         checkNotNull(name, "Name cannot be null");
         checkArgument(profiles.containsKey(name), "profile must exist in list");

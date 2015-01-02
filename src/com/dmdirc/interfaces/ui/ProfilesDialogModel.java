@@ -52,17 +52,6 @@ public interface ProfilesDialogModel {
     void addProfile(String name, String realname, String ident, List<String> nicknames);
 
     /**
-     * Edits a profile in the model.
-     *
-     * @param name      Name of the profile to edit
-     * @param realname  New realname
-     * @param ident     New ident
-     * @param nicknames New nicknames
-     */
-    void editProfile(MutableProfile profile, String name, String realname, String ident,
-            List<String> nicknames);
-
-    /**
      * Retrieves a profile from the model.
      *
      * @param name Name of the profile to get
