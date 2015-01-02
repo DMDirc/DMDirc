@@ -113,7 +113,6 @@ public class ErrorManager {
             try {
                 Files.createDirectories(errorsDirectory);
             } catch (IOException ex) {
-                // TODO: When ErrorManager writes errors, obey this.
                 directoryError = true;
             }
         }
