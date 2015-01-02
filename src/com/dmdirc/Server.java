@@ -703,7 +703,7 @@ public class Server extends FrameContainer implements Connection {
                                 + request.getName();
                     }
 
-                    if (getChannel(name).map(GroupChat::isOnChannel).orElse(false)) {
+                    if (!getChannel(name).map(GroupChat::isOnChannel).orElse(false)) {
                         if (!focus) {
                             backgroundChannels.add(name);
                         }
