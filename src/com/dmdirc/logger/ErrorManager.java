@@ -412,7 +412,7 @@ public class ErrorManager {
             final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this, errorSemaphore);
             fed.setVisible(true);
             //Wait for error status change to release semaphore
-            errorSemaphore.acquireUninterruptibly();
+            errorSemaphore.acquireUninterruptibly(2);
             errorSemaphore.release();
             restart = fed.getRestart();
         }
