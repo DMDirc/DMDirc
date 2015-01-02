@@ -22,43 +22,27 @@
 
 package com.dmdirc.logger;
 
-import java.util.concurrent.BlockingQueue;
-
 /**
- * Daemon thread which reports errors.
- *
- * @since 0.6.3m1
+ * Runnable that reports an error.
  */
-public class ErrorReportingThread extends Thread {
+public class ErrorReportingRunnable implements Runnable {
 
-    /** The queue to retrieve errors from. */
-    private final BlockingQueue<ProgramError> queue;
+    private final ProgramError error;
 
     /**
-     * Thread used to report errors.
+     * Runnable used to report errors.
      *
-     * @param queue Error queue
+     * @param error Error to report
      */
-    public ErrorReportingThread(final BlockingQueue<ProgramError> queue) {
-        super("Error reporting thread");
-        setDaemon(false);
-
-        this.queue = queue;
+    public ErrorReportingRunnable(final ProgramError error) {
+        this.error = error;
     }
 
     @Override
     public void run() {
-        try {
-            while (true) {
-                final ProgramError error = queue.take();
-
-                if (error.getReportStatus() == ErrorReportStatus.QUEUED) {
-                    error.send();
-                }
-            }
-        } catch (InterruptedException ex) {
-            // Do nothing
-        }
+        do {
+            error.send();
+        } while (error.getReportStatus() == ErrorReportStatus.QUEUED);
     }
 
 }
