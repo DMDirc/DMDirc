@@ -24,6 +24,7 @@ package com.dmdirc.logger;
 
 import com.dmdirc.util.ClientInfo;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.io.ByteStreams;
 
 import java.io.IOException;
@@ -41,6 +42,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nullable;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Stores a program error.
  */
@@ -48,14 +52,10 @@ public final class ProgramError implements Serializable {
 
     /** A version number for this class. */
     private static final long serialVersionUID = 3;
-    /** Directory used to store errors. */
-    private static Path errorDir;
     /** Semaphore used to serialise write access. */
     private static final Semaphore WRITING_SEM = new Semaphore(1);
     /** The reporter to use to send this error. */
     private final ErrorReporter reporter;
-    /** Error ID. */
-    private final long id;
     /** Error icon. */
     private final ErrorLevel level;
     /** Error message. */
@@ -76,41 +76,29 @@ public final class ProgramError implements Serializable {
     private ErrorReportStatus reportStatus;
     /** Has the error been output. */
     private boolean handled;
+    /** Directory used to store errors. */
+    private Path errorDir;
 
     /**
      * Creates a new instance of ProgramError.
      *
-     * @param id        error id
      * @param level     Error level
      * @param message   Error message
      * @param exception The exception that caused the error, if any.
      * @param details   The detailed cause of the error, if any.
      * @param date      Error time and date
      */
-    public ProgramError(final long id, final ErrorLevel level, final String message,
+    public ProgramError(final ErrorLevel level, final String message,
             @Nullable final Throwable exception,
             @Nullable final String details,
             final Date date,
             final ClientInfo clientInfo,
             final ErrorManager errorManager) {
+        checkNotNull(level);
+        checkNotNull(message);
+        checkNotNull(date);
+        checkArgument(!message.isEmpty());
 
-        if (id < 0) {
-            throw new IllegalArgumentException("ID must be a positive integer: " + id);
-        }
-
-        if (level == null) {
-            throw new IllegalArgumentException("Level cannot be null");
-        }
-
-        if (message == null || message.isEmpty()) {
-            throw new IllegalArgumentException("Message cannot be null or an empty string");
-        }
-
-        if (date == null) {
-            throw new IllegalArgumentException("date cannot be null");
-        }
-
-        this.id = id;
         this.level = level;
         this.message = message;
         this.exception = exception;
@@ -139,6 +127,14 @@ public final class ProgramError implements Serializable {
      */
     public String getMessage() {
         return message;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public Throwable getThrowable() {
+        return exception;
     }
 
     /**
@@ -201,15 +197,6 @@ public final class ProgramError implements Serializable {
                 notifyAll();
             }
         }
-    }
-
-    /**
-     * Returns the ID of this error.
-     *
-     * @return Error ID
-     */
-    public long getID() {
-        return id;
     }
 
     /**
@@ -378,8 +365,11 @@ public final class ProgramError implements Serializable {
 
     @Override
     public String toString() {
-        return "ID" + id + " Level: " + getLevel() + " Status: " + getReportStatus()
-                + " Message: '" + getMessage() + '\'';
+        return MoreObjects.toStringHelper(this)
+                .add("Level", getLevel())
+                .add("Status", getReportStatus())
+                .add("Message", getMessage())
+                .toString();
     }
 
     @Override
@@ -393,20 +383,15 @@ public final class ProgramError implements Serializable {
         }
 
         final ProgramError other = (ProgramError) obj;
-        return this.level == other.level && this.message.equals(other.message) &&
-                Objects.equals(this.exception, other.exception) &&
-                Objects.equals(this.details, other.details);
-
+        return Objects.equals(getLevel(), other.getLevel())
+                && Objects.equals(getMessage(), other.getMessage())
+                && Objects.equals(getThrowable(), other.getThrowable())
+                && Objects.equals(getDetails(), other.getDetails());
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + this.level.hashCode();
-        hash = 67 * hash + this.message.hashCode();
-        hash = 67 * hash + (this.exception == null ? 1 : this.exception.hashCode());
-        hash = 67 * hash + (this.details == null ? 1 : this.details.hashCode());
-        return hash;
+        return Objects.hash(level, message, exception, details);
     }
 
     /**
