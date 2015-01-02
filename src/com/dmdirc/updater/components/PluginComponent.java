@@ -137,7 +137,6 @@ public class PluginComponent implements UpdateComponent {
      */
     private boolean isValid(final File file) {
         try (ZipFile ignored = new ZipFile(file)) {
-            ignored.size();
             return true;
         } catch (IOException e) {
             return false;
