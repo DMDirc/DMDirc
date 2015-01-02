@@ -74,8 +74,8 @@ public class ErrorManager {
     private final List<ProgramError> errors;
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
-    /** Semaphore used to wait for fatal error to report. */
-    private final CountDownLatch errorSemaphore = new CountDownLatch(2);
+    /** Countdown latch to wait for FED with. */
+    private final CountDownLatch countDownLatch;
     /** Event bus to subscribe and publish errors on. */
     private DMDircMBassador eventBus;
     /** Whether or not to send error reports. */
@@ -98,6 +98,7 @@ public class ErrorManager {
     @Inject
     public ErrorManager() {
         errors = new LinkedList<>();
+        countDownLatch = new CountDownLatch(2);
     }
 
     /**
@@ -408,10 +409,11 @@ public class ErrorManager {
             }
             restart = false;
         } else {
-            final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this, errorSemaphore);
+            final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this,
+                    countDownLatch, sendReports);
             fed.setVisible(true);
             try {
-                errorSemaphore.await();
+                countDownLatch.await();
             } catch (InterruptedException ex) {
                 //Nevermind, carry on
             }

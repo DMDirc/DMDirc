@@ -63,12 +63,14 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
 
     /** Serialisation version ID. */
     private static final long serialVersionUID = 3;
-    /** Do we need to restart? Else we quit. */
-    private boolean restart = true;
     /** Fatal error to be shown in this dialog. */
     private final ProgramError error;
     /** Error manager to report the error to. */
     private final ErrorManager errorManager;
+    /** Countdown latch. */
+    private final CountDownLatch countDownLatch;
+    /** Are we auto sending errors? */
+    private final boolean sendReports;
     /** Restart client Button. */
     private JButton restartButton;
     /** Quit client button. */
@@ -83,8 +85,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     private ImageIcon icon;
     /** Stack trace scroll pane. */
     private JScrollPane scrollPane;
-    /** Error status semaphore. */
-    private final CountDownLatch errorSemaphore;
+    /** Do we need to restart? Else we quit. */
+    private boolean restart = true;
 
     /**
      * Creates a new fatal error dialog.
@@ -92,14 +94,15 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      * @param error Error
      */
     public FatalErrorDialog(final ProgramError error, final ErrorManager errorManager,
-            final CountDownLatch errorSemaphore) {
+            final CountDownLatch countDownLatch, final boolean sendReports) {
         super(null, Dialog.ModalityType.TOOLKIT_MODAL);
 
         setModal(true);
 
         this.error = error;
         this.errorManager = errorManager;
-        this.errorSemaphore = errorSemaphore;
+        this.countDownLatch = countDownLatch;
+        this.sendReports = sendReports;
 
         initComponents();
         layoutComponents();
@@ -236,7 +239,12 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         } else {
             dispose();
         }
-        errorSemaphore.countDown();
+        if (!sendReports) {
+            countDownLatch.countDown();
+            countDownLatch.countDown();
+        } else {
+            countDownLatch.countDown();
+        }
     }
 
     /**
@@ -305,7 +313,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
                 restartButton.setEnabled(status.isTerminal());
                 updateSendButtonText(status);
             });
-            errorSemaphore.countDown();
+            countDownLatch.countDown();
         }
     }
 
