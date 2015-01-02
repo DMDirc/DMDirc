@@ -49,6 +49,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -73,6 +74,8 @@ public class ErrorManager {
     private final List<ProgramError> errors;
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
+    /** Semaphore used to wait for fatal error to report. */
+    private final Semaphore errorSemaphore = new Semaphore(2);
     /** Event bus to subscribe and publish errors on. */
     private DMDircMBassador eventBus;
     /** Whether or not to send error reports. */
@@ -405,28 +408,13 @@ public class ErrorManager {
             }
             restart = false;
         } else {
-            final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this);
+            errorSemaphore.acquireUninterruptibly(2);
+            final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this, errorSemaphore);
             fed.setVisible(true);
-            try {
-                synchronized (fed) {
-                    while (fed.isWaiting()) {
-                        fed.wait();
-                    }
-                }
-            } catch (InterruptedException ex) {
-                //Oh well, carry on
-            }
+            //Wait for error status change to release semaphore
+            errorSemaphore.acquireUninterruptibly();
+            errorSemaphore.release();
             restart = fed.getRestart();
-        }
-
-        try {
-            synchronized (event.getError()) {
-                while (!event.getError().getReportStatus().isTerminal()) {
-                    event.getError().wait();
-                }
-            }
-        } catch (InterruptedException ex) {
-            // Do nothing
         }
 
         if (restart) {

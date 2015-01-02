@@ -33,6 +33,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -63,7 +64,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     /** Serialisation version ID. */
     private static final long serialVersionUID = 3;
     /** Do we need to restart? Else we quit. */
-    private static boolean restart = true;
+    private boolean restart = true;
     /** Fatal error to be shown in this dialog. */
     private final ProgramError error;
     /** Error manager to report the error to. */
@@ -82,21 +83,23 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     private ImageIcon icon;
     /** Stack trace scroll pane. */
     private JScrollPane scrollPane;
-    /** Are we waiting on user input? */
-    private boolean waiting = true;
+    /** Error status semaphore. */
+    private final Semaphore errorSemaphore;
 
     /**
      * Creates a new fatal error dialog.
      *
      * @param error Error
      */
-    public FatalErrorDialog(final ProgramError error, final ErrorManager errorManager) {
+    public FatalErrorDialog(final ProgramError error, final ErrorManager errorManager,
+            final Semaphore errorSemaphore) {
         super(null, Dialog.ModalityType.TOOLKIT_MODAL);
 
         setModal(true);
 
         this.error = error;
         this.errorManager = errorManager;
+        this.errorSemaphore = errorSemaphore;
 
         initComponents();
         layoutComponents();
@@ -229,12 +232,11 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
             }.execute();
         } else if (actionEvent.getSource() == quitButton) {
             restart = false;
-            waiting = false;
             dispose();
         } else {
-            waiting = false;
             dispose();
         }
+        errorSemaphore.release();
     }
 
     /**
@@ -303,6 +305,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
                 restartButton.setEnabled(status.isTerminal());
                 updateSendButtonText(status);
             });
+            errorSemaphore.release();
         }
     }
 
@@ -311,14 +314,4 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         //We're never ready
         return false;
     }
-
-    /**
-     * Are we waiting for user input. This will be true until the dialog has been disposed of.
-     *
-     * @return true if user has made no input
-     */
-    public boolean isWaiting() {
-        return waiting;
-    }
-
 }
