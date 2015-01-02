@@ -71,8 +71,8 @@ public class Channel extends MessageTarget implements GroupChat {
 
     /** The parser's pChannel class. */
     private ChannelInfo channelInfo;
-    /** The server this channel is on. */
-    private final Server server;
+    /** The connection this channel is on. */
+    private final Connection connection;
     /** A list of previous topics we've seen. */
     private final RollingList<Topic> topics;
     /** Our event handler. */
@@ -96,7 +96,7 @@ public class Channel extends MessageTarget implements GroupChat {
     /**
      * Creates a new instance of Channel.
      *
-     * @param newServer           The server object that this channel belongs to
+     * @param connection          The connection object that this channel belongs to
      * @param newChannelInfo      The parser's channel object that corresponds to this channel
      * @param configMigrator      The config migrator which provides the config for this channel.
      * @param tabCompleterFactory The factory to use to create tab completers.
@@ -106,7 +106,7 @@ public class Channel extends MessageTarget implements GroupChat {
      * @param eventBus            The bus to despatch events onto.
      */
     public Channel(
-            final Server newServer,
+            final Connection connection,
             final ChannelInfo newChannelInfo,
             final ConfigProviderMigrator configMigrator,
             final TabCompleterFactory tabCompleterFactory,
@@ -116,17 +116,17 @@ public class Channel extends MessageTarget implements GroupChat {
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager) {
-        super(newServer, "channel-inactive", newChannelInfo.getName(),
+        super(connection.getWindowModel(), "channel-inactive", newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                new ChannelCommandParser(newServer, commandController, eventBus),
-                tabCompleterFactory.getTabCompleter(newServer.getTabCompleter(),
+                new ChannelCommandParser(connection.getWindowModel(), commandController, eventBus),
+                tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,
                         CommandType.TYPE_CHAT),
                 messageSinkManager,
                 urlBuilder,
-                newServer.getEventBus(),
+                connection.getWindowModel().getEventBus(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier(),
                         WindowComponent.TOPICBAR.getIdentifier(),
@@ -134,7 +134,7 @@ public class Channel extends MessageTarget implements GroupChat {
 
         this.configMigrator = configMigrator;
         this.channelInfo = newChannelInfo;
-        this.server = newServer;
+        this.connection = connection;
         this.groupChatUserManager = groupChatUserManager;
 
         getConfigManager().getBinder().bind(this, Channel.class);
@@ -163,19 +163,19 @@ public class Channel extends MessageTarget implements GroupChat {
      */
     private void registerCallbacks() {
         eventHandler.registerCallbacks();
-        configMigrator.migrate(server.getProtocol(), server.getIrcd(),
-                server.getNetwork(), server.getAddress(), channelInfo.getName());
+        configMigrator.migrate(connection.getProtocol(), connection.getIrcd(), connection.getNetwork(),
+                connection.getAddress(), channelInfo.getName());
     }
 
     @Override
     public void sendLine(final String line) {
-        if (server.getState() != ServerState.CONNECTED
-                || server.getParser().get().getChannel(channelInfo.getName()) == null) {
+        if (connection.getState() != ServerState.CONNECTED
+                || connection.getParser().get().getChannel(channelInfo.getName()) == null) {
             // We're not in the channel/connected to the server
             return;
         }
 
-        final GroupChatUser me = getUser(server.getLocalUser().get()).get();
+        final GroupChatUser me = getUser(connection.getLocalUser().get()).get();
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
             getEventBus().publishAsync(new ChannelSelfMessageEvent(this, me, part));
             channelInfo.sendMessage(part);
@@ -184,24 +184,24 @@ public class Channel extends MessageTarget implements GroupChat {
 
     @Override
     public int getMaxLineLength() {
-        return server.getState() == ServerState.CONNECTED
-                ? server.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
+        return connection.getState() == ServerState.CONNECTED
+                ? connection.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 : -1;
     }
 
     @Override
     public void sendAction(final String action) {
-        if (server.getState() != ServerState.CONNECTED
-                || server.getParser().get().getChannel(channelInfo.getName()) == null) {
+        if (connection.getState() != ServerState.CONNECTED
+                || connection.getParser().get().getChannel(channelInfo.getName()) == null) {
             // We're not on the server/channel
             return;
         }
 
-        if (server.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
+        if (connection.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 <= action.length()) {
             addLine("actionTooLong", action.length());
         } else {
-            final GroupChatUser me = getUser(server.getLocalUser().get()).get();
+            final GroupChatUser me = getUser(connection.getLocalUser().get()).get();
             getEventBus().publishAsync(new ChannelSelfActionEvent(this, me, action));
             channelInfo.sendAction(action);
         }
@@ -225,13 +225,13 @@ public class Channel extends MessageTarget implements GroupChat {
     public void selfJoin() {
         isOnChannel = true;
 
-        final User me = server.getLocalUser().get();
+        final User me = connection.getLocalUser().get();
         getEventBus().publishAsync(new ChannelSelfJoinEvent(this, me));
 
         checkWho();
         setIcon("channel");
 
-        server.removeInvites(channelInfo.getName());
+        connection.removeInvites(channelInfo.getName());
     }
 
     /**
@@ -249,7 +249,7 @@ public class Channel extends MessageTarget implements GroupChat {
 
     @Override
     public void join() {
-        server.getParser().get().joinChannel(channelInfo.getName());
+        connection.getParser().get().joinChannel(channelInfo.getName());
     }
 
     @Override
@@ -284,11 +284,11 @@ public class Channel extends MessageTarget implements GroupChat {
         eventHandler.unregisterCallbacks();
         getConfigManager().getBinder().unbind(this);
 
-        server.getParser().map(Parser::getCallbackManager)
+        connection.getParser().map(Parser::getCallbackManager)
                 .ifPresent(cm -> cm.delAllCallback(eventHandler));
 
         // Trigger any actions neccessary
-        if (isOnChannel && server.getState() != ServerState.CLOSING) {
+        if (isOnChannel && connection.getState() != ServerState.CLOSING) {
             part(getConfigManager().getOption("general", "partmessage"));
         }
 
@@ -297,7 +297,7 @@ public class Channel extends MessageTarget implements GroupChat {
 
         // Inform any parents that the window is closing
         // TODO: Avoid casting here, somehow. Make the manager listen to events instead?
-        ((GroupChatManagerImpl) server.getGroupChatManager()).delChannel(channelInfo.getName());
+        ((GroupChatManagerImpl) connection.getGroupChatManager()).delChannel(channelInfo.getName());
     }
 
     /**
@@ -331,7 +331,7 @@ public class Channel extends MessageTarget implements GroupChat {
         getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK,
                 client.getNickname());
 
-        if (client.getUser().equals(server.getLocalUser())) {
+        if (client.getUser().equals(connection.getLocalUser().orElse(null))) {
             resetWindow();
         }
     }
@@ -511,12 +511,12 @@ public class Channel extends MessageTarget implements GroupChat {
 
     @Override
     public int getMaxTopicLength() {
-        return server.getParser().get().getMaxTopicLength();
+        return connection.getParser().get().getMaxTopicLength();
     }
 
     @Override
     public Optional<Connection> getConnection() {
-        return Optional.of(server);
+        return Optional.of(connection);
     }
 
     @Override

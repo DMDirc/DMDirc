@@ -163,8 +163,7 @@ public class GroupChatManagerImpl implements GroupChatManager {
                     connection.getProtocol(), connection.getIrcd(), connection.getNetwork(),
                     connection.getAddress(), chan.getName());
             final Channel newChan = channelFactory.getChannel(
-                    (Server) connection, // TODO: Icky. Make Channel not care?
-                    chan, channelConfig);
+                    connection, chan, channelConfig);
             connection.getWindowModel().getTabCompleter().addEntry(TabCompletionType.CHANNEL,
                     chan.getName());
             channels.add(newChan);
