@@ -22,51 +22,14 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.ProgramError;
 
-import com.google.common.base.MoreObjects;
+/**
+ * Fired when a fatal error is created.
+ */
+public class FatalProgramErrorEvent extends ProgramErrorEvent {
 
-public abstract class ErrorEvent extends DMDircEvent {
-
-    private final ErrorLevel level;
-    private final Throwable throwable;
-    private final String message;
-    private final String details;
-
-    public ErrorEvent(final ErrorLevel level,
-            final Throwable throwable,
-            final String message,
-            final String details) {
-        super(System.currentTimeMillis());
-        this.level = level;
-        this.message = message;
-        this.throwable = throwable;
-        this.details = details;
+    public FatalProgramErrorEvent(final ProgramError error) {
+        super(error);
     }
-
-    public ErrorLevel getLevel() {
-        return level;
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(getClass())
-                .add("Level", getLevel())
-                .add("Message", getMessage())
-                .add("Details", getDetails())
-                .toString();
-    }
-
 }

@@ -152,6 +152,7 @@ public final class ProgramError implements Serializable {
      * @param newStatus new ErrorReportStatus for the error
      */
     public void setReportStatus(final ErrorReportStatus newStatus) {
+        // TODO: Shift this into ErrorManager and use the event not the listeners
         if (newStatus != null && reportStatus != newStatus) {
             reportStatus = newStatus;
             errorManager.fireErrorStatusChanged(this);

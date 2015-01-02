@@ -22,51 +22,29 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.ProgramError;
 
-import com.google.common.base.MoreObjects;
+/**
+ * Fired when an error has been created and logged.
+ */
+public abstract class ProgramErrorEvent extends DMDircEvent {
 
-public abstract class ErrorEvent extends DMDircEvent {
+    private final ProgramError error;
+    private boolean handled;
 
-    private final ErrorLevel level;
-    private final Throwable throwable;
-    private final String message;
-    private final String details;
-
-    public ErrorEvent(final ErrorLevel level,
-            final Throwable throwable,
-            final String message,
-            final String details) {
-        super(System.currentTimeMillis());
-        this.level = level;
-        this.message = message;
-        this.throwable = throwable;
-        this.details = details;
+    public ProgramErrorEvent(final ProgramError error) {
+        this.error = error;
     }
 
-    public ErrorLevel getLevel() {
-        return level;
+    public ProgramError getError() {
+        return error;
     }
 
-    public Throwable getThrowable() {
-        return throwable;
+    public boolean isHandled() {
+        return handled;
     }
 
-    public String getMessage() {
-        return message;
+    public void setHandled() {
+        handled = true;
     }
-
-    public String getDetails() {
-        return details;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(getClass())
-                .add("Level", getLevel())
-                .add("Message", getMessage())
-                .add("Details", getDetails())
-                .toString();
-    }
-
 }

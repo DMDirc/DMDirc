@@ -25,10 +25,14 @@ package com.dmdirc.logger;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.AppErrorEvent;
+import com.dmdirc.events.FatalProgramErrorEvent;
+import com.dmdirc.events.NonFatalProgramErrorEvent;
+import com.dmdirc.events.ProgramErrorDeletedEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.ClientInfo;
+import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.collections.ListenerList;
 
 import com.google.common.collect.Lists;
@@ -65,6 +69,12 @@ public class ErrorManager {
         UnsatisfiedLinkError.class, AbstractMethodError.class,
         IllegalAccessError.class, OutOfMemoryError.class,
         NoSuchFieldError.class,};
+    /** Error list. */
+    private final List<ProgramError> errors;
+    /** Listener list. */
+    private final ListenerList errorListeners = new ListenerList();
+    /** Event bus to subscribe and publish errors on. */
+    private DMDircMBassador eventBus;
     /** Whether or not to send error reports. */
     private boolean sendReports;
     /** Whether or not to log error reports. */
@@ -75,10 +85,6 @@ public class ErrorManager {
     private boolean tempNoErrors;
     /** Error creating directory, don't write to disk. */
     private boolean directoryError;
-    /** Error list. */
-    private final List<ProgramError> errors;
-    /** Listener list. */
-    private final ListenerList errorListeners = new ListenerList();
     /** Thread used for sending errors. */
     private ExecutorService reportThread;
     /** Directory to store errors in. */
@@ -101,6 +107,7 @@ public class ErrorManager {
     public void initialise(final AggregateConfigProvider globalConfig, final Path directory,
             final DMDircMBassador eventBus, final ClientInfo clientInfo) {
         this.clientInfo = clientInfo;
+        this.eventBus = eventBus;
         eventBus.subscribe(this);
         RavenFactory.registerFactory(new DefaultRavenFactory());
         reportThread = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
@@ -129,16 +136,28 @@ public class ErrorManager {
         }
     }
 
-    @Handler
+    @Handler(priority = EventUtils.PRIORITY_LOWEST)
     public void handleAppErrorEvent(final AppErrorEvent appError) {
-        addError(appError.getLevel(), appError.getMessage(), appError.getThrowable(),
+        final ProgramError error = addError(appError.getLevel(), appError.getMessage(), appError
+                        .getThrowable(),
                 appError.getDetails(), true, isValidError(appError.getThrowable()));
+        if (appError.getLevel() == ErrorLevel.FATAL) {
+            eventBus.publishAsync(new FatalProgramErrorEvent(error));
+        } else {
+            eventBus.publishAsync(new NonFatalProgramErrorEvent(error));
+        }
     }
 
-    @Handler
+    @Handler(priority = EventUtils.PRIORITY_LOWEST)
     public void handleUserErrorEvent(final UserErrorEvent userError) {
-        addError(userError.getLevel(), userError.getMessage(), userError.getThrowable(),
-                userError.getDetails(), false, isValidError(userError.getThrowable()));
+        final ProgramError error = addError(userError.getLevel(), userError.getMessage(),
+                userError.getThrowable(), userError.getDetails(), false,
+                isValidError(userError.getThrowable()));
+        if (userError.getLevel() == ErrorLevel.FATAL) {
+            eventBus.publishAsync(new FatalProgramErrorEvent(error));
+        } else {
+            eventBus.publishAsync(new NonFatalProgramErrorEvent(error));
+        }
     }
 
     /**
@@ -153,13 +172,13 @@ public class ErrorManager {
      *
      * @since 0.6.3m1
      */
-    protected void addError(final ErrorLevel level, final String message,
+    protected ProgramError addError(final ErrorLevel level, final String message,
             final Throwable exception, final String details, final boolean appError,
             final boolean canReport) {
-        addError(getError(level, message, exception, details), appError, canReport);
+        return addError(getError(level, message, exception, details), appError, canReport);
     }
 
-    protected void addError(
+    protected ProgramError addError(
             final ProgramError error,
             final boolean appError,
             final boolean canReport) {
@@ -173,11 +192,7 @@ public class ErrorManager {
         if (logReports) {
             saveError(error);
         }
-        if (error.getLevel() == ErrorLevel.FATAL) {
-            fireFatalError(error);
-        } else {
-            fireErrorAdded(error);
-        }
+        return error;
     }
 
 
@@ -291,6 +306,7 @@ public class ErrorManager {
             errors.remove(error);
         }
 
+        eventBus.publishAsync(new ProgramErrorDeletedEvent(error));
         fireErrorDeleted(error);
     }
 
@@ -301,7 +317,10 @@ public class ErrorManager {
      */
     public void deleteAll() {
         synchronized (errors) {
-            errors.forEach(this::fireErrorDeleted);
+            errors.forEach(e -> {
+                fireErrorDeleted(e);
+                eventBus.publishAsync(new ProgramErrorDeletedEvent(e));
+            });
             errors.clear();
         }
     }
@@ -351,20 +370,21 @@ public class ErrorManager {
     /**
      * Fired when the program encounters an error.
      *
-     * @param error Error that occurred
+     * @param event Error that occurred
      */
-    protected void fireErrorAdded(final ProgramError error) {
+    @Handler(priority = EventUtils.PRIORITY_LOWEST)
+    protected void fireErrorAdded(final NonFatalProgramErrorEvent event) {
+        // TODO: Make UI listen for the event and remove this
         errorListeners.get(ErrorListener.class).stream().filter(ErrorListener::isReady)
                 .forEach(listener -> {
-                    error.setHandled();
-                    listener.errorAdded(error);
+                    event.setHandled();
+                    listener.errorAdded(event.getError());
                 });
-
-        if (!error.isHandled()) {
+        if (!event.isHandled()) {
             System.err.println(
-                    "An error has occurred: " + error.getLevel() + ": " + error.getMessage());
+                    "An error has occurred: " + event.getError().getLevel() + ": " + event.getError().getMessage());
 
-            for (String line : error.getTrace()) {
+            for (String line : event.getError().getTrace()) {
                 System.err.println("\t" + line);
             }
         }
@@ -373,18 +393,19 @@ public class ErrorManager {
     /**
      * Fired when the program encounters a fatal error.
      *
-     * @param error Error that occurred
+     * @param event Error that occurred
      */
-    protected void fireFatalError(final ProgramError error) {
+    @Handler(priority = EventUtils.PRIORITY_LOWEST)
+    protected void fireFatalError(final FatalProgramErrorEvent event) {
         final boolean restart;
         if (GraphicsEnvironment.isHeadless()) {
-            System.err.println("A fatal error has occurred: " + error.getMessage());
-            for (String line : error.getTrace()) {
+            System.err.println("A fatal error has occurred: " + event.getError().getMessage());
+            for (String line : event.getError().getTrace()) {
                 System.err.println("\t" + line);
             }
             restart = false;
         } else {
-            final FatalErrorDialog fed = new FatalErrorDialog(error, this);
+            final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this);
             fed.setVisible(true);
             try {
                 synchronized (fed) {
@@ -399,9 +420,9 @@ public class ErrorManager {
         }
 
         try {
-            synchronized (error) {
-                while (!error.getReportStatus().isTerminal()) {
-                    error.wait();
+            synchronized (event.getError()) {
+                while (!event.getError().getReportStatus().isTerminal()) {
+                    event.getError().wait();
                 }
             }
         } catch (InterruptedException ex) {
