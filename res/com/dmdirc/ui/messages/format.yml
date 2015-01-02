@@ -9,6 +9,17 @@ ServerCtcpReplyEvent:
   format: "-!- CTCP {{type}} reply from {{user.nickname}}: {{content}}."
   colour: 4
 
+################## Channel join/part/quit events ###################################################
+
+ChannelJoinEvent:
+  format: >
+            * {{client.nickname}} ({{client.username}}@{{client.hostname}})
+            has joined {{channel.name}}.
+  colour: 3
+ChannelSelfJoinEvent:
+  format: "* You are now talking in {{channel.name}}."
+  colour: 3
+
 ################## Channel message events ##########################################################
 
 ChannelActionEvent:
@@ -63,8 +74,6 @@ ChannelSelfModeChangeEvent:
 #  channelSelfPartReason=3* You have left the channel.
 #  channelNickChange=3* %1$s%5$s is now known as %2$s.
 #  channelSelfNickChange=3* You are now known as %2$s.
-#  channelJoin=3* %2$s (%3$s@%4$s) has joined %5$s.
-#  channelSelfJoin=3* You are now talking in %5$s.
 #  channelUserAway=14-- %1$s%2$s is now away.
 #  channelUserBack=14-- %1$s%2$s is now back.
 #  channelUserAwayDiscovered=14-- %1$s%2$s is away.

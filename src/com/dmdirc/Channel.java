@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
+import com.dmdirc.events.ChannelSelfJoinEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.NickListClientAddedEvent;
@@ -224,8 +225,7 @@ public class Channel extends MessageTarget implements GroupChat {
         isOnChannel = true;
 
         final User me = server.getLocalUser().get();
-        addLine("channelSelfJoin", "", me.getNickname(), me.getUsername(),
-                me.getHostname(), channelInfo.getName());
+        getEventBus().publishAsync(new ChannelSelfJoinEvent(this, me));
 
         checkWho();
         setIcon("channel");

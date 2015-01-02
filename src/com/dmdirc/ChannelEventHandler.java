@@ -203,10 +203,8 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelClientInfo client) {
         checkParser(parser);
 
-        final ChannelJoinEvent event = new ChannelJoinEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner));
-        final String format = EventUtils.postDisplayable(eventBus, event, "channelJoin");
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner));
+        eventBus.publish(new ChannelJoinEvent(date.getTime(), owner,
+                groupChatUserManager.getUserFromClient(client, owner)));
         owner.addClient(groupChatUserManager.getUserFromClient(client, owner));
     }
 
