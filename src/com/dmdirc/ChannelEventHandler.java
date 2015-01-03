@@ -231,12 +231,9 @@ public class ChannelEventHandler extends EventHandler implements
             final String reason, final String host) {
         checkParser(parser);
 
-        final ChannelKickEvent event = new ChannelKickEvent(date.getTime(), owner,
+        eventBus.publishAsync(new ChannelKickEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner),
-                groupChatUserManager.getUserFromClient(kickedClient, owner), reason);
-        final String format = EventUtils.postDisplayable(eventBus, event,
-                "channelKick" + (reason.isEmpty() ? "" : "Reason"));
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), kickedClient, reason);
+                groupChatUserManager.getUserFromClient(kickedClient, owner), reason));
         owner.removeClient(groupChatUserManager.getUserFromClient(kickedClient, owner));
     }
 

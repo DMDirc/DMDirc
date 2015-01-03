@@ -87,6 +87,11 @@ ChannelNickChangeEvent:
 ChannelSelfNickChangeEvent:
   format: "* You are now known as {{client.nickname}}."
   colour: 3
+ChannelKickEvent:
+  format: >
+             * {{client.modePrefixedNickname}} has kicked {{victim.modePrefixedNickname}} from
+             {{channel.name}}{{reason|bracketed}}.
+  colour: 3
 
 ################## Query events ####################################################################
 
@@ -106,8 +111,6 @@ QuerySelfMessageEvent:
 #  channelUserBack=14-- %1$s%2$s is now back.
 #  channelUserAwayDiscovered=14-- %1$s%2$s is away.
 #  channelUserBackDiscovered=14-- %1$s%2$s is back.
-#  channelKick=3* %1$s%2$s has kicked %5$s%6$s from %9$s.
-#  channelKickReason=3* %1$s%2$s has kicked %5$s%6$s from %10$s (%9$s).
 #  channelSplitUserMode_default=3* %1$s%2$s sets mode %9$s on %6$s.
 #  channelNoModes=3* There are no channel modes for %2$s.
 #  channelModeDiscovered=3* Channel modes for %2$s are: %1$s.
