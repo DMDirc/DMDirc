@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -36,6 +35,7 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import javax.annotation.Nonnull;
@@ -66,9 +66,9 @@ public class Names extends Command implements IntelligentCommand,
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Channel channel = ((ChannelCommandContext) context).getChannel();
+        final GroupChat channel = ((ChannelCommandContext) context).getChannel();
         channel.getConnection().get().getParser().get().sendRawMessage("NAMES "
-                + channel.getChannelInfo().getName());
+                + channel.getName());
     }
 
     @Override
