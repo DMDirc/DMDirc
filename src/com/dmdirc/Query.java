@@ -169,21 +169,15 @@ public class Query extends MessageTarget implements PrivateActionListener,
     @Override
     public void onPrivateMessage(final Parser parser, final Date date,
             final String message, final String host) {
-        final String[] parts = server.parseHostmask(host);
-
-        final String format = EventUtils.postDisplayable(getEventBus(),
-                new QueryMessageEvent(this, server.getLocalUser().get(), message), "queryMessage");
-        addLine(format, parts[0], parts[1], parts[2], message);
+        getEventBus().publishAsync(
+                new QueryMessageEvent(this, server.getUser(host), message));
     }
 
     @Override
     public void onPrivateAction(final Parser parser, final Date date,
             final String message, final String host) {
-        final String[] parts = server.parseHostmask(host);
-
-        final String format = EventUtils.postDisplayable(getEventBus(),
-                new QueryActionEvent(this, server.getLocalUser().get(), message), "queryAction");
-        addLine(format, parts[0], parts[1], parts[2], message);
+        getEventBus().publishAsync(
+                new QueryActionEvent(this, server.getUser(host), message));
     }
 
     /**
