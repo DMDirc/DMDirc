@@ -43,12 +43,14 @@ public class PartTest {
 
     @Mock private Channel channel;
     @Mock private FrameContainer origin;
+    @Mock private FrameContainer windowModel;
     @Mock private AggregateConfigProvider manager;
     @Mock private CommandController controller;
     private Part command;
 
     @Before
     public void setUp() throws InvalidIdentityFileException {
+        when(channel.getWindowModel()).thenReturn(windowModel);
         when(origin.getConfigManager()).thenReturn(manager);
         when(manager.getOption("general", "partmessage")).thenReturn("config part message");
 
@@ -61,7 +63,7 @@ public class PartTest {
                 new ChannelCommandContext(null, Part.INFO, channel));
 
         verify(channel).part("config part message");
-        verify(channel).close();
+        verify(windowModel).close();
     }
 
     @Test
@@ -70,7 +72,7 @@ public class PartTest {
                 new ChannelCommandContext(null, Part.INFO, channel));
 
         verify(channel).part("custom part");
-        verify(channel).close();
+        verify(windowModel).close();
     }
 
 }

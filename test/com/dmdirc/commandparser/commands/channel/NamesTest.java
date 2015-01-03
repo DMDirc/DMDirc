@@ -58,7 +58,7 @@ public class NamesTest {
         when(channel.getConnection()).thenReturn(Optional.of(connection));
         when(connection.getParser()).thenReturn(Optional.of(parser));
         when(channel.getChannelInfo()).thenReturn(channelinfo);
-        when(channelinfo.getName()).thenReturn("#chan");
+        when(channel.getName()).thenReturn("#chan");
 
         command = new Names(controller);
     }
