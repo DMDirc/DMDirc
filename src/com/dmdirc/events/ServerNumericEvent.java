@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Server;
+import com.dmdirc.interfaces.Connection;
 
 /**
  * Event raised when a server numeric occurs.
@@ -32,14 +32,14 @@ public class ServerNumericEvent extends ServerDisplayableEvent {
     private final int numeric;
     private final String[] args;
 
-    public ServerNumericEvent(final long timestamp, final Server server, final int numeric,
+    public ServerNumericEvent(final long timestamp, final Connection server, final int numeric,
             final String[] args) {
         super(timestamp, server);
         this.numeric = numeric;
         this.args = args;
     }
 
-    public ServerNumericEvent(final Server server, final int numeric, final String[] args) {
+    public ServerNumericEvent(final Connection server, final int numeric, final String[] args) {
         super(server);
         this.numeric = numeric;
         this.args = args;
