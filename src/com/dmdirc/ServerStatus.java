@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.util.collections.RollingList;
 
@@ -35,8 +36,8 @@ import java.util.List;
  */
 public class ServerStatus {
 
-    /** The server to which this status belongs. */
-    private final Server server;
+    /** The connection to which this status belongs. */
+    private final Connection connection;
     /** Object to notify when the state of the server changes. */
     private final Object notifier;
     /** The current state of the server. */
@@ -49,13 +50,13 @@ public class ServerStatus {
     /**
      * Creates a new ServerStatus instance for the specified server.
      *
-     * @param server   The server to which this status belongs
+     * @param connection   The connection to which this status belongs
      * @param notifier The object to notify when the state changes
      *
      * @since 0.6.3
      */
-    public ServerStatus(final Server server, final Object notifier) {
-        this.server = server;
+    public ServerStatus(final Connection connection, final Object notifier) {
+        this.connection = connection;
         this.notifier = notifier;
     }
 
@@ -108,7 +109,7 @@ public class ServerStatus {
         builder.append(" [");
         builder.append(Thread.currentThread().getName());
         builder.append("] (parser #");
-        builder.append(getParserID(server.getParser().orElse(null)));
+        builder.append(getParserID(connection.getParser().orElse(null)));
         builder.append(')');
 
         history.add(builder.toString());
