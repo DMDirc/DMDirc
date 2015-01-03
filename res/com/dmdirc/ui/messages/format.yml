@@ -84,7 +84,12 @@ ChannelSelfModeChangeEvent:
 QueryActionEvent:
   format: "* {{user.nickname}} {{message}}"
   colour: 6
+QuerySelfActionEvent:
+  format: "* {{user.nickname}} {{message}}"
+  colour: 6
 QueryMessageEvent:
+  format: "<{{user.nickname}}> {{message}}"
+QuerySelfMessageEvent:
   format: "<{{user.nickname}}> {{message}}"
 
 ################## TODO ############################################################################
@@ -101,10 +106,6 @@ QueryMessageEvent:
 #  channelModeDiscovered=3* Channel modes for %2$s are: %1$s.
 #  privateNotice=5-%1$s- %4$s
 #  serverNotice=5-%1$s- %4$s
-#  querySelfMessage=<%1$s> %4$s
-#  querySelfExternalMessage=<%1$s> %4$s
-#  querySelfAction=6* %1$s %4$s
-#  querySelfExternalAction=6* %1$s %4$s
 #  queryNickChanged=3* %1$s is now known as %4$s.
 #  userModeChanged=3* %1$s sets user mode: %4$s.
 #  userNoModes=3* No user modes.

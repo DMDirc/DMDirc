@@ -119,11 +119,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
             connection.getParser().get().sendMessage(target, part);
-
-            final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfMessageEvent(this, connection.getLocalUser().get(), part),
-                    "querySelfMessage");
-            doNotification(format, connection.getLocalUser().get(), part);
+            getEventBus().publishAsync(new QuerySelfMessageEvent(this,
+                    connection.getLocalUser().get(), part));
         });
     }
 
@@ -157,11 +154,8 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
         if (maxLineLength >= action.length() + 2) {
             connection.getParser().get().sendAction(getNickname(), action);
-
-            final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfActionEvent(this, connection.getLocalUser().get(), action),
-                    "querySelfAction");
-            doNotification(format, connection.getLocalUser().get(), action);
+            getEventBus().publishAsync(
+                    new QuerySelfActionEvent(this, connection.getLocalUser().get(), action));
         } else {
             addLine("actionTooLong", action.length());
         }
