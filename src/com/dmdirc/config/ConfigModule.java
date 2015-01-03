@@ -69,8 +69,7 @@ public class ConfigModule {
             final ErrorManager errorManager) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,
                 identitiesDirectory, eventBus, clientInfo);
-        errorManager.initialise(identityManager.getGlobalConfiguration(), errorsDirectory,
-                eventBus, clientInfo);
+        errorManager.initialise(identityManager.getGlobalConfiguration(), errorsDirectory, eventBus);
         identityManager.loadVersionIdentity();
 
         try {

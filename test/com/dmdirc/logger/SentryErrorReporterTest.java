@@ -51,13 +51,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ErrorReporterTest {
+public class SentryErrorReporterTest {
 
     private static RavenFactory ravenFactory;
     @Mock private Raven raven;
     @Mock private ClientInfo clientInfo;
     @Captor private ArgumentCaptor<Event> eventCaptor;
-    private ErrorReporter errorReporter;
+    private SentryErrorReporter sentryErrorReporter;
 
     @BeforeClass
     public static void setUpClass() {
@@ -69,12 +69,12 @@ public class ErrorReporterTest {
     @Before
     public void setUp() {
         when(ravenFactory.createRavenInstance(Matchers.<Dsn>anyObject())).thenReturn(raven);
-        errorReporter = new ErrorReporter(clientInfo);
+        sentryErrorReporter = new SentryErrorReporter(clientInfo);
     }
 
     @Test
     public void testSendsMessage() {
-        errorReporter.sendException("message 123", ErrorLevel.MEDIUM, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.MEDIUM, new Date(), null, null);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals("message 123", eventCaptor.getValue().getMessage());
     }
@@ -82,49 +82,49 @@ public class ErrorReporterTest {
     @Test
     public void testSendsTimestamp() {
         final Date date = new Date(561859200000l);
-        errorReporter.sendException("message 123", ErrorLevel.MEDIUM, date, null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.MEDIUM, date, null, null);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(date, eventCaptor.getValue().getTimestamp());
     }
 
     @Test
     public void testSendsLowLevelAsInfo() {
-        errorReporter.sendException("message 123", ErrorLevel.LOW, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.LOW, new Date(), null, null);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.INFO, eventCaptor.getValue().getLevel());
     }
 
     @Test
     public void testSendsMediumLevelAsWarning() {
-        errorReporter.sendException("message 123", ErrorLevel.MEDIUM, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.MEDIUM, new Date(), null, null);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.WARNING, eventCaptor.getValue().getLevel());
     }
 
     @Test
     public void testSendsHighLevelAsError() {
-        errorReporter.sendException("message 123", ErrorLevel.HIGH, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.HIGH, new Date(), null, null);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.ERROR, eventCaptor.getValue().getLevel());
     }
 
     @Test
     public void testSendsFatalLevelAsFatal() {
-        errorReporter.sendException("message 123", ErrorLevel.FATAL, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.FATAL, new Date(), null, null);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.FATAL, eventCaptor.getValue().getLevel());
     }
 
     @Test
     public void testSendsUnknownLevelAsInfo() {
-        errorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), null, null);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.INFO, eventCaptor.getValue().getLevel());
     }
 
     @Test
     public void testAddsDetailsAsExtra() {
-        errorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), null,
+        sentryErrorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), null,
                 "details 456");
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals("details 456", eventCaptor.getValue().getExtra().get("details"));
@@ -133,7 +133,7 @@ public class ErrorReporterTest {
     @Test
     public void testAddsExceptionInterface() {
         final Exception exception = new IndexOutOfBoundsException("Message blah");
-        errorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), exception, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), exception, null);
         verify(raven).sendEvent(eventCaptor.capture());
         final SentryInterface iface = eventCaptor.getValue().getSentryInterfaces()
                 .get(ExceptionInterface.EXCEPTION_INTERFACE);

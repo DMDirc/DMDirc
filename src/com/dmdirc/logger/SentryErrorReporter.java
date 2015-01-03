@@ -28,6 +28,8 @@ import com.dmdirc.util.ClientInfo;
 import java.util.Date;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import net.kencochrane.raven.Raven;
 import net.kencochrane.raven.RavenFactory;
@@ -40,7 +42,8 @@ import net.kencochrane.raven.event.interfaces.MessageInterface;
 /**
  * Facilitates reporting errors to the DMDirc developers.
  */
-public class ErrorReporter {
+@Singleton
+public class SentryErrorReporter {
 
     /** DSN used to connect to Sentry. */
     private static final String SENTRY_DSN = "https://d53a31a3c53c4a4f91c5ff503e612677:"
@@ -49,7 +52,8 @@ public class ErrorReporter {
     private static final String MODE_ALIAS_TEMPLATE = "%s\n\nConnection headers:\n%s";
     private final ClientInfo clientInfo;
 
-    public ErrorReporter(final ClientInfo clientInfo) {
+    @Inject
+    public SentryErrorReporter(final ClientInfo clientInfo) {
         this.clientInfo = clientInfo;
     }
 

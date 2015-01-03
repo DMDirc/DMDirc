@@ -23,20 +23,26 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.ProgramErrorStatusEvent;
 import com.dmdirc.util.ClientInfo;
 
 import com.google.common.collect.Lists;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramErrorTest {
@@ -44,6 +50,7 @@ public class ProgramErrorTest {
     @Mock private ErrorManager errorManager;
     @Mock private DMDircMBassador eventBus;
     @Mock private ClientInfo clientInfo;
+    @Captor private ArgumentCaptor<ProgramErrorStatusEvent> event;
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullErrorLevel() {
@@ -108,10 +115,14 @@ public class ProgramErrorTest {
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
         pe.setReportStatus(null);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
+        verify(eventBus, never()).publishAsync(event.capture());
         pe.setReportStatus(ErrorReportStatus.WAITING);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
+        verify(eventBus, never()).publishAsync(event.capture());
         pe.setReportStatus(ErrorReportStatus.ERROR);
         assertEquals(ErrorReportStatus.ERROR, pe.getReportStatus());
+        verify(eventBus).publishAsync(event.capture());
+        assertEquals(pe, event.getValue().getError());
     }
 
     @Test
@@ -120,6 +131,15 @@ public class ProgramErrorTest {
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
                 errorManager, eventBus);
         assertTrue(pe.toString().contains("moo"));
+    }
+
+    @Test
+    public void testGetTrace() {
+        final List<String> trace = Lists.newArrayList("test", "test1", "test2");
+        final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
+                new UnsupportedOperationException(), trace, null, new Date(), errorManager,
+                eventBus);
+        assertEquals(trace, pe.getTrace());
     }
 
     @Test
