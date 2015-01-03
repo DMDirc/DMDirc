@@ -60,14 +60,24 @@ public class DiskLoggingErrorManager {
     /** Are we logging errors to disk? */
     private boolean logging;
 
-    public DiskLoggingErrorManager(final Path errorsDirectory,
-            final DMDircMBassador eventBus,
+    /**
+     * Creates a new instance of this error manager.
+     *
+     * @param errorsDirectory The directory to write errors to.  The error manager will try to
+     *                        create this if it is not present
+     * @param eventBus        The event bus to listen to errors on
+     * @param config          The config to read values from
+     */
+    public DiskLoggingErrorManager(final Path errorsDirectory, final DMDircMBassador eventBus,
             @GlobalConfig final AggregateConfigProvider config) {
         this.errorsDirectory = errorsDirectory;
         this.eventBus = eventBus;
         configBinder = config.getBinder();
     }
 
+    /**
+     * Initialises the error manager.  Must be called before logging will start.
+     */
     public void initialise() {
         configBinder.bind(this, DiskLoggingErrorManager.class);
         eventBus.subscribe(this);
@@ -80,22 +90,28 @@ public class DiskLoggingErrorManager {
         }
     }
 
+    /**
+     * This is true is there was an error creating the error directory.  If this is true the logger
+     * will not attempt to write to disk irrespective of the config setting.
+     *
+     * @return true if there was an error creating the error directory
+     */
     public boolean isDirectoryError() {
         return directoryError;
     }
 
     @Handler
-    public void handleAppErrorEvent(final AppErrorEvent appError) {
+    void handleAppErrorEvent(final AppErrorEvent appError) {
         saveError(appError);
     }
 
     @Handler
-    public void handleUserErrorEvent(final UserErrorEvent userError) {
+    void handleUserErrorEvent(final UserErrorEvent userError) {
         saveError(userError);
     }
 
     @ConfigBinding(domain = "general", key = "logerrors")
-    public void handleLoggingSetting(final boolean value) {
+    void handleLoggingSetting(final boolean value) {
         logging = value;
     }
 
