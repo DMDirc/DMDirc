@@ -69,36 +69,37 @@ public class Query extends MessageTarget implements PrivateActionListener,
         PrivateMessageListener, NickChangeListener, QuitListener,
         CompositionStateChangeListener, PrivateChat {
 
-    /** The Server this Query is on. */
-    private final Server server;
+    /** The connection this Query is on. */
+    private final Connection connection;
     /** The user associated with this query. */
     private final User user;
 
     public Query(
-            final Server newServer,
+            final Connection connection,
             final User user,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final URLBuilder urlBuilder,
             final BackBufferFactory backBufferFactory) {
-        super(newServer, "query",
+        super(connection.getWindowModel(), "query",
                 user.getNickname(),
                 user.getNickname(),
-                newServer.getConfigManager(),
+                connection.getWindowModel().getConfigManager(),
                 backBufferFactory,
-                new QueryCommandParser(newServer, commandController, newServer.getEventBus()),
-                tabCompleterFactory.getTabCompleter(newServer.getTabCompleter(),
-                        newServer.getConfigManager(),
+                new QueryCommandParser(connection.getWindowModel(), commandController,
+                        connection.getWindowModel().getEventBus()),
+                tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
+                        connection.getWindowModel().getConfigManager(),
                         CommandType.TYPE_QUERY, CommandType.TYPE_CHAT),
                 messageSinkManager,
                 urlBuilder,
-                newServer.getEventBus(),
+                connection.getWindowModel().getEventBus(),
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
 
-        this.server = newServer;
+        this.connection = connection;
         this.user = user;
         updateTitle();
         initBackBuffer();
@@ -111,18 +112,18 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Override
     public void sendLine(final String line, final String target) {
-        if (server.getState() != ServerState.CONNECTED) {
+        if (connection.getState() != ServerState.CONNECTED) {
             Toolkit.getDefaultToolkit().beep();
             return;
         }
 
         splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
-            server.getParser().get().sendMessage(target, part);
+            connection.getParser().get().sendMessage(target, part);
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfMessageEvent(this, server.getLocalUser().get(), part),
+                    new QuerySelfMessageEvent(this, connection.getLocalUser().get(), part),
                     "querySelfMessage");
-            doNotification(format, server.getLocalUser().get(), part);
+            doNotification(format, connection.getLocalUser().get(), part);
         });
     }
 
@@ -141,26 +142,26 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Override
     public int getMaxLineLength() {
-        return server.getState() == ServerState.CONNECTED ? server.getParser().get()
+        return connection.getState() == ServerState.CONNECTED ? connection.getParser().get()
                 .getMaxLength("PRIVMSG", getHost()) : -1;
     }
 
     @Override
     public void sendAction(final String action) {
-        if (server.getState() != ServerState.CONNECTED) {
+        if (connection.getState() != ServerState.CONNECTED) {
             Toolkit.getDefaultToolkit().beep();
             return;
         }
 
-        final int maxLineLength = server.getParser().get().getMaxLength("PRIVMSG", getHost());
+        final int maxLineLength = connection.getParser().get().getMaxLength("PRIVMSG", getHost());
 
         if (maxLineLength >= action.length() + 2) {
-            server.getParser().get().sendAction(getNickname(), action);
+            connection.getParser().get().sendAction(getNickname(), action);
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QuerySelfActionEvent(this, server.getLocalUser().get(), action),
+                    new QuerySelfActionEvent(this, connection.getLocalUser().get(), action),
                     "querySelfAction");
-            doNotification(format, server.getLocalUser().get(), action);
+            doNotification(format, connection.getLocalUser().get(), action);
         } else {
             addLine("actionTooLong", action.length());
         }
@@ -170,14 +171,14 @@ public class Query extends MessageTarget implements PrivateActionListener,
     public void onPrivateMessage(final Parser parser, final Date date,
             final String message, final String host) {
         getEventBus().publishAsync(
-                new QueryMessageEvent(this, server.getUser(host), message));
+                new QueryMessageEvent(this, connection.getUser(host), message));
     }
 
     @Override
     public void onPrivateAction(final Parser parser, final Date date,
             final String message, final String host) {
         getEventBus().publishAsync(
-                new QueryActionEvent(this, server.getUser(host), message));
+                new QueryActionEvent(this, connection.getUser(host), message));
     }
 
     /**
@@ -191,7 +192,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
      * Reregisters query callbacks. Called when reconnecting to the server.
      */
     public void reregister() {
-        final CallbackManager callbackManager = server.getParser().get().getCallbackManager();
+        final CallbackManager callbackManager = connection.getParser().get().getCallbackManager();
         final String nick = getNickname();
 
         try {
@@ -210,7 +211,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
     public void onNickChanged(final Parser parser, final Date date,
             final ClientInfo client, final String oldNick) {
         if (oldNick.equals(getNickname())) {
-            final CallbackManager callbackManager = server.getParser().get().getCallbackManager();
+            final CallbackManager callbackManager = connection.getParser().get().getCallbackManager();
 
             callbackManager.delCallback(PrivateActionListener.class, this);
             callbackManager.delCallback(PrivateMessageListener.class, this);
@@ -232,7 +233,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
                     new QueryNickChangeEvent(this, oldNick),
                     "queryNickChanged");
 
-            server.updateQuery(this, oldNick, client.getNickname());
+            connection.updateQuery(this, oldNick, client.getNickname());
 
             addLine(format, oldNick, client.getUsername(),
                     client.getHostname(), client.getNickname());
@@ -267,7 +268,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Override
     public Optional<Connection> getConnection() {
-        return Optional.of(server);
+        return Optional.of(connection);
     }
 
     @Override
@@ -275,13 +276,13 @@ public class Query extends MessageTarget implements PrivateActionListener,
         super.close();
 
         // Remove any callbacks or listeners
-        server.getParser().map(Parser::getCallbackManager).ifPresent(cm -> cm.delAllCallback(this));
+        connection.getParser().map(Parser::getCallbackManager).ifPresent(cm -> cm.delAllCallback(this));
 
         // Trigger action for the window closing
         getEventBus().publishAsync(new QueryClosedEvent(this));
 
         // Inform any parents that the window is closing
-        server.delQuery(this);
+        connection.delQuery(this);
     }
 
     @Override
@@ -297,7 +298,7 @@ public class Query extends MessageTarget implements PrivateActionListener,
 
     @Override
     public void setCompositionState(final CompositionState state) {
-        server.getParser().get().setCompositionState(getHost(), state);
+        connection.getParser().get().setCompositionState(getHost(), state);
     }
 
     @Override

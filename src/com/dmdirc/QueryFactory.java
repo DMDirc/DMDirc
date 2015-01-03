@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.events.QueryOpenedEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.BackBufferFactory;
@@ -60,11 +61,11 @@ public class QueryFactory {
         this.windowManager = windowManager;
     }
 
-    public Query getQuery(final Server server, final User user) {
-        final Query query = new Query(server, user, tabCompleterFactory, commandController,
+    public Query getQuery(final Connection connection, final User user) {
+        final Query query = new Query(connection, user, tabCompleterFactory, commandController,
                 messageSinkManager, urlBuilder, backBufferFactory);
-        windowManager.addWindow(server, query);
-        server.getEventBus().publish(new QueryOpenedEvent(query));
+        windowManager.addWindow(connection.getWindowModel(), query);
+        connection.getWindowModel().getEventBus().publish(new QueryOpenedEvent(query));
         return query;
     }
 
