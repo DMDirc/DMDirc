@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -73,6 +74,8 @@ public class ErrorManager {
     private final List<ProgramError> errors;
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
+    /** Countdown latch to wait for FED with. */
+    private final CountDownLatch countDownLatch;
     /** Event bus to subscribe and publish errors on. */
     private DMDircMBassador eventBus;
     /** Whether or not to send error reports. */
@@ -95,6 +98,7 @@ public class ErrorManager {
     @Inject
     public ErrorManager() {
         errors = new LinkedList<>();
+        countDownLatch = new CountDownLatch(2);
     }
 
     /**
@@ -405,28 +409,15 @@ public class ErrorManager {
             }
             restart = false;
         } else {
-            final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this);
+            final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this,
+                    countDownLatch, sendReports);
             fed.setVisible(true);
             try {
-                synchronized (fed) {
-                    while (fed.isWaiting()) {
-                        fed.wait();
-                    }
-                }
+                countDownLatch.await();
             } catch (InterruptedException ex) {
-                //Oh well, carry on
+                //Nevermind, carry on
             }
             restart = fed.getRestart();
-        }
-
-        try {
-            synchronized (event.getError()) {
-                while (!event.getError().getReportStatus().isTerminal()) {
-                    event.getError().wait();
-                }
-            }
-        } catch (InterruptedException ex) {
-            // Do nothing
         }
 
         if (restart) {
