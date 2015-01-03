@@ -62,6 +62,8 @@ public class ProgramError implements Serializable {
     private final ErrorManager errorManager;
     /** The eventbus to post status changes to. */
     private final DMDircMBassador eventBus;
+    /** Is this an application error? */
+    private final boolean appError;
     /** Error report Status. */
     private ErrorReportStatus reportStatus;
     /** Has the error been output. */
@@ -84,7 +86,8 @@ public class ProgramError implements Serializable {
             @Nullable final String details,
             final Date date,
             final ErrorManager errorManager,
-            final DMDircMBassador eventBus) {
+            final DMDircMBassador eventBus,
+            final boolean appError) {
         checkNotNull(level);
         checkNotNull(message);
         checkNotNull(date);
@@ -99,6 +102,7 @@ public class ProgramError implements Serializable {
         this.reportStatus = ErrorReportStatus.WAITING;
         this.errorManager = errorManager;
         this.eventBus = eventBus;
+        this.appError = appError;
     }
 
     /**
@@ -181,6 +185,15 @@ public class ProgramError implements Serializable {
      */
     public boolean isHandled() {
         return handled;
+    }
+
+    /**
+     * Is this an application error?
+     *
+     * @return true iif this is an application error
+     */
+    public boolean isAppError() {
+        return appError;
     }
 
     @Override

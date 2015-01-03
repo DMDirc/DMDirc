@@ -179,7 +179,7 @@ public class ErrorManager {
     protected ProgramError addError(final ErrorLevel level, final String message,
             final Throwable exception, final String details, final boolean appError,
             final boolean canReport) {
-        return addError(getError(level, message, exception, details), appError, canReport);
+        return addError(getError(level, message, exception, details, appError), appError, canReport);
     }
 
     protected ProgramError addError(
@@ -256,9 +256,9 @@ public class ErrorManager {
      * @return A corresponding ProgramError
      */
     protected ProgramError getError(final ErrorLevel level, final String message,
-            final Throwable exception, final String details) {
+            final Throwable exception, final String details, final boolean appError) {
         return new ProgramError(level, message, exception, getTrace(message, exception), details,
-                new Date(), this, eventBus);
+                new Date(), this, eventBus, appError);
     }
 
     /**
