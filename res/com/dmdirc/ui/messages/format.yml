@@ -79,6 +79,15 @@ ChannelSelfModeChangeEvent:
   format: "* You set mode: {{modes}}."
   colour: 3
 
+################## Channel user events #############################################################
+
+ChannelNickChangeEvent:
+  format: "* {{client.importantMode}}{{oldNick}} is now known as {{client.nickname}}."
+  colour: 3
+ChannelSelfNickChangeEvent:
+  format: "* You are now known as {{client.nickname}}."
+  colour: 3
+
 ################## Query events ####################################################################
 
 QueryActionEvent:
@@ -93,8 +102,6 @@ QuerySelfMessageEvent:
   format: "<{{user.nickname}}> {{message}}"
 
 ################## TODO ############################################################################
-#  channelNickChange=3* %1$s%5$s is now known as %2$s.
-#  channelSelfNickChange=3* You are now known as %2$s.
 #  channelUserAway=14-- %1$s%2$s is now away.
 #  channelUserBack=14-- %1$s%2$s is now back.
 #  channelUserAwayDiscovered=14-- %1$s%2$s is away.
