@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.events.ChannelOpenedEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.WindowManager;
@@ -66,14 +67,14 @@ public class ChannelFactory {
         this.windowManager = windowManager;
     }
 
-    public Channel getChannel(final Server server,
+    public Channel getChannel(final Connection connection,
             final ChannelInfo channelInfo,
             final ConfigProviderMigrator configMigrator) {
-        final Channel channel = new Channel(server, channelInfo, configMigrator,
+        final Channel channel = new Channel(connection, channelInfo, configMigrator,
                 tabCompleterFactory, commandController, messageSinkManager, urlBuilder, eventBus,
                 backBufferFactory, groupChatUserManager);
-        windowManager.addWindow(server, channel);
-        server.getEventBus().publish(new ChannelOpenedEvent(channel));
+        windowManager.addWindow(connection.getWindowModel(), channel);
+        connection.getWindowModel().getEventBus().publish(new ChannelOpenedEvent(channel));
         return channel;
     }
 }
