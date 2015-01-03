@@ -98,16 +98,7 @@ public class DiskLoggingErrorManager {
     }
 
     @Handler
-    void handleErrorEvent(final ErrorEvent appError) {
-        saveError(appError);
-    }
-
-    @ConfigBinding(domain = "general", key = "logerrors")
-    void handleLoggingSetting(final boolean value) {
-        logging = value;
-    }
-
-    private void saveError(final ErrorEvent error) {
+    void handleErrorEvent(final ErrorEvent error) {
         if (directoryError || !logging) {
             return;
         }
@@ -125,5 +116,10 @@ public class DiskLoggingErrorManager {
         } catch (IOException ex) {
             //Not really anything we can do at this point, so don't try.
         }
+    }
+
+    @ConfigBinding(domain = "general", key = "logerrors")
+    void handleLoggingSetting(final boolean value) {
+        logging = value;
     }
 }
