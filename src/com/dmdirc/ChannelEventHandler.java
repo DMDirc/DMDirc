@@ -39,6 +39,7 @@ import com.dmdirc.events.ChannelNoticeEvent;
 import com.dmdirc.events.ChannelPartEvent;
 import com.dmdirc.events.ChannelQuitEvent;
 import com.dmdirc.events.ChannelSelfModeChangeEvent;
+import com.dmdirc.events.ChannelSelfNickChangeEvent;
 import com.dmdirc.events.ChannelSelfPartEvent;
 import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.ChannelTopicUnsetEvent;
@@ -264,12 +265,17 @@ public class ChannelEventHandler extends EventHandler implements
             final ChannelInfo channel, final ChannelClientInfo client, final String oldNick) {
         checkParser(parser);
 
-        final ChannelNickChangeEvent event = new ChannelNickChangeEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner), oldNick);
-        final String format = EventUtils.postDisplayable(eventBus, event,
-                isMyself(client) ? "channelSelfNickChange" : "channelNickChange");
-        owner.doNotification(date, format, groupChatUserManager.getUserFromClient(client, owner), oldNick);
         owner.renameClient(oldNick, client.getClient().getNickname());
+
+        if (isMyself(client)) {
+            eventBus.publishAsync(
+                    new ChannelSelfNickChangeEvent(date.getTime(), owner,
+                            groupChatUserManager.getUserFromClient(client, owner), oldNick));
+        } else {
+            eventBus.publishAsync(
+                    new ChannelNickChangeEvent(date.getTime(), owner,
+                            groupChatUserManager.getUserFromClient(client, owner), oldNick));
+        }
     }
 
     @Override
