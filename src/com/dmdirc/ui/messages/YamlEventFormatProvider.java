@@ -67,7 +67,7 @@ public class YamlEventFormatProvider implements EventFormatProvider {
         try (final InputStream stream = getClass().getResourceAsStream("format.yml")) {
             load(stream);
         } catch (IOException e) {
-            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.LOW, e,
+            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.FATAL, e,
                     "Unable to load default event templates", ""));
         }
 
@@ -81,16 +81,13 @@ public class YamlEventFormatProvider implements EventFormatProvider {
         }
     }
 
-    private void load(final InputStream stream) {
+    private void load(final InputStream stream) throws IOException {
         try (final InputStreamReader reader = new InputStreamReader(stream, CHARSET)) {
             final YamlReader yamlReader = new YamlReader(reader);
             final Object root = yamlReader.read();
             final Map<Object, Object> entries = asMap(root);
             entries.forEach((k, v) -> formats.put(k.toString(), readFormat(v)));
             yamlReader.close();
-        } catch (IOException e) {
-            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.LOW, e,
-                    "Unable to load event templates", ""));
         }
     }
 
