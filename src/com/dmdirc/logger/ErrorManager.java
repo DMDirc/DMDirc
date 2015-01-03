@@ -31,7 +31,6 @@ import com.dmdirc.events.ProgramErrorDeletedEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.FatalErrorDialog;
-import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.collections.ListenerList;
 
@@ -76,6 +75,8 @@ public class ErrorManager {
     private final ListenerList errorListeners = new ListenerList();
     /** Countdown latch to wait for FED with. */
     private final CountDownLatch countDownLatch;
+    /** Sentry error reporter factory. */
+    private final SentryErrorReporter sentryErrorReporter;
     /** Event bus to subscribe and publish errors on. */
     private DMDircMBassador eventBus;
     /** Whether or not to send error reports. */
@@ -92,13 +93,13 @@ public class ErrorManager {
     private ExecutorService reportThread;
     /** Directory to store errors in. */
     private Path errorsDirectory;
-    private ClientInfo clientInfo;
 
     /** Creates a new instance of ErrorListDialog. */
     @Inject
-    public ErrorManager() {
+    public ErrorManager(final SentryErrorReporter sentryErrorReporter) {
         errors = new LinkedList<>();
         countDownLatch = new CountDownLatch(2);
+        this.sentryErrorReporter = sentryErrorReporter;
     }
 
     /**
@@ -109,8 +110,7 @@ public class ErrorManager {
      * @param eventBus     The event bus to listen for error events on.
      */
     public void initialise(final AggregateConfigProvider globalConfig, final Path directory,
-            final DMDircMBassador eventBus, final ClientInfo clientInfo) {
-        this.clientInfo = clientInfo;
+            final DMDircMBassador eventBus) {
         this.eventBus = eventBus;
         eventBus.subscribe(this);
         RavenFactory.registerFactory(new DefaultRavenFactory());
@@ -297,7 +297,7 @@ public class ErrorManager {
         }
         error.setReportStatus(ErrorReportStatus.QUEUED);
 
-        reportThread.submit(new ErrorReportingRunnable(error, clientInfo));
+        reportThread.submit(new ErrorReportingRunnable(sentryErrorReporter, error));
     }
 
     /**

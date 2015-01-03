@@ -41,8 +41,9 @@ public class ErrorReportStatusTest {
 
     @Test
     public void testTerminal() {
-        assertTrue(ErrorReportStatus.ERROR.isTerminal());
         assertTrue(ErrorReportStatus.WAITING.isTerminal());
+        assertTrue(ErrorReportStatus.ERROR.isTerminal());
+        assertFalse(ErrorReportStatus.QUEUED.isTerminal());
         assertFalse(ErrorReportStatus.SENDING.isTerminal());
         assertTrue(ErrorReportStatus.FINISHED.isTerminal());
         assertTrue(ErrorReportStatus.NOT_APPLICABLE.isTerminal());

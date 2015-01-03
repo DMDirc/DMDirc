@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Stores a program error.
  */
-public final class ProgramError implements Serializable {
+public class ProgramError implements Serializable {
 
     /** A version number for this class. */
     private static final long serialVersionUID = 4;
