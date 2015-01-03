@@ -22,13 +22,10 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.ConfigBinding;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ErrorEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.base.Throwables;
@@ -69,7 +66,7 @@ public class DiskLoggingErrorManager {
      * @param config          The config to read values from
      */
     public DiskLoggingErrorManager(final Path errorsDirectory, final DMDircMBassador eventBus,
-            @GlobalConfig final AggregateConfigProvider config) {
+            final AggregateConfigProvider config) {
         this.errorsDirectory = errorsDirectory;
         this.eventBus = eventBus;
         configBinder = config.getBinder();
@@ -101,13 +98,8 @@ public class DiskLoggingErrorManager {
     }
 
     @Handler
-    void handleAppErrorEvent(final AppErrorEvent appError) {
+    void handleErrorEvent(final ErrorEvent appError) {
         saveError(appError);
-    }
-
-    @Handler
-    void handleUserErrorEvent(final UserErrorEvent userError) {
-        saveError(userError);
     }
 
     @ConfigBinding(domain = "general", key = "logerrors")

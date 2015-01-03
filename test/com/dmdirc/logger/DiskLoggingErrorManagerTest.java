@@ -24,7 +24,6 @@ package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinder;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -78,47 +77,21 @@ public class DiskLoggingErrorManagerTest {
     }
 
     @Test
-    public void testHandleAppErrorEvent() throws Exception {
-        final AppErrorEvent error = new AppErrorEvent(ErrorLevel.MEDIUM,
-                new IllegalStateException(""), "", "");
-        instance.initialise();
-        instance.handleLoggingSetting(true);
-        final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
-        assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
-        instance.handleAppErrorEvent(error);
-        final Path errorPath = fileSystem.getPath("/errors", logName);
-        assertTrue(Files.exists(errorPath));
-        assertTrue(Files.readAllLines(errorPath).contains("Level: Medium"));
-    }
-
-    @Test
-    public void testHandleUserErrorEvent() throws Exception {
+    public void testHandleErrorEvent() throws Exception {
         final UserErrorEvent error = new UserErrorEvent(ErrorLevel.MEDIUM,
                 new IllegalStateException(""), "", "");
         instance.initialise();
         instance.handleLoggingSetting(true);
         final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
         assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
-        instance.handleUserErrorEvent(error);
+        instance.handleErrorEvent(error);
         final Path errorPath = fileSystem.getPath("/errors", logName);
         assertTrue(Files.exists(errorPath));
         assertTrue(Files.readAllLines(errorPath).contains("Level: Medium"));
     }
 
     @Test
-    public void testHandleAppErrorEventNotLogging() throws Exception {
-        final AppErrorEvent error = new AppErrorEvent(ErrorLevel.MEDIUM,
-                new IllegalStateException(""), "", "");
-        instance.initialise();
-        instance.handleLoggingSetting(false);
-        final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
-        assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
-        instance.handleAppErrorEvent(error);
-        assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
-    }
-
-    @Test
-    public void testHandleUserErrorEventNotLogging() throws Exception {
+    public void testHandleErrorEventNotLogging() throws Exception {
         final UserErrorEvent error = new UserErrorEvent(ErrorLevel.MEDIUM,
                 new IllegalStateException(""),
                 "", "");
@@ -126,7 +99,7 @@ public class DiskLoggingErrorManagerTest {
         instance.handleLoggingSetting(false);
         final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
         assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
-        instance.handleUserErrorEvent(error);
+        instance.handleErrorEvent(error);
         assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
     }
 
