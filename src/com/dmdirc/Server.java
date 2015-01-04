@@ -30,7 +30,6 @@ import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
-import com.dmdirc.events.ServerInviteExpiredEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.InviteManager;
@@ -40,7 +39,6 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.ParserError;
@@ -97,7 +95,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The Server class represents the client's view of a server. It maintains a list of all channels,
  * queries, etc, and handles parser callbacks pertaining to the server.
  */
-public class Server extends FrameContainer implements Connection, InviteManager {
+public class Server extends FrameContainer implements Connection {
 
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
@@ -106,7 +104,7 @@ public class Server extends FrameContainer implements Connection, InviteManager 
     /** Manager of group chats. */
     private final GroupChatManagerImpl groupChatManager;
     /** Manager of invites. */
-    private final InviteManager inviteManager = this;
+    private final InviteManager inviteManager;
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
     /** The user manager to retrieve users from. */
@@ -148,8 +146,6 @@ public class Server extends FrameContainer implements Connection, InviteManager 
     private Optional<String> awayMessage;
     /** Our event handler. */
     private final ServerEventHandler eventHandler;
-    /** A list of outstanding invites. */
-    private final List<Invite> invites = new ArrayList<>();
     /** Our ignore list. */
     private final IgnoreList ignoreList = new IgnoreList();
     /** Our string convertor. */
@@ -221,6 +217,7 @@ public class Server extends FrameContainer implements Connection, InviteManager 
         this.messageEncoderFactory = messageEncoderFactory;
         this.userManager = userManager;
         this.groupChatManager = groupChatManagerFactory.create(this, executorService);
+        this.inviteManager = new InviteManagerImpl(this);
 
         awayMessage = Optional.empty();
         eventHandler = new ServerEventHandler(this, groupChatManager, eventBus);
@@ -349,7 +346,7 @@ public class Server extends FrameContainer implements Connection, InviteManager 
             doCallbacks();
 
             updateAwayState(Optional.empty());
-            removeInvites();
+            inviteManager.removeInvites();
 
             newParser.connect();
             if (newParser instanceof ThreadedParser) {
@@ -412,7 +409,7 @@ public class Server extends FrameContainer implements Connection, InviteManager 
                 if (parser.isPresent()) {
                     myState.transition(ServerState.DISCONNECTING);
 
-                    removeInvites();
+                    inviteManager.removeInvites();
                     updateIcon();
 
                     parser.get().disconnect(reason);
@@ -756,7 +753,7 @@ public class Server extends FrameContainer implements Connection, InviteManager 
 
         groupChatManager.closeAll();
         closeQueries();
-        removeInvites();
+        inviteManager.removeInvites();
 
         super.close();
     }
@@ -882,7 +879,7 @@ public class Server extends FrameContainer implements Connection, InviteManager 
                 closeQueries();
             }
 
-            removeInvites();
+            inviteManager.removeInvites();
             updateAwayState(Optional.empty());
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
@@ -1013,59 +1010,6 @@ public class Server extends FrameContainer implements Connection, InviteManager 
     @Override
     public ConfigProvider getNetworkIdentity() {
         return identityFactory.createNetworkConfig(getNetwork());
-    }
-
-    @Override
-    public void addInvite(final Invite invite) {
-        synchronized (invites) {
-            new ArrayList<>(invites).stream()
-                    .filter(oldInvite -> oldInvite.getChannel().equals(invite.getChannel()))
-                    .forEach(this::removeInvite);
-
-            invites.add(invite);
-        }
-    }
-
-    @Override
-    public void acceptInvites(final Invite... invites) {
-        final ChannelJoinRequest[] requests = new ChannelJoinRequest[invites.length];
-
-        for (int i = 0; i < invites.length; i++) {
-            requests[i] = new ChannelJoinRequest(invites[i].getChannel());
-        }
-
-        getGroupChatManager().join(requests);
-    }
-
-    @Override
-    public void acceptInvites() {
-        synchronized (invites) {
-            acceptInvites(invites.toArray(new Invite[invites.size()]));
-        }
-    }
-
-    @Override
-    public void removeInvites(final String channel) {
-        new ArrayList<>(invites).stream().filter(invite -> invite.getChannel().equals(channel))
-                .forEach(this::removeInvite);
-    }
-
-    @Override
-    public void removeInvites() {
-        new ArrayList<>(invites).forEach(this::removeInvite);
-    }
-
-    @Override
-    public void removeInvite(final Invite invite) {
-        synchronized (invites) {
-            invites.remove(invite);
-            getEventBus().publishAsync(new ServerInviteExpiredEvent(this, invite));
-        }
-    }
-
-    @Override
-    public List<Invite> getInvites() {
-        return Collections.unmodifiableList(invites);
     }
 
     @Override

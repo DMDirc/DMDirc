@@ -22,94 +22,11 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.config.ConfigBinder;
-import com.dmdirc.config.profiles.Profile;
-import com.dmdirc.interfaces.User;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProviderMigrator;
-import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.input.TabCompleterFactory;
-import com.dmdirc.ui.messages.BackBuffer;
-import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.URLBuilder;
-
-import java.net.URI;
-import java.util.concurrent.ScheduledExecutorService;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
 
 public class ServerTest {
-
-    @Mock private Profile profile;
-    @Mock private AggregateConfigProvider configManager;
-    @Mock private ConfigBinder configBinder;
-    @Mock private ConfigProvider userConfig;
-    @Mock private ConfigProviderMigrator configMigrator;
-    @Mock private CommandParser commandParser;
-    @Mock private ParserFactory parserFactory;
-    @Mock private IdentityFactory identityFactory;
-    @Mock private TabCompleterFactory tabCompleterFactory;
-    @Mock private TabCompleter tabCompleter;
-    @Mock private MessageSinkManager messageSinkManager;
-    @Mock private GroupChatManagerImplFactory groupChatManagerImplFactory;
-    @Mock private GroupChatManagerImpl groupChatManager;
-    @Mock private QueryFactory queryFactory;
-    @Mock private URLBuilder urlBuilder;
-    @Mock private DMDircMBassador eventBus;
-    @Mock private ScheduledExecutorService executorService;
-    @Mock private MessageEncoderFactory messageEncoderFactory;
-    @Mock private BackBufferFactory backBufferFactory;
-    @Mock private BackBuffer backBuffer;
-    @Mock private UserManager userManager;
-    @Mock private User user;
-
-    private Server server;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        when(configManager.getOptionInt(anyString(), anyString())).thenReturn(Integer.MAX_VALUE);
-        when(configManager.getBinder()).thenReturn(configBinder);
-        when(configMigrator.getConfigProvider()).thenReturn(configManager);
-        when(tabCompleterFactory.getTabCompleter(eq(configManager),
-                Matchers.<CommandType>anyVararg())).thenReturn(tabCompleter);
-        when(backBufferFactory.getBackBuffer(any())).thenReturn(backBuffer);
-        when(groupChatManagerImplFactory.create(any(), any())).thenReturn(groupChatManager);
-
-        server = new Server(
-                configMigrator,
-                commandParser,
-                parserFactory,
-                tabCompleterFactory,
-                identityFactory,
-                messageSinkManager,
-                queryFactory,
-                urlBuilder,
-                eventBus,
-                messageEncoderFactory,
-                userConfig,
-                groupChatManagerImplFactory,
-                executorService,
-                new URI("irc-test://255.255.255.255"),
-                profile,
-                backBufferFactory,
-                userManager);
-    }
 
     @Test
     public void testGetNetworkFromServerName() {
@@ -126,26 +43,6 @@ public class ServerTest {
         for (String[] test : tests) {
             assertEquals(test[1], Server.getNetworkFromServerName(test[0]));
         }
-    }
-
-    @Test
-    public void testDuplicateInviteRemoval() {
-        server.addInvite(new Invite(server, "#chan1", user));
-        server.addInvite(new Invite(server, "#chan1", user));
-
-        assertEquals(1, server.getInvites().size());
-    }
-
-    @Test
-    public void testRemoveInvites() {
-        server.addInvite(new Invite(server, "#chan1", user));
-        server.addInvite(new Invite(server, "#chan2", user));
-
-        server.removeInvites("#chan1");
-        assertEquals(1, server.getInvites().size());
-
-        server.removeInvites("#chan2");
-        assertEquals(0, server.getInvites().size());
     }
 
 }
