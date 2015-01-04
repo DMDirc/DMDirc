@@ -85,7 +85,7 @@ public class ProgramError implements Serializable {
             final Iterable<String> trace,
             @Nullable final String details,
             final Date date,
-            final ErrorManager errorManager,
+            @Nullable final ErrorManager errorManager,
             final DMDircMBassador eventBus,
             final boolean appError) {
         checkNotNull(level);
