@@ -41,7 +41,7 @@ import net.engio.mbassy.listener.Handler;
  * Listens for {@link ErrorEvent}s, creates {@link ProgramError}s and raises {@link
  * ProgramErrorEvent}s.
  */
-public class ProgramErrorErrorManager {
+public class ProgramErrorManager {
 
     /** The event bus to listen for errors on. */
     private final DMDircMBassador eventBus;
@@ -55,7 +55,7 @@ public class ProgramErrorErrorManager {
      *
      * @param eventBus        The event bus to listen to errors on
      */
-    public ProgramErrorErrorManager(final DMDircMBassador eventBus,
+    public ProgramErrorManager(final DMDircMBassador eventBus,
             final ProgramErrorFactory programErrorFactory) {
         this.eventBus = eventBus;
         this.programErrorFactory = programErrorFactory;
