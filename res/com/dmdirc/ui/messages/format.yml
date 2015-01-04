@@ -106,6 +106,12 @@ QueryMessageEvent:
 QuerySelfMessageEvent:
   format: "<{{user.nickname}}> {{message}}"
 
+################## Miscellaneous events ############################################################
+
+CommandErrorEvent:
+  format: "{{message}}"
+  colour: 7
+
 ################## TODO ############################################################################
 #  channelUserAway=14-- %1$s%2$s is now away.
 #  channelUserBack=14-- %1$s%2$s is now back.
@@ -149,7 +155,6 @@ QuerySelfMessageEvent:
 #  rawIn=<< %1$s
 #  rawOut=>> %1$s
 #  commandOutput=%1$s
-#  commandError=7%1$s
 #  actionTooLong=Warning: action too long to be sent
 #  tabCompletion=14Multiple possibilities: %1$s
 #  serverError=4ERROR: %1$s

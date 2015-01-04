@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -106,10 +107,11 @@ public class GlobalCommandParser extends CommandParser {
     protected void handleNonCommand(final FrameContainer origin, final String line) {
         if (origin == null) {
             eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM,
-                    new IllegalArgumentException("Invalid Global Command: " +  line),
-                    "Invalid Global Command: " +  line, ""));
+                    new IllegalArgumentException("Invalid Global Command: " + line),
+                    "Invalid Global Command: " + line, ""));
         } else {
-            origin.addLine("commandError", "Invalid global command: " + line);
+            origin.getEventBus().publishAsync(
+                    new CommandErrorEvent(origin, "Invalid global command: " + line));
         }
     }
 
