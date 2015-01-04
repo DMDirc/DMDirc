@@ -463,7 +463,7 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public boolean hasQuery(final String host) {
-        return queries.containsKey(converter.toLowerCase(parseHostmask(host)[0]));
+        return queries.containsKey(converter.toLowerCase(getUser(host).getNickname()));
     }
 
     @Override
@@ -492,7 +492,7 @@ public class Server extends FrameContainer implements Connection {
             }
         }
 
-        final String nick = parseHostmask(host)[0];
+        final String nick = getUser(host).getNickname();
         final String lnick = converter.toLowerCase(nick);
 
         if (!queries.containsKey(lnick)) {
@@ -589,16 +589,6 @@ public class Server extends FrameContainer implements Connection {
     public boolean compareURI(final URI uri) {
         return parser.map(p -> p.compareURI(uri)).orElse(
                 oldParser.map(op -> op.compareURI(uri)).orElse(false));
-    }
-
-    /**
-     * Parses a hostmask into nickname, username and hostname. Should probably use
-     * {@link #getUser} instead.
-     *
-     * @param hostmask The mask to parse.
-     */
-    public String[] parseHostmask(final String hostmask) {
-        return protocolDescription.get().parseHostmask(hostmask);
     }
 
     /**
