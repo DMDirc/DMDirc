@@ -113,7 +113,6 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public void save() {
-        setSelectedProfile(Optional.empty());
         final List<Profile> profileList = Lists.newArrayList(profileManager.getProfiles());
         profileList.forEach(profileManager::deleteProfile);
         profiles.values().forEach(p -> profileManager.addProfile(
