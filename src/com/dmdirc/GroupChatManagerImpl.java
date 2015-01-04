@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatManager;
@@ -42,6 +43,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import net.engio.mbassy.listener.Handler;
 
 /**
  * Manages group chats for a {@link Connection}.
@@ -134,11 +137,6 @@ public class GroupChatManagerImpl implements GroupChatManager {
         });
     }
 
-    public void delChannel(final String chan) {
-        connection.getWindowModel().getTabCompleter().removeEntry(TabCompletionType.CHANNEL, chan);
-        channels.remove(chan);
-    }
-
     public void addChannel(final ChannelInfo chan) {
         addChannel(chan,
                 !backgroundChannels.contains(chan.getName())
@@ -166,6 +164,7 @@ public class GroupChatManagerImpl implements GroupChatManager {
                     connection, chan, channelConfig);
             connection.getWindowModel().getTabCompleter().addEntry(TabCompletionType.CHANNEL,
                     chan.getName());
+            newChan.getWindowModel().getEventBus().subscribe(this);
             channels.add(newChan);
         }
     }
@@ -215,6 +214,15 @@ public class GroupChatManagerImpl implements GroupChatManager {
                 .getOptionInt("general", "whotime");
         whoTimerFuture = executorService.scheduleAtFixedRate(
                 channels.getWhoRunnable(), whoTime, whoTime, TimeUnit.MILLISECONDS);
+    }
+
+    @Handler
+    void handleChannelClosing(final ChannelClosedEvent event) {
+        final Channel channel = event.getChannel();
+        connection.getWindowModel().getTabCompleter()
+                .removeEntry(TabCompletionType.CHANNEL, channel.getName());
+        channels.remove(channel.getName());
+        channel.getEventBus().unsubscribe(this);
     }
 
 }
