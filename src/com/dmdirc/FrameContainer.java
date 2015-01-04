@@ -40,8 +40,6 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Formatter;
-import com.dmdirc.ui.messages.IRCDocument;
-import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.ChildEventBusManager;
@@ -270,19 +268,6 @@ public abstract class FrameContainer {
     }
 
     /**
-     * Retrieves the {@link IRCDocument} used to store this frame's content.
-     *
-     * @return This frame's document
-     *
-     * @since 0.6.4
-     * @deprecated Use {@link #getBackBuffer()}
-     */
-    @Deprecated
-    public IRCDocument getDocument() {
-        return getBackBuffer().getDocument();
-    }
-
-    /**
      * Changes the name of this container, and fires a {@link FrameNameChangedEvent}.
      *
      * @param name The new name for this frame.
@@ -375,17 +360,6 @@ public abstract class FrameContainer {
      */
     private void iconUpdated() {
         eventBus.publish(new FrameIconChangedEvent(this, icon));
-    }
-
-    /**
-     * Retrieves the styliser which should be used by this container.
-     *
-     * @return this container's styliser
-     * @deprecated Use {@link #getBackBuffer()}
-     */
-    @Deprecated
-    public Styliser getStyliser() {
-        return getBackBuffer().getStyliser();
     }
 
     /**
