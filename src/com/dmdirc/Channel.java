@@ -294,10 +294,6 @@ public class Channel extends MessageTarget implements GroupChat {
 
         // Trigger action for the window closing
         getEventBus().publish(new ChannelClosedEvent(this));
-
-        // Inform any parents that the window is closing
-        // TODO: Avoid casting here, somehow. Make the manager listen to events instead?
-        ((GroupChatManagerImpl) connection.getGroupChatManager()).delChannel(channelInfo.getName());
     }
 
     /**
