@@ -231,7 +231,7 @@ public class Channel extends MessageTarget implements GroupChat {
         checkWho();
         setIcon("channel");
 
-        connection.removeInvites(channelInfo.getName());
+        connection.getInviteManager().removeInvites(channelInfo.getName());
     }
 
     /**
