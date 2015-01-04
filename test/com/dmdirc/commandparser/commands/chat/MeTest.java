@@ -21,9 +21,10 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
-import com.dmdirc.MessageTarget;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
+import com.dmdirc.interfaces.Chat;
 import com.dmdirc.interfaces.CommandController;
 
 import org.junit.Before;
@@ -32,33 +33,39 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyChar;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MeTest {
 
-    @Mock private MessageTarget mtt;
+    @Mock private Chat chat;
+    @Mock private FrameContainer frameContainer;
     @Mock private CommandController controller;
     private Me command;
 
     @Before
     public void setUp() {
+        when(chat.getWindowModel()).thenReturn(frameContainer);
         command = new Me(controller);
     }
 
     @Test
     public void testUsage() {
-        command.execute(mtt, new CommandArguments(controller, "/foo"),
-                new ChatCommandContext(null, Me.INFO, mtt));
+        command.execute(frameContainer, new CommandArguments(controller, "/foo"),
+                new ChatCommandContext(null, Me.INFO, chat));
 
-        verify(mtt).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(frameContainer).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
     }
 
     @Test
     public void testSend() {
         command.execute(null, new CommandArguments(controller, "/foo hello meep moop"),
-                new ChatCommandContext(null, Me.INFO, mtt));
+                new ChatCommandContext(null, Me.INFO, chat));
 
-        verify(mtt).sendAction("hello meep moop");
+        verify(chat).sendAction("hello meep moop");
     }
 }
