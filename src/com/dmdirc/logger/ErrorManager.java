@@ -77,6 +77,8 @@ public class ErrorManager {
     private final CountDownLatch countDownLatch;
     /** Sentry error reporter factory. */
     private final SentryErrorReporter sentryErrorReporter;
+    /** Factory to create program errors. */
+    private final ProgramErrorFactory programErrorFactory;
     /** Event bus to subscribe and publish errors on. */
     private DMDircMBassador eventBus;
     /** Whether or not to send error reports. */
@@ -96,10 +98,12 @@ public class ErrorManager {
 
     /** Creates a new instance of ErrorListDialog. */
     @Inject
-    public ErrorManager(final SentryErrorReporter sentryErrorReporter) {
+    public ErrorManager(final SentryErrorReporter sentryErrorReporter,
+            final ProgramErrorFactory programErrorFactory) {
         errors = new LinkedList<>();
         countDownLatch = new CountDownLatch(2);
         this.sentryErrorReporter = sentryErrorReporter;
+        this.programErrorFactory = programErrorFactory;
     }
 
     /**
@@ -169,7 +173,7 @@ public class ErrorManager {
      *
      * @param level     The severity of the error
      * @param message   The error message
-     * @param exception The exception that caused the error, if any.
+     * @param throwable The exception that caused the error, if any.
      * @param details   The details of the exception, if any.
      * @param appError  Whether or not this is an application error
      * @param canReport Whether or not this error can be reported
@@ -177,9 +181,11 @@ public class ErrorManager {
      * @since 0.6.3m1
      */
     protected ProgramError addError(final ErrorLevel level, final String message,
-            final Throwable exception, final String details, final boolean appError,
+            final Throwable throwable, final String details, final boolean appError,
             final boolean canReport) {
-        return addError(getError(level, message, exception, details, appError), appError, canReport);
+        final ProgramError error = programErrorFactory.create(level, message, throwable,
+                getTrace(message, throwable), details, new Date(), this, appError);
+        return addError(error, appError, canReport);
     }
 
     protected ProgramError addError(
@@ -242,23 +248,6 @@ public class ErrorManager {
         synchronized (errors) {
             errors.add(error);
         }
-    }
-
-    /**
-     * Retrieves a {@link ProgramError} that represents the specified details.
-     *
-     * @param level     The severity of the error
-     * @param message   The error message
-     * @param exception The exception that caused the error.
-     * @param details   The details of the exception
-     *
-     * @since 0.6.3m1
-     * @return A corresponding ProgramError
-     */
-    protected ProgramError getError(final ErrorLevel level, final String message,
-            final Throwable exception, final String details, final boolean appError) {
-        return new ProgramError(level, message, exception, getTrace(message, exception), details,
-                new Date(), this, eventBus, appError);
     }
 
     /**
