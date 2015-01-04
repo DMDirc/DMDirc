@@ -500,7 +500,7 @@ public class ServerEventHandler extends EventHandler implements
             final String channel) {
         checkParser(parser);
 
-        owner.addInvite(new Invite(owner, channel, owner.getUser(userHost)));
+        owner.getInviteManager().addInvite(new Invite(owner, channel, owner.getUser(userHost)));
         final ServerInviteReceivedEvent event = new ServerInviteReceivedEvent(owner,
                 owner.getUser(userHost), channel);
         final String format = EventUtils.postDisplayable(eventBus, event, "inviteReceived");

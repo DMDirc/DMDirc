@@ -115,7 +115,7 @@ public class GroupChatManagerImpl implements GroupChatManager {
             final Collection<ChannelJoinRequest> pending = new ArrayList<>();
 
             for (ChannelJoinRequest request : requests) {
-                connection.removeInvites(request.getName());
+                connection.getInviteManager().removeInvites(request.getName());
 
                 final String name;
                 if (p.isValidChannelName(request.getName())) {

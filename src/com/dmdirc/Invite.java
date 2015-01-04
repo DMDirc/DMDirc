@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.InviteManager;
 import com.dmdirc.interfaces.User;
 
 import java.util.Date;
@@ -32,8 +32,8 @@ import java.util.Date;
  */
 public class Invite {
 
-    /** The connection this invite was on. */
-    private final Connection connection;
+    /** The manager associated with this invite. */
+    private final InviteManager inviteManager;
     /** The channel this invite is for. */
     private final String channel;
     /** The time this invite was created. */
@@ -44,12 +44,12 @@ public class Invite {
     /**
      * Creates a new instance of Invite.
      *
-     * @param connection The connection that this invite was received on
+     * @param inviteManager The manager that this invite is associated with.
      * @param channel    The channel that this invite is for
      * @param source     The source of this invite
      */
-    public Invite(final Connection connection, final String channel, final User source) {
-        this.connection = connection;
+    public Invite(final InviteManager inviteManager, final String channel, final User source) {
+        this.inviteManager = inviteManager;
         this.channel = channel;
         this.source = source;
         this.timestamp = new Date().getTime();
@@ -76,14 +76,14 @@ public class Invite {
      * Join the channel that belongs to this invite.
      */
     public void accept() {
-        connection.acceptInvites(this);
+        inviteManager.acceptInvites(this);
     }
 
     /**
      * Decline this invite removing it from the invite list.
      */
     public void decline() {
-        connection.removeInvite(this);
+        inviteManager.removeInvite(this);
     }
 
 }

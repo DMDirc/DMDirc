@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.InviteManager;
 import com.dmdirc.interfaces.User;
 
 import java.util.Date;
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.verify;
 public class InviteTest {
 
     @Mock
-    private Server server;
+    private InviteManager inviteManager;
     @Mock
     private User user;
     private Invite invite;
@@ -48,7 +49,7 @@ public class InviteTest {
 
     @Before
     public void setUp() {
-        invite = new Invite(server, "#channel", user);
+        invite = new Invite(inviteManager, "#channel", user);
         ts = new Date().getTime();
     }
 
@@ -71,13 +72,13 @@ public class InviteTest {
     @Test
     public void testAccept() {
         invite.accept();
-        verify(server).acceptInvites(invite);
+        verify(inviteManager).acceptInvites(invite);
     }
 
     @Test
     public void testDecline() {
         invite.decline();
-        verify(server).removeInvite(invite);
+        verify(inviteManager).removeInvite(invite);
     }
 
 }

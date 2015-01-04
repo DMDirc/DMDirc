@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Invite;
 import com.dmdirc.Query;
 import com.dmdirc.ServerState;
 import com.dmdirc.ServerStatus;
@@ -35,7 +34,6 @@ import com.dmdirc.parser.interfaces.Parser;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -44,29 +42,6 @@ import javax.annotation.Nonnull;
  * Represents an abstract connection to a remote chat system.
  */
 public interface Connection {
-
-    /**
-     * Attempts to accept the specified invites, and join the corresponding channels.
-     *
-     * @param invites The invites to process
-     *
-     * @since 0.6.4
-     */
-    void acceptInvites(final Invite... invites);
-
-    /**
-     * Attempts to accept all active invites for this server, and join the corresponding channels.
-     *
-     * @since 0.6.4
-     */
-    void acceptInvites();
-
-    /**
-     * Adds an invite to this server, and fires the appropriate listeners.
-     *
-     * @param invite The invite to be added
-     */
-    void addInvite(final Invite invite);
 
     /**
      * Passes the arguments to all frames for this server.
@@ -145,13 +120,6 @@ public interface Connection {
      * @return This server's ignore list
      */
     IgnoreList getIgnoreList();
-
-    /**
-     * Returns the list of invites for this server.
-     *
-     * @return Invite list
-     */
-    List<Invite> getInvites();
 
     /**
      * Retrieves the name of this server's IRCd.
@@ -308,25 +276,6 @@ public interface Connection {
      * Reconnects to the server.
      */
     void reconnect();
-
-    /**
-     * Removes an invite from this server, and fires the appropriate listeners.
-     *
-     * @param invite The invite to be removed
-     */
-    void removeInvite(final Invite invite);
-
-    /**
-     * Removes all invites for the specified channel.
-     *
-     * @param channel The channel to remove invites for
-     */
-    void removeInvites(final String channel);
-
-    /**
-     * Removes all invites for all channels.
-     */
-    void removeInvites();
 
     /**
      * Saves the contents of our ignore list to the network identity.
