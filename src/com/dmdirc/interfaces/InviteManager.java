@@ -27,7 +27,7 @@ import com.dmdirc.Invite;
 import java.util.List;
 
 /**
- * Created by chris on 04/01/15.
+ * Handles invites on a {@link Connection}
  */
 public interface InviteManager {
     /**
