@@ -65,7 +65,7 @@ import java.util.Optional;
  * for query events from the parser, maintains the corresponding QueryWindow, and handles user input
  * for the query.
  */
-public class Query extends MessageTarget implements PrivateActionListener,
+public class Query extends FrameContainer implements PrivateActionListener,
         PrivateMessageListener, NickChangeListener, QuitListener,
         CompositionStateChangeListener, PrivateChat {
 
@@ -87,13 +87,13 @@ public class Query extends MessageTarget implements PrivateActionListener,
                 user.getNickname(),
                 connection.getWindowModel().getConfigManager(),
                 backBufferFactory,
+                urlBuilder,
                 new QueryCommandParser(connection.getWindowModel(), commandController,
                         connection.getWindowModel().getEventBus()),
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         connection.getWindowModel().getConfigManager(),
                         CommandType.TYPE_QUERY, CommandType.TYPE_CHAT),
                 messageSinkManager,
-                urlBuilder,
                 connection.getWindowModel().getEventBus(),
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
