@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -71,7 +72,8 @@ public class GlobalWindow extends FrameContainer {
 
     @Override
     public void sendLine(final String line) {
-        addLine("commandError", "You may only enter commands in the global window.");
+        getEventBus().publishAsync(
+                new CommandErrorEvent(this, "You may only enter commands in the global window."));
     }
 
     @Override
