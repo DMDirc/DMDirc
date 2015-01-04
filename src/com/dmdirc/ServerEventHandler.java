@@ -358,16 +358,11 @@ public class ServerEventHandler extends EventHandler implements
 
         owner.updateAwayState(currentState == AwayState.AWAY ? Optional.of(reason) : Optional.empty());
 
-        if (oldState == AwayState.UNKNOWN) {
-            // Ignore discovered self away states
-            return;
-        }
-
         if (currentState == AwayState.AWAY) {
             final ServerAwayEvent event = new ServerAwayEvent(owner, reason);
             final String format = EventUtils.postDisplayable(eventBus, event, "away");
             owner.doNotification(format, reason);
-        } else {
+        } else if (oldState != AwayState.UNKNOWN) {
             final ServerBackEvent event = new ServerBackEvent(owner);
             final String format = EventUtils.postDisplayable(eventBus, event, "back");
             owner.doNotification(format);
