@@ -33,6 +33,7 @@ import com.dmdirc.events.ServerDisconnectedEvent;
 import com.dmdirc.events.ServerInviteExpiredEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatManager;
+import com.dmdirc.interfaces.InviteManager;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -96,7 +97,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The Server class represents the client's view of a server. It maintains a list of all channels,
  * queries, etc, and handles parser callbacks pertaining to the server.
  */
-public class Server extends FrameContainer implements Connection {
+public class Server extends FrameContainer implements Connection, InviteManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
@@ -104,6 +105,8 @@ public class Server extends FrameContainer implements Connection {
 
     /** Manager of group chats. */
     private final GroupChatManagerImpl groupChatManager;
+    /** Manager of invites. */
+    private final InviteManager inviteManager = this;
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new ConcurrentSkipListMap<>();
     /** The user manager to retrieve users from. */
@@ -1108,6 +1111,11 @@ public class Server extends FrameContainer implements Connection {
     @Override
     public GroupChatManager getGroupChatManager() {
         return groupChatManager;
+    }
+
+    @Override
+    public InviteManager getInviteManager() {
+        return inviteManager;
     }
 
     /**

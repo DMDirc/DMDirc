@@ -439,4 +439,11 @@ public interface Connection {
      */
     GroupChatManager getGroupChatManager();
 
+    /**
+     * Gets the manager that handles this connection's invites.
+     *
+     * @return The invite manager for this connection.
+     */
+    InviteManager getInviteManager();
+
 }
