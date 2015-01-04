@@ -67,7 +67,7 @@ import java.util.stream.Collectors;
  * events from the parser, maintains the corresponding ChannelWindow, and handles user input for the
  * channel.
  */
-public class Channel extends MessageTarget implements GroupChat {
+public class Channel extends FrameContainer implements GroupChat {
 
     /** The parser's pChannel class. */
     private ChannelInfo channelInfo;
@@ -120,12 +120,12 @@ public class Channel extends MessageTarget implements GroupChat {
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
+                urlBuilder,
                 new ChannelCommandParser(connection.getWindowModel(), commandController, eventBus),
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,
                         CommandType.TYPE_CHAT),
                 messageSinkManager,
-                urlBuilder,
                 connection.getWindowModel().getEventBus(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier(),
