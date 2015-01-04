@@ -87,8 +87,8 @@ public class SentryLoggingErrorManager {
     void handleErrorEvent(final ProgramErrorEvent error) {
         final boolean appError = error.getError().isAppError();
         if (!isValidError(error.getError().getThrowable())
-                || appError && !isValidSource(error.getError().getTrace())
-                ||  !appError) {
+                || !isValidSource(error.getError().getTrace())
+                || !appError) {
             error.getError().setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
         } else if (sendReports) {
             executorService.submit(new ErrorReportingRunnable(sentryErrorReporter, error.getError()));
