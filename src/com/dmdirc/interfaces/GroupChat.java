@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Topic;
 
 import java.util.Collection;
@@ -117,13 +116,6 @@ public interface GroupChat extends Chat {
      * @return Users in the GroupChat
      */
     Collection<GroupChatUser> getUsers();
-
-    /**
-     * Gets the core model for the input/output window for this connection.
-     *
-     * @return A model for windows based on this connection.
-     */
-    FrameContainer getWindowModel();
 
     /**
      * Kicks the specified user, optionally with the specified message.

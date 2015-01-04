@@ -23,8 +23,8 @@
 package com.dmdirc.commandparser.commands.context;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.interfaces.Chat;
 
 import java.util.Optional;
 
@@ -36,7 +36,7 @@ import java.util.Optional;
 public class ChatCommandContext extends ServerCommandContext {
 
     /** The chat container associated with this context. */
-    private final MessageTarget chat;
+    private final Chat chat;
 
     /**
      * Creates a new chat command context.
@@ -46,7 +46,7 @@ public class ChatCommandContext extends ServerCommandContext {
      * @param chat        The chat container associated with the command
      */
     public ChatCommandContext(final FrameContainer source,
-            final CommandInfo commandInfo, final MessageTarget chat) {
+            final CommandInfo commandInfo, final Chat chat) {
         super(source, commandInfo,
                 Optional.ofNullable(source)
                         .flatMap(FrameContainer::getConnection)
@@ -59,7 +59,7 @@ public class ChatCommandContext extends ServerCommandContext {
      *
      * @return This context's associated container
      */
-    public MessageTarget getChat() {
+    public Chat getChat() {
         return chat;
     }
 

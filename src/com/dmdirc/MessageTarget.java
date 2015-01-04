@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.interfaces.Chat;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleter;
@@ -36,7 +37,7 @@ import javax.annotation.Nullable;
 /**
  * Defines common methods for objects that you can send messages to (such as channels and queries).
  */
-public abstract class MessageTarget extends FrameContainer {
+public abstract class MessageTarget extends FrameContainer implements Chat {
 
     /**
      * Creates a new MessageTarget.

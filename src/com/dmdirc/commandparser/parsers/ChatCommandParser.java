@@ -24,13 +24,13 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.Chat;
 import com.dmdirc.interfaces.CommandController;
 
 import javax.annotation.Nonnull;
@@ -45,7 +45,7 @@ public class ChatCommandParser extends ServerCommandParser {
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /** The container that owns this parser. */
-    private MessageTarget owner;
+    private Chat owner;
 
     /**
      * Creates a new chat command parser that belongs to a child of the specified server.
@@ -62,8 +62,8 @@ public class ChatCommandParser extends ServerCommandParser {
 
     @Override
     public void setOwner(final FrameContainer owner) {
-        if (this.owner == null) {
-            this.owner = (MessageTarget) owner;
+        if (this.owner == null && owner instanceof Chat) {
+            this.owner = (Chat) owner;
         }
     }
 

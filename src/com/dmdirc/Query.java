@@ -296,6 +296,11 @@ public class Query extends MessageTarget implements PrivateActionListener,
     }
 
     @Override
+    public FrameContainer getWindowModel() {
+        return this;
+    }
+
+    @Override
     public User getUser() {
         return user;
     }

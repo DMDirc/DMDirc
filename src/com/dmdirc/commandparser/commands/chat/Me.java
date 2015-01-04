@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.chat;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.MessageTarget;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -32,6 +31,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.Chat;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.util.validators.ValidationResponse;
@@ -62,7 +62,7 @@ public class Me extends Command implements ValidatingCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final MessageTarget target = ((ChatCommandContext) context).getChat();
+        final Chat target = ((ChatCommandContext) context).getChat();
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "me", "<action>");
         } else {
