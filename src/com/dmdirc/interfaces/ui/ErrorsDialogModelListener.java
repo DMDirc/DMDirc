@@ -27,15 +27,35 @@ import com.dmdirc.logger.ProgramError;
 import java.util.Optional;
 
 /**
- *
+ * Listener for events in an errors dialog model.
  */
 public interface ErrorsDialogModelListener {
 
+    /**
+     * An error has been deleted from the dialog.
+     *
+     * @param error Old error
+     */
     void errorDeleted(ProgramError error);
 
+    /**
+     * An error has been added to the model.
+     *
+     * @param error New error
+     */
     void errorAdded(final ProgramError error);
 
+    /**
+     * The selected error in the dialog has changed.
+     *
+     * @param selectedError Newly selected error, empty if the selection should be cleared
+     */
     void selectedErrorChanged(final Optional<ProgramError> selectedError);
 
+    /**
+     * An error's status has changed.
+     *
+     * @param error The error that changed
+     */
     void errorStatusChanged(final ProgramError error);
 }
