@@ -111,22 +111,7 @@ findbugs {
     ignoreFailures = true
 }
 
-task getCredentials << {
-    def target = file('nexus-teamcity.gradle')
-    if (!target.exists()) {
-        new URL('http://www.dmdirc.com/private/nexus-teamcity.gradle').withInputStream{
-            i -> target.withOutputStream { it << i }
-        }
-    }
-
-    apply from: 'nexus-teamcity.gradle'
-    project.publishing.repositories[0].credentials {
-        username "$nexusUser"
-        password "$nexusPass"
-    }
-}
-
-task publishSnapshot(dependsOn: ['getCredentials', 'publishMavenJavaPublicationToSnapshotsRepository']) << {
+task publishSnapshot(dependsOn: 'publishMavenJavaPublicationToSnapshotsRepository') << {
 }
 
 task createVersionConfig {
