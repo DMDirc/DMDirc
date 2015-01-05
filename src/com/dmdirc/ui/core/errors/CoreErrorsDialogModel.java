@@ -57,6 +57,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
         this.listenerList = new ListenerList();
         this.errorManager = errorManager;
         this.eventBus = eventBus;
+        selectedError = Optional.empty();
     }
 
     @Override
@@ -104,6 +105,11 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     @Override
     public boolean isDeleteAllAllowed() {
         return !errorManager.getErrors().isEmpty();
+    }
+
+    @Override
+    public boolean isSendAllowed() {
+        return selectedError.isPresent();
     }
 
     @Override

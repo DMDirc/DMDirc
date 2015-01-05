@@ -74,7 +74,7 @@ public interface ErrorsDialogModel {
     void sendSelectedError();
 
     /**
-     * Are we allowed to delete the current error?
+     * Are we allowed to delete the selected error?
      *
      * @return true iif the error can be deleted
      */
@@ -86,6 +86,13 @@ public interface ErrorsDialogModel {
      * @return true iif all errors can be deleted
      */
     boolean isDeleteAllAllowed();
+
+    /**
+     * Are we allowed to send the selected error?
+     *
+     * @return true iif the error can be sent
+     */
+    boolean isSendAllowed();
 
     /**
      * Adds a listener to this model.
