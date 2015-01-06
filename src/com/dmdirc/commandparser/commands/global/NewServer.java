@@ -34,7 +34,7 @@ import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionFactory;
-import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
@@ -56,8 +56,8 @@ public class NewServer extends Command implements IntelligentCommand {
             CommandType.TYPE_GLOBAL);
     /** The factory to use to construct servers. */
     private final ConnectionFactory connectionFactory;
-    /** Plugin manager to query for available services. */
-    private final PluginManager pluginManager;
+    /** Service manager to query for available services. */
+    private final ServiceManager serviceManager;
     /** Manager to use to find profiles. */
     private final ProfileManager profileManager;
     /** The parser to use for user input. */
@@ -65,23 +65,17 @@ public class NewServer extends Command implements IntelligentCommand {
 
     /**
      * Creates a new newserver command which will use the specified factory to construct servers.
-     *
-     * @param controller         The controller to use for command information.
-     * @param connectionFactory      The factory to use to construct servers.
-     * @param pluginManager      The plugin manager to use to query available services.
-     * @param profileManager     Manager to use to find profiles.
-     * @param uriParser          The parser to use for user input.
      */
     @Inject
     public NewServer(
             final CommandController controller,
             final ConnectionFactory connectionFactory,
-            final PluginManager pluginManager,
+            final ServiceManager serviceManager,
             final ProfileManager profileManager,
             final URIParser uriParser) {
         super(controller);
         this.connectionFactory = connectionFactory;
-        this.pluginManager = pluginManager;
+        this.serviceManager = serviceManager;
         this.profileManager = profileManager;
         this.uriParser = uriParser;
     }
@@ -111,7 +105,7 @@ public class NewServer extends Command implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets();
 
         if (arg == 0) {
-            res.addAll(pluginManager.getServicesByType("parser").stream()
+            res.addAll(serviceManager.getServicesByType("parser").stream()
                     .map(parserType -> parserType.getName() + "://").collect(Collectors.toList()));
         }
         res.excludeAll();

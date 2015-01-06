@@ -56,7 +56,7 @@ import net.engio.mbassy.listener.Handler;
 /**
  * Searches for and manages plugins and services.
  */
-public class PluginManager implements ServiceManager {
+public class PluginManager {
 
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
     private final Map<String, PluginInfo> knownPlugins = new HashMap<>();
@@ -70,14 +70,14 @@ public class PluginManager implements ServiceManager {
     private final UpdateManager updateManager;
     /** A provider of initialisers for plugin injectors. */
     private final Provider<PluginInjectorInitialiser> initialiserProvider;
-    /** Map of services. */
-    private final Map<String, Map<String, Service>> services = new HashMap<>();
     /** Global ClassLoader used by plugins from this manager. */
     private final GlobalClassLoader globalClassLoader;
     /** The graph to pass to plugins for DI purposes. */
     private final ObjectGraph objectGraph;
     /** Event bus to pass to plugin info for plugin loaded events. */
     private final DMDircMBassador eventBus;
+    /** The service manager to use. */
+    private final ServiceManager serviceManager;
 
     /**
      * Creates a new instance of PluginManager.
@@ -91,12 +91,14 @@ public class PluginManager implements ServiceManager {
      */
     public PluginManager(
             final DMDircMBassador eventBus,
+            final ServiceManager serviceManager,
             final IdentityController identityController,
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
             final ObjectGraph objectGraph,
             final String directory) {
         this.identityController = identityController;
+        this.serviceManager = serviceManager;
         this.updateManager = updateManager;
         this.initialiserProvider = initialiserProvider;
         this.directory = directory;
@@ -114,104 +116,6 @@ public class PluginManager implements ServiceManager {
      */
     public GlobalClassLoader getGlobalClassLoader() {
         return globalClassLoader;
-    }
-
-    @Override
-    public Service getService(final String type, final String name) {
-        return getService(type, name, false);
-    }
-
-    @Override
-    public Service getService(final String type, final String name, final boolean create) {
-        // Find the type first
-        if (services.containsKey(type)) {
-            final Map<String, Service> map = services.get(type);
-            // Now the name
-            if (map.containsKey(name)) {
-                return map.get(name);
-            } else if (create) {
-                final Service service = new Service(type, name);
-                map.put(name, service);
-                return service;
-            }
-        } else if (create) {
-            final Map<String, Service> map = new HashMap<>();
-            final Service service = new Service(type, name);
-            map.put(name, service);
-            services.put(type, map);
-            return service;
-        }
-
-        return null;
-    }
-
-    @Override
-    public ServiceProvider getServiceProvider(final String type, final String name) throws
-            NoSuchProviderException {
-        final Service service = getService(type, name);
-        if (service != null) {
-            ServiceProvider provider = service.getActiveProvider();
-            if (provider != null) {
-                return provider;
-            } else {
-                // Try to activate the service then try again.
-                service.activate();
-                provider = service.getActiveProvider();
-                if (provider != null) {
-                    return provider;
-                }
-            }
-        }
-
-        throw new NoSuchProviderException("No provider found for: " + type + "->" + name);
-    }
-
-    @Override
-    public ServiceProvider getServiceProvider(final String type, final List<String> names,
-            final boolean fallback) throws NoSuchProviderException {
-        for (final String name : names) {
-            final ServiceProvider provider = getServiceProvider(type, name);
-            if (provider != null) {
-                return provider;
-            }
-        }
-
-        if (fallback) {
-            final List<Service> servicesType = getServicesByType(type);
-            if (!servicesType.isEmpty()) {
-                final Service service = servicesType.get(0);
-                return getServiceProvider(type, service.getName());
-            }
-        }
-
-        throw new NoSuchProviderException("No provider found for " + type + "from the given list");
-    }
-
-    @Override
-    public ExportedService getExportedService(final String name) {
-        return getServiceProvider("export", name).getExportedService(name);
-    }
-
-    @Override
-    public List<Service> getServicesByType(final String type) {
-        // Find the type first
-        if (services.containsKey(type)) {
-            final Map<String, Service> map = services.get(type);
-            return new ArrayList<>(map.values());
-        }
-
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<Service> getAllServices() {
-        // Find the type first
-        final List<Service> allServices = new ArrayList<>();
-        for (Map<String, Service> map : services.values()) {
-            allServices.addAll(map.values());
-        }
-
-        return allServices;
     }
 
     /**
@@ -255,7 +159,7 @@ public class PluginManager implements ServiceManager {
                             + "!/META-INF/plugin.config"),
                     Paths.get(directory, filename));
             metadata.load();
-            final PluginInfo pluginInfo = new PluginInfo(this, directory, metadata,
+            final PluginInfo pluginInfo = new PluginInfo(this, serviceManager, directory, metadata,
                     initialiserProvider, eventBus,
                     identityController, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());

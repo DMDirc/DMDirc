@@ -89,6 +89,7 @@ public class Main {
     private final Set<CommandDetails> commands;
     /** Mode alias reporter to use. */
     private final ModeAliasReporter reporter;
+    private final ServiceManager serviceManager;
 
     /**
      * Creates a new instance of {@link Main}.
@@ -106,7 +107,8 @@ public class Main {
             final Set<Migrator> migrators,
             final DMDircMBassador eventBus,
             final Set<CommandDetails> commands,
-            final ModeAliasReporter reporter) {
+            final ModeAliasReporter reporter,
+            final ServiceManager serviceManager) {
         this.identityManager = identityManager;
         this.connectionManager = connectionManager;
         this.commandLineParser = commandLineParser;
@@ -119,6 +121,7 @@ public class Main {
         this.eventBus = eventBus;
         this.commands = commands;
         this.reporter = reporter;
+        this.serviceManager = serviceManager;
     }
 
     /**
@@ -161,7 +164,7 @@ public class Main {
         migrators.stream().filter(Migrator::needsMigration).forEach(Migrator::migrate);
         commands.forEach(c -> commandManager.registerCommand(c.getCommand(), c.getInfo()));
 
-        loadUIs(pluginManager);
+        loadUIs(serviceManager);
 
         doFirstRun();
 

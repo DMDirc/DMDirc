@@ -34,8 +34,11 @@ import javax.inject.Singleton;
 @Singleton
 public class CorePluginHelper {
 
+    private final ServiceManager serviceManager;
+
     @Inject
-    public CorePluginHelper() {
+    public CorePluginHelper(final ServiceManager serviceManager) {
+        this.serviceManager = serviceManager;
     }
 
     /**
@@ -51,7 +54,7 @@ public class CorePluginHelper {
             final CorePluginExtractor corePluginExtractor,
             final PluginManager pm,
             final String serviceType) {
-        if (pm.getServicesByType(serviceType).isEmpty()) {
+        if (serviceManager.getServicesByType(serviceType).isEmpty()) {
             corePluginExtractor.extractCorePlugins(serviceType + "_");
             pm.refreshPlugins();
         }

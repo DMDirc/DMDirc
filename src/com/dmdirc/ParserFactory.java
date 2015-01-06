@@ -31,8 +31,8 @@ import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.plugins.NoSuchProviderException;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.plugins.ServiceProvider;
 
 import java.net.URI;
@@ -57,22 +57,19 @@ public class ParserFactory {
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server";
 
-    /** PluginManager used by this ParserFactory */
-    private final PluginManager pluginManager;
+    /** ServiceManager used by this ParserFactory */
+    private final ServiceManager serviceManager;
     /** The event bus to post events to. */
     private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link ParserFactory}.
-     *
-     * @param pluginManager The plugin manager used by this factory.
-     * @param eventBus      The event bus to post events to.
      */
     @Inject
     public ParserFactory(
-            final PluginManager pluginManager,
+            final ServiceManager serviceManager,
             final DMDircMBassador eventBus) {
-        this.pluginManager = pluginManager;
+        this.serviceManager = serviceManager;
         this.eventBus = eventBus;
     }
 
@@ -208,7 +205,7 @@ public class ParserFactory {
         final String scheme = address.getScheme() == null ? "irc" : address.getScheme();
 
         try {
-            final Service service = pluginManager.getService("parser", scheme);
+            final Service service = serviceManager.getService("parser", scheme);
 
             if (service != null && !service.getProviders().isEmpty()) {
                 final ServiceProvider provider = service.getProviders().get(0);

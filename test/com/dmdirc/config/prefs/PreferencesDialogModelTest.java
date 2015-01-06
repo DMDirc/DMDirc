@@ -26,8 +26,8 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.ClientPrefsOpenedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ import static org.mockito.Mockito.when;
 public class PreferencesDialogModelTest {
 
     @Mock private DMDircMBassador eventBus;
-    @Mock private PluginManager pluginManager;
+    @Mock private ServiceManager serviceManager;
 
     @Before
     public void setup() {
@@ -60,7 +60,7 @@ public class PreferencesDialogModelTest {
         when(tabcompleter.getName()).thenReturn("tabber");
         services.add(tabcompleter);
 
-        when(pluginManager.getServicesByType("tabcompletion")).thenReturn(services);
+        when(serviceManager.getServicesByType("tabcompletion")).thenReturn(services);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class PreferencesDialogModelTest {
         final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
-                null, null, cm, null, pluginManager, eventBus);
+                null, null, cm, null, serviceManager, eventBus);
         assertNotNull(pm.getCategory("General"));
         assertNotNull(pm.getCategory("Connection"));
         assertNotNull(pm.getCategory("Messages"));
@@ -85,7 +85,7 @@ public class PreferencesDialogModelTest {
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesCategory category = mock(PreferencesCategory.class);
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
-                null, null, cm, null, pluginManager, eventBus);
+                null, null, cm, null, serviceManager, eventBus);
         pm.addCategory(category);
         pm.dismiss();
 
@@ -100,7 +100,7 @@ public class PreferencesDialogModelTest {
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
-                null, null, cm, null, pluginManager, eventBus);
+                null, null, cm, null, serviceManager, eventBus);
         pm.addCategory(category);
         assertFalse(pm.save());
 
@@ -115,7 +115,7 @@ public class PreferencesDialogModelTest {
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
-                null, null, cm, null, pluginManager, eventBus);
+                null, null, cm, null, serviceManager, eventBus);
         pm.addCategory(category);
         assertTrue(pm.save());
 
@@ -128,7 +128,7 @@ public class PreferencesDialogModelTest {
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
-                null, null, cm, null, pluginManager, eventBus);
+                null, null, cm, null, serviceManager, eventBus);
         assertNull(pm.getCategory("unittest123"));
     }
 
@@ -138,7 +138,7 @@ public class PreferencesDialogModelTest {
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
-                null, null, cm, null, pluginManager, eventBus);
+                null, null, cm, null, serviceManager, eventBus);
         assertNotNull(pm.getCategories());
         assertFalse(pm.getCategories().isEmpty());
 
@@ -153,7 +153,7 @@ public class PreferencesDialogModelTest {
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
-                null, null, cm, null, pluginManager, eventBus);
+                null, null, cm, null, serviceManager, eventBus);
         final PreferencesInterface tpi = mock(PreferencesInterface.class);
 
         pm.registerSaveListener(tpi);
@@ -166,7 +166,7 @@ public class PreferencesDialogModelTest {
         final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
-        new PreferencesDialogModel(null, null, null, null, cm, null, pluginManager, eventBus);
+        new PreferencesDialogModel(null, null, null, null, cm, null, serviceManager, eventBus);
 
         verify(eventBus).publish(isA(ClientPrefsOpenedEvent.class));
     }
@@ -176,7 +176,7 @@ public class PreferencesDialogModelTest {
         final AggregateConfigProvider cm = mock(AggregateConfigProvider.class);
         when(cm.getOption("domain", "option")).thenReturn("fallback");
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
-                null, null, cm, null, pluginManager, eventBus);
+                null, null, cm, null, serviceManager, eventBus);
         pm.close();
 
         verify(eventBus).publishAsync(isA(ClientPrefsClosedEvent.class));
@@ -188,7 +188,7 @@ public class PreferencesDialogModelTest {
         when(cm.getOption("domain", "option")).thenReturn("fallback");
 
         final PreferencesDialogModel pm = new PreferencesDialogModel(null, null,
-                null, null, cm, null, pluginManager, eventBus);
+                null, null, cm, null, serviceManager, eventBus);
         final PreferencesCategory category = mock(PreferencesCategory.class);
         final PreferencesInterface tpi = mock(PreferencesInterface.class);
         when(category.hasObject()).thenReturn(true);
