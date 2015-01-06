@@ -34,6 +34,8 @@ import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
+import com.google.common.collect.Lists;
+
 import java.util.Collections;
 import java.util.Optional;
 
@@ -43,8 +45,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import autovalue.shaded.com.google.common.common.collect.Lists;
 
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
