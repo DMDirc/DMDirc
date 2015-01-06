@@ -72,6 +72,8 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private final PluginMetaData metaData;
     /** The manager to use to look up other plugins. */
     private final PluginManager pluginManager;
+    /** The manager to register services with. */
+    private final ServiceManager serviceManager;
     /** The initialiser to use for the injector. */
     private final Provider<PluginInjectorInitialiser> injectorInitialiser;
     /** The object graph to pass to plugins for DI purposes. */
@@ -118,6 +120,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     public PluginInfo(
             final PluginManager pluginManager,
+            final ServiceManager serviceManager,
             final String pluginDirectory,
             final PluginMetaData metadata,
             final Provider<PluginInjectorInitialiser> injectorInitialiser,
@@ -125,6 +128,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             final IdentityController identityController,
             final ObjectGraph objectGraph) throws PluginException {
         this.pluginManager = pluginManager;
+        this.serviceManager = serviceManager;
         this.injectorInitialiser = injectorInitialiser;
         this.objectGraph = objectGraph;
         this.eventBus = eventBus;
@@ -375,7 +379,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String type = bits.length > 1 ? bits[1] : "misc";
 
                 if (!"any".equalsIgnoreCase(name) && !"export".equalsIgnoreCase(type)) {
-                    final Service service = pluginManager.getService(type, name, true);
+                    final Service service = serviceManager.getService(type, name, true);
                     synchronized (provides) {
                         service.addProvider(this);
                         provides.add(service);
@@ -507,7 +511,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 Service best = null;
                 boolean found = false;
 
-                for (Service service : pluginManager.getServicesByType(parts[1])) {
+                for (Service service : serviceManager.getServicesByType(parts[1])) {
                     if (service.isActive()) {
                         found = true;
                         break;
@@ -524,7 +528,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     return false;
                 }
             } else {
-                final Service service = pluginManager.getService(parts[1], parts[0]);
+                final Service service = serviceManager.getService(parts[1], parts[0]);
 
                 if (service == null || !service.activate()) {
                     return false;
@@ -933,7 +937,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 final String serviceName = bits.length > 4 ? bits[4] : bits[0];
 
                 // Add a provides for this
-                final Service service = pluginManager.getService("export", serviceName, true);
+                final Service service = serviceManager.getService("export", serviceName, true);
                 synchronized (provides) {
                     service.addProvider(this);
                     provides.add(service);

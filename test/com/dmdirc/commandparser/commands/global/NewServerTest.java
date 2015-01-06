@@ -29,7 +29,7 @@ import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionFactory;
-import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.util.URIParser;
 
 import java.net.URI;
@@ -56,7 +56,7 @@ public class NewServerTest {
     @Mock private ProfileManager profileManager;
     @Mock private Profile identity;
     @Mock private FrameContainer container;
-    @Mock private PluginManager pluginManager;
+    @Mock private ServiceManager serviceManager;
     @Mock private ConnectionFactory factory;
     @Mock private Connection connection;
     private NewServer command;
@@ -66,7 +66,7 @@ public class NewServerTest {
         when(factory.createServer(any(URI.class), any(Profile.class))).thenReturn(connection);
         when(profileManager.getProfiles()).thenReturn(
                 Collections.singletonList(identity));
-        command = new NewServer(controller, factory, pluginManager, profileManager, new URIParser());
+        command = new NewServer(controller, factory, serviceManager, profileManager, new URIParser());
     }
 
     @Test

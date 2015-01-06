@@ -52,10 +52,11 @@ public class PluginModule {
             final UpdateManager updateManager,
             final Provider<PluginInjectorInitialiser> initialiserProvider,
             final ObjectGraph objectGraph,
+            final ServiceManager serviceManager,
             final CorePluginHelper pluginHelper,
             @Directory(DirectoryType.PLUGINS) final String directory) {
-        final PluginManager manager = new PluginManager(eventBus, identityController,
-                updateManager, initialiserProvider, objectGraph, directory);
+        final PluginManager manager = new PluginManager(eventBus, serviceManager,
+                identityController, updateManager, initialiserProvider, objectGraph, directory);
         final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory, eventBus);
         pluginHelper.checkBundledPlugins(extractor, manager,
                 identityController.getGlobalConfiguration());
@@ -73,8 +74,8 @@ public class PluginModule {
     }
 
     @Provides
-    public ServiceManager getServiceManager(final PluginManager pluginManager) {
-        return pluginManager;
+    public ServiceManager getServiceManager(final ServiceManagerImpl serviceManager) {
+        return serviceManager;
     }
 
     @Provides

@@ -27,8 +27,8 @@ import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.ClientPrefsOpenedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
+import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.OptionalValidator;
@@ -62,22 +62,13 @@ public class PreferencesDialogModel {
     private final AggregateConfigProvider configManager;
     /** Identity to write settings to. */
     private final ConfigProvider identity;
-    /** Plugin manager. */
-    private final PluginManager pluginManager;
+    /** Service manager. */
+    private final ServiceManager serviceManager;
     /** Event bus to post events on. */
     private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of PreferencesDialogModel.
-     *
-     * @param pluginPanel     UI specific plugin panel
-     * @param themePanel      UI specific theme panel
-     * @param updatesPanel    UI specific updates panel
-     * @param urlHandlerPanel UI specific URL panel
-     * @param configManager   Config manager to read settings from
-     * @param identity        Identity to write settings to
-     * @param pluginManager   Plugin manager to retrieve plugins from
-     * @param eventBus        Event bus to post events on
      */
     @Inject
     public PreferencesDialogModel(final PreferencesInterface pluginPanel,
@@ -86,7 +77,7 @@ public class PreferencesDialogModel {
             final PreferencesInterface urlHandlerPanel,
             final AggregateConfigProvider configManager,
             final ConfigProvider identity,
-            final PluginManager pluginManager,
+            final ServiceManager serviceManager,
             final DMDircMBassador eventBus) {
         this.pluginPanel = pluginPanel;
         this.themePanel = themePanel;
@@ -94,7 +85,7 @@ public class PreferencesDialogModel {
         this.urlHandlerPanel = urlHandlerPanel;
         this.configManager = configManager;
         this.identity = identity;
-        this.pluginManager = pluginManager;
+        this.serviceManager = serviceManager;
         this.eventBus = eventBus;
 
         addDefaultCategories();
@@ -235,7 +226,7 @@ public class PreferencesDialogModel {
         final PreferencesCategory category = new PreferencesCategory("Tab Completion", "");
         final Map<String, String> taboptions = new HashMap<>();
 
-        for (Service service : pluginManager.getServicesByType("tabcompletion")) {
+        for (Service service : serviceManager.getServicesByType("tabcompletion")) {
             taboptions.put(service.getName(), service.getName());
         }
 
