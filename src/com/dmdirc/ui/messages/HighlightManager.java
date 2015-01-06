@@ -102,9 +102,9 @@ public class HighlightManager {
         patterns.clear();
 
         event.getConnection().getProfile().getHighlights()
-                .parallelStream()
+                .stream()
                 .map(this::compile)
-                .map(patterns::add);
+                .forEach(patterns::add);
 
         event.getConnection().getLocalUser()
                 .map(User::getNickname)
