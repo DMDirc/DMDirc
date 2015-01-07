@@ -150,9 +150,9 @@ public class ErrorManager {
                         .getThrowable(),
                 appError.getDetails(), true, isValidError(appError.getThrowable()));
         if (appError.getLevel() == ErrorLevel.FATAL) {
-            eventBus.publishAsync(new FatalProgramErrorEvent(error));
+            eventBus.publish(new FatalProgramErrorEvent(error));
         } else {
-            eventBus.publishAsync(new NonFatalProgramErrorEvent(error));
+            eventBus.publish(new NonFatalProgramErrorEvent(error));
         }
     }
 
@@ -162,9 +162,9 @@ public class ErrorManager {
                 userError.getThrowable(), userError.getDetails(), false,
                 isValidError(userError.getThrowable()));
         if (userError.getLevel() == ErrorLevel.FATAL) {
-            eventBus.publishAsync(new FatalProgramErrorEvent(error));
+            eventBus.publish(new FatalProgramErrorEvent(error));
         } else {
-            eventBus.publishAsync(new NonFatalProgramErrorEvent(error));
+            eventBus.publish(new NonFatalProgramErrorEvent(error));
         }
     }
 
@@ -299,7 +299,7 @@ public class ErrorManager {
             errors.remove(error);
         }
 
-        eventBus.publishAsync(new ProgramErrorDeletedEvent(error));
+        eventBus.publish(new ProgramErrorDeletedEvent(error));
         fireErrorDeleted(error);
     }
 
@@ -312,7 +312,7 @@ public class ErrorManager {
         synchronized (errors) {
             errors.forEach(e -> {
                 fireErrorDeleted(e);
-                eventBus.publishAsync(new ProgramErrorDeletedEvent(e));
+                eventBus.publish(new ProgramErrorDeletedEvent(e));
             });
             errors.clear();
         }
