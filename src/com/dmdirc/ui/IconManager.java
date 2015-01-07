@@ -36,6 +36,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -64,6 +65,7 @@ public class IconManager implements ConfigChangeListener {
      * @param configManager Config manager to retrieve settings from
      * @param urlBuilder    URL builder to use for icons.
      */
+    @Inject
     public IconManager(
             @GlobalConfig final AggregateConfigProvider configManager,
             final URLBuilder urlBuilder) {
