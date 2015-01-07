@@ -36,13 +36,17 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Singleton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+
+import static com.dmdirc.ClientModule.GlobalConfig;
 
 /**
  * The icon manager provides a standard way to access icons for use in DMDirc. It allows the user to
  * override the default actions using config settings under the icons domain.
  */
+@Singleton
 public class IconManager implements ConfigChangeListener {
 
     /** A map of existing icons. */
@@ -61,7 +65,7 @@ public class IconManager implements ConfigChangeListener {
      * @param urlBuilder    URL builder to use for icons.
      */
     public IconManager(
-            final AggregateConfigProvider configManager,
+            @GlobalConfig final AggregateConfigProvider configManager,
             final URLBuilder urlBuilder) {
         this.configManager = configManager;
         this.urlBuilder = urlBuilder;
