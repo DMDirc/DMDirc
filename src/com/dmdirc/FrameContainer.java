@@ -42,7 +42,6 @@ import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.ChildEventBusManager;
-import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.ListenerList;
 
 import java.util.ArrayList;
@@ -125,7 +124,6 @@ public abstract class FrameContainer {
             final String title,
             final AggregateConfigProvider config,
             final BackBufferFactory backBufferFactory,
-            final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
         this.parent = Optional.ofNullable(parent);
@@ -159,7 +157,6 @@ public abstract class FrameContainer {
             final String title,
             final AggregateConfigProvider config,
             final BackBufferFactory backBufferFactory,
-            final URLBuilder urlBuilder,
             final CommandParser commandParser,
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,

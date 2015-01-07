@@ -57,7 +57,6 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.HighlightManager;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.URLBuilder;
 
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
@@ -182,7 +181,6 @@ public class Server extends FrameContainer implements Connection {
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
             final QueryFactory queryFactory,
-            final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             final ConfigProvider userSettings,
@@ -197,7 +195,6 @@ public class Server extends FrameContainer implements Connection {
                 getHost(uri),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                urlBuilder,
                 commandParser,
                 tabCompleterFactory.getTabCompleter(configMigrator.getConfigProvider(),
                         CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL),

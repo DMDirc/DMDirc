@@ -37,9 +37,8 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-import com.dmdirc.util.URLBuilder;
+import com.dmdirc.ui.messages.BackBufferFactory;
 
 import java.util.Optional;
 
@@ -58,8 +57,6 @@ public class OpenWindow extends Command implements IntelligentCommand {
             CommandType.TYPE_GLOBAL);
     /** Window management. */
     private final WindowManager windowManager;
-    /** The URL builder to use when finding icons. */
-    private final URLBuilder urlBuilder;
     /** The bus to dispatch events on. */
     private final DMDircMBassador eventBus;
     /** The config provider to retrieve settings from. */
@@ -74,14 +71,12 @@ public class OpenWindow extends Command implements IntelligentCommand {
     public OpenWindow(
             final CommandController controller,
             final WindowManager windowManager,
-            final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             @GlobalConfig final AggregateConfigProvider configProvider,
             final BackBufferFactory backBufferFactory) {
         super(controller);
 
         this.windowManager = windowManager;
-        this.urlBuilder = urlBuilder;
         this.eventBus = eventBus;
         this.configProvider = configProvider;
         this.backBufferFactory = backBufferFactory;
@@ -127,11 +122,11 @@ public class OpenWindow extends Command implements IntelligentCommand {
                 final CustomWindow newWindow;
                 if (parent == null) {
                     newWindow = new CustomWindow(args.getArguments()[start], title,
-                            configProvider, urlBuilder, eventBus, backBufferFactory);
+                            configProvider, eventBus, backBufferFactory);
                     windowManager.addWindow(newWindow);
                 } else {
                     newWindow = new CustomWindow(args.getArguments()[start], title, parent,
-                            urlBuilder, backBufferFactory);
+                            backBufferFactory);
                     windowManager.addWindow(parent, newWindow);
                 }
             } else {

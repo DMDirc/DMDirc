@@ -27,10 +27,9 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.URLBuilder;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -44,26 +43,23 @@ public class QueryFactory {
     private final TabCompleterFactory tabCompleterFactory;
     private final CommandController commandController;
     private final MessageSinkManager messageSinkManager;
-    private final URLBuilder urlBuilder;
     private final BackBufferFactory backBufferFactory;
     private final WindowManager windowManager;
 
     @Inject
     public QueryFactory(final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController, final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final BackBufferFactory backBufferFactory,
-            final WindowManager windowManager) {
+            final BackBufferFactory backBufferFactory, final WindowManager windowManager) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;
         this.messageSinkManager = messageSinkManager;
-        this.urlBuilder = urlBuilder;
         this.backBufferFactory = backBufferFactory;
         this.windowManager = windowManager;
     }
 
     public Query getQuery(final Connection connection, final User user) {
         final Query query = new Query(connection, user, tabCompleterFactory, commandController,
-                messageSinkManager, urlBuilder, backBufferFactory);
+                messageSinkManager, backBufferFactory);
         windowManager.addWindow(connection.getWindowModel(), query);
         connection.getWindowModel().getEventBus().publish(new QueryOpenedEvent(query));
         return query;

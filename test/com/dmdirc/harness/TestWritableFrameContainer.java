@@ -29,10 +29,9 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.URLBuilder;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -46,9 +45,9 @@ public class TestWritableFrameContainer extends FrameContainer {
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final DMDircMBassador eventBus,
+            final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory) {
-        super(null, "raw", "Raw", "(Raw)", cm, backBufferFactory, urlBuilder,
+        super(null, "raw", "Raw", "(Raw)", cm, backBufferFactory,
                 new GlobalCommandParser(cm, commandManager, eventBus),
                 new TabCompleter(mock(CommandController.class), cm),
                 messageSinkManager,
