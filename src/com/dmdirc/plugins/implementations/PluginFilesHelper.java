@@ -23,6 +23,7 @@
 package com.dmdirc.plugins.implementations;
 
 import com.dmdirc.plugins.PluginInfo;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
 
 import java.io.File;
@@ -41,6 +42,8 @@ public class PluginFilesHelper {
 
     /** This plugins meta data object. */
     private final PluginMetaData metaData;
+    /** Plugin manager to use to get directory. */
+    private final PluginManager pluginManager;
     /** This plugins information object. */
     private final PluginInfo pluginInfo;
     /** This plugins files directory. */
@@ -49,9 +52,11 @@ public class PluginFilesHelper {
     /**
      * Creates a new instance of this helper
      *
+     * @param pluginManager Plugin manager to use to get directory
      * @param pluginInfo This plugin's information object
      */
-    public PluginFilesHelper(final PluginInfo pluginInfo) {
+    public PluginFilesHelper(final PluginManager pluginManager, final PluginInfo pluginInfo) {
+        this.pluginManager = pluginManager;
         this.pluginInfo = pluginInfo;
         this.metaData = pluginInfo.getMetaData();
         filesDir = initFilesDir();
@@ -70,7 +75,7 @@ public class PluginFilesHelper {
     private File initFilesDir() {
         if (filesDir == null) {
             final String fs = System.getProperty("file.separator");
-            final String dir = metaData.getManager().getFilesDirectory();
+            final String dir = pluginManager.getFilesDirectory();
             filesDir = new File(dir + metaData.getName() + fs);
             if (!filesDir.exists()) {
                 filesDir.mkdirs();

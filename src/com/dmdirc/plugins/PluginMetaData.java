@@ -358,16 +358,6 @@ public class PluginMetaData {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters">
-    /**
-     * What plugin manager owns this metadata?
-     *
-     * @return The pluginmanager that created this metadata.
-     * @deprecated Callers should obtain a reference to the PluginManager independently.
-     */
-    @Deprecated
-    public PluginManager getManager() {
-        return manager;
-    }
 
     /**
      * Retrieves the URL to the plugin that this metadata corresponds to.
