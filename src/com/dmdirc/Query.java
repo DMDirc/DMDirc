@@ -52,7 +52,6 @@ import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.EventUtils;
-import com.dmdirc.util.URLBuilder;
 
 import java.awt.Toolkit;
 import java.util.Arrays;
@@ -80,14 +79,12 @@ public class Query extends FrameContainer implements PrivateActionListener,
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder,
             final BackBufferFactory backBufferFactory) {
         super(connection.getWindowModel(), "query",
                 user.getNickname(),
                 user.getNickname(),
                 connection.getWindowModel().getConfigManager(),
                 backBufferFactory,
-                urlBuilder,
                 new QueryCommandParser(connection.getWindowModel(), commandController,
                         connection.getWindowModel().getEventBus()),
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),

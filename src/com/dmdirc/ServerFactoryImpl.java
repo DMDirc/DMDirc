@@ -30,7 +30,6 @@ import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.URLBuilder;
 
 import java.net.URI;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,7 +49,6 @@ public class ServerFactoryImpl {
     private final IdentityFactory identityFactory;
     private final MessageSinkManager messageSinkManager;
     private final Provider<QueryFactory> queryFactory;
-    private final URLBuilder urlBuilder;
     private final DMDircMBassador eventBus;
     private final MessageEncoderFactory messageEncoderFactory;
     private final ConfigProvider userSettings;
@@ -65,7 +63,6 @@ public class ServerFactoryImpl {
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
             final Provider<QueryFactory> queryFactory,
-            final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             @ClientModule.UserConfig final ConfigProvider userSettings,
@@ -77,7 +74,6 @@ public class ServerFactoryImpl {
         this.identityFactory = identityFactory;
         this.messageSinkManager = messageSinkManager;
         this.queryFactory = queryFactory;
-        this.urlBuilder = urlBuilder;
         this.eventBus = eventBus;
         this.messageEncoderFactory = messageEncoderFactory;
         this.userSettings = userSettings;
@@ -94,8 +90,8 @@ public class ServerFactoryImpl {
             final Profile profile) {
         return new Server(configMigrator, commandParser, parserFactory,
                 tabCompleterFactory, identityFactory, messageSinkManager,
-                queryFactory.get(), urlBuilder, eventBus,
-                messageEncoderFactory, userSettings, groupChatManagerFactory, executorService,
-                uri, profile, backBufferFactory, userManager);
+                queryFactory.get(), eventBus, messageEncoderFactory, userSettings,
+                groupChatManagerFactory, executorService, uri, profile, backBufferFactory,
+                userManager);
     }
 }

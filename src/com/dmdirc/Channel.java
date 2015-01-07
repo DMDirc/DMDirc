@@ -49,7 +49,6 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.collections.RollingList;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.colours.ColourUtils;
@@ -112,7 +111,6 @@ public class Channel extends FrameContainer implements GroupChat {
             final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager) {
@@ -120,7 +118,6 @@ public class Channel extends FrameContainer implements GroupChat {
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                urlBuilder,
                 new ChannelCommandParser(connection.getWindowModel(), commandController, eventBus),
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,

@@ -26,7 +26,6 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.util.URLBuilder;
 
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -42,8 +41,6 @@ public class CustomWindowMessageSink implements MessageSink {
     private static final Pattern PATTERN = Pattern.compile("window:(.*)");
     /** Window management. */
     private final WindowManager windowManager;
-    /** The URL builder to use when finding icons. */
-    private final URLBuilder urlBuilder;
     /** Back buffer Factory. */
     private final BackBufferFactory backBufferFactory;
 
@@ -53,10 +50,8 @@ public class CustomWindowMessageSink implements MessageSink {
     @Inject
     public CustomWindowMessageSink(
             final WindowManager windowManager,
-            final URLBuilder urlBuilder,
             final BackBufferFactory backBufferFactory) {
         this.windowManager = windowManager;
-        this.urlBuilder = urlBuilder;
         this.backBufferFactory = backBufferFactory;
     }
 
@@ -77,7 +72,7 @@ public class CustomWindowMessageSink implements MessageSink {
 
         if (targetWindow == null) {
             targetWindow = new CustomWindow(patternMatches[0], patternMatches[0],
-                    connectionContainer, urlBuilder, backBufferFactory);
+                    connectionContainer, backBufferFactory);
             windowManager.addWindow(connectionContainer, targetWindow);
         }
 

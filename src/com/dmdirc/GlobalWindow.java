@@ -30,11 +30,10 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.URLBuilder;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -55,9 +54,9 @@ public class GlobalWindow extends FrameContainer {
     @Inject
     public GlobalWindow(@GlobalConfig final AggregateConfigProvider config,
             final GlobalCommandParser parser, final TabCompleterFactory tabCompleterFactory,
-            final MessageSinkManager messageSinkManager, final URLBuilder urlBuilder,
+            final MessageSinkManager messageSinkManager,
             final DMDircMBassador eventBus, final BackBufferFactory backBufferFactory) {
-        super(null, "icon", "Global", "(Global)", config, backBufferFactory, urlBuilder, parser,
+        super(null, "icon", "Global", "(Global)", config, backBufferFactory, parser,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
                 messageSinkManager, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),

@@ -24,9 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.util.URLBuilder;
+import com.dmdirc.ui.messages.BackBufferFactory;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -43,10 +42,9 @@ public class CustomWindow extends FrameContainer {
             final String name,
             final String title,
             final FrameContainer parent,
-            final URLBuilder urlBuilder,
             final BackBufferFactory backBufferFactory) {
         super(parent, "custom", name, title, parent.getConfigManager(), backBufferFactory,
-                urlBuilder, parent.getEventBus(),
+                parent.getEventBus(),
                 Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
         initBackBuffer();
     }
@@ -58,10 +56,9 @@ public class CustomWindow extends FrameContainer {
             final String name,
             final String title,
             final AggregateConfigProvider configProvider,
-            final URLBuilder urlBuilder,
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory) {
-        super(null, "custom", name, title, configProvider, backBufferFactory, urlBuilder,
+        super(null, "custom", name, title, configProvider, backBufferFactory,
                 eventBus, Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
         initBackBuffer();
     }

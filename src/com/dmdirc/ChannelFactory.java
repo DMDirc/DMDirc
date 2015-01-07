@@ -28,10 +28,9 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.WindowManager;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.input.TabCompleterFactory;
+import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.URLBuilder;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,7 +44,6 @@ public class ChannelFactory {
     private final TabCompleterFactory tabCompleterFactory;
     private final CommandController commandController;
     private final MessageSinkManager messageSinkManager;
-    private final URLBuilder urlBuilder;
     private final DMDircMBassador eventBus;
     private final BackBufferFactory backBufferFactory;
     private final GroupChatUserManager groupChatUserManager;
@@ -54,13 +52,11 @@ public class ChannelFactory {
     @Inject
     public ChannelFactory(final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController, final MessageSinkManager messageSinkManager,
-            final URLBuilder urlBuilder, final DMDircMBassador eventBus,
-            final BackBufferFactory backBufferFactory,
+            final DMDircMBassador eventBus, final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager, final WindowManager windowManager) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;
         this.messageSinkManager = messageSinkManager;
-        this.urlBuilder = urlBuilder;
         this.eventBus = eventBus;
         this.backBufferFactory = backBufferFactory;
         this.groupChatUserManager = groupChatUserManager;
@@ -71,7 +67,7 @@ public class ChannelFactory {
             final ChannelInfo channelInfo,
             final ConfigProviderMigrator configMigrator) {
         final Channel channel = new Channel(connection, channelInfo, configMigrator,
-                tabCompleterFactory, commandController, messageSinkManager, urlBuilder, eventBus,
+                tabCompleterFactory, commandController, messageSinkManager, eventBus,
                 backBufferFactory, groupChatUserManager);
         windowManager.addWindow(connection.getWindowModel(), channel);
         connection.getWindowModel().getEventBus().publish(new ChannelOpenedEvent(channel));
