@@ -23,8 +23,8 @@
 package com.dmdirc.ui.core.errors;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.NonFatalProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorDeletedEvent;
-import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorStatusEvent;
 import com.dmdirc.interfaces.ui.ErrorsDialogModel;
 import com.dmdirc.interfaces.ui.ErrorsDialogModelListener;
@@ -63,6 +63,11 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     @Override
     public void load() {
         eventBus.subscribe(this);
+    }
+
+    @Override
+    public void unload() {
+        eventBus.unsubscribe(this);
     }
 
     @Override
@@ -126,7 +131,8 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     @Handler
     public void handleErrorStatusChanged(final ProgramErrorStatusEvent event) {
-        listenerList.getCallable(ErrorsDialogModelListener.class).errorStatusChanged(event.getError());
+        listenerList.getCallable(ErrorsDialogModelListener.class).errorStatusChanged(
+                event.getError());
     }
 
     @Handler
@@ -135,7 +141,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     }
 
     @Handler
-    public void handleErrorAdded(final ProgramErrorEvent event) {
+    public void handleErrorAdded(final NonFatalProgramErrorEvent event) {
         listenerList.getCallable(ErrorsDialogModelListener.class).errorAdded(event.getError());
     }
 }

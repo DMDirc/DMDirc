@@ -38,6 +38,11 @@ public interface ErrorsDialogModel {
     void load();
 
     /**
+     * Unloads the model, should be called when the dialog is closed.
+     */
+    void unload();
+
+    /**
      * Returns the current list of errors to be displayed.
      *
      * @return List of errors
