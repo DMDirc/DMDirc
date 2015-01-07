@@ -66,6 +66,11 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     }
 
     @Override
+    public void unload() {
+        eventBus.unsubscribe(this);
+    }
+
+    @Override
     public List<ProgramError> getErrors() {
         return errorManager.getErrors();
     }
