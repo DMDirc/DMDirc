@@ -35,7 +35,6 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.parser.common.CompositionState;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
@@ -88,8 +87,6 @@ public abstract class FrameContainer {
     private final ChildEventBusManager eventBusManager;
     /** Event bus to dispatch events to. */
     private final DMDircMBassador eventBus;
-    /** The icon manager to use for this container. */
-    private final IconManager iconManager;
     /** The manager handling this frame's unread status. */
     private final UnreadStatusManager unreadStatusManager;
     /** Whether or not this container is writable. */
@@ -136,7 +133,6 @@ public abstract class FrameContainer {
         this.name = name;
         this.title = title;
         this.components = new HashSet<>(components);
-        this.iconManager = new IconManager(configManager, urlBuilder);
         this.writable = false;
         this.commandParser = Optional.empty();
         this.tabCompleter = Optional.empty();
@@ -174,7 +170,6 @@ public abstract class FrameContainer {
         this.name = name;
         this.title = title;
         this.components = new HashSet<>(components);
-        this.iconManager = new IconManager(configManager, urlBuilder);
         this.writable = true;
         this.commandParser = Optional.of(commandParser);
         this.tabCompleter = Optional.of(tabCompleter);
@@ -256,15 +251,6 @@ public abstract class FrameContainer {
      */
     public void removeChild(final FrameContainer child) {
         children.remove(child);
-    }
-
-    /**
-     * Gets an icon manager for this container.
-     *
-     * @return An icon manager for this container.
-     */
-    public IconManager getIconManager() {
-        return iconManager;
     }
 
     /**
