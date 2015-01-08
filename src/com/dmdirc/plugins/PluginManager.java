@@ -249,15 +249,6 @@ public class PluginManager {
     }
 
     /**
-     * Reload all plugins.
-     */
-    public void reloadAllPlugins() {
-        for (PluginInfo pluginInfo : getPluginInfos()) {
-            reloadPlugin(pluginInfo.getFilename());
-        }
-    }
-
-    /**
      * Get a plugin instance.
      *
      * @param filename File name of plugin jar
