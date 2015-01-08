@@ -311,11 +311,11 @@ public class ErrorManager {
      */
     public void deleteAll() {
         synchronized (errors) {
+            errors.clear();
             errors.forEach(e -> {
                 fireErrorDeleted(e);
                 eventBus.publish(new ProgramErrorDeletedEvent(e));
             });
-            errors.clear();
         }
     }
 
