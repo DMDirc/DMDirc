@@ -167,10 +167,6 @@ public class ProgramError implements Serializable {
         if (newStatus != null && reportStatus != newStatus) {
             reportStatus = newStatus;
             eventBus.publishAsync(new ProgramErrorStatusEvent(this));
-            // TODO: This will be removed when everything uses events.
-            if (errorManager != null) {
-                errorManager.fireErrorStatusChanged(this);
-            }
         }
     }
 

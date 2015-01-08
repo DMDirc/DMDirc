@@ -22,10 +22,11 @@
 
 package com.dmdirc.ui;
 
-import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorReportStatus;
+import com.dmdirc.logger.ErrorReportingRunnable;
 import com.dmdirc.logger.ProgramError;
+import com.dmdirc.logger.SentryErrorReporter;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
@@ -46,7 +47,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.text.DefaultStyledDocument;
@@ -58,8 +58,7 @@ import javax.swing.text.StyledDocument;
  * The fatal error dialog is used to inform the user that a fatal error has occurred and to give them
  * a chance to quit or restart the client.
  */
-public final class FatalErrorDialog extends JDialog implements ActionListener,
-        ErrorListener {
+public final class FatalErrorDialog extends JDialog implements ActionListener {
 
     /** Serialisation version ID. */
     private static final long serialVersionUID = 3;
@@ -94,7 +93,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      * @param error Error
      */
     public FatalErrorDialog(final ProgramError error, final ErrorManager errorManager,
-            final CountDownLatch countDownLatch, final boolean sendReports) {
+            final CountDownLatch countDownLatch, final boolean sendReports,
+            final SentryErrorReporter sentryErrorReporter) {
         super(null, Dialog.ModalityType.TOOLKIT_MODAL);
 
         setModal(true);
@@ -107,15 +107,24 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         initComponents();
         layoutComponents();
 
-        try {
-            errorManager.addErrorListener(this);
-        } catch (Exception e) {
-            System.err.println("Error initialising error manager: ");
-            e.printStackTrace();
-        }
-
         setResizable(false);
         CoreUIUtils.centreWindow(this);
+        new SwingWorker<Void, Void>() {
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                new ErrorReportingRunnable(sentryErrorReporter, error).run();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                final ErrorReportStatus status = error.getReportStatus();
+                restartButton.setEnabled(status.isTerminal());
+                updateSendButtonText(status);
+                countDownLatch.countDown();
+            }
+        }.run();
     }
 
     /**
@@ -291,33 +300,5 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
                 sendButton.setEnabled(true);
                 break;
         }
-    }
-
-    @Override
-    public void errorAdded(final ProgramError error) {
-        //Ignore
-    }
-
-    @Override
-    public void errorDeleted(final ProgramError error) {
-        //Ignore
-    }
-
-    @Override
-    public void errorStatusChanged(final ProgramError error) {
-        if (this.error.equals(error)) {
-            final ErrorReportStatus status = error.getReportStatus();
-            SwingUtilities.invokeLater(() -> {
-                restartButton.setEnabled(status.isTerminal());
-                updateSendButtonText(status);
-            });
-            countDownLatch.countDown();
-        }
-    }
-
-    @Override
-    public boolean isReady() {
-        //We're never ready
-        return false;
     }
 }
