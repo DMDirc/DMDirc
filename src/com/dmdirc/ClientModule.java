@@ -40,7 +40,6 @@ import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.plugins.PluginModule;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.UiMessagesModule;
@@ -48,7 +47,6 @@ import com.dmdirc.ui.messages.WhoisNumericFormatter;
 import com.dmdirc.ui.messages.sink.MessagesModule;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
-import com.dmdirc.util.URLBuilder;
 import com.dmdirc.util.io.Downloader;
 
 import javax.inject.Provider;
@@ -107,15 +105,6 @@ public class ClientModule {
     @Singleton
     public DMDircMBassador getMBassador() {
         return new DMDircMBassador();
-    }
-
-    @Provides
-    @GlobalConfig
-    @Singleton
-    public IconManager getGlobalIconManager(
-            @GlobalConfig final AggregateConfigProvider globalConfig,
-            final URLBuilder urlBuilder) {
-        return new IconManager(globalConfig, urlBuilder);
     }
 
     @Provides
