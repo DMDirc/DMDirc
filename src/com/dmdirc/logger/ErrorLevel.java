@@ -68,15 +68,16 @@ public enum ErrorLevel {
     /**
      * Returns the more important error
      *
-     * @param level Error level to compare
+     * @param level1 Error level to compare
+     * @param level2 Error level to compare
      *
      * @return true iff the error is more important
      */
-    public ErrorLevel getMoreImportant(final ErrorLevel level) {
-        if (level != null && ordinal() > level.ordinal()) {
-            return level;
+    public static ErrorLevel getMoreImportant(final ErrorLevel level1, final ErrorLevel level2) {
+        if (level1.ordinal() > level2.ordinal()) {
+            return level2;
         } else {
-            return this;
+            return level1;
         }
     }
 
