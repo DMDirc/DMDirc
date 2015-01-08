@@ -44,8 +44,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,7 +71,7 @@ public class ErrorManager {
         IllegalAccessError.class, OutOfMemoryError.class,
         NoSuchFieldError.class,};
     /** Error list. */
-    private final List<ProgramError> errors;
+    private final Set<ProgramError> errors;
     /** Listener list. */
     private final ListenerList errorListeners = new ListenerList();
     /** Countdown latch to wait for FED with. */
@@ -100,7 +101,7 @@ public class ErrorManager {
     @Inject
     public ErrorManager(final SentryErrorReporter sentryErrorReporter,
             final ProgramErrorFactory programErrorFactory) {
-        errors = new LinkedList<>();
+        errors = new HashSet<>();
         countDownLatch = new CountDownLatch(2);
         this.sentryErrorReporter = sentryErrorReporter;
         this.programErrorFactory = programErrorFactory;
@@ -332,9 +333,9 @@ public class ErrorManager {
      *
      * @return Program error list
      */
-    public List<ProgramError> getErrors() {
+    public Set<ProgramError> getErrors() {
         synchronized (errors) {
-            return new LinkedList<>(errors);
+            return new HashSet<>(errors);
         }
     }
 

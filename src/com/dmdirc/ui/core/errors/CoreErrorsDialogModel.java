@@ -32,8 +32,8 @@ import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.util.collections.ListenerList;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -71,7 +71,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     }
 
     @Override
-    public List<ProgramError> getErrors() {
+    public Set<ProgramError> getErrors() {
         return errorManager.getErrors();
     }
 
@@ -89,7 +89,10 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     @Override
     public void deleteSelectedError() {
-        selectedError.ifPresent(errorManager::deleteError);
+        selectedError.ifPresent(e -> {
+            errorManager.deleteError(e);
+            setSelectedError(Optional.empty());
+        });
     }
 
     @Override
