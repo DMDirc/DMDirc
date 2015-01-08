@@ -46,9 +46,7 @@ public class ProgramErrorFactory {
             final Iterable<String> trace,
             @Nullable final String details,
             final Date date,
-            final ErrorManager errorManager,
             final boolean appError) {
-        return new ProgramError(level, message, exception, trace, details, date, errorManager,
-                eventBus, appError);
+        return new ProgramError(level, message, exception, trace, details, date, eventBus, appError);
     }
 }

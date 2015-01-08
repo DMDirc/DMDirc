@@ -149,7 +149,7 @@ public class ErrorManager {
             eventBus.publish(new FatalProgramErrorEvent(programErrorFactory
                     .create(appError.getLevel(), appError.getMessage(), appError.getThrowable(),
                             getTrace(appError.getMessage(), appError.getThrowable()),
-                            appError.getDetails(), new Date(), this, true)));
+                            appError.getDetails(), new Date(), true)));
         } else {
             eventBus.publish(new NonFatalProgramErrorEvent(addError(appError.getLevel(),
                     appError.getMessage(), appError.getThrowable(),
@@ -163,7 +163,7 @@ public class ErrorManager {
             eventBus.publish(new FatalProgramErrorEvent(programErrorFactory
                     .create(userError.getLevel(), userError.getMessage(), userError.getThrowable(),
                             getTrace(userError.getMessage(), userError.getThrowable()),
-                            userError.getDetails(), new Date(), this, false)));
+                            userError.getDetails(), new Date(), false)));
         } else {
             eventBus.publish(new NonFatalProgramErrorEvent(addError(userError.getLevel(),
                     userError.getMessage(),userError.getThrowable(), userError.getDetails(), false,
@@ -187,7 +187,7 @@ public class ErrorManager {
             final Throwable throwable, final String details, final boolean appError,
             final boolean canReport) {
         final ProgramError error = programErrorFactory.create(level, message, throwable,
-                getTrace(message, throwable), details, new Date(), this, appError);
+                getTrace(message, throwable), details, new Date(), appError);
         return addError(error, appError, canReport);
     }
 

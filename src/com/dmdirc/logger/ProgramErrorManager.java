@@ -90,7 +90,7 @@ public class ProgramErrorManager {
             final Throwable throwable, final String details, final boolean appError) {
 
         final ProgramError error = programErrorFactory.create(level, message, throwable,
-                getTrace(message, throwable), details, new Date(), null, appError);
+                getTrace(message, throwable), details, new Date(), appError);
         errors.add(error);
         return error;
     }
