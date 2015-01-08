@@ -24,8 +24,8 @@ package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.logger.ProgramError;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Model representing an errors dialog for the client.
@@ -47,7 +47,7 @@ public interface ErrorsDialogModel {
      *
      * @return List of errors
      */
-    List<ProgramError> getErrors();
+    Set<ProgramError> getErrors();
 
     /**
      * Returns the currently selected error.
