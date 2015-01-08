@@ -76,7 +76,7 @@ public class PluginInjectorInitialiser {
             final URLBuilder urlBuilder,
             @GlobalConfig final ColourManager colourManager,
             final DMDircMBassador eventBus,
-            @GlobalConfig final IconManager iconManager) {
+            final IconManager iconManager) {
         this.pluginManager = pluginManager;
         this.identityController = identityController;
         this.connectionManager = connectionManager;
