@@ -23,7 +23,7 @@ package com.dmdirc.logger;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ErrorLevelTest {
@@ -48,52 +48,69 @@ public class ErrorLevelTest {
 
     @Test
     public void testMoreImportantLow() {
-        assertTrue(ErrorLevel.LOW.moreImportant(ErrorLevel.MEDIUM));
-        assertTrue(ErrorLevel.LOW.moreImportant(ErrorLevel.HIGH));
-        assertTrue(ErrorLevel.LOW.moreImportant(ErrorLevel.FATAL));
-        assertFalse(ErrorLevel.LOW.moreImportant(ErrorLevel.LOW));
-        assertFalse(ErrorLevel.LOW.moreImportant(ErrorLevel.UNKNOWN));
-        assertFalse(ErrorLevel.LOW.moreImportant(null));
+        assertEquals(ErrorLevel.MEDIUM,
+                ErrorLevel.getMoreImportant(ErrorLevel.LOW, ErrorLevel.MEDIUM));
+        assertEquals(ErrorLevel.HIGH, ErrorLevel.getMoreImportant(ErrorLevel.LOW, ErrorLevel.HIGH));
+        assertEquals(ErrorLevel.FATAL,
+                ErrorLevel.getMoreImportant(ErrorLevel.LOW, ErrorLevel.FATAL));
+        assertEquals(ErrorLevel.LOW, ErrorLevel.getMoreImportant(ErrorLevel.LOW, ErrorLevel.LOW));
+        assertEquals(ErrorLevel.LOW,
+                ErrorLevel.getMoreImportant(ErrorLevel.LOW, ErrorLevel.UNKNOWN));
     }
 
     @Test
     public void testMoreImportantMedium() {
-        assertFalse(ErrorLevel.MEDIUM.moreImportant(ErrorLevel.MEDIUM));
-        assertTrue(ErrorLevel.MEDIUM.moreImportant(ErrorLevel.HIGH));
-        assertTrue(ErrorLevel.MEDIUM.moreImportant(ErrorLevel.FATAL));
-        assertFalse(ErrorLevel.MEDIUM.moreImportant(ErrorLevel.LOW));
-        assertFalse(ErrorLevel.MEDIUM.moreImportant(ErrorLevel.UNKNOWN));
-        assertFalse(ErrorLevel.MEDIUM.moreImportant(null));
+        assertEquals(ErrorLevel.MEDIUM,
+                ErrorLevel.getMoreImportant(ErrorLevel.MEDIUM, ErrorLevel.MEDIUM));
+        assertEquals(ErrorLevel.HIGH,
+                ErrorLevel.getMoreImportant(ErrorLevel.MEDIUM, ErrorLevel.HIGH));
+        assertEquals(ErrorLevel.FATAL,
+                ErrorLevel.getMoreImportant(ErrorLevel.MEDIUM, ErrorLevel.FATAL));
+        assertEquals(ErrorLevel.MEDIUM,
+                ErrorLevel.getMoreImportant(ErrorLevel.MEDIUM, ErrorLevel.LOW));
+        assertEquals(ErrorLevel.MEDIUM,
+                ErrorLevel.getMoreImportant(ErrorLevel.MEDIUM, ErrorLevel.UNKNOWN));
     }
 
     @Test
     public void testMoreImportantHigh() {
-        assertFalse(ErrorLevel.HIGH.moreImportant(ErrorLevel.MEDIUM));
-        assertFalse(ErrorLevel.HIGH.moreImportant(ErrorLevel.HIGH));
-        assertTrue(ErrorLevel.HIGH.moreImportant(ErrorLevel.FATAL));
-        assertFalse(ErrorLevel.HIGH.moreImportant(ErrorLevel.LOW));
-        assertFalse(ErrorLevel.HIGH.moreImportant(ErrorLevel.UNKNOWN));
-        assertFalse(ErrorLevel.HIGH.moreImportant(null));
+        assertEquals(ErrorLevel.HIGH,
+                ErrorLevel.getMoreImportant(ErrorLevel.HIGH, ErrorLevel.MEDIUM));
+        assertEquals(ErrorLevel.HIGH,
+                ErrorLevel.getMoreImportant(ErrorLevel.HIGH, ErrorLevel.HIGH));
+        assertEquals(ErrorLevel.FATAL,
+                ErrorLevel.getMoreImportant(ErrorLevel.HIGH, ErrorLevel.FATAL));
+        assertEquals(ErrorLevel.HIGH, ErrorLevel.getMoreImportant(ErrorLevel.HIGH, ErrorLevel.LOW));
+        assertEquals(ErrorLevel.HIGH,
+                ErrorLevel.getMoreImportant(ErrorLevel.HIGH, ErrorLevel.UNKNOWN));
     }
 
     @Test
     public void testMoreImportantFatal() {
-        assertFalse(ErrorLevel.FATAL.moreImportant(ErrorLevel.MEDIUM));
-        assertFalse(ErrorLevel.FATAL.moreImportant(ErrorLevel.HIGH));
-        assertFalse(ErrorLevel.FATAL.moreImportant(ErrorLevel.FATAL));
-        assertFalse(ErrorLevel.FATAL.moreImportant(ErrorLevel.LOW));
-        assertFalse(ErrorLevel.FATAL.moreImportant(ErrorLevel.UNKNOWN));
-        assertFalse(ErrorLevel.FATAL.moreImportant(null));
+        assertEquals(ErrorLevel.FATAL,
+                ErrorLevel.getMoreImportant(ErrorLevel.FATAL, ErrorLevel.MEDIUM));
+        assertEquals(ErrorLevel.FATAL,
+                ErrorLevel.getMoreImportant(ErrorLevel.FATAL, ErrorLevel.HIGH));
+        assertEquals(ErrorLevel.FATAL,
+                ErrorLevel.getMoreImportant(ErrorLevel.FATAL, ErrorLevel.FATAL));
+        assertEquals(ErrorLevel.FATAL,
+                ErrorLevel.getMoreImportant(ErrorLevel.FATAL, ErrorLevel.LOW));
+        assertEquals(ErrorLevel.FATAL,
+                ErrorLevel.getMoreImportant(ErrorLevel.FATAL, ErrorLevel.UNKNOWN));
     }
 
     @Test
     public void testMoreImportantUnknown() {
-        assertTrue(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.MEDIUM));
-        assertTrue(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.HIGH));
-        assertTrue(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.FATAL));
-        assertTrue(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.LOW));
-        assertFalse(ErrorLevel.UNKNOWN.moreImportant(ErrorLevel.UNKNOWN));
-        assertFalse(ErrorLevel.UNKNOWN.moreImportant(null));
+        assertEquals(ErrorLevel.MEDIUM,
+                ErrorLevel.getMoreImportant(ErrorLevel.UNKNOWN, ErrorLevel.MEDIUM));
+        assertEquals(ErrorLevel.HIGH,
+                ErrorLevel.getMoreImportant(ErrorLevel.UNKNOWN, ErrorLevel.HIGH));
+        assertEquals(ErrorLevel.FATAL,
+                ErrorLevel.getMoreImportant(ErrorLevel.UNKNOWN, ErrorLevel.FATAL));
+        assertEquals(ErrorLevel.LOW,
+                ErrorLevel.getMoreImportant(ErrorLevel.UNKNOWN, ErrorLevel.LOW));
+        assertEquals(ErrorLevel.UNKNOWN,
+                ErrorLevel.getMoreImportant(ErrorLevel.UNKNOWN, ErrorLevel.UNKNOWN));
     }
 
 }
