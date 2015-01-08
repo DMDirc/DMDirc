@@ -35,6 +35,7 @@ import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.collections.ListenerList;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.awt.GraphicsEnvironment;
@@ -311,8 +312,9 @@ public class ErrorManager {
      */
     public void deleteAll() {
         synchronized (errors) {
+            final Set<ProgramError> errorsCopy = Sets.newHashSet(errors);
             errors.clear();
-            errors.forEach(e -> {
+            errorsCopy.forEach(e -> {
                 fireErrorDeleted(e);
                 eventBus.publish(new ProgramErrorDeletedEvent(e));
             });
