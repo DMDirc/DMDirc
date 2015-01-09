@@ -29,10 +29,9 @@ import com.dmdirc.config.prefs.PreferencesManager;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.ui.IconManager;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.URLBuilder;
@@ -59,7 +58,6 @@ public class PluginInjectorInitialiser {
     private final URLBuilder urlBuilder;
     private final ColourManager colourManager;
     private final DMDircMBassador eventBus;
-    private final IconManager iconManager;
 
     @Inject
     public PluginInjectorInitialiser(
@@ -75,8 +73,7 @@ public class PluginInjectorInitialiser {
             final CorePluginExtractor corePluginExtractor,
             final URLBuilder urlBuilder,
             @GlobalConfig final ColourManager colourManager,
-            final DMDircMBassador eventBus,
-            @GlobalConfig final IconManager iconManager) {
+            final DMDircMBassador eventBus) {
         this.pluginManager = pluginManager;
         this.identityController = identityController;
         this.connectionManager = connectionManager;
@@ -90,7 +87,6 @@ public class PluginInjectorInitialiser {
         this.urlBuilder = urlBuilder;
         this.colourManager = colourManager;
         this.eventBus = eventBus;
-        this.iconManager = iconManager;
     }
 
     /**
@@ -112,7 +108,6 @@ public class PluginInjectorInitialiser {
         injector.addParameter(urlBuilder);
         injector.addParameter(colourManager);
         injector.addParameter(eventBus);
-        injector.addParameter(iconManager);
     }
 
 }
