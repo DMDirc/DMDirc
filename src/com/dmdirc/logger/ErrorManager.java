@@ -184,7 +184,7 @@ public class ErrorManager {
             final Throwable throwable, final String details, final boolean appError,
             final boolean canReport) {
         final ProgramError error = programErrorFactory.create(level, message, throwable,
-                getTrace(message, throwable), details, new Date(), this, appError);
+                getTrace(message, throwable), details, new Date(), appError);
         return addError(error, appError, canReport);
     }
 
