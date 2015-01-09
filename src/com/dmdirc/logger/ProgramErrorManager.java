@@ -32,7 +32,9 @@ import com.google.common.base.Throwables;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.engio.mbassy.listener.Handler;
@@ -121,8 +123,9 @@ public class ProgramErrorManager {
      * @since 0.6.3m1
      */
     public void deleteAll() {
-        errors.forEach(e -> eventBus.publishAsync(new ProgramErrorDeletedEvent(e)));
+        final Set<ProgramError> errorsCopy = new HashSet<>(errors);
         errors.clear();
+        errorsCopy.stream().map(ProgramErrorDeletedEvent::new).forEach(eventBus::publish);
     }
 
     /**
