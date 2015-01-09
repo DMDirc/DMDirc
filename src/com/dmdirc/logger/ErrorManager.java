@@ -44,6 +44,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -311,14 +312,15 @@ public class ErrorManager {
      * @since 0.6.3m1
      */
     public void deleteAll() {
+        final Set<ProgramError> errorsCopy;
         synchronized (errors) {
-            final Set<ProgramError> errorsCopy = Sets.newHashSet(errors);
+            errorsCopy  = Sets.newHashSet(errors);
             errors.clear();
-            errorsCopy.forEach(e -> {
-                fireErrorDeleted(e);
-                eventBus.publish(new ProgramErrorDeletedEvent(e));
-            });
         }
+        errorsCopy.forEach(e -> {
+            fireErrorDeleted(e);
+            eventBus.publish(new ProgramErrorDeletedEvent(e));
+        });
     }
 
     /**
@@ -337,7 +339,7 @@ public class ErrorManager {
      */
     public Set<ProgramError> getErrors() {
         synchronized (errors) {
-            return new HashSet<>(errors);
+            return Collections.unmodifiableSet(errors);
         }
     }
 
