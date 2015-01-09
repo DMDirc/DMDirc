@@ -54,39 +54,39 @@ public class ProgramErrorTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullErrorLevel() {
-        new ProgramError(null, "moo", null, Lists.newArrayList(), null, new Date(), errorManager,
+        new ProgramError(null, "moo", null, Lists.newArrayList(), null, new Date(),
                 eventBus, true);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullMessage() {
         new ProgramError(ErrorLevel.HIGH, null, null, Lists.newArrayList(), null, new Date(),
-                errorManager, eventBus, true);
+                eventBus, true);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorEmptyMessage() {
         new ProgramError(ErrorLevel.HIGH, "", null, Lists.newArrayList(), null, new Date(),
-                errorManager, eventBus, true);
+                eventBus, true);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullDate() {
         new ProgramError(ErrorLevel.HIGH, "moo", null, Lists.newArrayList(), null, null,
-                errorManager, eventBus, true);
+                eventBus, true);
     }
 
     @Test
     public void testConstructorGood() {
         new ProgramError(ErrorLevel.HIGH, "moo", new UnsupportedOperationException(),
-                Lists.newArrayList(), null, new Date(), errorManager, eventBus, true);
+                Lists.newArrayList(), null, new Date(), eventBus, true);
     }
 
     @Test
     public void testGetLevel() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
-                errorManager, eventBus, true);
+                eventBus, true);
         assertEquals(ErrorLevel.HIGH, pe.getLevel());
     }
 
@@ -94,7 +94,7 @@ public class ProgramErrorTest {
     public void testGetMessage() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
-                errorManager, eventBus, true);
+                eventBus, true);
         assertEquals("moo", pe.getMessage());
     }
 
@@ -103,7 +103,7 @@ public class ProgramErrorTest {
         final Date date = new Date();
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, date,
-                errorManager, eventBus, true);
+                eventBus, true);
         assertEquals(date, pe.getDate());
     }
 
@@ -111,7 +111,7 @@ public class ProgramErrorTest {
     public void testIsAppError() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
-                errorManager, eventBus, true);
+                eventBus, true);
         assertTrue(pe.isAppError());
     }
 
@@ -119,7 +119,7 @@ public class ProgramErrorTest {
     public void testReportStatus() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
-                errorManager, eventBus, true);
+                eventBus, true);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
         pe.setReportStatus(null);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
@@ -137,7 +137,7 @@ public class ProgramErrorTest {
     public void testToString() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), Lists.newArrayList(), null, new Date(),
-                errorManager, eventBus, true);
+                eventBus, true);
         assertTrue(pe.toString().contains("moo"));
     }
 
@@ -145,7 +145,7 @@ public class ProgramErrorTest {
     public void testGetTrace() {
         final List<String> trace = Lists.newArrayList("test", "test1", "test2");
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), trace, null, new Date(), errorManager,
+                new UnsupportedOperationException(), trace, null, new Date(),
                 eventBus, true);
         assertEquals(trace, pe.getTrace());
     }
@@ -154,15 +154,15 @@ public class ProgramErrorTest {
     public void testEquals() {
         final Exception ex = new UnsupportedOperationException();
         final ProgramError pe1 = new ProgramError(ErrorLevel.LOW, "moo",
-                ex, Lists.newArrayList(), null, new Date(), errorManager, eventBus, true);
+                ex, Lists.newArrayList(), null, new Date(), eventBus, true);
         final ProgramError pe2 = new ProgramError(ErrorLevel.LOW, "moo",
-                ex, Lists.newArrayList(), null, new Date(), errorManager, eventBus, true);
+                ex, Lists.newArrayList(), null, new Date(), eventBus, true);
         final ProgramError pe3 = new ProgramError(ErrorLevel.MEDIUM, "moo",
-                ex, Lists.newArrayList(), null, new Date(), errorManager, eventBus, true);
+                ex, Lists.newArrayList(), null, new Date(), eventBus, true);
         final ProgramError pe4 = new ProgramError(ErrorLevel.LOW, "bar",
-                ex, Lists.newArrayList(), null, new Date(), errorManager, eventBus, true);
+                ex, Lists.newArrayList(), null, new Date(), eventBus, true);
         final ProgramError pe5 = new ProgramError(ErrorLevel.LOW, "moo",
-                null, Lists.newArrayList(), "Hello", new Date(), errorManager, eventBus, true);
+                null, Lists.newArrayList(), "Hello", new Date(), eventBus, true);
 
         assertFalse(pe1.equals(null)); // NOPMD
         assertFalse(pe1.equals("moo"));
