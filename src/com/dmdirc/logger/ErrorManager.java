@@ -403,7 +403,7 @@ public class ErrorManager {
             }
             restart = false;
         } else {
-            final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this,
+            final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), sentryErrorReporter,
                     countDownLatch, sendReports);
             fed.setVisible(true);
             try {
