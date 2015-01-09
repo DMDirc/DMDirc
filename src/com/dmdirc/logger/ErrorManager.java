@@ -46,9 +46,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -103,7 +103,7 @@ public class ErrorManager {
     @Inject
     public ErrorManager(final SentryErrorReporter sentryErrorReporter,
             final ProgramErrorFactory programErrorFactory) {
-        errors = new HashSet<>();
+        errors = Collections.newSetFromMap(new ConcurrentHashMap<>());
         countDownLatch = new CountDownLatch(2);
         this.sentryErrorReporter = sentryErrorReporter;
         this.programErrorFactory = programErrorFactory;
@@ -248,9 +248,7 @@ public class ErrorManager {
      * @param error The error to be added
      */
     protected void addError(final ProgramError error) {
-        synchronized (errors) {
-            errors.add(error);
-        }
+        errors.add(error);
     }
 
     /**
@@ -298,10 +296,7 @@ public class ErrorManager {
      * @param error ProgramError that changed
      */
     public void deleteError(final ProgramError error) {
-        synchronized (errors) {
-            errors.remove(error);
-        }
-
+        errors.remove(error);
         eventBus.publish(new ProgramErrorDeletedEvent(error));
         fireErrorDeleted(error);
     }
@@ -312,11 +307,8 @@ public class ErrorManager {
      * @since 0.6.3m1
      */
     public void deleteAll() {
-        final Set<ProgramError> errorsCopy;
-        synchronized (errors) {
-            errorsCopy  = Sets.newHashSet(errors);
-            errors.clear();
-        }
+        final Set<ProgramError> errorsCopy = Sets.newHashSet(errors);
+        errors.clear();
         errorsCopy.forEach(e -> {
             fireErrorDeleted(e);
             eventBus.publish(new ProgramErrorDeletedEvent(e));
@@ -338,9 +330,7 @@ public class ErrorManager {
      * @return Program error list
      */
     public Set<ProgramError> getErrors() {
-        synchronized (errors) {
-            return Collections.unmodifiableSet(errors);
-        }
+        return Collections.unmodifiableSet(errors);
     }
 
     /**
