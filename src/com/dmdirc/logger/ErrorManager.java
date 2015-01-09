@@ -48,7 +48,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -103,7 +103,7 @@ public class ErrorManager {
     @Inject
     public ErrorManager(final SentryErrorReporter sentryErrorReporter,
             final ProgramErrorFactory programErrorFactory) {
-        errors = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        errors = new CopyOnWriteArraySet<>();
         countDownLatch = new CountDownLatch(2);
         this.sentryErrorReporter = sentryErrorReporter;
         this.programErrorFactory = programErrorFactory;
