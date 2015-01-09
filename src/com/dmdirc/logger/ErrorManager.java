@@ -32,7 +32,6 @@ import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.EventUtils;
-import com.dmdirc.util.collections.ListenerList;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -74,8 +73,6 @@ public class ErrorManager {
         NoSuchFieldError.class,};
     /** Error list. */
     private final Set<ProgramError> errors;
-    /** Listener list. */
-    private final ListenerList errorListeners = new ListenerList();
     /** Countdown latch to wait for FED with. */
     private final CountDownLatch countDownLatch;
     /** Sentry error reporter factory. */
@@ -298,7 +295,6 @@ public class ErrorManager {
     public void deleteError(final ProgramError error) {
         errors.remove(error);
         eventBus.publish(new ProgramErrorDeletedEvent(error));
-        fireErrorDeleted(error);
     }
 
     /**
@@ -309,19 +305,7 @@ public class ErrorManager {
     public void deleteAll() {
         final Set<ProgramError> errorsCopy = Sets.newHashSet(errors);
         errors.clear();
-        errorsCopy.forEach(e -> {
-            fireErrorDeleted(e);
-            eventBus.publish(new ProgramErrorDeletedEvent(e));
-        });
-    }
-
-    /**
-     * Returns the number of errors.
-     *
-     * @return Number of ProgramErrors
-     */
-    public int getErrorCount() {
-        return errors.size();
+        errorsCopy.forEach(e -> eventBus.publish(new ProgramErrorDeletedEvent(e)));
     }
 
     /**
@@ -334,40 +318,12 @@ public class ErrorManager {
     }
 
     /**
-     * Adds an ErrorListener to the listener list.
-     *
-     * @param listener Listener to add
-     */
-    public void addErrorListener(final ErrorListener listener) {
-        if (listener == null) {
-            return;
-        }
-
-        errorListeners.add(ErrorListener.class, listener);
-    }
-
-    /**
-     * Removes an ErrorListener from the listener list.
-     *
-     * @param listener Listener to remove
-     */
-    public void removeErrorListener(final ErrorListener listener) {
-        errorListeners.remove(ErrorListener.class, listener);
-    }
-
-    /**
      * Fired when the program encounters an error.
      *
      * @param event Error that occurred
      */
     @Handler(priority = EventUtils.PRIORITY_LOWEST)
     protected void fireErrorAdded(final NonFatalProgramErrorEvent event) {
-        // TODO: Make UI listen for the event and remove this
-        errorListeners.get(ErrorListener.class).stream().filter(ErrorListener::isReady)
-                .forEach(listener -> {
-                    event.setHandled();
-                    listener.errorAdded(event.getError());
-                });
         if (!event.isHandled()) {
             System.err.println("An error has occurred: " + event.getError().getLevel() + ": "
                             + event.getError().getMessage());
@@ -409,24 +365,6 @@ public class ErrorManager {
         } else {
             System.exit(1);
         }
-    }
-
-    /**
-     * Fired when an error is deleted.
-     *
-     * @param error Error that has been deleted
-     */
-    protected void fireErrorDeleted(final ProgramError error) {
-        errorListeners.get(ErrorListener.class).forEach(l -> l.errorDeleted(error));
-    }
-
-    /**
-     * Fired when an error's status is changed.
-     *
-     * @param error Error that has been altered
-     */
-    protected void fireErrorStatusChanged(final ProgramError error) {
-        errorListeners.get(ErrorListener.class).forEach(l -> l.errorStatusChanged(error));
     }
 
     @ConfigBinding(domain = "general", key = "submitErrors")
