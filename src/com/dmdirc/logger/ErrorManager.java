@@ -32,7 +32,6 @@ import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.FatalErrorDialog;
 import com.dmdirc.util.EventUtils;
-import com.dmdirc.util.collections.ListenerList;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -45,9 +44,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -73,8 +72,6 @@ public class ErrorManager {
         NoSuchFieldError.class,};
     /** Error list. */
     private final Set<ProgramError> errors;
-    /** Listener list. */
-    private final ListenerList errorListeners = new ListenerList();
     /** Countdown latch to wait for FED with. */
     private final CountDownLatch countDownLatch;
     /** Sentry error reporter factory. */
@@ -102,7 +99,7 @@ public class ErrorManager {
     @Inject
     public ErrorManager(final SentryErrorReporter sentryErrorReporter,
             final ProgramErrorFactory programErrorFactory) {
-        errors = new HashSet<>();
+        errors = new ConcurrentSkipListSet<>();
         countDownLatch = new CountDownLatch(2);
         this.sentryErrorReporter = sentryErrorReporter;
         this.programErrorFactory = programErrorFactory;
@@ -148,25 +145,29 @@ public class ErrorManager {
 
     @Handler(priority = EventUtils.PRIORITY_LOWEST)
     public void handleAppErrorEvent(final AppErrorEvent appError) {
-        final ProgramError error = addError(appError.getLevel(), appError.getMessage(), appError
-                        .getThrowable(),
-                appError.getDetails(), true, isValidError(appError.getThrowable()));
         if (appError.getLevel() == ErrorLevel.FATAL) {
-            eventBus.publish(new FatalProgramErrorEvent(error));
+            eventBus.publish(new FatalProgramErrorEvent(programErrorFactory
+                    .create(appError.getLevel(), appError.getMessage(), appError.getThrowable(),
+                            getTrace(appError.getMessage(), appError.getThrowable()),
+                            appError.getDetails(), new Date(), true)));
         } else {
-            eventBus.publish(new NonFatalProgramErrorEvent(error));
+            eventBus.publish(new NonFatalProgramErrorEvent(addError(appError.getLevel(),
+                    appError.getMessage(), appError.getThrowable(),
+                    appError.getDetails(), true, isValidError(appError.getThrowable()))));
         }
     }
 
     @Handler(priority = EventUtils.PRIORITY_LOWEST)
     public void handleUserErrorEvent(final UserErrorEvent userError) {
-        final ProgramError error = addError(userError.getLevel(), userError.getMessage(),
-                userError.getThrowable(), userError.getDetails(), false,
-                isValidError(userError.getThrowable()));
         if (userError.getLevel() == ErrorLevel.FATAL) {
-            eventBus.publish(new FatalProgramErrorEvent(error));
+            eventBus.publish(new FatalProgramErrorEvent(programErrorFactory
+                    .create(userError.getLevel(), userError.getMessage(), userError.getThrowable(),
+                            getTrace(userError.getMessage(), userError.getThrowable()),
+                            userError.getDetails(), new Date(), false)));
         } else {
-            eventBus.publish(new NonFatalProgramErrorEvent(error));
+            eventBus.publish(new NonFatalProgramErrorEvent(addError(userError.getLevel(),
+                    userError.getMessage(),userError.getThrowable(), userError.getDetails(), false,
+                    isValidError(userError.getThrowable()))));
         }
     }
 
@@ -186,7 +187,7 @@ public class ErrorManager {
             final Throwable throwable, final String details, final boolean appError,
             final boolean canReport) {
         final ProgramError error = programErrorFactory.create(level, message, throwable,
-                getTrace(message, throwable), details, new Date(), this, appError);
+                getTrace(message, throwable), details, new Date(), appError);
         return addError(error, appError, canReport);
     }
 
@@ -247,9 +248,7 @@ public class ErrorManager {
      * @param error The error to be added
      */
     protected void addError(final ProgramError error) {
-        synchronized (errors) {
-            errors.add(error);
-        }
+        errors.add(error);
     }
 
     /**
@@ -297,12 +296,8 @@ public class ErrorManager {
      * @param error ProgramError that changed
      */
     public void deleteError(final ProgramError error) {
-        synchronized (errors) {
-            errors.remove(error);
-        }
-
+        errors.remove(error);
         eventBus.publish(new ProgramErrorDeletedEvent(error));
-        fireErrorDeleted(error);
     }
 
     /**
@@ -311,14 +306,9 @@ public class ErrorManager {
      * @since 0.6.3m1
      */
     public void deleteAll() {
-        synchronized (errors) {
-            final Set<ProgramError> errorsCopy = Sets.newHashSet(errors);
-            errors.clear();
-            errorsCopy.forEach(e -> {
-                fireErrorDeleted(e);
-                eventBus.publish(new ProgramErrorDeletedEvent(e));
-            });
-        }
+        final Set<ProgramError> errorsCopy = Sets.newHashSet(errors);
+        errors.clear();
+        errorsCopy.forEach(e -> eventBus.publish(new ProgramErrorDeletedEvent(e)));
     }
 
     /**
@@ -336,31 +326,7 @@ public class ErrorManager {
      * @return Program error list
      */
     public Set<ProgramError> getErrors() {
-        synchronized (errors) {
-            return new HashSet<>(errors);
-        }
-    }
-
-    /**
-     * Adds an ErrorListener to the listener list.
-     *
-     * @param listener Listener to add
-     */
-    public void addErrorListener(final ErrorListener listener) {
-        if (listener == null) {
-            return;
-        }
-
-        errorListeners.add(ErrorListener.class, listener);
-    }
-
-    /**
-     * Removes an ErrorListener from the listener list.
-     *
-     * @param listener Listener to remove
-     */
-    public void removeErrorListener(final ErrorListener listener) {
-        errorListeners.remove(ErrorListener.class, listener);
+        return new ConcurrentSkipListSet<>(errors);
     }
 
     /**
@@ -370,12 +336,6 @@ public class ErrorManager {
      */
     @Handler(priority = EventUtils.PRIORITY_LOWEST)
     protected void fireErrorAdded(final NonFatalProgramErrorEvent event) {
-        // TODO: Make UI listen for the event and remove this
-        errorListeners.get(ErrorListener.class).stream().filter(ErrorListener::isReady)
-                .forEach(listener -> {
-                    event.setHandled();
-                    listener.errorAdded(event.getError());
-                });
         if (!event.isHandled()) {
             System.err.println("An error has occurred: " + event.getError().getLevel() + ": "
                             + event.getError().getMessage());
@@ -402,7 +362,7 @@ public class ErrorManager {
             restart = false;
         } else {
             final FatalErrorDialog fed = new FatalErrorDialog(event.getError(), this,
-                    countDownLatch, sendReports);
+                    countDownLatch, sendReports, sentryErrorReporter);
             fed.setVisible(true);
             try {
                 countDownLatch.await();
@@ -417,24 +377,6 @@ public class ErrorManager {
         } else {
             System.exit(1);
         }
-    }
-
-    /**
-     * Fired when an error is deleted.
-     *
-     * @param error Error that has been deleted
-     */
-    protected void fireErrorDeleted(final ProgramError error) {
-        errorListeners.get(ErrorListener.class).forEach(l -> l.errorDeleted(error));
-    }
-
-    /**
-     * Fired when an error's status is changed.
-     *
-     * @param error Error that has been altered
-     */
-    protected void fireErrorStatusChanged(final ProgramError error) {
-        errorListeners.get(ErrorListener.class).forEach(l -> l.errorStatusChanged(error));
     }
 
     @ConfigBinding(domain = "general", key = "submitErrors")
