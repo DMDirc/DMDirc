@@ -53,8 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.annotation.Nonnull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +61,7 @@ import dagger.ObjectGraph;
 /**
  * Stores plugin metadata and handles loading of plugin resources.
  */
-public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
+public class PluginInfo implements ServiceProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(PluginInfo.class);
     /** The metadata for this plugin. */
@@ -819,11 +817,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     @Override
     public String toString() {
         return metaData.getFriendlyName() + " - " + filename;
-    }
-
-    @Override
-    public int compareTo(@Nonnull final PluginInfo o) {
-        return toString().compareTo(o.toString());
     }
 
     /**
