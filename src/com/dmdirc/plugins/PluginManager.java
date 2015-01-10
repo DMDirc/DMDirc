@@ -24,7 +24,6 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.AppErrorEvent;
-import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.ClientPrefsOpenedEvent;
 import com.dmdirc.events.PluginRefreshEvent;
 import com.dmdirc.events.UserErrorEvent;
@@ -465,10 +464,7 @@ public class PluginManager {
     @Handler
     public void handlePrefsOpened(final ClientPrefsOpenedEvent event) {
         for (PluginInfo pi : getPluginInfos()) {
-            if (!pi.isLoaded() && !pi.isTempLoaded()) {
-                pi.loadPluginTemp();
-            }
-            if (pi.isLoaded() || pi.isTempLoaded()) {
+            if (pi.isLoaded()) {
                 try {
                     pi.getPlugin().showConfig(event.getModel());
                 } catch (LinkageError | Exception le) {
@@ -478,13 +474,6 @@ public class PluginManager {
                 }
             }
         }
-    }
-
-    @Handler
-    public void handlePrefsClosed(final ClientPrefsClosedEvent event) {
-        getPluginInfos().stream()
-                .filter(PluginInfo::isTempLoaded)
-                .forEach(PluginInfo::unloadPlugin);
     }
 
 }
