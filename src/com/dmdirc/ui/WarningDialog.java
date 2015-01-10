@@ -140,14 +140,12 @@ public class WarningDialog extends JDialog {
      */
     public void displayBlocking() {
         final Semaphore semaphore = new Semaphore(0);
-        SwingUtilities.invokeLater(() -> {
-            addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(final WindowEvent e) {
-                    semaphore.release();
-                }
-            });
-        });
+        SwingUtilities.invokeLater(() -> addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(final WindowEvent e) {
+                semaphore.release();
+            }
+        }));
         display();
         semaphore.acquireUninterruptibly();
     }

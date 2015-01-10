@@ -21,9 +21,9 @@
  */
 
 /**
- * DMDirc's automatic updater. The {@link UpdateChecker} periodically sends a list of all enabled
- * {@link UpdateComponent}s to the DMDirc website (using the domain updates.dmdirc.com). The website
- * then replies with a message saying whether each component is out of date, up to date, or not
- * known.
+ * DMDirc's automatic updater. The {@link com.dmdirc.updater.UpdateChecker} periodically sends a
+ * list of all enabled {@link com.dmdirc.updater.UpdateComponent}s to the DMDirc website (using
+ * the domain updates.dmdirc.com). The website then replies with a message saying whether each
+ * component is out of date, up to date, or not known.
  */
 package com.dmdirc.updater;
