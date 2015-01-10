@@ -247,41 +247,38 @@ public class PluginInfo implements ServiceProvider {
             return;
         }
         try {
-            final Map<String, InputStream> identityStreams = new HashMap<>();
+            unloadIdentities();
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(
                     pluginFilesystem.getPath("/META-INF/identities/"))) {
-                for (Path path : directoryStream) {
-                    identityStreams.put(path.getFileName().toString(), Files.newInputStream(path));
-                }
-            }
-
-            unloadIdentities();
-
-            for (Map.Entry<String, InputStream> entry : identityStreams.entrySet()) {
-                final String name = entry.getKey();
-                final InputStream stream = entry.getValue();
-
-                if (name.endsWith("/") || stream == null) {
-                    // Don't try to load folders or null streams
-                    continue;
-                }
-
-                synchronized (configProviders) {
-                    try {
-                        final ConfigProvider configProvider = new ConfigFileBackedConfigProvider(
-                                eventBus, stream, false);
-                        identityController.addConfigProvider(configProvider);
-                        configProviders.add(configProvider);
-                    } catch (final InvalidIdentityFileException ex) {
-                        eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                                "Error with identity file '" + name + "' in plugin '"
-                                + metaData.getName() + '\'', ""));
-                    }
-                }
+                directoryStream.forEach(this::loadIdentity);
             }
         } catch (final IOException ioe) {
             eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ioe,
                     "Error finding identities in plugin '" + metaData.getName() + '\'', ""));
+        }
+    }
+
+    private void loadIdentity(final Path path) {
+        if (!Files.isRegularFile(path)) {
+            // Don't try to load folders etc
+            return;
+        }
+
+        try (final InputStream stream = Files.newInputStream(path)) {
+            synchronized (configProviders) {
+                final ConfigProvider configProvider =
+                        new ConfigFileBackedConfigProvider(eventBus, stream, false);
+                identityController.addConfigProvider(configProvider);
+                configProviders.add(configProvider);
+            }
+        } catch (final InvalidIdentityFileException ex) {
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Error with identity file '" + path.getFileName() + "' in plugin '" +
+                            metaData.getName() + '\'', ""));
+        } catch (IOException ex) {
+            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
+                    "Unable to load identity file '" + path.getFileName() + "' in plugin '" +
+                            metaData.getName() + '\'', ""));
         }
     }
 
@@ -291,7 +288,6 @@ public class PluginInfo implements ServiceProvider {
     private void unloadIdentities() {
         synchronized (configProviders) {
             configProviders.forEach(identityController::removeConfigProvider);
-
             configProviders.clear();
         }
     }
@@ -506,8 +502,7 @@ public class PluginInfo implements ServiceProvider {
         }
 
         loadIdentities();
-
-        loadClass(metaData.getMainClass());
+        loadMainClass();
 
         if (isLoaded()) {
             //TODO plugin loading shouldn't be done from here, event bus shouldn't be here.
@@ -578,11 +573,10 @@ public class PluginInfo implements ServiceProvider {
     }
 
     /**
-     * Load the given classname.
-     *
-     * @param classname Class to load
+     * Load the main class
      */
-    private void loadClass(final String classname) {
+    private void loadMainClass() {
+        final String classname = metaData.getMainClass();
         try {
             initialiseClassLoader();
 
@@ -598,32 +592,7 @@ public class PluginInfo implements ServiceProvider {
                 return;
             }
 
-            // Only try and construct the main class, anything else should be constructed
-            // by the plugin itself.
-            if (classname.equals(metaData.getMainClass())) {
-                final Object temp = clazz.newInstance();
-                if (temp instanceof Plugin) {
-                    final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
-                    if (prerequisites.isFailure()) {
-                        lastError = "Prerequisites for plugin not met. ('"
-                                + filename + ':' + metaData.getMainClass()
-                                + "' -> '" + prerequisites.getFailureReason() + "') ";
-                        eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null, lastError, ""));
-                    } else {
-                        plugin = (Plugin) temp;
-                        try {
-                            plugin.load(this, getObjectGraph());
-                            plugin.onLoad();
-                        } catch (LinkageError | Exception e) {
-                            lastError = "Error in onLoad for "
-                                    + metaData.getName() + ':' + e.getMessage();
-                            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM,
-                                    e, lastError, ""));
-                            unloadPlugin();
-                        }
-                    }
-                }
-            }
+            createMainClass(clazz);
         } catch (ClassNotFoundException cnfe) {
             lastError = "Class not found ('" + filename + ':' + classname + ':'
                     + classname.equals(metaData.getMainClass()) + "') - "
@@ -645,6 +614,34 @@ public class PluginInfo implements ServiceProvider {
             lastError = "Unable to instantiate class for plugin " + metaData.getName()
                     + ": " + classname;
             eventBus.publishAsync(new AppErrorEvent(ErrorLevel.LOW, ex, lastError, ""));
+        }
+    }
+
+    private void createMainClass(final Class<?> clazz) throws InstantiationException,
+            IllegalAccessException {
+        final Object temp = clazz.newInstance();
+        if (temp instanceof Plugin) {
+            final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
+            if (prerequisites.isFailure()) {
+                lastError = "Prerequisites for plugin not met. ('"
+                        + filename + ':' + metaData.getMainClass()
+                        + "' -> '" + prerequisites.getFailureReason() + "') ";
+                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null, lastError, ""));
+            } else {
+                initialisePlugin((Plugin) temp);
+            }
+        }
+    }
+
+    private void initialisePlugin(final Plugin temp) {
+        plugin = temp;
+        try {
+            plugin.load(this, getObjectGraph());
+            plugin.onLoad();
+        } catch (LinkageError | Exception e) {
+            lastError = "Error in onLoad for " + metaData.getName() + ':' + e.getMessage();
+            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
+            unloadPlugin();
         }
     }
 
