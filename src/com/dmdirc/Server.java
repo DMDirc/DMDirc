@@ -623,6 +623,15 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
+    public void sendMessage(final String target, final String message) {
+        parser.ifPresent(p -> {
+            if (!message.isEmpty()) {
+                p.sendMessage(target, message);
+            }
+        });
+    }
+
+    @Override
     public int getMaxLineLength() {
         return withParserReadLock(Parser::getMaxLength, -1);
     }
