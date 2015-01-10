@@ -41,14 +41,17 @@ public class BaseCommandInfo implements CommandInfo {
         this.type = type;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getHelp() {
         return help;
     }
 
+    @Override
     public CommandType getType() {
         return type;
     }

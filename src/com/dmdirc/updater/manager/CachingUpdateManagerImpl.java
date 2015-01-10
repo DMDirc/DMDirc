@@ -59,6 +59,7 @@ public class CachingUpdateManagerImpl extends UpdateManagerImpl implements Cachi
         addUpdateStatusListener(new Listener());
     }
 
+    @Override
     public UpdateManagerStatus getManagerStatus() {
         return managerStatus;
     }

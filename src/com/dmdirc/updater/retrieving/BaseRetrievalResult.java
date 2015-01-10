@@ -39,10 +39,12 @@ public class BaseRetrievalResult implements UpdateRetrievalResult {
         this.successful = successful;
     }
 
+    @Override
     public UpdateCheckResult getCheckResult() {
         return checkResult;
     }
 
+    @Override
     public boolean isSuccessful() {
         return successful;
     }
