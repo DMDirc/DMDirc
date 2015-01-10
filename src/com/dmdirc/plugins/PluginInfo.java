@@ -51,7 +51,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,27 +209,6 @@ public class PluginInfo implements ServiceProvider {
     }
 
     /**
-     * Get the licence for this plugin if it exists.
-     *
-     * @return An InputStream for the licence of this plugin, or null if no licence found.
-     *
-     * @throws IOException if there is an error with the ResourceManager.
-     */
-    public Map<String, InputStream> getLicenceStreams() throws IOException {
-        final Map<String, InputStream> licences = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        if (!Files.exists(pluginFilesystem.getPath("/META-INF/licenses/"))) {
-            return licences;
-        }
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(
-                pluginFilesystem.getPath("/META-INF/licenses/"))) {
-            for (Path path : directoryStream) {
-                licences.put(path.getFileName().toString(), Files.newInputStream(path));
-            }
-        }
-        return licences;
-    }
-
-    /**
      * Get the defaults, formatters and icons for this plugin.
      */
     private void getDefaults() {
@@ -372,15 +350,6 @@ public class PluginInfo implements ServiceProvider {
         metaData.load();
 
         return !metaData.hasErrors();
-    }
-
-    /**
-     * Returns the file system for this plugin's jar.
-     *
-     * @return Filesystem
-     */
-    public FileSystem getFileSystem() {
-        return pluginFilesystem;
     }
 
     /**
@@ -573,15 +542,6 @@ public class PluginInfo implements ServiceProvider {
      */
     public List<PluginInfo> getChildren() {
         return Collections.unmodifiableList(children);
-    }
-
-    /**
-     * Checks if this plugin has any children.
-     *
-     * @return true iff this plugin has children
-     */
-    public boolean hasChildren() {
-        return !children.isEmpty();
     }
 
     /**
