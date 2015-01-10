@@ -101,8 +101,6 @@ public class PluginManager {
         this.globalClassLoader = new GlobalClassLoader(this);
         this.objectGraph = objectGraph;
         this.eventBus = eventBus;
-
-        eventBus.subscribe(this);
     }
 
     /**
