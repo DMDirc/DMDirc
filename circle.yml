@@ -41,7 +41,9 @@ test:
         pwd:
           ../meta
   post:
-    - ./gradlew client:jacocoTestReport client:coveralls
+    - ./gradlew client:jacocoTestReport client:coveralls:
+        pwd:
+          ../meta
 
 
 general:
