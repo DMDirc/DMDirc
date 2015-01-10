@@ -69,7 +69,6 @@ public class ConfigModule {
             final ErrorManager errorManager) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,
                 identitiesDirectory, eventBus, clientInfo);
-        errorManager.initialise(identityManager.getGlobalConfiguration(), errorsDirectory, eventBus);
         identityManager.loadVersionIdentity();
 
         try {
@@ -77,6 +76,7 @@ public class ConfigModule {
         } catch (InvalidIdentityFileException ex) {
             handleInvalidConfigFile(identityManager, baseDirectory);
         }
+        errorManager.initialise(identityManager.getGlobalConfiguration());
 
         if (commandLineParser.getDisableReporting()) {
             identityManager.getUserSettings().setOption("temp", "noerrorreporting", true);

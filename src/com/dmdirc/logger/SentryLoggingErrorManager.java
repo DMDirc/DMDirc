@@ -26,17 +26,23 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ProgramErrorEvent;
+import com.dmdirc.events.ProgramErrorStatusEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import net.engio.mbassy.listener.Handler;
 
 /**
  * Listens for {@link ProgramErrorEvent}s and reports these to Sentry.
  */
+@Singleton
 public class SentryLoggingErrorManager {
 
     /** A list of exceptions which we don't consider bugs and thus don't report. */
@@ -47,8 +53,6 @@ public class SentryLoggingErrorManager {
             NoSuchFieldError.class,};
     /** The event bus to listen for errors on. */
     private final DMDircMBassador eventBus;
-    /** The config binder to use for settings. */
-    private final ConfigBinder configBinder;
     /** Sentry error reporter factory. */
     private final SentryErrorReporter sentryErrorReporter;
     /** Thread used for sending errors. */
@@ -60,25 +64,20 @@ public class SentryLoggingErrorManager {
     /** Whether or not to send error reports. */
     private boolean sendReports;
 
-    /**
-     * Creates a new instance of this error manager.
-     *
-     * @param eventBus        The event bus to listen to errors on
-     * @param config          The config to read values from
-     */
+    @Inject
     public SentryLoggingErrorManager(final DMDircMBassador eventBus,
-            final AggregateConfigProvider config, final SentryErrorReporter sentryErrorReporter,
-            final ExecutorService executorService) {
+            final SentryErrorReporter sentryErrorReporter,
+            @Named("singlethread") final ExecutorService executorService) {
         this.eventBus = eventBus;
         this.sentryErrorReporter = sentryErrorReporter;
         this.executorService = executorService;
-        configBinder = config.getBinder();
     }
 
     /**
      * Initialises the error manager.  Must be called before logging will start.
      */
-    public void initialise() {
+    public void initialise(final AggregateConfigProvider config) {
+        final ConfigBinder configBinder = config.getBinder();
         configBinder.bind(this, SentryLoggingErrorManager.class);
         eventBus.subscribe(this);
     }
@@ -90,9 +89,14 @@ public class SentryLoggingErrorManager {
                 || !isValidSource(error.getError().getTrace())
                 || !appError) {
             error.getError().setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
+            eventBus.publish(new ProgramErrorStatusEvent(error.getError()));
         } else if (sendReports) {
-            executorService.submit(new ErrorReportingRunnable(sentryErrorReporter, error.getError()));
+            sendError(error.getError());
         }
+    }
+
+    void sendError(final ProgramError error) {
+        executorService.submit(new ErrorReportingRunnable(sentryErrorReporter, error));
     }
 
     @ConfigBinding(domain = "general", key = "submitErrors")

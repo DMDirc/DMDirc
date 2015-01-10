@@ -23,6 +23,8 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ErrorEvent;
@@ -39,11 +41,15 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import net.engio.mbassy.listener.Handler;
 
 /**
  * Listens for {@link ErrorEvent}s and writes them to disk.
  */
+@Singleton
 public class DiskLoggingErrorManager {
 
     /** The event bus to listen for errors on. */
@@ -51,31 +57,25 @@ public class DiskLoggingErrorManager {
     /** The directory to log errors to. */
     private final Path errorsDirectory;
     /** The config binder to use for settings. */
-    private final ConfigBinder configBinder;
+    private ConfigBinder configBinder;
     /** Error creating directory, don't write to disk. */
     private boolean directoryError;
     /** Are we logging errors to disk? */
     private boolean logging;
 
-    /**
-     * Creates a new instance of this error manager.
-     *
-     * @param errorsDirectory The directory to write errors to.  The error manager will try to
-     *                        create this if it is not present
-     * @param eventBus        The event bus to listen to errors on
-     * @param config          The config to read values from
-     */
-    public DiskLoggingErrorManager(final Path errorsDirectory, final DMDircMBassador eventBus,
-            final AggregateConfigProvider config) {
+    @Inject
+    public DiskLoggingErrorManager(
+            @Directory(DirectoryType.ERRORS)final Path errorsDirectory,
+            final DMDircMBassador eventBus) {
         this.errorsDirectory = errorsDirectory;
         this.eventBus = eventBus;
-        configBinder = config.getBinder();
     }
 
     /**
      * Initialises the error manager.  Must be called before logging will start.
      */
-    public void initialise() {
+    public void initialise(final AggregateConfigProvider config) {
+        configBinder = config.getBinder();
         configBinder.bind(this, DiskLoggingErrorManager.class);
         eventBus.subscribe(this);
         if (!Files.exists(errorsDirectory)) {

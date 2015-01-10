@@ -59,13 +59,13 @@ public class DiskLoggingErrorManagerTest {
     public void setUp() throws Exception {
         when(config.getBinder()).thenReturn(configBinder);
         fileSystem = Jimfs.newFileSystem(Configuration.unix());
-        instance = new DiskLoggingErrorManager(fileSystem.getPath("/errors"), eventBus, config);
+        instance = new DiskLoggingErrorManager(fileSystem.getPath("/errors"), eventBus);
     }
 
     @Test
     public void testInitialise() throws Exception {
         assertFalse(Files.exists(fileSystem.getPath("/errors")));
-        instance.initialise();
+        instance.initialise(config);
         verify(configBinder).bind(instance, DiskLoggingErrorManager.class);
         assertTrue(Files.exists(fileSystem.getPath("/errors")));
         assertFalse(instance.isDirectoryError());
@@ -80,7 +80,7 @@ public class DiskLoggingErrorManagerTest {
     public void testHandleErrorEvent() throws Exception {
         final UserErrorEvent error = new UserErrorEvent(ErrorLevel.MEDIUM,
                 new IllegalStateException(""), "", "");
-        instance.initialise();
+        instance.initialise(config);
         instance.handleLoggingSetting(true);
         final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
         assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
@@ -95,7 +95,7 @@ public class DiskLoggingErrorManagerTest {
         final UserErrorEvent error = new UserErrorEvent(ErrorLevel.MEDIUM,
                 new IllegalStateException(""),
                 "", "");
-        instance.initialise();
+        instance.initialise(config);
         instance.handleLoggingSetting(false);
         final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
         assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));

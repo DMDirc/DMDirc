@@ -49,6 +49,10 @@ import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.util.io.Downloader;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
 import javax.inject.Singleton;
@@ -99,6 +103,12 @@ public class ClientModule {
     @Provides
     public ConnectionManager getConnectionManager(final ServerManager serverManager) {
         return serverManager;
+    }
+
+    @Provides
+    @Named("singlethread")
+    public ExecutorService getExecutorService() {
+        return Executors.newSingleThreadExecutor();
     }
 
     @Provides

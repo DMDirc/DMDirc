@@ -30,12 +30,15 @@ import com.dmdirc.events.ProgramErrorEvent;
 import com.google.common.base.Throwables;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import net.engio.mbassy.listener.Handler;
 
@@ -43,25 +46,22 @@ import net.engio.mbassy.listener.Handler;
  * Listens for {@link ErrorEvent}s, creates {@link ProgramError}s and raises {@link
  * ProgramErrorEvent}s.
  */
+@Singleton
 public class ProgramErrorManager {
 
     /** The event bus to listen for errors on. */
     private final DMDircMBassador eventBus;
     /** The current list of errors. */
-    private final List<ProgramError> errors;
+    private final Set<ProgramError> errors;
     /** Factory to create {@link ProgramError}s. */
     private final ProgramErrorFactory programErrorFactory;
 
-    /**
-     * Creates a new instance of this error manager.
-     *
-     * @param eventBus        The event bus to listen to errors on
-     */
+    @Inject
     public ProgramErrorManager(final DMDircMBassador eventBus,
             final ProgramErrorFactory programErrorFactory) {
         this.eventBus = eventBus;
         this.programErrorFactory = programErrorFactory;
-        errors = new CopyOnWriteArrayList<>();
+        errors = new CopyOnWriteArraySet<>();
     }
 
     /**
@@ -123,7 +123,7 @@ public class ProgramErrorManager {
      * @since 0.6.3m1
      */
     public void deleteAll() {
-        final Set<ProgramError> errorsCopy = new HashSet<>(errors);
+        final Collection<ProgramError> errorsCopy = new HashSet<>(errors);
         errors.clear();
         errorsCopy.stream().map(ProgramErrorDeletedEvent::new).forEach(eventBus::publish);
     }
@@ -133,7 +133,7 @@ public class ProgramErrorManager {
      *
      * @return Program error list
      */
-    public List<ProgramError> getErrors() {
-        return Collections.unmodifiableList(errors);
+    public Set<ProgramError> getErrors() {
+        return Collections.unmodifiableSet(errors);
     }
 }
