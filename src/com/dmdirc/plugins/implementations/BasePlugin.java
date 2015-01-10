@@ -22,7 +22,6 @@
 
 package com.dmdirc.plugins.implementations;
 
-import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.util.validators.ValidationResponse;
@@ -69,11 +68,6 @@ public abstract class BasePlugin implements Plugin {
     @Override
     public ValidationResponse checkPrerequisites() {
         return new ValidationResponse();
-    }
-
-    @Override
-    public void showConfig(final PreferencesDialogModel manager) {
-        //Define this here so only implementations that care have to override
     }
 
 }

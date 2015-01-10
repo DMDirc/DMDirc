@@ -22,7 +22,6 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.config.prefs.PreferencesDialogModel;
 import com.dmdirc.util.validators.ValidationResponse;
 
 import dagger.ObjectGraph;
@@ -117,15 +116,5 @@ public interface Plugin {
      * @return A graph to be used by child plugins, or {@code null} for the default graph.
      */
     ObjectGraph getObjectGraph();
-
-    /**
-     * Called to allow plugins to add their configuration options to the manager.
-     * PreferencesCategories added from this method should be of type
-     * {@link com.dmdirc.config.prefs.PluginPreferencesCategory} as this gives the user feedback on
-     * the status of your plugin.
-     *
-     * @param manager The preferences manager that configuration options need to be added to.
-     */
-    void showConfig(final PreferencesDialogModel manager);
 
 }
