@@ -101,7 +101,6 @@ public class Channel extends FrameContainer implements GroupChat {
      * @param tabCompleterFactory The factory to use to create tab completers.
      * @param commandController   The controller to load commands from.
      * @param messageSinkManager  The sink manager to use to despatch messages.
-     * @param urlBuilder          The URL builder to use when finding icons.
      * @param eventBus            The bus to despatch events onto.
      */
     public Channel(

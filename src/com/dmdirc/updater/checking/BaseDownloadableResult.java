@@ -50,6 +50,7 @@ public class BaseDownloadableResult extends BaseCheckResult implements Downloada
         this.url = url;
     }
 
+    @Override
     public URL getUrl() {
         return url;
     }

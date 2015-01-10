@@ -23,6 +23,7 @@
 package com.dmdirc.updater.manager;
 
 import com.dmdirc.updater.UpdateComponent;
+import com.dmdirc.updater.checking.CheckResultConsolidator;
 import com.dmdirc.updater.checking.UpdateCheckResult;
 import com.dmdirc.updater.checking.UpdateCheckStrategy;
 import com.dmdirc.updater.installing.UpdateInstallationStrategy;
@@ -39,7 +40,7 @@ public interface UpdateManager {
      * Adds a new check strategy to this manager. {@link UpdateCheckStrategy}s are responsible for
      * checking to see if an updated version of a set of components is available. If multiple
      * strategies are configured, their results are merged using this manager's
-     * {@link com.dmdirc.updater.checking.CheckResultConsolidator}.
+     * {@link CheckResultConsolidator}.
      *
      * @param strategy The strategy to be added.
      */
@@ -94,8 +95,7 @@ public interface UpdateManager {
     /**
      * Installs any updates for the specified component. If an update for the component is available
      * but has not yet been retrieved, this method should perform in the same way to a synchronous
-     * call to {@link #retrieve(com.dmdirc.updater.UpdateComponent)} followed by
-     * {@link #install(com.dmdirc.updater.UpdateComponent)}.
+     * call to {@link #retrieve(UpdateComponent)} followed by {@link #install(UpdateComponent)}.
      *
      * @param component The component to be installed
      */
@@ -103,7 +103,7 @@ public interface UpdateManager {
 
     /**
      * Retrieves any update associated with the given component. The update will not be installed
-     * until the {@link #install(com.dmdirc.updater.UpdateComponent)} method is called.
+     * until the {@link #install(UpdateComponent)} method is called.
      *
      * @param component The component to retrieve updates for
      */

@@ -46,6 +46,7 @@ public class BaseSingleFileResult extends BaseRetrievalResult
         this.file = file;
     }
 
+    @Override
     public Path getFile() {
         return file;
     }

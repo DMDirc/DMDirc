@@ -83,7 +83,6 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
-import javax.net.ssl.TrustManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -570,7 +569,7 @@ public class Server extends FrameContainer implements Connection {
                     new CertificateManager(this, address.getHost(), getConfigManager(),
                             userSettings, getEventBus());
             final SecureParser secureParser = (SecureParser) myParser;
-            secureParser.setTrustManagers(new TrustManager[]{certificateManager});
+            secureParser.setTrustManagers(certificateManager);
             secureParser.setKeyManagers(certificateManager.getKeyManager());
         }
 
