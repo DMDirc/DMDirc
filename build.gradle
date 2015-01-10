@@ -1,6 +1,13 @@
-def jgit = new org.mdonoughe.JGitDescribeTask()
-jgit.dir = new File(projectDir, '.git')
-project.version = jgit.getDescription() + '-SNAPSHOT'
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+
+def gitdir = new File(projectDir, '.git')
+if (gitdir.isFile()) {
+  gitdir = new File(projectDir, gitdir.text.replace('gitdir: ','').trim())
+}
+
+def repo = new FileRepositoryBuilder().setGitDir(gitdir).build()
+project.version = Git.wrap(repo).describe().call() + '-SNAPSHOT'
 
 group = 'com.dmdirc'
 
@@ -76,8 +83,7 @@ buildscript {
     }
 
     dependencies {
-        classpath group: 'com.github.shanemcc', name: 'jgit-describe', version: '0.5'
-        classpath group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '2.3.1.+'
+        classpath group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '3.6.1.201501031845-r'
     }
 }
 
