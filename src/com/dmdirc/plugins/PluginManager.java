@@ -64,8 +64,6 @@ public class PluginManager {
     private final IdentityController identityController;
     /** The update manager to inform about plugins. */
     private final UpdateManager updateManager;
-    /** A provider of initialisers for plugin injectors. */
-    private final Provider<PluginInjectorInitialiser> initialiserProvider;
     /** Global ClassLoader used by plugins from this manager. */
     private final GlobalClassLoader globalClassLoader;
     /** The graph to pass to plugins for DI purposes. */
@@ -81,7 +79,6 @@ public class PluginManager {
      * @param eventBus            The event bus to subscribe to events on
      * @param identityController  The identity controller to use for configuration options.
      * @param updateManager       The update manager to inform about plugins.
-     * @param initialiserProvider A provider of initialisers for plugin injectors.
      * @param objectGraph         The graph to pass to plugins for DI purposes.
      * @param directory           The directory to load plugins from.
      */
@@ -90,13 +87,11 @@ public class PluginManager {
             final ServiceManager serviceManager,
             final IdentityController identityController,
             final UpdateManager updateManager,
-            final Provider<PluginInjectorInitialiser> initialiserProvider,
             final ObjectGraph objectGraph,
             final String directory) {
         this.identityController = identityController;
         this.serviceManager = serviceManager;
         this.updateManager = updateManager;
-        this.initialiserProvider = initialiserProvider;
         this.directory = directory;
         this.globalClassLoader = new GlobalClassLoader(this);
         this.objectGraph = objectGraph;
@@ -154,8 +149,7 @@ public class PluginManager {
                     Paths.get(directory, filename));
             metadata.load();
             final PluginInfo pluginInfo = new PluginInfo(this, serviceManager, directory, metadata,
-                    initialiserProvider, eventBus,
-                    identityController, objectGraph);
+                    eventBus, identityController, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
                 eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,

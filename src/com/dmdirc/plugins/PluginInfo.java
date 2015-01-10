@@ -32,7 +32,6 @@ import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.util.SimpleInjector;
 import com.dmdirc.util.validators.ValidationResponse;
 
 import java.io.IOException;
@@ -55,7 +54,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
-import javax.inject.Provider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,8 +72,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private final PluginManager pluginManager;
     /** The manager to register services with. */
     private final ServiceManager serviceManager;
-    /** The initialiser to use for the injector. */
-    private final Provider<PluginInjectorInitialiser> injectorInitialiser;
     /** The object graph to pass to plugins for DI purposes. */
     private final ObjectGraph objectGraph;
     /** The controller to add and remove settings from. */
@@ -109,7 +105,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * Create a new PluginInfo.
      *
      * @param metadata            The plugin's metadata information
-     * @param injectorInitialiser The initialiser to use for the plugin's injector.
      * @param eventBus            Event bus to post event loaded events on.
      * @param identityController  The identity controller to add and remove settings from.
      * @param objectGraph         The object graph to give to plugins for DI purposes.
@@ -121,13 +116,11 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             final ServiceManager serviceManager,
             final String pluginDirectory,
             final PluginMetaData metadata,
-            final Provider<PluginInjectorInitialiser> injectorInitialiser,
             final DMDircMBassador eventBus,
             final IdentityController identityController,
             final ObjectGraph objectGraph) throws PluginException {
         this.pluginManager = pluginManager;
         this.serviceManager = serviceManager;
-        this.injectorInitialiser = injectorInitialiser;
         this.objectGraph = objectGraph;
         this.eventBus = eventBus;
         this.identityController = identityController;
@@ -193,35 +186,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             lastError = "Error loading classes: " + ex.getMessage();
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ex);
         }
-    }
-
-    /**
-     * Retrieves the injector used to inject parameters into this plugin's methods.
-     *
-     * @return The injector used for this plugin
-     */
-    public SimpleInjector getInjector() {
-        final SimpleInjector[] parents = new SimpleInjector[metaData.getParent() == null ? 0 : 1];
-        final Plugin[] plugins = new Plugin[parents.length];
-
-        if (metaData.getParent() != null) {
-            final PluginInfo parent = pluginManager.getPluginInfoByName(metaData.getParent());
-            parents[0] = parent.getInjector();
-            plugins[0] = parent.getPlugin();
-        }
-
-        final SimpleInjector injector = new SimpleInjector(parents);
-
-        for (Plugin parentPlugin : plugins) {
-            injector.addParameter(parentPlugin);
-        }
-
-        // TODO: This should be switched to using a full DI framework.
-        injector.addParameter(PluginInfo.class, this);
-        injector.addParameter(PluginMetaData.class, metaData);
-        injectorInitialiser.get().initialise(injector);
-
-        return injector;
     }
 
     /**
@@ -679,8 +643,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             // Only try and construct the main class, anything else should be constructed
             // by the plugin itself.
             if (classname.equals(metaData.getMainClass())) {
-                final Object temp = getInjector().createInstance(clazz);
-
+                final Object temp = clazz.newInstance();
                 if (temp instanceof Plugin) {
                     final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
                     if (prerequisites.isFailure()) {
@@ -720,7 +683,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                     + classname.equals(metaData.getMainClass())
                     + "') - Incompatible: " + ve.getMessage();
             eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, ve, lastError, ""));
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException | ReflectiveOperationException ex) {
             lastError = "Unable to instantiate class for plugin " + metaData.getName()
                     + ": " + classname;
             eventBus.publishAsync(new AppErrorEvent(ErrorLevel.LOW, ex, lastError, ""));

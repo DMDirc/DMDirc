@@ -26,7 +26,6 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.manager.UpdateManager;
 
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -50,13 +49,12 @@ public class PluginModule {
             final DMDircMBassador eventBus,
             final IdentityController identityController,
             final UpdateManager updateManager,
-            final Provider<PluginInjectorInitialiser> initialiserProvider,
             final ObjectGraph objectGraph,
             final ServiceManager serviceManager,
             final CorePluginHelper pluginHelper,
             @Directory(DirectoryType.PLUGINS) final String directory) {
         final PluginManager manager = new PluginManager(eventBus, serviceManager,
-                identityController, updateManager, initialiserProvider, objectGraph, directory);
+                identityController, updateManager, objectGraph, directory);
         final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory, eventBus);
         pluginHelper.checkBundledPlugins(extractor, manager,
                 identityController.getGlobalConfiguration());
