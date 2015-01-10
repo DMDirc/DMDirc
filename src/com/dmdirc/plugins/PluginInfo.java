@@ -86,8 +86,6 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     private Plugin plugin;
     /** The classloader used for this Plugin. */
     private PluginClassLoader pluginClassLoader;
-    /** Is this plugin only loaded temporarily? */
-    private boolean tempLoaded;
     /** List of classes this plugin has. */
     private final List<String> myClasses = new ArrayList<>();
     /** Last Error Message. */
@@ -461,32 +459,10 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
     /**
      * Is this plugin loaded?
      *
-     * @return True if the plugin is currently (non-temporarily) loaded, false otherwise
+     * @return True if the plugin is currently loaded, false otherwise
      */
     public boolean isLoaded() {
-        return plugin != null && !tempLoaded;
-    }
-
-    /**
-     * Is this plugin temporarily loaded?
-     *
-     * @return True if this plugin is currently temporarily loaded, false otherwise
-     */
-    public boolean isTempLoaded() {
-        return plugin != null && tempLoaded;
-    }
-
-    /**
-     * Try to Load the plugin files temporarily.
-     */
-    public void loadPluginTemp() {
-        if (isLoaded() || isTempLoaded()) {
-            // Already loaded, don't do anything
-            return;
-        }
-
-        tempLoaded = true;
-        loadPlugin();
+        return plugin != null;
     }
 
     /**
@@ -576,12 +552,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
             return false;
         }
 
-        if (tempLoaded) {
-            pi.loadPluginTemp();
-        } else {
-            pi.loadPlugin();
-        }
-
+        pi.loadPlugin();
         return true;
     }
 
@@ -595,45 +566,24 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
         }
 
         updateProvides();
+        isLoading = true;
 
-        if (isTempLoaded()) {
-            tempLoaded = false;
-
-            if (!loadRequirements()) {
-                tempLoaded = true;
-                lastError = "Unable to satisfy dependencies for " + metaData.getName();
-                return;
-            }
-
-            try {
-                plugin.load(this, getObjectGraph());
-                plugin.onLoad();
-            } catch (LinkageError | Exception e) {
-                lastError = "Error in onLoad for " + metaData.getName() + ':'
-                        + e.getMessage();
-                eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
-                unloadPlugin();
-            }
-        } else {
-            isLoading = true;
-
-            if (!loadRequirements()) {
-                isLoading = false;
-                lastError = "Unable to satisfy dependencies for " + metaData.getName();
-                return;
-            }
-
-            loadIdentities();
-
-            loadClass(metaData.getMainClass());
-
-            if (isLoaded()) {
-                //TODO plugin loading shouldn't be done from here, event bus shouldn't be here.
-                eventBus.publishAsync(new PluginLoadedEvent(this));
-            }
-
+        if (!loadRequirements()) {
             isLoading = false;
+            lastError = "Unable to satisfy dependencies for " + metaData.getName();
+            return;
         }
+
+        loadIdentities();
+
+        loadClass(metaData.getMainClass());
+
+        if (isLoaded()) {
+            //TODO plugin loading shouldn't be done from here, event bus shouldn't be here.
+            eventBus.publishAsync(new PluginLoadedEvent(this));
+        }
+
+        isLoading = false;
     }
 
     /**
@@ -734,25 +684,21 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
                 if (temp instanceof Plugin) {
                     final ValidationResponse prerequisites = ((Plugin) temp).checkPrerequisites();
                     if (prerequisites.isFailure()) {
-                        if (!tempLoaded) {
-                            lastError = "Prerequisites for plugin not met. ('"
-                                    + filename + ':' + metaData.getMainClass()
-                                    + "' -> '" + prerequisites.getFailureReason() + "') ";
-                            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null, lastError, ""));
-                        }
+                        lastError = "Prerequisites for plugin not met. ('"
+                                + filename + ':' + metaData.getMainClass()
+                                + "' -> '" + prerequisites.getFailureReason() + "') ";
+                        eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null, lastError, ""));
                     } else {
                         plugin = (Plugin) temp;
-                        if (!tempLoaded) {
-                            try {
-                                plugin.load(this, getObjectGraph());
-                                plugin.onLoad();
-                            } catch (LinkageError | Exception e) {
-                                lastError = "Error in onLoad for "
-                                        + metaData.getName() + ':' + e.getMessage();
-                                eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM,
-                                        e, lastError, ""));
-                                unloadPlugin();
-                            }
+                        try {
+                            plugin.load(this, getObjectGraph());
+                            plugin.onLoad();
+                        } catch (LinkageError | Exception e) {
+                            lastError = "Error in onLoad for "
+                                    + metaData.getName() + ':' + e.getMessage();
+                            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM,
+                                    e, lastError, ""));
+                            unloadPlugin();
                         }
                     }
                 }
@@ -805,8 +751,7 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      * @return true if plugin can be unloaded
      */
     public boolean isUnloadable() {
-        return !isPersistent() && (isTempLoaded() || isLoaded())
-                && metaData.isUnloadable();
+        return !isPersistent() && isLoaded() && metaData.isUnloadable();
     }
 
     /**
@@ -816,43 +761,40 @@ public class PluginInfo implements Comparable<PluginInfo>, ServiceProvider {
      */
     private void unloadPlugin(final boolean parentUnloading) {
         if (isUnloadable()) {
-            if (!isTempLoaded()) {
-                // Unload all children
-                for (PluginInfo child : children) {
-                    child.unloadPlugin(true);
-                }
+            // Unload all children
+            for (PluginInfo child : children) {
+                child.unloadPlugin(true);
+            }
 
-                // Delete ourself as a child of our parent.
-                if (!parentUnloading && metaData.getParent() != null) {
-                    final PluginInfo pi = pluginManager.getPluginInfoByName(metaData.getParent());
-                    if (pi != null) {
-                        pi.delChild(this);
-                    }
-                }
-
-                // Now unload ourself
-                try {
-                    plugin.onUnload();
-                } catch (Exception | LinkageError e) {
-                    lastError = "Error in onUnload for " + metaData.getName()
-                            + ':' + e + " - " + e.getMessage();
-                    eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
-                }
-
-                //TODO plugin unloading shouldn't be done from here, event bus shouldn't be here.
-                eventBus.publishAsync(new PluginUnloadedEvent(this));
-                synchronized (provides) {
-                    for (Service service : provides) {
-                        service.delProvider(this);
-                    }
-                    provides.clear();
+            // Delete ourself as a child of our parent.
+            if (!parentUnloading && metaData.getParent() != null) {
+                final PluginInfo pi = pluginManager.getPluginInfoByName(metaData.getParent());
+                if (pi != null) {
+                    pi.delChild(this);
                 }
             }
-            unloadIdentities();
-            tempLoaded = false;
-            plugin = null;
-            pluginClassLoader = null;
+
+            // Now unload ourself
+            try {
+                plugin.onUnload();
+            } catch (Exception | LinkageError e) {
+                lastError = "Error in onUnload for " + metaData.getName()
+                        + ':' + e + " - " + e.getMessage();
+                eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
+            }
+
+            //TODO plugin unloading shouldn't be done from here, event bus shouldn't be here.
+            eventBus.publishAsync(new PluginUnloadedEvent(this));
+            synchronized (provides) {
+                for (Service service : provides) {
+                    service.delProvider(this);
+                }
+                provides.clear();
+            }
         }
+        unloadIdentities();
+        plugin = null;
+        pluginClassLoader = null;
     }
 
     /**

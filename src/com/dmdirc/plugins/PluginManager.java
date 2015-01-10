@@ -23,7 +23,6 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.PluginRefreshEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -49,7 +48,6 @@ import java.util.Map;
 import javax.inject.Provider;
 
 import dagger.ObjectGraph;
-import net.engio.mbassy.listener.Handler;
 
 /**
  * Searches for and manages plugins and services.
@@ -458,13 +456,6 @@ public class PluginManager {
      */
     public Collection<PluginInfo> getPluginInfos() {
         return new ArrayList<>(knownPlugins.values());
-    }
-
-    @Handler
-    public void handlePrefsClosed(final ClientPrefsClosedEvent event) {
-        getPluginInfos().stream()
-                .filter(PluginInfo::isTempLoaded)
-                .forEach(PluginInfo::unloadPlugin);
     }
 
 }
