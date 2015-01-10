@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.Invite;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 
@@ -32,19 +33,22 @@ public class ServerInviteReceivedEvent extends ServerDisplayableEvent {
 
     private final User user;
     private final String channel;
+    private final Invite invite;
 
     public ServerInviteReceivedEvent(final long timestamp, final Connection connection,
-            final User user, final String channel) {
+            final User user, final String channel, final Invite invite) {
         super(timestamp, connection);
         this.user = user;
         this.channel = channel;
+        this.invite = invite;
     }
 
     public ServerInviteReceivedEvent(final Connection connection, final User user,
-            final String channel) {
+            final String channel, final Invite invite) {
         super(connection);
         this.user = user;
         this.channel = channel;
+        this.invite = invite;
     }
 
     public User getUser() {
@@ -53,6 +57,10 @@ public class ServerInviteReceivedEvent extends ServerDisplayableEvent {
 
     public String getChannel() {
         return channel;
+    }
+
+    public Invite getInvite() {
+        return invite;
     }
 
 }
