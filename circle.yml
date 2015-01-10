@@ -40,6 +40,9 @@ test:
     - ./gradlew --stacktrace --parallel client:jar client:test:
         pwd:
           ../meta
+  post:
+    - ./gradlew client:jacocoTestReport client:coveralls
+
 
 general:
   artifacts:
