@@ -149,6 +149,7 @@ public class SentryLoggingErrorManager {
      * @return True if the exception may be reported, false otherwise
      */
     private boolean isValidError(final Throwable exception) {
+        // TODO: Dedupe this from here and ProgramErrorManager
         Throwable target = exception;
         while (target != null) {
             for (Class<?> bad : BANNED_EXCEPTIONS) {

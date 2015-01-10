@@ -24,6 +24,8 @@ package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ErrorEvent;
+import com.dmdirc.events.FatalProgramErrorEvent;
+import com.dmdirc.events.NonFatalProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorDeletedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
 
@@ -49,6 +51,12 @@ import net.engio.mbassy.listener.Handler;
 @Singleton
 public class ProgramErrorManager {
 
+    /** A list of exceptions which we don't consider bugs and thus don't report. */
+    private static final Class<?>[] BANNED_EXCEPTIONS = new Class<?>[]{
+            NoSuchMethodError.class, NoClassDefFoundError.class,
+            UnsatisfiedLinkError.class, AbstractMethodError.class,
+            IllegalAccessError.class, OutOfMemoryError.class,
+            NoSuchFieldError.class,};
     /** The event bus to listen for errors on. */
     private final DMDircMBassador eventBus;
     /** The current list of errors. */
@@ -73,8 +81,13 @@ public class ProgramErrorManager {
 
     @Handler
     void handleErrorEvent(final ErrorEvent event) {
-        addError(event.getLevel(), event.getMessage(), event.getThrowable(), event.getDetails(),
-                false);
+        final ProgramError error = addError(event.getLevel(), event.getMessage(),
+                event.getThrowable(), event.getDetails(), isValidError(event.getThrowable()));
+        if (error.getLevel() == ErrorLevel.FATAL) {
+            eventBus.publish(new FatalProgramErrorEvent(error));
+        } else {
+            eventBus.publish(new NonFatalProgramErrorEvent(error));
+        }
     }
 
     /**
@@ -135,5 +148,27 @@ public class ProgramErrorManager {
      */
     public Set<ProgramError> getErrors() {
         return Collections.unmodifiableSet(errors);
+    }
+
+    /**
+     * Determines whether or not the specified exception is one that we are willing to report.
+     *
+     * @param exception The exception to test
+     *
+     * @since 0.6.3m1
+     * @return True if the exception may be reported, false otherwise
+     */
+    private boolean isValidError(final Throwable exception) {
+        // TODO: Dedupe this from here and SentryLoggingErrorManager
+        Throwable target = exception;
+        while (target != null) {
+            for (Class<?> bad : BANNED_EXCEPTIONS) {
+                if (bad.equals(target.getClass())) {
+                    return false;
+                }
+            }
+            target = target.getCause();
+        }
+        return true;
     }
 }

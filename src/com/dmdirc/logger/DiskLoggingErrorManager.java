@@ -56,8 +56,6 @@ public class DiskLoggingErrorManager {
     private final DMDircMBassador eventBus;
     /** The directory to log errors to. */
     private final Path errorsDirectory;
-    /** The config binder to use for settings. */
-    private ConfigBinder configBinder;
     /** Error creating directory, don't write to disk. */
     private boolean directoryError;
     /** Are we logging errors to disk? */
@@ -75,7 +73,7 @@ public class DiskLoggingErrorManager {
      * Initialises the error manager.  Must be called before logging will start.
      */
     public void initialise(final AggregateConfigProvider config) {
-        configBinder = config.getBinder();
+        final ConfigBinder configBinder = config.getBinder();
         configBinder.bind(this, DiskLoggingErrorManager.class);
         eventBus.subscribe(this);
         if (!Files.exists(errorsDirectory)) {
