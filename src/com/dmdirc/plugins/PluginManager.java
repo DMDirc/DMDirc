@@ -23,9 +23,7 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ClientPrefsClosedEvent;
-import com.dmdirc.events.ClientPrefsOpenedEvent;
 import com.dmdirc.events.PluginRefreshEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -460,24 +458,6 @@ public class PluginManager {
      */
     public Collection<PluginInfo> getPluginInfos() {
         return new ArrayList<>(knownPlugins.values());
-    }
-
-    @Handler
-    public void handlePrefsOpened(final ClientPrefsOpenedEvent event) {
-        for (PluginInfo pi : getPluginInfos()) {
-            if (!pi.isLoaded() && !pi.isTempLoaded()) {
-                pi.loadPluginTemp();
-            }
-            if (pi.isLoaded() || pi.isTempLoaded()) {
-                try {
-                    pi.getPlugin().showConfig(event.getModel());
-                } catch (LinkageError | Exception le) {
-                    eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, le,
-                            "Unable to show plugin configuration for "
-                            + pi.getMetaData().getFriendlyName(), ""));
-                }
-            }
-        }
     }
 
     @Handler
