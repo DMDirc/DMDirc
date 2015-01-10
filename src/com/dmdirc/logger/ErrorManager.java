@@ -27,7 +27,6 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /**
@@ -36,27 +35,21 @@ import javax.inject.Singleton;
 @Singleton
 public class ErrorManager {
 
-    private final Provider<SentryLoggingErrorManager> sentryLoggingErrorManagerProvider;
-    private final Provider<ProgramErrorManager> programErrorManagerProvider;
-    private final Provider<DiskLoggingErrorManager> diskLoggingErrorManagerProvider;
-    private SentryLoggingErrorManager sentryLoggingErrorManager;
-    private ProgramErrorManager programErrorManager;
-    private DiskLoggingErrorManager diskLoggingErrorManager;
+    private final SentryLoggingErrorManager sentryLoggingErrorManager;
+    private final ProgramErrorManager programErrorManager;
+    private final DiskLoggingErrorManager diskLoggingErrorManager;
 
     @Inject
     public ErrorManager(
-            final Provider<SentryLoggingErrorManager> sentryLoggingErrorManagerProvider,
-            final Provider<ProgramErrorManager> programErrorManagerProvider,
-            final Provider<DiskLoggingErrorManager> diskLoggingErrorManagerProvider) {
-        this.sentryLoggingErrorManagerProvider = sentryLoggingErrorManagerProvider;
-        this.programErrorManagerProvider = programErrorManagerProvider;
-        this.diskLoggingErrorManagerProvider = diskLoggingErrorManagerProvider;
+            final SentryLoggingErrorManager sentryLoggingErrorManager,
+            final ProgramErrorManager programErrorManager,
+            final DiskLoggingErrorManager diskLoggingErrorManager) {
+        this.sentryLoggingErrorManager = sentryLoggingErrorManager;
+        this.programErrorManager = programErrorManager;
+        this.diskLoggingErrorManager = diskLoggingErrorManager;
     }
 
     public void initialise(final AggregateConfigProvider config) {
-        sentryLoggingErrorManager = sentryLoggingErrorManagerProvider.get();
-        diskLoggingErrorManager = diskLoggingErrorManagerProvider.get();
-        programErrorManager = programErrorManagerProvider.get();
         sentryLoggingErrorManager.initialise(config);
         diskLoggingErrorManager.initialise(config);
         programErrorManager.initialise();

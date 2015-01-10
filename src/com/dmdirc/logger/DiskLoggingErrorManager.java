@@ -65,7 +65,7 @@ public class DiskLoggingErrorManager {
 
     @Inject
     public DiskLoggingErrorManager(
-            @Directory(DirectoryType.ERRORS)final Path errorsDirectory,
+            @Directory(DirectoryType.ERRORS) final Path errorsDirectory,
             final DMDircMBassador eventBus) {
         this.errorsDirectory = errorsDirectory;
         this.eventBus = eventBus;
