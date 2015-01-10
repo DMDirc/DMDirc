@@ -329,6 +329,14 @@ public interface Connection {
     void sendLine(String line);
 
     /**
+     * Sends a message to the specified target.
+     *
+     * @param target  target to send message to
+     * @param message Message to send
+     */
+    void sendMessage(String target, String message);
+
+    /**
      * Gets the core model for the input/output window for this connection.
      *
      * @return A model for windows based on this connection.
