@@ -673,11 +673,12 @@ public abstract class InputHandler implements ConfigChangeListener {
     public void clearInputField() {
         target.setText("");
     }
-    
+
     @Handler
     void parentClosing(final FrameClosingEvent event) {
         if (event.getContainer().equals(parentWindow)) {
             executorService.shutdown();
+            eventBus.unsubscribe(this);
         }
     }
 
