@@ -1067,6 +1067,11 @@ public class Server extends FrameContainer implements Connection {
         return inviteManager;
     }
 
+    @Override
+    public void setNickname(final String nickname) {
+        parser.map(Parser::getLocalClient).ifPresent(c -> c.setNickname(nickname));
+    }
+
     /**
      * Utility method to get a result from the parser while holding the {@link #parserLock}
      * read lock.

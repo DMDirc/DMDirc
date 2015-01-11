@@ -403,4 +403,11 @@ public interface Connection {
      */
     InviteManager getInviteManager();
 
+    /**
+     * Sets the local user's current nickname on this connection.
+     *
+     * @param nickname New nickname
+     */
+    void setNickname(final String nickname);
+
 }
