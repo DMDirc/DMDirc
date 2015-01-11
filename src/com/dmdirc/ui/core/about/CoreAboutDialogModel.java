@@ -112,8 +112,6 @@ public class CoreAboutDialogModel implements AboutDialogModel {
     private List<InfoItem> createInfoItems() {
         return Lists
                 .newArrayList(InfoItem.create("DMDirc version", clientInfo.getVersionInformation()),
-                        InfoItem.create("Mode Aliases version",
-                                globalConfig.getOption("identity", "modealiasversion")),
                         InfoItem.create("OS Version", clientInfo.getOperatingSystemInformation()),
                         InfoItem.create("Profile directory", baseDirectory.toString()),
                         InfoItem.create("Java version", clientInfo.getJavaInformation()),
