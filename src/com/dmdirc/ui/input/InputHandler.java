@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -117,6 +118,8 @@ public abstract class InputHandler implements ConfigChangeListener {
     private final CommandController commandController;
     /** The event bus to use to dispatch input events. */
     private final DMDircMBassador eventBus;
+    /** Executor service. */
+    private final ScheduledExecutorService executorService;
 
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target that we need to operate.
@@ -146,6 +149,8 @@ public abstract class InputHandler implements ConfigChangeListener {
         this.parentWindow = parentWindow;
         this.tabCompleterUtils = tabCompleterUtils;
         this.eventBus = eventBus;
+        executorService = Executors.newSingleThreadScheduledExecutor(
+                new ThreadFactoryBuilder().setNameFormat("Composition state timer-%d").build());
 
         setStyle();
 
@@ -313,9 +318,8 @@ public abstract class InputHandler implements ConfigChangeListener {
             compositionTimer.cancel(true);
         }
 
-        compositionTimer = Executors.newSingleThreadScheduledExecutor(
-                new ThreadFactoryBuilder().setNameFormat("Composition state timer-%d").build())
-                .schedule(this::timeoutTypingNotification, TYPING_TIMEOUT, TimeUnit.MILLISECONDS);
+        compositionTimer = executorService.schedule(this::timeoutTypingNotification,
+                TYPING_TIMEOUT, TimeUnit.MILLISECONDS);
 
         LOG.debug("Setting composition state to typing. Timer scheduled for {}", TYPING_TIMEOUT);
         setCompositionState(CompositionState.TYPING);
