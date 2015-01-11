@@ -109,7 +109,7 @@ public class CoreAboutDialogModelTest {
 
     @Test
     public void testGetInfo() throws Exception {
-        assertEquals(7, instance.getInfo().size());
+        assertEquals(6, instance.getInfo().size());
     }
 
     @Test
