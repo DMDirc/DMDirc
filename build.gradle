@@ -68,10 +68,10 @@ repositories {
     }
 }
 
-apply from: 'analysis.gradle'
-apply from: 'publishing.gradle'
-apply from: 'jar.gradle'
-apply from: 'fatjar.gradle'
+apply from: 'gradle/analysis.gradle'
+apply from: 'gradle/publishing.gradle'
+apply from: 'gradle/jar.gradle'
+apply from: 'gradle/fatjar.gradle'
 
 buildscript {
     repositories {
