@@ -119,9 +119,9 @@ public class SentryLoggingErrorManager {
      * @return True if the source is valid, false otherwise
      */
     private boolean isValidSource(final Collection<String> trace) {
-        final String line = getSourceLine(trace).orElse("");
-        return line.startsWith("com.dmdirc")
-                && !line.startsWith("com.dmdirc.addons.ui_swing.DMDircEventQueue");
+        final String line = getSourceLine(trace).orElse("").trim();
+        return line.startsWith("at com.dmdirc")
+                && !line.startsWith("at com.dmdirc.addons.ui_swing.DMDircEventQueue");
     }
 
     /**
@@ -133,7 +133,7 @@ public class SentryLoggingErrorManager {
      */
     private Optional<String> getSourceLine(final Collection<String> trace) {
         for (String line : trace) {
-            if (line.startsWith("com.dmdirc")) {
+            if (line.trim().startsWith("at com.dmdirc")) {
                 return Optional.of(line);
             }
         }
@@ -149,7 +149,6 @@ public class SentryLoggingErrorManager {
      * @return True if the exception may be reported, false otherwise
      */
     private boolean isValidError(final Throwable exception) {
-        // TODO: Dedupe this from here and ProgramErrorManager
         Throwable target = exception;
         while (target != null) {
             for (Class<?> bad : BANNED_EXCEPTIONS) {
