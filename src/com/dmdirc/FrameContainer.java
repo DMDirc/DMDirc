@@ -31,7 +31,7 @@ import com.dmdirc.events.FrameComponentRemovedEvent;
 import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameNameChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
-import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.parser.common.CompositionState;
@@ -62,7 +62,7 @@ import static com.google.common.base.Preconditions.checkState;
  * The frame container implements basic methods that should be present in all objects that handle a
  * frame.
  */
-public abstract class FrameContainer {
+public abstract class FrameContainer implements WindowModel {
 
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
@@ -189,63 +189,52 @@ public abstract class FrameContainer {
         backBuffer.startAddingEvents();
     }
 
+    @Override
     public Optional<FrameContainer> getParent() {
         return parent;
     }
 
+    @Override
     public String getIcon() {
         return icon;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public AggregateConfigProvider getConfigManager() {
         return configManager;
     }
 
+    @Override
     public DMDircMBassador getEventBus() {
         return eventBus;
     }
 
+    @Override
     public boolean isWritable() {
         return writable;
     }
 
-    /**
-     * Returns a collection of direct children of this frame.
-     *
-     * @return This frame's children
-     *
-     * @since 0.6.4
-     */
+    @Override
     public Collection<FrameContainer> getChildren() {
         return Collections.unmodifiableCollection(children);
     }
 
-    /**
-     * Adds a new child window to this frame.
-     *
-     * @param child The window to be added
-     *
-     * @since 0.6.4
-     */
+    @Override
     public void addChild(final FrameContainer child) {
         children.add(child);
     }
 
-    /**
-     * Removes a child window from this frame.
-     *
-     * @param child The window to be removed
-     *
-     * @since 0.6.4
-     */
+    @Override
     public void removeChild(final FrameContainer child) {
         children.remove(child);
     }
@@ -261,54 +250,32 @@ public abstract class FrameContainer {
         eventBus.publishAsync(new FrameNameChangedEvent(this, name));
     }
 
-    /**
-     * Changes the title of this container, and fires a {@link FrameTitleChangedEvent}.
-     *
-     * @param title The new title for this frame.
-     */
+    @Override
     public void setTitle(final String title) {
         this.title = title;
 
         eventBus.publishAsync(new FrameTitleChangedEvent(this, title));
     }
 
-    /**
-     * Returns the collection of UI component identifiers that this frame container requires for its
-     * display.
-     *
-     * @since 0.6.6
-     * @return Collection of UI component identifiers
-     */
+    @Override
     public Set<String> getComponents() {
         return Collections.unmodifiableSet(components);
     }
 
-    /**
-     * Adds a new component to this container.
-     *
-     * @since 0.6.6
-     * @param component The component to be added
-     */
+    @Override
     public void addComponent(final String component) {
         components.add(component);
         eventBus.publishAsync(new FrameComponentAddedEvent(this, component));
     }
 
-    /**
-     * Removes a component from this container.
-     *
-     * @since 0.6.6
-     * @param component The component to be removed
-     */
+    @Override
     public void removeComponent(final String component) {
         components.remove(component);
 
         eventBus.publishAsync(new FrameComponentRemovedEvent(this, component));
     }
 
-    /**
-     * Closes this container (and its associated frame).
-     */
+    @Override
     public void close() {
         eventBus.unsubscribe(unreadStatusManager);
         configManager.getBinder().unbind(unreadStatusManager);
@@ -317,18 +284,7 @@ public abstract class FrameContainer {
         getBackBuffer().stopAddingEvents();
     }
 
-    /**
-     * Returns the connection that this container is associated with.
-     *
-     * @return the associated connection.
-     */
-    public abstract Optional<Connection> getConnection();
-
-    /**
-     * Sets the icon to be used by this frame container and fires a {@link FrameIconChangedEvent}.
-     *
-     * @param icon The new icon to be used
-     */
+    @Override
     public final void setIcon(final String icon) {
         this.icon = icon;
 
@@ -345,88 +301,41 @@ public abstract class FrameContainer {
         eventBus.publish(new FrameIconChangedEvent(this, icon));
     }
 
-    /**
-     * Gets the back buffer for this container.
-     *
-     * @return This container's back buffer.
-     */
+    @Override
     public BackBuffer getBackBuffer() {
         return backBuffer;
     }
 
-    /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
-     *
-     * @param type      The message type to use
-     * @param timestamp The timestamp to use for this line
-     * @param args      The message's arguments
-     *
-     * @since 0.6.4
-     */
+    @Override
     public void addLine(final String type, final Date timestamp, final Object... args) {
         if (type != null && !type.isEmpty()) {
             addLine(Formatter.formatMessage(getConfigManager(), type, args), timestamp);
         }
     }
 
-    /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
-     *
-     * @param type The message type to use
-     * @param args The message's arguments
-     */
+    @Override
     public void addLine(final String type, final Object... args) {
         addLine(type, new Date(), args);
     }
 
-    /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
-     *
-     * @param type      The message type to use
-     * @param timestamp The timestamp to use for this line
-     * @param args      The message's arguments
-     *
-     * @since 0.6.4
-     */
+    @Override
     public void addLine(final StringBuffer type, final Date timestamp, final Object... args) {
         if (type != null) {
             addLine(type.toString(), timestamp, args);
         }
     }
 
-    /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
-     *
-     * @param type The message type to use
-     * @param args The message's arguments
-     */
+    @Override
     public void addLine(final StringBuffer type, final Object... args) {
         addLine(type, new Date(), args);
     }
 
-    /**
-     * Adds the specified raw line to the window, without using a formatter.
-     *
-     * @param line      The line to be added
-     * @param timestamp Whether or not to display the timestamp for this line
-     */
+    @Override
     public void addLine(final String line, final boolean timestamp) {
         addLine(line, timestamp ? new Date() : null);
     }
 
-    /**
-     * Adds the specified raw line to the window, without using a formatter, and using the specified
-     * timestamp. If the timestamp is <code>null</code>, no timestamp is added.
-     *
-     * @param line      The line to be added
-     * @param timestamp The timestamp to use for the line
-     *
-     * @since 0.6.4
-     */
+    @Override
     public void addLine(final String line, final Date timestamp) {
         for (final String myLine : line.split("\n")) {
             getBackBuffer().getDocument().addText(
@@ -435,41 +344,24 @@ public abstract class FrameContainer {
         }
     }
 
-    /**
-     * Sends a line of text to this container's source.
-     *
-     * @param line The line to be sent
-     */
+    @Override
     public void sendLine(final String line) {
         throw new UnsupportedOperationException("Container doesn't override sendLine");
     }
 
-    /**
-     * Retrieves the command parser to be used for this container.
-     *
-     * @return This container's command parser
-     */
+    @Override
     public CommandParser getCommandParser() {
         checkState(writable);
         return commandParser.get();
     }
 
-    /**
-     * Retrieves the tab completer which should be used for this container.
-     *
-     * @return This container's tab completer
-     */
+    @Override
     public TabCompleter getTabCompleter() {
         checkState(writable);
         return tabCompleter.get();
     }
 
-    /**
-     * Returns the maximum length that a line passed to sendLine() should be, in order to prevent it
-     * being truncated or causing protocol violations.
-     *
-     * @return The maximum line length for this container
-     */
+    @Override
     public int getMaxLineLength() {
         throw new UnsupportedOperationException("Container doesn't override getMaxLineLength");
     }
@@ -510,13 +402,7 @@ public abstract class FrameContainer {
         return result;
     }
 
-    /**
-     * Returns the number of lines that the specified string would be sent as.
-     *
-     * @param line The string to be split and sent
-     *
-     * @return The number of lines required to send the specified string
-     */
+    @Override
     public final int getNumLines(final String line) {
         final String[] splitLines = line.split("(\n|\r\n|\r)", Integer.MAX_VALUE);
         int lines = 0;
@@ -632,6 +518,7 @@ public abstract class FrameContainer {
         // composition should override this.
     }
 
+    @Override
     public UnreadStatusManager getUnreadStatusManager() {
         return unreadStatusManager;
     }
