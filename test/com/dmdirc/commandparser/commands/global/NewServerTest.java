@@ -21,11 +21,13 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionFactory;
@@ -46,12 +48,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyChar;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NewServerTest {
 
+    @Mock private DMDircMBassador eventBus;
     @Mock private CommandController controller;
     @Mock private ProfileManager profileManager;
     @Mock private Profile identity;
@@ -63,6 +67,7 @@ public class NewServerTest {
 
     @Before
     public void setup() {
+        when(container.getEventBus()).thenReturn(eventBus);
         when(factory.createServer(any(URI.class), any(Profile.class))).thenReturn(connection);
         when(profileManager.getProfiles()).thenReturn(
                 Collections.singletonList(identity));
@@ -109,7 +114,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo foo:abc"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(container).addLine(eq("commandError"), anyString());
+        verify(eventBus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test
@@ -117,7 +122,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo foo:0"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(container).addLine(eq("commandError"), anyString());
+        verify(eventBus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test
@@ -125,7 +130,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo foo:65537"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(container).addLine(eq("commandError"), anyString());
+        verify(eventBus).publishAsync(isA(CommandErrorEvent.class));
     }
 
 }
