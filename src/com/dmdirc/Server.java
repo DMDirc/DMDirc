@@ -43,6 +43,7 @@ import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.ParserError;
 import com.dmdirc.parser.common.ThreadedParser;
+import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.EncodingParser;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
@@ -1070,6 +1071,11 @@ public class Server extends FrameContainer implements Connection {
     @Override
     public void setNickname(final String nickname) {
         parser.map(Parser::getLocalClient).ifPresent(c -> c.setNickname(nickname));
+    }
+
+    @Override
+    public Optional<String> getNickname() {
+        return parser.map(Parser::getLocalClient).map(ClientInfo::getNickname);
     }
 
     /**

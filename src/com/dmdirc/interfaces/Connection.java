@@ -410,4 +410,11 @@ public interface Connection {
      */
     void setNickname(final String nickname);
 
+    /**
+     * Returns the current nickname for this connection.
+     *
+     * @return Current nickname, or an empty if not present
+     */
+    Optional<String> getNickname();
+
 }
