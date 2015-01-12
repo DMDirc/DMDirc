@@ -123,13 +123,9 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     @Override
     public boolean isSendAllowed() {
-        if (selectedError.isPresent()) {
-            final ErrorReportStatus status = selectedError.map(DisplayableError::getReportStatus)
-                    .orElse(ErrorReportStatus.NOT_APPLICABLE);
-            return status == ErrorReportStatus.WAITING || status == ErrorReportStatus.ERROR;
-        } else {
-            return false;
-        }
+        final ErrorReportStatus status = selectedError.map(DisplayableError::getReportStatus)
+                .orElse(ErrorReportStatus.NOT_APPLICABLE);
+        return status == ErrorReportStatus.WAITING || status == ErrorReportStatus.ERROR;
     }
 
     @Override
