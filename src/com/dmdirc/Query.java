@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.events.AppErrorEvent;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.QueryActionEvent;
 import com.dmdirc.events.QueryClosedEvent;
 import com.dmdirc.events.QueryMessageEvent;
@@ -154,7 +155,8 @@ public class Query extends FrameContainer implements PrivateActionListener,
             getEventBus().publishAsync(
                     new QuerySelfActionEvent(this, connection.getLocalUser().get(), action));
         } else {
-            addLine("actionTooLong", action.length());
+            getEventBus().publishAsync(
+                    new CommandErrorEvent(this, "Warning: action too long to be sent"));
         }
     }
 
