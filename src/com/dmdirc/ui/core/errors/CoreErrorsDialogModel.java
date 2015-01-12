@@ -29,6 +29,7 @@ import com.dmdirc.events.ProgramErrorStatusEvent;
 import com.dmdirc.interfaces.ui.ErrorsDialogModel;
 import com.dmdirc.interfaces.ui.ErrorsDialogModelListener;
 import com.dmdirc.logger.ErrorManager;
+import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.util.collections.ListenerList;
 
@@ -122,7 +123,13 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     @Override
     public boolean isSendAllowed() {
-        return selectedError.isPresent();
+        if (selectedError.isPresent()) {
+            final ErrorReportStatus status = selectedError.map(DisplayableError::getReportStatus)
+                    .orElse(ErrorReportStatus.NOT_APPLICABLE);
+            return status == ErrorReportStatus.WAITING || status == ErrorReportStatus.ERROR;
+        } else {
+            return false;
+        }
     }
 
     @Override
