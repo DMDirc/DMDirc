@@ -20,42 +20,34 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces.ui;
+package com.dmdirc.ui.core.errors;
 
-import com.dmdirc.ui.core.errors.DisplayableError;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.ErrorReportStatus;
+import com.dmdirc.logger.ProgramError;
 
-import java.util.Optional;
+import com.google.auto.value.AutoValue;
+
+import java.util.Date;
 
 /**
- * Listener for events in an errors dialog model.
+ * Represents an error that has occurred within the client as displayed to an end user.
  */
-public interface ErrorsDialogModelListener {
+@AutoValue
+public abstract class DisplayableError {
 
-    /**
-     * An error has been deleted from the dialog.
-     *
-     * @param error Old error
-     */
-    void errorDeleted(final DisplayableError error);
+    DisplayableError() {}
 
-    /**
-     * An error has been added to the model.
-     *
-     * @param error New error
-     */
-    void errorAdded(final DisplayableError error);
+    public abstract Date getDate();
+    public abstract String getSummary();
+    public abstract String getDetails();
+    public abstract ErrorLevel getSeverity();
+    public abstract ErrorReportStatus getReportStatus();
+    public abstract ProgramError getProgramError();
 
-    /**
-     * The selected error in the dialog has changed.
-     *
-     * @param selectedError Newly selected error, empty if the selection should be cleared
-     */
-    void selectedErrorChanged(final Optional<DisplayableError> selectedError);
-
-    /**
-     * An error's status has changed.
-     *
-     * @param error The error that changed
-     */
-    void errorStatusChanged(final DisplayableError error);
+    public static DisplayableError create(final Date date, final String summary,
+            final String details, final ErrorLevel severity, final ErrorReportStatus status,
+            final ProgramError programError) {
+        return new AutoValue_DisplayableError(date, summary, details, severity, status, programError);
+    }
 }

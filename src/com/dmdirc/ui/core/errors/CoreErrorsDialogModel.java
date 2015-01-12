@@ -32,6 +32,9 @@ import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.util.collections.ListenerList;
 
+import com.google.common.base.Throwables;
+
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,7 +52,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     private final ListenerList listenerList;
     private final ErrorManager errorManager;
     private final DMDircMBassador eventBus;
-    private Optional<ProgramError> selectedError;
+    private Optional<DisplayableError> selectedError;
 
     @Inject
     public CoreErrorsDialogModel(final ErrorManager errorManager,
@@ -71,17 +74,19 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     }
 
     @Override
-    public Set<ProgramError> getErrors() {
-        return errorManager.getErrors();
+    public Set<DisplayableError> getErrors() {
+        final Set<DisplayableError> errors = new HashSet<>();
+        errorManager.getErrors().forEach(e -> errors.add(getDisplayableError(e)));
+        return errors;
     }
 
     @Override
-    public Optional<ProgramError> getSelectedError() {
+    public Optional<DisplayableError> getSelectedError() {
         return selectedError;
     }
 
     @Override
-    public void setSelectedError(final Optional<ProgramError> selectedError) {
+    public void setSelectedError(final Optional<DisplayableError> selectedError) {
         checkNotNull(selectedError);
         this.selectedError = selectedError;
         listenerList.getCallable(ErrorsDialogModelListener.class).selectedErrorChanged(selectedError);
@@ -90,7 +95,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     @Override
     public void deleteSelectedError() {
         selectedError.ifPresent(e -> {
-            errorManager.deleteError(e);
+            errorManager.deleteError(e.getProgramError());
             setSelectedError(Optional.empty());
         });
     }
@@ -102,7 +107,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     @Override
     public void sendSelectedError() {
-        selectedError.ifPresent(errorManager::sendError);
+        selectedError.map(DisplayableError::getProgramError).ifPresent(errorManager::sendError);
     }
 
     @Override
@@ -134,17 +139,41 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     @Handler
     public void handleErrorStatusChanged(final ProgramErrorStatusEvent event) {
-        listenerList.getCallable(ErrorsDialogModelListener.class).errorStatusChanged(
-                event.getError());
+        listenerList.getCallable(ErrorsDialogModelListener.class)
+                .errorStatusChanged(getDisplayableError(event.getError()));
     }
 
     @Handler
     public void handleErrorDeleted(final ProgramErrorDeletedEvent event) {
-        listenerList.getCallable(ErrorsDialogModelListener.class).errorDeleted(event.getError());
+        listenerList.getCallable(ErrorsDialogModelListener.class)
+                .errorDeleted(getDisplayableError(event.getError()));
     }
 
     @Handler
     public void handleErrorAdded(final NonFatalProgramErrorEvent event) {
-        listenerList.getCallable(ErrorsDialogModelListener.class).errorAdded(event.getError());
+        listenerList.getCallable(ErrorsDialogModelListener.class)
+                .errorAdded(getDisplayableError(event.getError()));
+    }
+
+    private DisplayableError getDisplayableError(final ProgramError error) {
+        final String details;
+        if (error.getDetails().isEmpty()) {
+            details = error.getMessage()
+                    + '\n' + getThrowableAsString(error.getThrowable());
+        } else {
+            details = error.getMessage()
+                    + '\n' + error.getDetails()
+                    + '\n' + getThrowableAsString(error.getThrowable());
+        }
+        return DisplayableError.create(error.getDate(), error.getMessage(), details,
+                error.getLevel(), error.getReportStatus(), error);
+    }
+
+    private String getThrowableAsString(final Throwable throwable) {
+        if (throwable == null) {
+            return "";
+        } else {
+            return Throwables.getStackTraceAsString(throwable);
+        }
     }
 }
