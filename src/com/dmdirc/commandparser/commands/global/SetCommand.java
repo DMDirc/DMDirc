@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -37,6 +36,7 @@ import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
 import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -134,10 +134,10 @@ public class SetCommand extends Command implements IntelligentCommand {
                 return;
             }
 
-            final Channel channel = ((ChannelCommandContext) context).getChannel();
-            identity = identityFactory.createChannelConfig(
-                    connection.get().getNetwork(), channel.getName());
-            manager = channel.getConfigManager();
+            final GroupChat groupChat = ((ChannelCommandContext) context).getChannel();
+            identity = identityFactory.createChannelConfig(connection.get().getNetwork(),
+                    groupChat.getName());
+            manager = groupChat.getWindowModel().getConfigManager();
         }
 
         if (res.hasFlag(unsetFlag)) {

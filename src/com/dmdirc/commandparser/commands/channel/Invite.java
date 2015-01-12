@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -35,7 +34,7 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.parser.interfaces.ChannelInfo;
+import com.dmdirc.interfaces.GroupChat;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -70,10 +69,9 @@ public class Invite extends Command implements ExternalCommand {
             sendLine(origin, args.isSilent(), FORMAT_ERROR,
                     "Insufficient arguments: must specify user");
         } else {
-            final Channel channel = ((ChannelCommandContext) context).getChannel();
-            final ChannelInfo cChannel = channel.getChannelInfo();
-
-            cChannel.getParser().sendInvite(cChannel.getName(), args.getArgumentsAsString());
+            final GroupChat groupChat = ((ChannelCommandContext) context).getChannel();
+            groupChat.getConnection().flatMap(Connection::getParser)
+                    .ifPresent(p -> p.sendInvite(groupChat.getName(), args.getArgumentsAsString()));
         }
     }
 
