@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.flags.CommandFlag;
 import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
 import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
+import com.dmdirc.events.CommandOutputEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.ui.WindowManager;
@@ -119,10 +120,12 @@ public class Echo extends Command implements IntelligentCommand {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "Unable to find target window");
             } else if (!args.isSilent()) {
-                frame.addLine(FORMAT_OUTPUT, time, results.getArgumentsAsString());
+                frame.getEventBus().publishAsync(new CommandOutputEvent(frame, time.getTime(),
+                        results.getArgumentsAsString()));
             }
-        } else if (origin != null && !args.isSilent()) {
-            origin.addLine(FORMAT_OUTPUT, time, results.getArgumentsAsString());
+        } else if (!args.isSilent()) {
+            origin.getEventBus().publishAsync(new CommandOutputEvent(origin, time.getTime(),
+                    results.getArgumentsAsString()));
         }
     }
 

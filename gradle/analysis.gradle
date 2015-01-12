@@ -20,6 +20,9 @@
  * SOFTWARE.
  */
 
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
+
 dependencies {
     pmd group: 'net.sourceforge.pmd', name: 'pmd-core', version: '5.2.3'
     pmd group: 'net.sourceforge.pmd', name: 'pmd-java', version: '5.2.3'
@@ -44,3 +47,11 @@ findbugs {
     effort = 'max'
     ignoreFailures = true
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+

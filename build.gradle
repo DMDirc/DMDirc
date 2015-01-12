@@ -1,16 +1,6 @@
-import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder
-
-def gitdir = new File(projectDir, '.git')
-if (gitdir.isFile()) {
-  gitdir = new File(projectDir, gitdir.text.replace('gitdir: ','').trim())
-}
-
-def repo = new FileRepositoryBuilder().setGitDir(gitdir).build()
-project.version = Git.wrap(repo).describe().call() + '-SNAPSHOT'
-
 group = 'com.dmdirc'
 
+apply plugin: 'com.dmdirc.git-version'
 apply plugin: 'maven-publish'
 apply plugin: 'java'
 apply plugin: 'findbugs'
@@ -78,21 +68,21 @@ repositories {
     }
 }
 
-apply from: 'analysis.gradle'
-apply from: 'publishing.gradle'
-apply from: 'jar.gradle'
-apply from: 'fatjar.gradle'
+apply from: 'gradle/analysis.gradle'
+apply from: 'gradle/publishing.gradle'
+apply from: 'gradle/jar.gradle'
+apply from: 'gradle/fatjar.gradle'
 
 buildscript {
     repositories {
         mavenCentral()
-        maven {
-            url 'http://artifactory.dmdirc.com/artifactory/repo'
-        }
+        maven { url 'http://artifactory.dmdirc.com/artifactory/repo' }
+        maven { url 'https://dl.bintray.com/dmdirc/releases/' }
     }
 
     dependencies {
-        classpath group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '3.6.1.201501031845-r'
+        classpath group: 'com.dmdirc', name: 'git-version', version: '1.0'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.1.0'
     }
 }
 

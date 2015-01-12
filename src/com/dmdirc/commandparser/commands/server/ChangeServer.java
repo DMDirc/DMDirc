@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.util.InvalidURIException;
@@ -78,8 +79,9 @@ public class ChangeServer extends Command {
             final URI address = uriParser.parseFromText(args.getArgumentsAsString());
             connection.connect(address, connection.getProfile());
         } catch (InvalidURIException ex) {
-            origin.addLine(FORMAT_ERROR, "Invalid URI: " + ex.getMessage()
-                    + (ex.getCause() == null ? "" : ": " + ex.getCause().getMessage()));
+            origin.getEventBus().publishAsync(
+                    new CommandErrorEvent(origin, "Invalid URI: " + ex.getMessage() +
+                            (ex.getCause() == null ? "" : ": " + ex.getCause().getMessage())));
         }
     }
 

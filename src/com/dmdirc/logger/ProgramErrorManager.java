@@ -24,18 +24,23 @@ package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ErrorEvent;
+import com.dmdirc.events.FatalProgramErrorEvent;
+import com.dmdirc.events.NonFatalProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorDeletedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
 
 import com.google.common.base.Throwables;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import net.engio.mbassy.listener.Handler;
 
@@ -43,25 +48,28 @@ import net.engio.mbassy.listener.Handler;
  * Listens for {@link ErrorEvent}s, creates {@link ProgramError}s and raises {@link
  * ProgramErrorEvent}s.
  */
+@Singleton
 public class ProgramErrorManager {
 
+    /** A list of exceptions which we don't consider bugs and thus don't report. */
+    private static final Class<?>[] BANNED_EXCEPTIONS = new Class<?>[]{
+            NoSuchMethodError.class, NoClassDefFoundError.class,
+            UnsatisfiedLinkError.class, AbstractMethodError.class,
+            IllegalAccessError.class, OutOfMemoryError.class,
+            NoSuchFieldError.class,};
     /** The event bus to listen for errors on. */
     private final DMDircMBassador eventBus;
     /** The current list of errors. */
-    private final List<ProgramError> errors;
+    private final Set<ProgramError> errors;
     /** Factory to create {@link ProgramError}s. */
     private final ProgramErrorFactory programErrorFactory;
 
-    /**
-     * Creates a new instance of this error manager.
-     *
-     * @param eventBus        The event bus to listen to errors on
-     */
+    @Inject
     public ProgramErrorManager(final DMDircMBassador eventBus,
             final ProgramErrorFactory programErrorFactory) {
         this.eventBus = eventBus;
         this.programErrorFactory = programErrorFactory;
-        errors = new CopyOnWriteArrayList<>();
+        errors = new CopyOnWriteArraySet<>();
     }
 
     /**
@@ -73,8 +81,13 @@ public class ProgramErrorManager {
 
     @Handler
     void handleErrorEvent(final ErrorEvent event) {
-        addError(event.getLevel(), event.getMessage(), event.getThrowable(), event.getDetails(),
-                false);
+        final ProgramError error = addError(event.getLevel(), event.getMessage(),
+                event.getThrowable(), event.getDetails(), isValidError(event.getThrowable()));
+        if (error.getLevel() == ErrorLevel.FATAL) {
+            eventBus.publish(new FatalProgramErrorEvent(error));
+        } else {
+            eventBus.publish(new NonFatalProgramErrorEvent(error));
+        }
     }
 
     /**
@@ -123,7 +136,7 @@ public class ProgramErrorManager {
      * @since 0.6.3m1
      */
     public void deleteAll() {
-        final Set<ProgramError> errorsCopy = new HashSet<>(errors);
+        final Collection<ProgramError> errorsCopy = new HashSet<>(errors);
         errors.clear();
         errorsCopy.stream().map(ProgramErrorDeletedEvent::new).forEach(eventBus::publish);
     }
@@ -133,7 +146,29 @@ public class ProgramErrorManager {
      *
      * @return Program error list
      */
-    public List<ProgramError> getErrors() {
-        return Collections.unmodifiableList(errors);
+    public Set<ProgramError> getErrors() {
+        return Collections.unmodifiableSet(errors);
+    }
+
+    /**
+     * Determines whether or not the specified exception is one that we are willing to report.
+     *
+     * @param exception The exception to test
+     *
+     * @since 0.6.3m1
+     * @return True if the exception may be reported, false otherwise
+     */
+    private boolean isValidError(final Throwable exception) {
+        // TODO: Dedupe this from here and SentryLoggingErrorManager
+        Throwable target = exception;
+        while (target != null) {
+            for (Class<?> bad : BANNED_EXCEPTIONS) {
+                if (bad.equals(target.getClass())) {
+                    return false;
+                }
+            }
+            target = target.getCause();
+        }
+        return true;
     }
 }

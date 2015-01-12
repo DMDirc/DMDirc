@@ -67,9 +67,9 @@ public class SentryLoggingErrorManagerTest {
         when(userErrorEvent.getError()).thenReturn(userError);
         when(userError.isAppError()).thenReturn(false);
         when(config.getBinder()).thenReturn(configBinder);
-        instance = new SentryLoggingErrorManager(eventBus, config, sentryErrorReporter,
+        instance = new SentryLoggingErrorManager(eventBus, sentryErrorReporter,
                 MoreExecutors.newDirectExecutorService());
-        instance.initialise();
+        instance.initialise(config);
         instance.handleSubmitErrors(true);
         instance.handleNoErrorReporting(false);
     }

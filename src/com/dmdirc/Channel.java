@@ -29,6 +29,7 @@ import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfJoinEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.NickListClientAddedEvent;
 import com.dmdirc.events.NickListClientRemovedEvent;
@@ -195,7 +196,8 @@ public class Channel extends FrameContainer implements GroupChat {
 
         if (connection.getParser().get().getMaxLength("PRIVMSG", getChannelInfo().getName())
                 <= action.length()) {
-            addLine("actionTooLong", action.length());
+            getEventBus().publishAsync(new CommandErrorEvent(this,
+                    "Warning: action too long to be sent"));
         } else {
             final GroupChatUser me = getUser(connection.getLocalUser().get()).get();
             getEventBus().publishAsync(new ChannelSelfActionEvent(this, me, action));
