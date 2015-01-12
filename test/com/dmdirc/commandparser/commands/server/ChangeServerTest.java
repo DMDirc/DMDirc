@@ -21,10 +21,12 @@
  */
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorManager;
@@ -42,6 +44,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Matchers.anyChar;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,6 +52,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ChangeServerTest {
 
+    @Mock private DMDircMBassador eventBus;
     @Mock private ErrorManager errorManager;
     @Mock private CommandController controller;
     @Mock private FrameContainer tiw;
@@ -59,6 +63,8 @@ public class ChangeServerTest {
     @Before
     public void setUp() {
         when(connection.getProfile()).thenReturn(profile);
+        when(tiw.getEventBus()).thenReturn(eventBus);
+
         command = new ChangeServer(controller, new URIParser());
     }
 
@@ -75,7 +81,7 @@ public class ChangeServerTest {
         command.execute(tiw, new CommandArguments(controller, "/server foo:abc"),
                 new ServerCommandContext(null, ChangeServer.INFO, connection));
 
-        verify(tiw).addLine(eq("commandError"), anyString());
+        verify(eventBus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test
@@ -83,7 +89,7 @@ public class ChangeServerTest {
         command.execute(tiw, new CommandArguments(controller, "/server foo:0"),
                 new ServerCommandContext(null, ChangeServer.INFO, connection));
 
-        verify(tiw).addLine(eq("commandError"), anyString());
+        verify(eventBus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test
@@ -91,7 +97,7 @@ public class ChangeServerTest {
         command.execute(tiw, new CommandArguments(controller, "/server foo:65537"),
                 new ServerCommandContext(null, ChangeServer.INFO, connection));
 
-        verify(tiw).addLine(eq("commandError"), anyString());
+        verify(eventBus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test

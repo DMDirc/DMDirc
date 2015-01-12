@@ -111,6 +111,8 @@ QuerySelfMessageEvent:
 CommandErrorEvent:
   format: "{{message}}"
   colour: 7
+CommandOutputEvent:
+  format: "{{message}}"
 
 ################## TODO ############################################################################
 #  channelUserAway=14-- %1$s%2$s is now away.

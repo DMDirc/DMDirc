@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -100,7 +101,8 @@ public class ServerCommandParser extends GlobalCommandParser {
                     && server.getState() != ServerState.CONNECTING)
                     || !server.getParser().isPresent())) {
                 if (!args.isSilent()) {
-                    origin.addLine("commandError", "You must be connected to use this command");
+                    origin.getEventBus().publishAsync(new CommandErrorEvent(origin,
+                            "You must be connected to use this command"));
                 }
             } else {
                 command.execute(origin, args, context);
