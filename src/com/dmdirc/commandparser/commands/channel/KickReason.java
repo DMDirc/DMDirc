@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -34,6 +33,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -68,18 +68,19 @@ public class KickReason extends Command implements IntelligentCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final Channel channel = ((ChannelCommandContext) context).getChannel();
+        final GroupChat groupChat = ((ChannelCommandContext) context).getChannel();
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "kick", "<user> [reason]");
             return;
         }
 
-        final Optional<GroupChatUser> victim
-                = channel.getUser(channel.getConnection().get().getUser(args.getArguments()[0]));
+        final Optional<GroupChatUser> victim = groupChat.getUser(
+                groupChat.getConnection().get().getUser(args.getArguments()[0]));
 
         if (victim.isPresent()) {
-            channel.kick(victim.get(), args.getArguments().length > 1
-                    ? Optional.of(args.getArgumentsAsString(1)) : Optional.empty());
+            groupChat.kick(victim.get(), args.getArguments().length > 1
+                    ? Optional.of(args.getArgumentsAsString(1))
+                    : Optional.empty());
         } else {
             sendLine(origin, args.isSilent(), FORMAT_ERROR,
                     "User not found: " + args.getArguments()[0]);
