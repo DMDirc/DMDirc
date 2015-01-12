@@ -38,97 +38,61 @@ import java.util.Optional;
  */
 public class Client implements User {
 
-    private final Collection<GroupChat> groupChats;
     private final Connection connection;
     private final ClientInfo clientInfo;
-    private String nickname;
-    private Optional<String> username;
-    private Optional<String> hostname;
-    private Optional<String> realname;
-    private Optional<String> awayMessage;
 
-    public Client(final String nickname, final Connection connection, final ClientInfo clientInfo) {
-        this(nickname, connection, Optional.empty(), Optional.empty(), Optional.empty(), clientInfo);
-    }
-
-    public Client(final String nickname, final Connection connection,
-            final Optional<String> username,
-            final Optional<String> hostname,
-            final Optional<String> realname,
-            final ClientInfo clientInfo) {
-        this.nickname = nickname;
+    public Client(final Connection connection, final ClientInfo clientInfo) {
         this.connection = connection;
-        this.username = username;
-        this.hostname = hostname;
-        this.realname = realname;
         this.clientInfo = clientInfo;
-        groupChats = new ArrayList<>();
-        awayMessage = Optional.empty();
     }
 
     @Override
     public String getNickname() {
-        return nickname;
-    }
-
-    @Override
-    public void setNickname(final String nickname) {
-        this.nickname = nickname;
+        return clientInfo.getNickname();
     }
 
     @Override
     public Optional<String> getUsername() {
-        return username;
-    }
-
-    @Override
-    public void setUsername(final Optional<String> username) {
-        this.username = username;
+        if (clientInfo.getUsername().isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(clientInfo.getUsername());
+        }
     }
 
     @Override
     public Optional<String> getHostname() {
-        return hostname;
-    }
-
-    @Override
-    public void setHostname(final Optional<String> hostname) {
-        this.hostname = hostname;
+        if (clientInfo.getHostname().isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(clientInfo.getHostname());
+        }
     }
 
     @Override
     public Optional<String> getRealname() {
-        return realname;
-    }
-
-    @Override
-    public void setRealname(final Optional<String> realname) {
-        this.realname = realname;
+        if (clientInfo.getRealname().isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(clientInfo.getRealname());
+        }
     }
 
     @Override
     public Collection<GroupChat> getGroupChats() {
-        return Collections.unmodifiableCollection(groupChats);
-    }
-
-    @Override
-    public void addGroupChat(final GroupChat groupChat) {
-        groupChats.add(groupChat);
-    }
-
-    @Override
-    public void delGroupChat(final GroupChat groupChat) {
-        groupChats.remove(groupChat);
+        final Collection<GroupChat> channels = new ArrayList<>();
+        clientInfo.getChannelClients().forEach(c -> connection.getGroupChatManager()
+                .getChannel(c.getChannel().getName()).ifPresent(channels::add));
+        return Collections.unmodifiableCollection(channels);
     }
 
     @Override
     public Optional<String> getAwayMessage() {
-        return awayMessage;
-    }
-
-    @Override
-    public void setAwayMessage(final Optional<String> awayMessage) {
-        this.awayMessage = awayMessage;
+        if (clientInfo.getAwayReason().isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(clientInfo.getAwayReason());
+        }
     }
 
     @Override

@@ -28,7 +28,6 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -49,10 +48,7 @@ public class UserManager {
     }
 
     public User getUserFromClientInfo(final ClientInfo client, final Connection connection) {
-        userCache.putIfAbsent(client, userFactory.getUser(client.getNickname(), connection,
-                Optional.ofNullable(client.getUsername()),
-                Optional.ofNullable(client.getHostname()),
-                Optional.ofNullable(client.getRealname()), client));
+        userCache.putIfAbsent(client, userFactory.getUser(connection,client));
         return userCache.get(client);
     }
 }
