@@ -63,7 +63,7 @@ public class SentryLoggingErrorManagerTest {
         when(appErrorEvent.getError()).thenReturn(appError);
         when(appError.isAppError()).thenReturn(true);
         when(appError.getThrowable()).thenReturn(new IllegalStateException());
-        when(appError.getTrace()).thenReturn(Lists.newArrayList("com.dmdirc.Main"));
+        when(appError.getTrace()).thenReturn(Lists.newArrayList("at com.dmdirc.Main"));
         when(userErrorEvent.getError()).thenReturn(userError);
         when(userError.isAppError()).thenReturn(false);
         when(config.getBinder()).thenReturn(configBinder);
@@ -83,7 +83,7 @@ public class SentryLoggingErrorManagerTest {
 
     @Test
     public void testHandleErrorEvent_DMDircEventQueue() throws Exception {
-        when(appError.getTrace()).thenReturn(Lists.newArrayList("com.dmdirc.addons.ui_swing" +
+        when(appError.getTrace()).thenReturn(Lists.newArrayList("at com.dmdirc.addons.ui_swing" +
                 ".DMDircEventQueue", "java.somethingelse"));
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
