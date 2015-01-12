@@ -27,7 +27,7 @@ import com.dmdirc.logger.ProgramError;
 /**
  * Fired when a fatal error is created.
  */
-public class FatalProgramErrorEvent extends ProgramErrorEvent {
+public class FatalProgramErrorEvent extends ProgramErrorAddedEvent {
 
     public FatalProgramErrorEvent(final ProgramError error) {
         super(error);

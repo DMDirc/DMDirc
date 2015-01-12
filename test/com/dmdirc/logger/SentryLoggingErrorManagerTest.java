@@ -24,7 +24,7 @@ package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinder;
-import com.dmdirc.events.ProgramErrorEvent;
+import com.dmdirc.events.ProgramErrorAddedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.collect.Lists;
@@ -53,9 +53,9 @@ public class SentryLoggingErrorManagerTest {
     @Mock private ConfigBinder configBinder;
     @Mock private SentryErrorReporter sentryErrorReporter;
     @Mock private ProgramError appError;
-    @Mock private ProgramErrorEvent appErrorEvent;
+    @Mock private ProgramErrorAddedEvent appErrorEvent;
     @Mock private ProgramError userError;
-    @Mock private ProgramErrorEvent userErrorEvent;
+    @Mock private ProgramErrorAddedEvent userErrorEvent;
     private SentryLoggingErrorManager instance;
 
     @Before

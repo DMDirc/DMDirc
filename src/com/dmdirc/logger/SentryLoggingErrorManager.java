@@ -25,6 +25,7 @@ package com.dmdirc.logger;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.events.ProgramErrorAddedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorStatusEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -83,7 +84,7 @@ public class SentryLoggingErrorManager {
     }
 
     @Handler
-    void handleErrorEvent(final ProgramErrorEvent error) {
+    void handleErrorEvent(final ProgramErrorAddedEvent error) {
         final boolean appError = error.getError().isAppError();
         if (!isValidError(error.getError().getThrowable())
                 || !isValidSource(error.getError().getTrace())

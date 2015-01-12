@@ -25,11 +25,11 @@ package com.dmdirc.events;
 import com.dmdirc.logger.ProgramError;
 
 /**
- * Fired when a non fatal program error is created.
+ * Base class for an error event being added to the client.
  */
-public class NonFatalProgramErrorEvent extends ProgramErrorAddedEvent {
+public abstract class ProgramErrorAddedEvent extends ProgramErrorEvent {
 
-    public NonFatalProgramErrorEvent(final ProgramError error) {
+    public ProgramErrorAddedEvent(final ProgramError error) {
         super(error);
     }
 }
