@@ -28,6 +28,7 @@ import com.dmdirc.events.FatalProgramErrorEvent;
 import com.dmdirc.events.NonFatalProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorDeletedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
+import com.dmdirc.util.EventUtils;
 
 import com.google.common.base.Throwables;
 
@@ -87,6 +88,16 @@ public class ProgramErrorManager {
             eventBus.publish(new FatalProgramErrorEvent(error));
         } else {
             eventBus.publish(new NonFatalProgramErrorEvent(error));
+        }
+    }
+
+    @Handler(priority = EventUtils.PRIORITY_LOWEST)
+    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    void handleProgramError(final NonFatalProgramErrorEvent event) {
+        if (!event.isHandled()) {
+            System.err.println(event.getError().getMessage());
+            System.err.println(event.getError().getDetails());
+            System.err.println(Throwables.getStackTraceAsString(event.getError().getThrowable()));
         }
     }
 

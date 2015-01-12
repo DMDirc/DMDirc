@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.logger.ProgramError;
+import com.dmdirc.ui.core.errors.DisplayableError;
 
 import java.util.Optional;
 import java.util.Set;
@@ -47,21 +47,21 @@ public interface ErrorsDialogModel {
      *
      * @return List of errors
      */
-    Set<ProgramError> getErrors();
+    Set<DisplayableError> getErrors();
 
     /**
      * Returns the currently selected error.
      *
      * @return Selected error or empty if nothing is selected
      */
-    Optional<ProgramError> getSelectedError();
+    Optional<DisplayableError> getSelectedError();
 
     /**
      * Sets the selected error.
      *
      * @param selectedError New selected error, or optional to remove the selection
      */
-    void setSelectedError(final Optional<ProgramError> selectedError);
+    void setSelectedError(final Optional<DisplayableError > selectedError);
 
     /**
      * Deletes the selected error.  This is a noop if there is no selection.
