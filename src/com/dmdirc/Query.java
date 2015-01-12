@@ -228,7 +228,6 @@ public class Query extends FrameContainer implements PrivateActionListener,
 
             addLine(format, oldNick, client.getUsername(),
                     client.getHostname(), client.getNickname());
-            user.setNickname(client.getNickname());
             updateTitle();
 
             setName(client.getNickname());

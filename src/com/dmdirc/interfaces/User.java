@@ -40,25 +40,11 @@ public interface User {
     String getNickname();
 
     /**
-     * Sets the nickname for this client.
-     *
-     * @param nickname New nickname for this client
-     */
-    void setNickname(final String nickname);
-
-    /**
      * Retrieves the username or ident used by this client.
      *
      * @return This client's username
      */
     Optional<String> getUsername();
-
-    /**
-     * Sets the username for this client.
-     *
-     * @param username New username
-     */
-    void setUsername(final Optional<String> username);
 
     /**
      * Retrieves the hostname that this client is connecting from.
@@ -68,25 +54,11 @@ public interface User {
     Optional<String> getHostname();
 
     /**
-     * Sets the hostname for this client.
-     *
-     * @param hostname New hostname
-     */
-    void setHostname(final Optional<String> hostname);
-
-    /**
      * Retrieves the full/real name of the client.
      *
      * @return This client's real name
      */
     Optional<String> getRealname();
-
-    /**
-     * Sets the realname for the client.
-     *
-     * @param realname New realname
-     */
-    void setRealname(final Optional<String> realname);
 
     /**
      * Retries the {@link GroupChat}s the client is a member of.
@@ -96,32 +68,11 @@ public interface User {
     Collection<GroupChat> getGroupChats();
 
     /**
-     * Adds a {@link GroupChat} to the list of {@link GroupChat}s this user is on.
-     *
-     * @param groupChat GroupChat to add
-     */
-    void addGroupChat(final GroupChat groupChat);
-
-    /**
-     * Deletes a {@link GroupChat} from the list of {@link GroupChat}s this user is on.
-     *
-     * @param groupChat GroupChat to add
-     */
-    void delGroupChat(final GroupChat groupChat);
-
-    /**
      * Returns the away message for the client, if the away message is empty the user is not away.
      *
      * @return Optional.empty if the user is not away, wrapped away reason if they are
      */
     Optional<String> getAwayMessage();
-
-    /**
-     * Sets the away message for the client.
-     *
-     * @param awayMessage Optional.empty if the user is not away, wrapped away reason if they are
-     */
-    void setAwayMessage(final Optional<String> awayMessage);
 
     /**
      * Returns the away state for this user.

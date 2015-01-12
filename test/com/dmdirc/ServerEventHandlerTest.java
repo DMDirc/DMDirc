@@ -83,10 +83,7 @@ public class ServerEventHandlerTest {
         when(server.getState()).thenReturn(ServerState.CONNECTED);
         when(parser.getCallbackManager()).thenReturn(callbackManager);
         when(server.getConnection()).thenReturn(Optional.ofNullable(server));
-        when(userFactory.getUser(anyString(), any(Connection.class), eq(clientInfo))).thenReturn(user);
-        when(userFactory.getUser(anyString(), any(Connection.class), Optional.of(anyString()),
-                        Optional.of(anyString()), Optional.of(anyString()), eq(clientInfo)))
-                .thenReturn(user);
+        when(userFactory.getUser(any(Connection.class), eq(clientInfo))).thenReturn(user);
         when(server.getUser(anyString())).thenReturn(user);
         when(server.getLocalUser()).thenReturn(Optional.of(user));
         final ServerEventHandler handler = new ServerEventHandler(server, groupChatManager,
