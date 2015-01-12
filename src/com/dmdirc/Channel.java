@@ -270,7 +270,9 @@ public class Channel extends FrameContainer implements GroupChat {
 
         setIcon("channel-inactive");
 
-        getEventBus().publishAsync(new NickListClientsChangedEvent(this,
+        // Needs to be published synchronously so that nicklists are cleared before the parser
+        // is disconnected (which happens synchronously after this method returns).
+        getEventBus().publish(new NickListClientsChangedEvent(this,
                 Collections.<GroupChatUser>emptyList()));
     }
 
