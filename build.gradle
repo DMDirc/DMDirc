@@ -1,15 +1,14 @@
 plugins {
   id 'com.dmdirc.git-version' version '1.0'
   id 'com.github.kt3k.coveralls' version '2.1.0'
+  id 'maven-publish'
+  id 'java'
+  id 'findbugs'
+  id 'pmd'
+  id 'idea'
 }
 
 group = 'com.dmdirc'
-
-apply plugin: 'maven-publish'
-apply plugin: 'java'
-apply plugin: 'findbugs'
-apply plugin: 'pmd'
-apply plugin: 'idea'
 
 idea {
     module {
