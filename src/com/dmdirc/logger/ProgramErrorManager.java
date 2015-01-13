@@ -34,6 +34,7 @@ import com.dmdirc.util.EventUtils;
 
 import com.google.common.base.Throwables;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -97,12 +98,14 @@ public class ProgramErrorManager {
     }
 
     @Handler(priority = EventUtils.PRIORITY_LOWEST)
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
+    @SuppressWarnings({"UseOfSystemOutOrSystemErr", "ThrowableResultOfMethodCallIgnored"})
     void handleProgramError(final NonFatalProgramErrorEvent event) {
         if (!event.isHandled()) {
             System.err.println(event.getError().getMessage());
             System.err.println(event.getError().getDetails());
-            System.err.println(Throwables.getStackTraceAsString(event.getError().getThrowable()));
+            if (event.getError().getThrowable() != null) {
+                System.err.println(Throwables.getStackTraceAsString(event.getError().getThrowable()));
+            }
         }
     }
 
@@ -132,8 +135,14 @@ public class ProgramErrorManager {
      * @return Error trace
      */
     private Iterable<String> getTrace(final String message, final Throwable throwable) {
-        return Arrays.asList(throwable == null ? message == null ? new String[0]
-                : new String[]{message} : Throwables.getStackTraceAsString(throwable).split("\n"));
+        final Collection<String> lines = new ArrayList<>();
+        if (message != null) {
+            lines.add(message);
+        }
+        if (throwable != null) {
+            lines.addAll(Arrays.asList(Throwables.getStackTraceAsString(throwable).split("\n")));
+        }
+        return lines;
     }
 
     /**
