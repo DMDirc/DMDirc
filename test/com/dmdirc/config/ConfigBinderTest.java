@@ -32,6 +32,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -61,8 +64,10 @@ public class ConfigBinderTest {
         }
 
         final StringTest test = new StringTest();
-        when(configProvider.getOptionString("test", "foo")).thenReturn("test123");
-        when(configProvider.getOptionString("test", "bar")).thenReturn("test456");
+        when(configProvider.getOptionString(eq("test"), eq("foo"), anyBoolean(), any()))
+                .thenReturn("test123");
+        when(configProvider.getOptionString(eq("test"), eq("bar"), anyBoolean(), any()))
+                .thenReturn("test456");
         binder.bind(test, StringTest.class);
 
         assertEquals("test123", test.field);
@@ -84,8 +89,10 @@ public class ConfigBinderTest {
         }
 
         final StringTest test = new StringTest();
-        when(configProvider.getOptionString("test", "foo")).thenReturn("test123");
-        when(configProvider.getOptionString("test", "bar")).thenReturn("test456");
+        when(configProvider.getOptionString(eq("test"), eq("foo"), anyBoolean(), any()))
+                .thenReturn("test123");
+        when(configProvider.getOptionString(eq("test"), eq("bar"), anyBoolean(), any()))
+                .thenReturn("test456");
         binder.withDefaultDomain("test").bind(test, StringTest.class);
 
         assertEquals("test123", test.field);
