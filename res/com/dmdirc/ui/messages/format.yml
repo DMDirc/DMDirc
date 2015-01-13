@@ -92,6 +92,12 @@ ChannelKickEvent:
              * {{client.modePrefixedNickname}} has kicked {{victim.modePrefixedNickname}} from
              {{channel.name}}{{reason|bracketed}}.
   colour: 3
+ChannelUserAwayEvent:
+  format: "-- {{user.modePrefixedNickname}} is now away."
+  colour: 14
+channelUserBackEvent:
+  format: "-- {{user.modePrefixedNickname}} is now back."
+  colour: 14
 
 ################## Query events ####################################################################
 
@@ -115,10 +121,6 @@ CommandOutputEvent:
   format: "{{message}}"
 
 ################## TODO ############################################################################
-#  channelUserAway=14-- %1$s%2$s is now away.
-#  channelUserBack=14-- %1$s%2$s is now back.
-#  channelUserAwayDiscovered=14-- %1$s%2$s is away.
-#  channelUserBackDiscovered=14-- %1$s%2$s is back.
 #  channelSplitUserMode_default=3* %1$s%2$s sets mode %9$s on %6$s.
 #  channelNoModes=3* There are no channel modes for %2$s.
 #  channelModeDiscovered=3* Channel modes for %2$s are: %1$s.
