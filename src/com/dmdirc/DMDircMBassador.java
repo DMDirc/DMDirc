@@ -22,7 +22,9 @@
 
 package com.dmdirc;
 
+import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.DMDircEvent;
+import com.dmdirc.logger.ErrorLevel;
 
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
@@ -34,14 +36,20 @@ import net.engio.mbassy.bus.config.Feature;
 public class DMDircMBassador extends MBassador<DMDircEvent> {
 
     public DMDircMBassador() {
-        super(new BusConfiguration()
-                .addFeature(Feature.SyncPubSub.Default())
-                .addFeature(Feature.AsynchronousHandlerInvocation.Default(1, 1))
-                .addFeature(Feature.AsynchronousMessageDispatch.Default()
-                        .setNumberOfMessageDispatchers(1)));
+        super(new BusConfiguration().addFeature(Feature.SyncPubSub.Default())
+                .addFeature(Feature.AsynchronousHandlerInvocation.Default(1, 1)).addFeature(
+                        Feature.AsynchronousMessageDispatch.Default()
+                                .setNumberOfMessageDispatchers(1)));
+        setupErrorHandler();
     }
 
     public DMDircMBassador(final BusConfiguration configuration) {
         super(configuration);
+        setupErrorHandler();
+    }
+
+    private void setupErrorHandler() {
+        addErrorHandler(error -> publish(
+                new AppErrorEvent(ErrorLevel.HIGH, error.getCause(), error.getMessage(), "")));
     }
 }
