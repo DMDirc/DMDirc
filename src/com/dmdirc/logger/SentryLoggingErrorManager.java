@@ -80,6 +80,7 @@ public class SentryLoggingErrorManager {
      * Initialises the error manager.  Must be called before logging will start.
      */
     public void initialise(final AggregateConfigProvider config) {
+        RavenFactory.registerFactory(new DefaultRavenFactory());
         final ConfigBinder configBinder = config.getBinder();
         configBinder.bind(this, SentryLoggingErrorManager.class);
         RavenFactory.registerFactory(new DefaultRavenFactory());
