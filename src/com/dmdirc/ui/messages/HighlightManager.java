@@ -58,7 +58,7 @@ public class HighlightManager {
 
     private Optional<Pattern> nicknamePattern = Optional.empty();
 
-    private Optional<Colour> backgroundColour = Optional.of(Colour.RED);
+    private Optional<Colour> backgroundColour = Optional.empty();
     private Optional<Colour> foregroundColour = Optional.empty();
 
     public HighlightManager(
@@ -111,7 +111,7 @@ public class HighlightManager {
                 .ifPresent(this::setNickname);
     }
 
-    @ConfigBinding(domain = "ui", key = "highlightLineForegroundColour")
+    @ConfigBinding(domain = "ui", key = "highlightLineForegroundColour", required = false)
     void handleForegroundColour(final String value) {
         if (Strings.isNullOrEmpty(value)) {
             foregroundColour = Optional.empty();
@@ -120,7 +120,7 @@ public class HighlightManager {
         }
     }
 
-    @ConfigBinding(domain = "ui", key = "highlightLineBackgroundColour")
+    @ConfigBinding(domain = "ui", key = "highlightLineBackgroundColour", required = false)
     void handleBackgroundColour(final String value) {
         if (Strings.isNullOrEmpty(value)) {
             backgroundColour = Optional.empty();
