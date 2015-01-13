@@ -155,6 +155,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
                 .findFirst().ifPresent(e -> {
             errors.remove(e);
             listenerList.getCallable(ErrorsDialogModelListener.class).errorDeleted(e);
+            setSelectedError(Optional.empty());
         });
     }
 
