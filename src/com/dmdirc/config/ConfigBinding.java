@@ -64,6 +64,15 @@ public @interface ConfigBinding {
     boolean applyInitially() default true;
 
     /**
+     * For settings that support fallbacks, whether or not a value is required. If it is not
+     * required, a "false:" setting will result in {@code null} being returned, rather than
+     * the next fallback being tried.
+     *
+     * @return True if the setting is required, false otherwise.
+     */
+    boolean required() default true;
+
+    /**
      * {@link Invocation} class that will be created and used to execute the config binding.  The
      * default just directly executes or sets the value.
      */

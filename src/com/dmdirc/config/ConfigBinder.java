@@ -26,6 +26,7 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.collections.MapList;
 
@@ -165,6 +166,7 @@ public class ConfigBinder {
             final Class<?> targetClass) {
         if (targetClass.equals(String.class)) {
             return manager.getOptionString(getDomain(binding.domain()), binding.key(),
+                    binding.required(), ReadOnlyConfigProvider.PERMISSIVE_VALIDATOR,
                     binding.fallbacks());
         }
 
