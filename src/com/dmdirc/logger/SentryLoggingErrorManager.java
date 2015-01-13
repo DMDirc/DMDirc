@@ -39,6 +39,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import net.engio.mbassy.listener.Handler;
+import net.kencochrane.raven.DefaultRavenFactory;
+import net.kencochrane.raven.RavenFactory;
 
 /**
  * Listens for {@link ProgramErrorEvent}s and reports these to Sentry.
@@ -68,7 +70,7 @@ public class SentryLoggingErrorManager {
     @Inject
     public SentryLoggingErrorManager(final DMDircMBassador eventBus,
             final SentryErrorReporter sentryErrorReporter,
-            @Named("singlethread") final ExecutorService executorService) {
+            @Named("errors") final ExecutorService executorService) {
         this.eventBus = eventBus;
         this.sentryErrorReporter = sentryErrorReporter;
         this.executorService = executorService;
@@ -80,6 +82,7 @@ public class SentryLoggingErrorManager {
     public void initialise(final AggregateConfigProvider config) {
         final ConfigBinder configBinder = config.getBinder();
         configBinder.bind(this, SentryLoggingErrorManager.class);
+        RavenFactory.registerFactory(new DefaultRavenFactory());
         eventBus.subscribe(this);
     }
 

@@ -47,10 +47,10 @@ import com.dmdirc.ui.messages.WhoisNumericFormatter;
 import com.dmdirc.ui.messages.sink.MessagesModule;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
+import com.dmdirc.util.LoggingExecutorService;
 import com.dmdirc.util.io.Downloader;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.inject.Named;
 import javax.inject.Provider;
@@ -106,9 +106,9 @@ public class ClientModule {
     }
 
     @Provides
-    @Named("singlethread")
-    public ExecutorService getExecutorService() {
-        return Executors.newSingleThreadExecutor();
+    @Named("errors")
+    public ExecutorService getExecutorService(final DMDircMBassador eventBus) {
+        return new LoggingExecutorService(1, 1, eventBus, "Error Logging");
     }
 
     @Provides
