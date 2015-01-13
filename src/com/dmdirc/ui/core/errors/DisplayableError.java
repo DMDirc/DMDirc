@@ -26,28 +26,74 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 
-import com.google.auto.value.AutoValue;
-
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Represents an error that has occurred within the client as displayed to an end user.
  */
-@AutoValue
-public abstract class DisplayableError {
+public class DisplayableError {
 
-    DisplayableError() {}
+    private final Date date;
+    private final String summary;
+    private final String details;
+    private final ErrorLevel severity;
+    private final ProgramError programError;
+    private ErrorReportStatus reportStatus;
 
-    public abstract Date getDate();
-    public abstract String getSummary();
-    public abstract String getDetails();
-    public abstract ErrorLevel getSeverity();
-    public abstract ErrorReportStatus getReportStatus();
-    public abstract ProgramError getProgramError();
-
-    public static DisplayableError create(final Date date, final String summary,
-            final String details, final ErrorLevel severity, final ErrorReportStatus status,
+    public DisplayableError(final Date date, final String summary, final String details,
+            final ErrorLevel severity, final ErrorReportStatus reportStatus,
             final ProgramError programError) {
-        return new AutoValue_DisplayableError(date, summary, details, severity, status, programError);
+        this.date = date;
+        this.summary = summary;
+        this.details = details;
+        this.severity = severity;
+        this.programError = programError;
+        this.reportStatus = reportStatus;
+    }
+
+    public Date getDate() {
+        return (Date) date.clone();
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public ErrorLevel getSeverity() {
+        return severity;
+    }
+
+    public ProgramError getProgramError() {
+        return programError;
+    }
+
+    public ErrorReportStatus getReportStatus() {
+        return reportStatus;
+    }
+
+    public void setReportStatus(final ErrorReportStatus reportStatus) {
+        this.reportStatus = reportStatus;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object instanceof DisplayableError) {
+            final DisplayableError e = (DisplayableError) object;
+            return Objects.equals(getDate(), e.getDate())
+                    && Objects.equals(getSummary(), e.getSummary())
+                    && Objects.equals(getDetails(), e.getDetails())
+                    && Objects.equals(getSeverity(), e.getSeverity());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDate(), getSummary(), getDetails(), getSeverity());
     }
 }
