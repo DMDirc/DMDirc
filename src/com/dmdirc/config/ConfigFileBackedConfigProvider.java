@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Provides configuration settings from a {@link ConfigFile}.
  */
-public class ConfigFileBackedConfigProvider extends BaseConfigProvider implements ConfigProvider {
+public class ConfigFileBackedConfigProvider implements ConfigProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigFileBackedConfigProvider.class);
     /** The domain used for identity settings. */

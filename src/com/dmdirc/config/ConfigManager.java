@@ -48,8 +48,8 @@ import org.slf4j.LoggerFactory;
 /**
  * The config manager manages the various config sources for each entity.
  */
-class ConfigManager extends BaseConfigProvider implements ConfigChangeListener,
-        ConfigProviderListener, AggregateConfigProvider {
+class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
+        AggregateConfigProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigManager.class);
     /** Temporary map for lookup stats. */
