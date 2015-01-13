@@ -22,15 +22,39 @@
 
 package com.dmdirc.interfaces.config;
 
+import com.dmdirc.util.validators.DisabledOptionValidator;
+import com.dmdirc.util.validators.NumericalValidator;
+import com.dmdirc.util.validators.OptionalValidator;
+import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
+import com.dmdirc.util.validators.ValidatorChain;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 /**
  * A source of configuration settings that can only be read from.
+ *
+ * <p>
+ * This implementation supports the idea of optional/disabled settings. This is where values may be
+ * prefixed with the strings <code>true:</code> or <code>false:</code>, where the former has no
+ * effect on the value of the setting, and the latter indicates that the user wishes to disable the
+ * setting.
+ *
+ * <p>
+ * Disabled settings allow for optional settings to have default values; a value can be added with
+ * the <code>false:</code> prefix which effectively disables the default value and makes the setting
+ * act as though it does not have a value.
  */
 public interface ReadOnlyConfigProvider {
+
+    /** A permissive validator to use when callers don't specify one. */
+    Validator<String> PERMISSIVE_VALIDATOR = new PermissiveValidator<>();
+
+    /** A validator for integer settings. */
+    Validator<String> INT_VALIDATOR = new OptionalValidator(new NumericalValidator(-1, -1));
 
     /**
      * Retrieves the specified option from this config source.
@@ -40,12 +64,13 @@ public interface ReadOnlyConfigProvider {
      *
      * @return The value of the option, or null if it doesn't exist
      */
-    String getOption(String domain, String option);
+    default String getOption(final String domain, final String option) {
+        return getOption(domain, option, PERMISSIVE_VALIDATOR);
+    }
 
     /**
      * Retrieves the first value for the specified option that matches the specified validator.
      *
-     * @since 0.6.5
      * @param domain    The domain of the option
      * @param option    The name of the option
      * @param validator The validator to use to check legal values
@@ -58,7 +83,6 @@ public interface ReadOnlyConfigProvider {
      * Determines if this source has a value for the specified option which matches the specified
      * validator.
      *
-     * @since 0.6.5
      * @param domain    The domain of the option
      * @param option    The name of the option
      * @param validator The validator to use to check legal values
@@ -75,7 +99,9 @@ public interface ReadOnlyConfigProvider {
      *
      * @return The boolean representation of the option
      */
-    boolean getOptionBool(String domain, String option);
+    default boolean getOptionBool(final String domain, final String option) {
+        return Boolean.parseBoolean(getOption(domain, option));
+    }
 
     /**
      * Retrieves the specified option as a character.
@@ -85,7 +111,9 @@ public interface ReadOnlyConfigProvider {
      *
      * @return The value of the option
      */
-    char getOptionChar(String domain, String option);
+    default char getOptionChar(final String domain, final String option) {
+        return getOption(domain, option).charAt(0);
+    }
 
     /**
      * Retrieves an integral representation of the specified option.
@@ -97,12 +125,14 @@ public interface ReadOnlyConfigProvider {
      *
      * @return The integer representation of the option
      */
-    Integer getOptionInt(String domain, String option, String... fallbacks);
+    default Integer getOptionInt(final String domain, final String option,
+            final String... fallbacks) {
+        return getOptionInt(domain, option, true, fallbacks);
+    }
 
     /**
      * Retrieves an integral representation of the specified option.
      *
-     * @since 0.6.5
      * @param domain    The domain of the option
      * @param option    The name of the option
      * @param required  Whether this option is required or optional
@@ -110,8 +140,15 @@ public interface ReadOnlyConfigProvider {
      *                  specified domain/option isn't found
      *
      * @return The integer representation of the option
+     *
+     * @since 0.6.5
      */
-    Integer getOptionInt(String domain, String option, boolean required, String... fallbacks);
+    default Integer getOptionInt(final String domain, final String option, final boolean required,
+            final String... fallbacks) {
+        final String value = getOptionString(domain, option, required, INT_VALIDATOR, fallbacks);
+
+        return value == null ? null : Integer.parseInt(value.trim());
+    }
 
     /**
      * Retrieves a list representation of the specified option.
@@ -122,7 +159,20 @@ public interface ReadOnlyConfigProvider {
      *
      * @return The list representation of the option
      */
-    List<String> getOptionList(String domain, String option, boolean trimEmpty);
+    default List<String> getOptionList(final String domain, final String option,
+            final boolean trimEmpty) {
+        final List<String> res = new ArrayList<>();
+
+        if (hasOption(domain, option, PERMISSIVE_VALIDATOR)) {
+            for (String line : getOption(domain, option).split("\n")) {
+                if (!line.isEmpty() || !trimEmpty) {
+                    res.add(line);
+                }
+            }
+        }
+
+        return res;
+    }
 
     /**
      * Retrieves a list representation of the specified option, trimming empty lines by default.
@@ -132,7 +182,9 @@ public interface ReadOnlyConfigProvider {
      *
      * @return The list representation of the option
      */
-    List<String> getOptionList(String domain, String option);
+    default List<String> getOptionList(final String domain, final String option) {
+        return getOptionList(domain, option, true);
+    }
 
     /**
      * Retrieves the specified option as a String, if it exists and satisfies the specified
@@ -141,8 +193,7 @@ public interface ReadOnlyConfigProvider {
      * If no fallback settings are supplied (or if fallback settings are supplied and execution
      * reaches the last fallback setting) AND if the 'required' parameter is true, then all disabled
      * values (i.e., those starting with <code>false:</code>) will be ignored. To check if a valid
-     * non-disabled value exists, call
-     * {@link #hasOptionString(java.lang.String, java.lang.String, com.dmdirc.util.validators.Validator)}.
+     * non-disabled value exists, call {@link #hasOptionString(String, String, Validator)}.
      *
      * @param domain    The domain of the option
      * @param option    The name of the option
@@ -152,11 +203,27 @@ public interface ReadOnlyConfigProvider {
      *                  specified domain/option isn't found
      *
      * @return The string representation of the option or null if optional setting is not specified
-     *
-     * @since 0.6.5
      */
-    String getOptionString(String domain, String option, boolean required,
-            Validator<String> validator, String... fallbacks);
+    default String getOptionString(final String domain, final String option, final boolean required,
+            final Validator<String> validator, final String... fallbacks) {
+        final String value;
+
+        final Validator<String> newValidator = required && fallbacks.length == 0
+                ? ValidatorChain.<String>builder().addValidator(
+                new DisabledOptionValidator()).addValidator(validator).build()
+                : validator;
+
+        if (!hasOption(domain, option, newValidator)
+                || (value = getOption(domain, option, newValidator)).startsWith("false:")) {
+            return fallbacks.length >= 2 ? getOptionString(fallbacks[0],
+                    fallbacks[1], required, validator,
+                    Arrays.copyOfRange(fallbacks, 2, fallbacks.length)) : null;
+        } else if (value.startsWith("true:")) {
+            return value.substring(5);
+        } else {
+            return value;
+        }
+    }
 
     /**
      * Retrieves the specified option as a String, if it exists.
@@ -167,10 +234,11 @@ public interface ReadOnlyConfigProvider {
      *                  specified domain/option isn't found
      *
      * @return The string representation of the option or null if optional setting is not specified
-     *
-     * @since 0.6.3
      */
-    String getOptionString(String domain, String option, String... fallbacks);
+    default String getOptionString(final String domain, final String option,
+            final String... fallbacks) {
+        return getOptionString(domain, option, true, PERMISSIVE_VALIDATOR, fallbacks);
+    }
 
     /**
      * Retrieves a boolean representation of the specified option.
@@ -180,7 +248,9 @@ public interface ReadOnlyConfigProvider {
      *
      * @return The boolean representation of the option
      */
-    boolean hasOptionBool(String domain, String option);
+    default boolean hasOptionBool(final String domain, final String option) {
+        return hasOption(domain, option, PERMISSIVE_VALIDATOR);
+    }
 
     /**
      * Determines if this source has the specified character option.
@@ -188,10 +258,11 @@ public interface ReadOnlyConfigProvider {
      * @param domain The domain of the option
      * @param option The name of the option
      *
-     * @since 0.6.3m1
      * @return True iff the option exists and is parsable as a char, false otherwise.
      */
-    boolean hasOptionChar(String domain, String option);
+    default boolean hasOptionChar(final String domain, final String option) {
+        return hasOptionString(domain, option);
+    }
 
     /**
      * Determines if this source has the specified integer option.
@@ -199,47 +270,57 @@ public interface ReadOnlyConfigProvider {
      * @param domain The domain of the option
      * @param option The name of the option
      *
-     * @since 0.6.3m1
      * @return True iff the option exists and is parsable as an integer, false otherwise.
      */
-    boolean hasOptionInt(String domain, String option);
+    default boolean hasOptionInt(final String domain, final String option) {
+        return hasOptionString(domain, option, INT_VALIDATOR);
+    }
 
     /**
      * Determines if this source has the specified String option.
-     * <p>
-     * A String option is considered to exist if:
+     *
+     * <p>A String option is considered to exist if:
+     *
      * <ul>
-     * <li>there is a value for the specified option,
-     * <li>that value is not empty, and
-     * <li>that value is not disabled (i.e., it doesn't begin with "false:")
+     *     <li>there is a value for the specified option,
+     *     <li>that value is not empty, and
+     *     <li>that value is not disabled (i.e., it doesn't begin with "false:")
      * </ul>
      *
      * @param domain The domain of the option
      * @param option The name of the option
      *
-     * @since 0.6.3m1
      * @return True iff the option exists and is not empty, false otherwise
      */
-    boolean hasOptionString(String domain, String option);
+    default boolean hasOptionString(final String domain, final String option) {
+        return hasOptionString(domain, option, PERMISSIVE_VALIDATOR);
+    }
 
     /**
      * Determines if this source has the specified String option.
-     * <p>
-     * A String option is considered to exist if:
+     *
+     * <p>A String option is considered to exist if:
+     *
      * <ul>
-     * <li>there is a value for the specified option that satisfies the specified validator,
-     * <li>that value is not empty, and
-     * <li>that value is not disabled (i.e., it doesn't begin with "false:")
+     *     <li>there is a value for the specified option that satisfies the specified validator,
+     *     <li>that value is not empty, and
+     *     <li>that value is not disabled (i.e., it doesn't begin with "false:")
      * </ul>
      *
      * @param domain    The domain of the option
      * @param option    The name of the option
      * @param validator The validator to use to check legal values
      *
-     * @since 0.6.5
      * @return True iff the option exists and is not empty, false otherwise
      */
-    boolean hasOptionString(String domain, String option, Validator<String> validator);
+    default boolean hasOptionString(final String domain, final String option,
+            final Validator<String> validator) {
+        final String value;
+
+        return hasOption(domain, option, validator)
+                && !(value = getOption(domain, option, validator)).isEmpty()
+                && !value.startsWith("false:");
+    }
 
     /**
      * Returns the name of all the options in the specified domain. If the domain doesn't exist, an
