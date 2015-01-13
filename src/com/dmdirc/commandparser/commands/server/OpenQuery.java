@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
@@ -45,6 +46,7 @@ import javax.inject.Inject;
 /**
  * Allows the user to open a query dialog with another user.
  */
+@CommandOptions(allowOffline = false)
 public class OpenQuery extends Command implements IntelligentCommand,
         WrappableCommand {
 
