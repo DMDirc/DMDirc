@@ -35,9 +35,10 @@ import com.dmdirc.util.collections.ListenerList;
 
 import com.google.common.base.Throwables;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.inject.Inject;
 
@@ -54,6 +55,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     private final ErrorManager errorManager;
     private final DMDircMBassador eventBus;
     private Optional<DisplayableError> selectedError;
+    private final Set<DisplayableError> errors;
 
     @Inject
     public CoreErrorsDialogModel(final ErrorManager errorManager,
@@ -61,24 +63,25 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
         this.listenerList = new ListenerList();
         this.errorManager = errorManager;
         this.eventBus = eventBus;
+        errors = new CopyOnWriteArraySet<>();
         selectedError = Optional.empty();
     }
 
     @Override
     public void load() {
         eventBus.subscribe(this);
+        errorManager.getErrors().forEach(e -> errors.add(getDisplayableError(e)));
     }
 
     @Override
     public void unload() {
         eventBus.unsubscribe(this);
+        errors.clear();
     }
 
     @Override
     public Set<DisplayableError> getErrors() {
-        final Set<DisplayableError> errors = new HashSet<>();
-        errorManager.getErrors().forEach(e -> errors.add(getDisplayableError(e)));
-        return errors;
+        return Collections.unmodifiableSet(errors);
     }
 
     @Override
@@ -95,10 +98,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     @Override
     public void deleteSelectedError() {
-        selectedError.ifPresent(e -> {
-            errorManager.deleteError(e.getProgramError());
-            setSelectedError(Optional.empty());
-        });
+        selectedError.map(DisplayableError::getProgramError).ifPresent(errorManager::deleteError);
     }
 
     @Override
@@ -142,20 +142,27 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     @Handler
     public void handleErrorStatusChanged(final ProgramErrorStatusEvent event) {
-        listenerList.getCallable(ErrorsDialogModelListener.class)
-                .errorStatusChanged(getDisplayableError(event.getError()));
+        errors.stream().filter(e -> e.getProgramError().equals(event.getError()))
+                .findFirst().ifPresent(e -> {
+            e.setReportStatus(event.getError().getReportStatus());
+            listenerList.getCallable(ErrorsDialogModelListener.class).errorStatusChanged(e);
+        });
     }
 
     @Handler
     public void handleErrorDeleted(final ProgramErrorDeletedEvent event) {
-        listenerList.getCallable(ErrorsDialogModelListener.class)
-                .errorDeleted(getDisplayableError(event.getError()));
+        errors.stream().filter(e -> e.getProgramError().equals(event.getError()))
+                .findFirst().ifPresent(e -> {
+            errors.remove(e);
+            listenerList.getCallable(ErrorsDialogModelListener.class).errorDeleted(e);
+        });
     }
 
     @Handler
     public void handleErrorAdded(final NonFatalProgramErrorEvent event) {
-        listenerList.getCallable(ErrorsDialogModelListener.class)
-                .errorAdded(getDisplayableError(event.getError()));
+        final DisplayableError error = getDisplayableError(event.getError());
+        errors.add(error);
+        listenerList.getCallable(ErrorsDialogModelListener.class).errorAdded(error);
     }
 
     private DisplayableError getDisplayableError(final ProgramError error) {
@@ -168,7 +175,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
                     + '\n' + error.getDetails()
                     + '\n' + getThrowableAsString(error.getThrowable());
         }
-        return DisplayableError.create(error.getDate(), error.getMessage(), details,
+        return new DisplayableError(error.getDate(), error.getMessage(), details,
                 error.getLevel(), error.getReportStatus(), error);
     }
 
