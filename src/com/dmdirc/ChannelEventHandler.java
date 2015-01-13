@@ -45,10 +45,8 @@ import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.ChannelTopicUnsetEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
-import com.dmdirc.events.ChannelUserEvent;
 import com.dmdirc.events.ChannelUserModeChangeEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
@@ -342,21 +340,13 @@ public class ChannelEventHandler extends EventHandler implements
             final ClientInfo client, final AwayState oldState, final AwayState state) {
         checkParser(parser);
 
-        final Optional<GroupChatUser> channelClient
-                = owner.getUser(owner.getConnection().get().getUser(client.getNickname()));
-
-        if (channelClient.isPresent()) {
-            final boolean away = state == AwayState.AWAY;
-            final boolean discovered = oldState == AwayState.UNKNOWN;
-
-            final ChannelUserEvent event = away
-                    ? new ChannelUserAwayEvent(date.getTime(), owner, channelClient.get())
-                    : new ChannelUserBackEvent(date.getTime(), owner, channelClient.get());
-            final String format = EventUtils.postDisplayable(eventBus, event,
-                    (away ? "channelUserAway" : "channelUserBack")
-                    + (discovered ? "Discovered" : ""));
-            owner.doNotification(date, format, channelClient);
-        }
+        owner.getUser(owner.getConnection().get().getUser(client.getNickname())).ifPresent(c -> {
+            if (state == AwayState.AWAY) {
+                eventBus.publishAsync(new ChannelUserAwayEvent(date.getTime(), owner, c));
+            } else {
+                eventBus.publishAsync(new ChannelUserBackEvent(date.getTime(), owner, c));
+            }
+        });
     }
 
     @Override
