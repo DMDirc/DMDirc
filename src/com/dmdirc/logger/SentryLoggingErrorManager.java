@@ -70,7 +70,7 @@ public class SentryLoggingErrorManager {
     @Inject
     public SentryLoggingErrorManager(final DMDircMBassador eventBus,
             final SentryErrorReporter sentryErrorReporter,
-            @Named("singlethread") final ExecutorService executorService) {
+            @Named("errors") final ExecutorService executorService) {
         this.eventBus = eventBus;
         this.sentryErrorReporter = sentryErrorReporter;
         this.executorService = executorService;
@@ -83,6 +83,7 @@ public class SentryLoggingErrorManager {
         RavenFactory.registerFactory(new DefaultRavenFactory());
         final ConfigBinder configBinder = config.getBinder();
         configBinder.bind(this, SentryLoggingErrorManager.class);
+        RavenFactory.registerFactory(new DefaultRavenFactory());
         eventBus.subscribe(this);
     }
 
