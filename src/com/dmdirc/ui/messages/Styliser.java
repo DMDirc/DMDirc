@@ -226,12 +226,13 @@ public class Styliser implements ConfigChangeListener {
      * @since 0.6.3
      */
     public static String getStyledText(final String styled, final int from, final int to) {
-        checkArgument(from < to, "'from' must be less than 'to'");
-        checkArgument(from >= 0, "'from' must be non-negative");
+        checkArgument(from < to, "'from' (" + from + ") must be less than 'to' (" + to + ')');
+        checkArgument(from >= 0, "'from' (" + from + ") must be non-negative");
 
         final String unstyled = stipControlCodes(styled);
 
-        checkArgument(to < unstyled.length(), "'to' must be less than the unstyled length");
+        checkArgument(to <= unstyled.length(), "'to' (" + to + ") must be less than or equal to "
+                + "the unstyled length (" + unstyled.length() + ')');
 
         final String startBit = unstyled.substring(0, from);
         final String middleBit = unstyled.substring(from, to);
