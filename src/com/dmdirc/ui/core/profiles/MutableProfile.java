@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Mutable version of {@link Profile}.
  */
@@ -55,6 +58,13 @@ public class MutableProfile {
 
     public MutableProfile(final String name, final String realname, final Optional<String> ident,
             final Iterable<String> nicknames, final Iterable<String> highlights) {
+        checkNotNull(name);
+        checkNotNull(realname);
+        checkNotNull(ident);
+        checkNotNull(nicknames);
+        checkNotNull(highlights);
+        checkArgument(!name.isEmpty());
+        checkArgument(!realname.isEmpty());
         this.name = name;
         this.realname = realname;
         this.ident = ident;
@@ -67,6 +77,8 @@ public class MutableProfile {
     }
 
     public void setName(final String name) {
+        checkNotNull(name);
+        checkArgument(!name.isEmpty());
         this.name = name;
     }
 
@@ -75,6 +87,8 @@ public class MutableProfile {
     }
 
     public void setRealname(final String realname) {
+        checkNotNull(realname);
+        checkArgument(!realname.isEmpty());
         this.realname = realname;
     }
 
@@ -83,6 +97,7 @@ public class MutableProfile {
     }
 
     public void setIdent(final Optional<String> ident) {
+        checkNotNull(ident);
         this.ident = ident;
     }
 
@@ -91,18 +106,24 @@ public class MutableProfile {
     }
 
     public void setNicknames(final Iterable<String> nicknames) {
+        checkNotNull(nicknames);
         this.nicknames = Lists.newArrayList(nicknames);
     }
 
     public void setNickname(final int index, final String newNickname) {
+        checkNotNull(newNickname);
+        checkArgument(nicknames.size() < index);
         nicknames.set(index, newNickname);
     }
 
     public void removeNickname(final String nickname) {
+        checkNotNull(nickname);
+        checkArgument(nicknames.contains(nickname));
         nicknames.remove(nickname);
     }
 
     public void addNickname(final String nickname) {
+        checkNotNull(nickname);
         nicknames.add(nickname);
     }
 
@@ -111,18 +132,24 @@ public class MutableProfile {
     }
 
     public void setHighlights(final Iterable<String> highlights) {
+        checkNotNull(highlights);
         this.highlights = Lists.newArrayList(highlights);
     }
 
     public void setHighlight(final int index, final String newHighlight) {
+        checkNotNull(newHighlight);
+        checkArgument(highlights.size() < index);
         highlights.set(index, newHighlight);
     }
 
     public void removeHighlight(final String highlight) {
+        checkNotNull(highlight);
+        checkArgument(nicknames.contains(highlight));
         highlights.remove(highlight);
     }
 
     public void addHighlight(final String highlight) {
+        checkNotNull(highlight);
         highlights.add(highlight);
     }
 
@@ -139,21 +166,15 @@ public class MutableProfile {
 
     @Override
     public boolean equals(final Object object) {
-        if (this == object) {
-            return true;
+        if (object instanceof MutableProfile) {
+            final MutableProfile profile = (MutableProfile) object;
+            return Objects.equals(name, profile.getName()) &&
+                    Objects.equals(realname, profile.getRealname()) &&
+                    Objects.equals(ident, profile.getIdent()) &&
+                    Objects.equals(nicknames, profile.getNicknames()) &&
+                    Objects.equals(highlights, profile.getHighlights());
         }
-        if (object == null) {
-            return false;
-        }
-        if (getClass() != object.getClass()) {
-            return false;
-        }
-        final MutableProfile profile = (MutableProfile) object;
-        return Objects.equals(name, profile.getName())
-                && Objects.equals(realname, profile.getRealname())
-                && Objects.equals(ident, profile.getIdent())
-                && Objects.equals(nicknames, profile.getNicknames())
-                && Objects.equals(highlights, profile.getHighlights());
+        return false;
     }
 
     @Override
