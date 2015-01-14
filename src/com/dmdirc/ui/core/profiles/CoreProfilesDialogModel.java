@@ -102,13 +102,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public void addProfile(final String name) {
-        checkNotNull(name, "Name cannot be null");
-        checkArgument(!profiles.containsKey(name), "Name cannot already exist");
-        final MutableProfile profile = new MutableProfile(name, name, Optional.empty(),
-                Lists.newArrayList());
-        profiles.put(name, profile);
-        listeners.getCallable(ProfilesDialogModelListener.class).profileAdded(profile);
-        setSelectedProfile(Optional.of(profile));
+        addProfile(name, name, null, Lists.newArrayList());
     }
 
     @Override
