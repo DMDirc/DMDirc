@@ -52,7 +52,6 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.EventUtils;
 
 import java.awt.Toolkit;
 import java.util.Arrays;
@@ -222,14 +221,9 @@ public class Query extends FrameContainer implements PrivateActionListener,
                                 ex.getMessage()));
             }
 
-            final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QueryNickChangeEvent(this, oldNick, client.getNickname()),
-                    "queryNickChanged");
-
             connection.updateQuery(this, oldNick, client.getNickname());
 
-            addLine(format, oldNick, client.getUsername(),
-                    client.getHostname(), client.getNickname());
+            getEventBus().publish(new QueryNickChangeEvent(this, oldNick, client.getNickname()));
             updateTitle();
 
             setName(client.getNickname());
