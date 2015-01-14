@@ -202,7 +202,7 @@ public class Query extends FrameContainer implements PrivateActionListener,
     @Override
     public void onNickChanged(final Parser parser, final Date date,
             final ClientInfo client, final String oldNick) {
-        if (oldNick.equals(getNickname())) {
+        if (client.getNickname().equals(getNickname())) {
             final CallbackManager callbackManager = connection.getParser().get().getCallbackManager();
 
             callbackManager.delCallback(PrivateActionListener.class, this);
