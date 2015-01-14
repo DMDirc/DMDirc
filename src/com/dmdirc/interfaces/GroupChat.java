@@ -160,4 +160,19 @@ public interface GroupChat extends Chat {
     // TODO: Add a builder-type interface for batch mode changes, instead of add+flush.
     void flushModes();
 
+    /**
+     * Gets boolean modes for this chat.
+     *
+     * @return The current boolean (toggleable) modes.
+     */
+    // TODO: Don't use a String here, return a collection of some abstraction.
+    String getModes();
+
+    /**
+     * Gets the value of the given mode for this chat.
+     *
+     * @param mode The mode to retrieve.
+     * @return The current value of the mode.
+     */
+    String getModeValue(final char mode);
 }
