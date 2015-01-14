@@ -49,7 +49,16 @@ public interface ProfilesDialogModel {
      * @param ident     Optional ident of the profile
      * @param nicknames Nicknames to add
      */
+    @Deprecated
     void addProfile(String name, String realname, String ident, List<String> nicknames);
+
+    /**
+     * Adds a profile to the model. The name will also be used as a default value for the nickname
+     * and realname.
+     *
+     * @param name Name of the profile
+     */
+    void addProfile(String name);
 
     /**
      * Retrieves a profile from the model.
@@ -58,6 +67,7 @@ public interface ProfilesDialogModel {
      *
      * @return Optional profile from the model
      */
+    @Deprecated
     Optional<MutableProfile> getProfile(String name);
 
     /**
@@ -226,7 +236,15 @@ public interface ProfilesDialogModel {
      *
      * @param name Name of the profile to remove
      */
+    @Deprecated
     void removeProfile(String name);
+
+    /**
+     * Removes a problem from this model.
+     *
+     * @param profile The profile to remove
+     */
+    void removeProfile(MutableProfile profile);
 
     /**
      * Saves the profiles in the model, deleting as appropriate.
@@ -380,11 +398,31 @@ public interface ProfilesDialogModel {
      */
     boolean isSaveAllowed();
 
+    /**
+     * Validator to check if the list of nicknames is valid.
+     *
+     * @return Nickname list validator
+     */
     Validator<List<String>> getNicknamesValidator();
 
+    /**
+     * Validator to check the list of highlights is valid.
+     *
+     * @return Highlights validator
+     */
     Validator<List<String>> getHighlightsValidator();
 
+    /**
+     * Validator to check if the realname is valid.
+     *
+     * @return Realname validator
+     */
     Validator<String> getRealnameValidator();
 
+    /**
+     * Validator to check if the ident is valid.
+     *
+     * @return Ident validator
+     */
     Validator<String> getIdentValidator();
 }
