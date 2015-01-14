@@ -111,6 +111,12 @@ QueryMessageEvent:
   format: "<{{user.nickname}}> {{message}}"
 QuerySelfMessageEvent:
   format: "<{{user.nickname}}> {{message}}"
+QueryQuitEvent:
+  format: "* {{query.nickname}} has quit IRC{{reason|bracketed}}."
+  colour: 2
+#QueryNickChangeEvent:
+#  format: "* {{oldNick}} is now known as {{newNick}}"
+#  colour: 3
 
 ################## Miscellaneous events ############################################################
 
@@ -126,18 +132,13 @@ CommandOutputEvent:
 #  channelModeDiscovered=3* Channel modes for %2$s are: %1$s.
 #  privateNotice=5-%1$s- %4$s
 #  serverNotice=5-%1$s- %4$s
-#  queryNickChanged=3* %1$s is now known as %4$s.
 #  userModeChanged=3* %1$s sets user mode: %4$s.
 #  userNoModes=3* No user modes.
 #  userModeDiscovered=3* User modes are: %4$s.
-#  queryQuitReason=2* %1$s has quit IRC (%4$s).
-#  queryMessageHighlight=4<%1$s> %4$s
-#  queryActionHighlight=6* %1$s %4$s
 #  inviteReceived=2* You have been invited to %4$s by %1$s.
 #  walluser=5!%1$s! %4$s
 #  wallop=5$%1$s$ %4$s
 #  walldesync=5/%1$s/ %4$s
-#  queryQuit=2* %1$s has quit IRC.
 #  selfCTCP=4->- [%1$s] %2$s
 #  selfNotice=5>%1$s> %2$s
 #  selfMessage=>[%1$s]> %2$s

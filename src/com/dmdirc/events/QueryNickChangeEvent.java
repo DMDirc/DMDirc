@@ -30,19 +30,27 @@ import com.dmdirc.Query;
 public class QueryNickChangeEvent extends QueryDisplayableEvent {
 
     private final String oldNick;
+    private final String newNick;
 
-    public QueryNickChangeEvent(final long timestamp, final Query query, final String oldNick) {
+    public QueryNickChangeEvent(final long timestamp, final Query query, final String oldNick,
+            final String newNick) {
         super(timestamp, query);
         this.oldNick = oldNick;
+        this.newNick = newNick;
     }
 
-    public QueryNickChangeEvent(final Query query, final String oldNick) {
+    public QueryNickChangeEvent(final Query query, final String oldNick, final String newNick) {
         super(query);
         this.oldNick = oldNick;
+        this.newNick = newNick;
     }
 
     public String getOldNick() {
         return oldNick;
+    }
+
+    public String getNewNick() {
+        return newNick;
     }
 
 }
