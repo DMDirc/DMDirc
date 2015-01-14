@@ -565,4 +565,14 @@ public class Channel extends FrameContainer implements GroupChat {
         channelInfo.flushModes();
     }
 
+    @Override
+    public String getModes() {
+        return channelInfo.getModes();
+    }
+
+    @Override
+    public String getModeValue(final char mode) {
+        return channelInfo.getMode(mode);
+    }
+
 }
