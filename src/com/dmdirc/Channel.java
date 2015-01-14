@@ -41,6 +41,7 @@ import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
+import com.dmdirc.parser.common.ChannelListModeItem;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
@@ -61,6 +62,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 /**
  * The Channel class represents the client's view of the channel. It handles callbacks for channel
@@ -540,6 +543,26 @@ public class Channel extends FrameContainer implements GroupChat {
     public void kick(final GroupChatUser user, final Optional<String> reason) {
         ((ChannelClient) user).getClientInfo().kick(
                 reason.orElse(getConfigManager().getOption("general", "kickmessage")));
+    }
+
+    @Override
+    public Collection<ChannelListModeItem> getListModeItems(final char mode) {
+        return channelInfo.getListMode(mode);
+    }
+
+    @Override
+    public void setMode(final char mode, @Nullable final String value) {
+        channelInfo.alterMode(true, mode, value);
+    }
+
+    @Override
+    public void removeMode(final char mode, final String value) {
+        channelInfo.alterMode(false, mode, value);
+    }
+
+    @Override
+    public void flushModes() {
+        channelInfo.flushModes();
     }
 
 }

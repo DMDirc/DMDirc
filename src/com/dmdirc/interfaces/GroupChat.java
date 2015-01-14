@@ -24,10 +24,13 @@ package com.dmdirc.interfaces;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Topic;
+import com.dmdirc.parser.common.ChannelListModeItem;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 /**
  * A chat containing multiple participants.
@@ -79,7 +82,7 @@ public interface GroupChat extends Chat {
      *
      * @param reason The reason for parting the channel
      */
-    void part(final String reason);
+    void part(String reason);
 
     /**
      * Requests all available list modes for this channel.
@@ -91,7 +94,7 @@ public interface GroupChat extends Chat {
      *
      * @param topic The new topic to be used. An empty string will clear the current topic
      */
-    void setTopic(final String topic);
+    void setTopic(String topic);
 
     /**
      * Gets the name of the chat.
@@ -108,7 +111,7 @@ public interface GroupChat extends Chat {
      *
      * @return User on channel, or empty if the user is not on the channel
      */
-    Optional<GroupChatUser> getUser(final User user);
+    Optional<GroupChatUser> getUser(User user);
 
     /**
      * Returns the users available on this GroupChat.
@@ -123,5 +126,38 @@ public interface GroupChat extends Chat {
      * @param user   User to kick
      * @param reason Reason for the kick
      */
-    void kick(final GroupChatUser user, final Optional<String> reason);
+    void kick(GroupChatUser user, Optional<String> reason);
+
+    /**
+     * Gets the items in the specified list mode category.
+     *
+     * @param mode The list mode to retrieve items for.
+     * @return The known mode entries.
+     */
+    // TODO: Return a parser-neutral type
+    // TODO: Don't assume mode types are always chars, use an abstraction
+    Collection<ChannelListModeItem> getListModeItems(char mode);
+
+    /**
+     * Sets a mode on the group chat.
+     *
+     * @param mode The mode to set.
+     * @param value The value of the mode, if any.
+     */
+    void setMode(char mode, @Nullable String value);
+
+    /**
+     * Unsets a mode on the group chat.
+     *
+     * @param mode The mode to unset.
+     * @param value The value of the mode, if any.
+     */
+    void removeMode(char mode, String value);
+
+    /**
+     * Flushes all pending mode changes.
+     */
+    // TODO: Add a builder-type interface for batch mode changes, instead of add+flush.
+    void flushModes();
+
 }
