@@ -112,7 +112,7 @@ public class MutableProfile {
 
     public void setNickname(final int index, final String newNickname) {
         checkNotNull(newNickname);
-        checkArgument(nicknames.size() < index);
+        checkArgument(nicknames.size() > index);
         nicknames.set(index, newNickname);
     }
 
