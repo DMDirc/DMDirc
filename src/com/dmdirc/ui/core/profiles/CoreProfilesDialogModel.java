@@ -407,12 +407,18 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public Validator<String> getSelectedProfileAddNicknameValidator() {
-        return new AddNicknameValidator(this);
+        return ValidatorChain.<String>builder()
+                .addValidator(new NotEmptyValidator())
+                .addValidator(new AddNicknameValidator(this))
+                .build();
     }
 
     @Override
     public Validator<String> getSelectedProfileEditNicknameValidator() {
-        return new EditSelectedNicknameValidator(this);
+        return ValidatorChain.<String>builder()
+                .addValidator(new NotEmptyValidator())
+                .addValidator(new EditSelectedNicknameValidator(this))
+                .build();
     }
 
     @Override
