@@ -52,7 +52,6 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.EventUtils;
 
 import java.awt.Toolkit;
 import java.util.Arrays;
@@ -203,7 +202,7 @@ public class Query extends FrameContainer implements PrivateActionListener,
     @Override
     public void onNickChanged(final Parser parser, final Date date,
             final ClientInfo client, final String oldNick) {
-        if (oldNick.equals(getNickname())) {
+        if (client.getNickname().equals(getNickname())) {
             final CallbackManager callbackManager = connection.getParser().get().getCallbackManager();
 
             callbackManager.delCallback(PrivateActionListener.class, this);
@@ -222,14 +221,9 @@ public class Query extends FrameContainer implements PrivateActionListener,
                                 ex.getMessage()));
             }
 
-            final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QueryNickChangeEvent(this, oldNick, client.getNickname()),
-                    "queryNickChanged");
-
             connection.updateQuery(this, oldNick, client.getNickname());
 
-            addLine(format, oldNick, client.getUsername(),
-                    client.getHostname(), client.getNickname());
+            getEventBus().publish(new QueryNickChangeEvent(this, oldNick, client.getNickname()));
             updateTitle();
 
             setName(client.getNickname());
@@ -276,7 +270,9 @@ public class Query extends FrameContainer implements PrivateActionListener,
     @Override
     public String getHost() {
         // TODO: Icky, IRC specific. Kill with fire.
-        return user.getNickname() + '!' + user.getUsername() + '@' + user.getHostname();
+        return user.getNickname()
+                + '!' + user.getUsername().orElse("")
+                + '@' + user.getHostname().orElse("");
     }
 
     @Override

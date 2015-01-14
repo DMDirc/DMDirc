@@ -114,9 +114,9 @@ QuerySelfMessageEvent:
 QueryQuitEvent:
   format: "* {{query.nickname}} has quit IRC{{reason|bracketed}}."
   colour: 2
-#QueryNickChangeEvent:
-#  format: "* {{oldNick}} is now known as {{newNick}}"
-#  colour: 3
+QueryNickChangeEvent:
+  format: "* {{oldNick}} is now known as {{newNick}}"
+  colour: 3
 
 ################## Miscellaneous events ############################################################
 
