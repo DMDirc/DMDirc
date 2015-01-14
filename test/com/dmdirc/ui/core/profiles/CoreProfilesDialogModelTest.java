@@ -128,7 +128,35 @@ public class CoreProfilesDialogModelTest {
     }
 
     @Test
+    public void testAddProfile_JustName() {
+        when(profileManager.getProfiles()).thenReturn(Lists.newArrayList());
+        instance.loadModel();
+        verify(listener).profileSelectionChanged(Optional.empty());
+        assertTrue("testAddProfile", !instance.getSelectedProfile().isPresent());
+        assertFalse("testAddProfile", instance.getProfile("profile4").isPresent());
+        instance.addProfile(mutableProfile1.getName());
+        assertTrue("testAddProfile", instance.getProfile(mutableProfile1.getName()).isPresent());
+        verify(listener).profileAdded(new MutableProfile(mutableProfile1.getName(),
+                mutableProfile1.getName(), Optional.of(mutableProfile1.getName()),
+                Lists.newArrayList(mutableProfile1.getName()), Lists.newArrayList()));
+        verify(listener).profileSelectionChanged(Optional.of(new MutableProfile(
+                mutableProfile1.getName(), mutableProfile1.getName(),
+                Optional.of(mutableProfile1.getName()),
+                Lists.newArrayList(mutableProfile1.getName()), Lists.newArrayList())));
+    }
+
+    @Test
     public void testRemoveProfile() {
+        assertEquals("testRemoveProfile", 3, instance.getProfileList().size());
+        assertTrue("testRemoveProfile", instance.getProfile("profile3").isPresent());
+        instance.removeProfile(mutableProfile3);
+        verify(listener).profileRemoved(mutableProfile3);
+        assertEquals("testRemoveProfile", 2, instance.getProfileList().size());
+        assertFalse("testRemoveProfile", instance.getProfile("profile3").isPresent());
+    }
+
+    @Test
+    public void testRemoveProfile_ByName() {
         assertEquals("testRemoveProfile", 3, instance.getProfileList().size());
         assertTrue("testRemoveProfile", instance.getProfile("profile3").isPresent());
         instance.removeProfile("profile3");
