@@ -223,7 +223,7 @@ public class Query extends FrameContainer implements PrivateActionListener,
             }
 
             final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QueryNickChangeEvent(this, oldNick),
+                    new QueryNickChangeEvent(this, oldNick, client.getNickname()),
                     "queryNickChanged");
 
             connection.updateQuery(this, oldNick, client.getNickname());
@@ -240,11 +240,7 @@ public class Query extends FrameContainer implements PrivateActionListener,
     public void onQuit(final Parser parser, final Date date,
             final ClientInfo client, final String reason) {
         if (client.getNickname().equals(getNickname())) {
-            final String format = EventUtils.postDisplayable(getEventBus(),
-                    new QueryQuitEvent(this, reason),
-                    reason.isEmpty() ? "queryQuit" : "queryQuitReason");
-            addLine(format, client.getNickname(), client.getUsername(), client.getHostname(),
-                    reason);
+            getEventBus().publish(new QueryQuitEvent(this, reason));
         }
     }
 
