@@ -94,7 +94,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
         checkNotNull(name, "Name cannot be null");
         checkArgument(!profiles.containsKey(name), "Name cannot already exist");
         final MutableProfile profile =
-                new MutableProfile(name, realname, Optional.of(ident), nicknames);
+                new MutableProfile(name, realname, Optional.ofNullable(ident), nicknames);
         profiles.put(name, profile);
         listeners.getCallable(ProfilesDialogModelListener.class).profileAdded(profile);
         setSelectedProfile(Optional.of(profile));
@@ -102,14 +102,14 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
 
     @Override
     public void addProfile(final String name) {
-        addProfile(name, name, null, Lists.newArrayList());
+        addProfile(name, name, name, Lists.newArrayList(name));
     }
 
     @Override
     public void removeProfile(final String name) {
         checkNotNull(name, "Name cannot be null");
         checkArgument(profiles.containsKey(name), "profile must exist in list");
-        removeProfile(profiles.remove(name));
+        removeProfile(profiles.get(name));
     }
 
     @Override
@@ -126,6 +126,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
             setSelectedProfileHighlights(Optional.empty());
             setSelectedProfileNicknames(Optional.empty());
         }
+        profiles.remove(profile.getName());
         listeners.getCallable(ProfilesDialogModelListener.class).profileRemoved(profile);
     }
 
