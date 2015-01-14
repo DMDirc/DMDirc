@@ -270,7 +270,9 @@ public class Query extends FrameContainer implements PrivateActionListener,
     @Override
     public String getHost() {
         // TODO: Icky, IRC specific. Kill with fire.
-        return user.getNickname() + '!' + user.getUsername() + '@' + user.getHostname();
+        return user.getNickname()
+                + '!' + user.getUsername().orElse("")
+                + '@' + user.getHostname().orElse("");
     }
 
     @Override
