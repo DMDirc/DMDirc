@@ -73,16 +73,16 @@ public class SentryErrorReporter {
             @Nullable final Throwable exception,
             @Nullable final String details) {
         final EventBuilder eventBuilder = newEventBuilder()
-                .setMessage(message)
-                .setLevel(getSentryLevel(level))
-                .setTimestamp(timestamp);
+                .withMessage(message)
+                .withLevel(getSentryLevel(level))
+                .withTimestamp(timestamp);
 
         if (exception != null) {
-            eventBuilder.addSentryInterface(new ExceptionInterface(exception));
+            eventBuilder.withSentryInterface(new ExceptionInterface(exception));
         }
 
         if (details != null) {
-            eventBuilder.addExtra("details", details);
+            eventBuilder.withExtra("details", details);
         }
 
         send(eventBuilder.build());
@@ -103,16 +103,16 @@ public class SentryErrorReporter {
             final String modeAliasVersion) {
         final String title = getModeAliasReportTitle(channelModes, userModes, connection.getIrcd());
         final EventBuilder eventBuilder = newEventBuilder()
-                .setMessage(title)
-                .setCulprit(title)
-                .setLevel(Event.Level.INFO)
-                .addTag("ircd.type", connection.getIrcd())
-                .addTag("ircd.version", connection.getParser().get().getServerSoftware())
-                .addTag("network", connection.getNetwork())
-                .addTag("server", connection.getAddress())
-                .addTag("modealiases", modeAliasVersion)
-                .addSentryInterface(new MessageInterface(MODE_ALIAS_TEMPLATE, title,
-                                connection.getParser().get().getServerInformationLines().toString()));
+                .withMessage(title)
+                .withCulprit(title)
+                .withLevel(Event.Level.INFO)
+                .withTag("ircd.type", connection.getIrcd())
+                .withTag("ircd.version", connection.getParser().get().getServerSoftware())
+                .withTag("network", connection.getNetwork())
+                .withTag("server", connection.getAddress())
+                .withTag("modealiases", modeAliasVersion)
+                .withSentryInterface(new MessageInterface(MODE_ALIAS_TEMPLATE, title,
+                        connection.getParser().get().getServerInformationLines().toString()));
 
         send(eventBuilder.build());
     }
@@ -149,18 +149,18 @@ public class SentryErrorReporter {
      */
     private EventBuilder newEventBuilder() {
         return new EventBuilder()
-                .setServerName("")
-                .addTag("version", clientInfo.getVersion())
-                .addTag("version.major", clientInfo.getMajorVersion())
-                .addTag("os.name", clientInfo.getOperatingSystemName())
-                .addTag("os.version", clientInfo.getOperatingSystemVersion())
-                .addTag("os.arch", clientInfo.getOperatingSystemArchitecture())
-                .addTag("encoding", clientInfo.getSystemFileEncoding())
-                .addTag("locale", clientInfo.getSystemDefaultLocale())
-                .addTag("jvm.name", clientInfo.getJavaName())
-                .addTag("jvm.vendor", clientInfo.getJavaVendor())
-                .addTag("jvm.version", clientInfo.getJavaVersion())
-                .addTag("jvm.version.major", clientInfo.getJavaMajorVersion());
+                .withServerName("")
+                .withTag("version", clientInfo.getVersion())
+                .withTag("version.major", clientInfo.getMajorVersion())
+                .withTag("os.name", clientInfo.getOperatingSystemName())
+                .withTag("os.version", clientInfo.getOperatingSystemVersion())
+                .withTag("os.arch", clientInfo.getOperatingSystemArchitecture())
+                .withTag("encoding", clientInfo.getSystemFileEncoding())
+                .withTag("locale", clientInfo.getSystemDefaultLocale())
+                .withTag("jvm.name", clientInfo.getJavaName())
+                .withTag("jvm.vendor", clientInfo.getJavaVendor())
+                .withTag("jvm.version", clientInfo.getJavaVersion())
+                .withTag("jvm.version.major", clientInfo.getJavaMajorVersion());
     }
 
     /**
