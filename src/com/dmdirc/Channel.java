@@ -275,8 +275,8 @@ public class Channel extends FrameContainer implements GroupChat {
 
         // Needs to be published synchronously so that nicklists are cleared before the parser
         // is disconnected (which happens synchronously after this method returns).
-        getEventBus().publish(new NickListClientsChangedEvent(this,
-                Collections.<GroupChatUser>emptyList()));
+        getEventBus().publish(
+                new NickListClientsChangedEvent(this, Collections.<GroupChatUser>emptyList()));
     }
 
     @Override
@@ -327,8 +327,7 @@ public class Channel extends FrameContainer implements GroupChat {
     public void removeClient(final GroupChatUser client) {
         getEventBus().publishAsync(new NickListClientRemovedEvent(this, client));
 
-        getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK,
-                client.getNickname());
+        getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
 
         if (client.getUser().equals(connection.getLocalUser().orElse(null))) {
             resetWindow();
@@ -361,10 +360,7 @@ public class Channel extends FrameContainer implements GroupChat {
         refreshClients();
     }
 
-    /**
-     * Refreshes the list of clients stored by this channel. Should be called when (visible) user
-     * modes or nicknames change.
-     */
+    @Override
     public void refreshClients() {
         if (!isOnChannel) {
             return;

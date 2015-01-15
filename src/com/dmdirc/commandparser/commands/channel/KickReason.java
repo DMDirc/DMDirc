@@ -68,7 +68,7 @@ public class KickReason extends Command implements IntelligentCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final GroupChat groupChat = ((ChannelCommandContext) context).getChannel();
+        final GroupChat groupChat = ((ChannelCommandContext) context).getGroupChat();
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "kick", "<user> [reason]");
             return;

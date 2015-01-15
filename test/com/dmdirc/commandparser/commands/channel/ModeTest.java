@@ -29,7 +29,6 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 
 import java.util.Optional;
@@ -48,7 +47,6 @@ public class ModeTest {
 
     @Mock private FrameContainer origin;
     @Mock private CommandController controller;
-    @Mock private ChannelInfo channelinfo;
     @Mock private Channel channel;
     @Mock private Connection connection;
     @Mock private Parser parser;
@@ -58,9 +56,8 @@ public class ModeTest {
     public void setUp() throws InvalidIdentityFileException {
         when(channel.getConnection()).thenReturn(Optional.of(connection));
         when(connection.getParser()).thenReturn(Optional.of(parser));
-        when(channel.getChannelInfo()).thenReturn(channelinfo);
-        when(channelinfo.getModes()).thenReturn("my mode string!");
-        when(channelinfo.toString()).thenReturn("#chan");
+        when(channel.getModes()).thenReturn("my mode string!");
+        when(channel.getName()).thenReturn("#chan");
 
         command = new Mode(controller);
     }
@@ -70,7 +67,7 @@ public class ModeTest {
         command.execute(origin, new CommandArguments(controller, "/mode"),
                 new ChannelCommandContext(null, Mode.INFO, channel));
 
-        verify(origin).addLine("channelModeDiscovered", "my mode string!", channelinfo);
+        verify(origin).addLine("channelModeDiscovered", "my mode string!", channel);
     }
 
     @Test

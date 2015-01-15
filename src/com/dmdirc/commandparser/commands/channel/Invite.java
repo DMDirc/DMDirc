@@ -69,7 +69,7 @@ public class Invite extends Command implements ExternalCommand {
             sendLine(origin, args.isSilent(), FORMAT_ERROR,
                     "Insufficient arguments: must specify user");
         } else {
-            final GroupChat groupChat = ((ChannelCommandContext) context).getChannel();
+            final GroupChat groupChat = ((ChannelCommandContext) context).getGroupChat();
             groupChat.getConnection().flatMap(Connection::getParser)
                     .ifPresent(p -> p.sendInvite(groupChat.getName(), args.getArgumentsAsString()));
         }
