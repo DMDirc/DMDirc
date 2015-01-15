@@ -59,6 +59,13 @@ public interface GroupChat extends Chat {
     int getMaxTopicLength();
 
     /**
+     * Refreshes the list of clients stored by this channel. Should be called when (visible) user
+     * modes or nicknames change.
+     */
+    // TODO: Should probably not need this.
+    void refreshClients();
+
+    /**
      * Retrieve the topics that have been seen on this channel.
      *
      * @return A list of topics that have been seen on this channel, including the current one.

@@ -134,7 +134,7 @@ public class SetCommand extends Command implements IntelligentCommand {
                 return;
             }
 
-            final GroupChat groupChat = ((ChannelCommandContext) context).getChannel();
+            final GroupChat groupChat = ((ChannelCommandContext) context).getGroupChat();
             identity = identityFactory.createChannelConfig(connection.get().getNetwork(),
                     groupChat.getName());
             manager = groupChat.getWindowModel().getConfigManager();

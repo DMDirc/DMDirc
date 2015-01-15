@@ -66,7 +66,7 @@ public class Names extends Command implements IntelligentCommand,
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final GroupChat channel = ((ChannelCommandContext) context).getChannel();
+        final GroupChat channel = ((ChannelCommandContext) context).getGroupChat();
         channel.getConnection().get().getParser().get().sendRawMessage("NAMES "
                 + channel.getName());
     }

@@ -67,7 +67,7 @@ public class ShowTopic extends Command implements ExternalCommand {
     @Override
     public void execute(@Nonnull final FrameContainer origin,
             final CommandArguments args, final CommandContext context) {
-        final GroupChat channel = ((ChannelCommandContext) context).getChannel();
+        final GroupChat channel = ((ChannelCommandContext) context).getGroupChat();
         if (args.getArguments().length == 0) {
             final Optional<Topic> topic = channel.getCurrentTopic();
             if (topic.isPresent()) {
