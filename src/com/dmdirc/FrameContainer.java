@@ -331,8 +331,9 @@ public abstract class FrameContainer implements WindowModel {
     }
 
     @Override
+    @Deprecated
     public void addLine(final String line, final boolean timestamp) {
-        addLine(line, timestamp ? new Date() : null);
+        addLine(line, new Date());
     }
 
     @Override
