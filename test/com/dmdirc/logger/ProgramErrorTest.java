@@ -59,18 +59,6 @@ public class ProgramErrorTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructorNullMessage() {
-        new ProgramError(ErrorLevel.HIGH, null, null, Lists.newArrayList(), null, new Date(),
-                eventBus, true);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorEmptyMessage() {
-        new ProgramError(ErrorLevel.HIGH, "", null, Lists.newArrayList(), null, new Date(),
-                eventBus, true);
-    }
-
-    @Test(expected = NullPointerException.class)
     public void testConstructorNullDate() {
         new ProgramError(ErrorLevel.HIGH, "moo", null, Lists.newArrayList(), null, null,
                 eventBus, true);
