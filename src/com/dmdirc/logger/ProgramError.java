@@ -36,7 +36,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -86,9 +85,7 @@ public class ProgramError implements Serializable {
             final DMDircMBassador eventBus,
             final boolean appError) {
         checkNotNull(level);
-        checkNotNull(message);
         checkNotNull(date);
-        checkArgument(!message.isEmpty());
 
         this.level = level;
         this.message = message;
