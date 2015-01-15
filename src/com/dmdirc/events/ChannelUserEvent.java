@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
 /**
@@ -32,13 +32,13 @@ public abstract class ChannelUserEvent extends ChannelDisplayableEvent {
 
     private final GroupChatUser user;
 
-    public ChannelUserEvent(final long timestamp, final Channel channel,
+    public ChannelUserEvent(final long timestamp, final GroupChat channel,
             final GroupChatUser user) {
         super(timestamp, channel);
         this.user = user;
     }
 
-    public ChannelUserEvent(final Channel channel, final GroupChatUser user) {
+    public ChannelUserEvent(final GroupChat channel, final GroupChatUser user) {
         super(channel);
         this.user = user;
     }

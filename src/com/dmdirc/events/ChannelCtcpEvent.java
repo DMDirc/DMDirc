@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
 /**
@@ -35,7 +35,7 @@ public class ChannelCtcpEvent extends ChannelDisplayableEvent {
     private final String message;
     private boolean handled;
 
-    public ChannelCtcpEvent(final long timestamp, final Channel channel,
+    public ChannelCtcpEvent(final long timestamp, final GroupChat channel,
             final GroupChatUser client, final String type, final String message) {
         super(timestamp, channel);
         this.client = client;
@@ -43,7 +43,7 @@ public class ChannelCtcpEvent extends ChannelDisplayableEvent {
         this.message = message;
     }
 
-    public ChannelCtcpEvent(final Channel channel, final GroupChatUser client,
+    public ChannelCtcpEvent(final GroupChat channel, final GroupChatUser client,
             final String type, final String message) {
         super(channel);
         this.client = client;

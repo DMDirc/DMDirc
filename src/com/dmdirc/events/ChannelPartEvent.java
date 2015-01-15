@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
 /**
@@ -33,14 +33,14 @@ public class ChannelPartEvent extends ChannelDisplayableEvent {
     private final GroupChatUser client;
     private final String message;
 
-    public ChannelPartEvent(final long timestamp, final Channel channel,
+    public ChannelPartEvent(final long timestamp, final GroupChat channel,
             final GroupChatUser client, final String message) {
         super(timestamp, channel);
         this.client = client;
         this.message = message;
     }
 
-    public ChannelPartEvent(final Channel channel, final GroupChatUser client,
+    public ChannelPartEvent(final GroupChat channel, final GroupChatUser client,
             final String message) {
         super(channel);
         this.client = client;

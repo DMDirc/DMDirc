@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -31,20 +31,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class ChannelEvent extends DMDircEvent {
 
-    /** The channel that this event occurred on. */
-    private final Channel channel;
+    /** The group chat that this event occurred on. */
+    private final GroupChat groupChat;
 
-    public ChannelEvent(final long timestamp, final Channel channel) {
+    public ChannelEvent(final long timestamp, final GroupChat groupChat) {
         super(timestamp);
-        this.channel = checkNotNull(channel);
+        this.groupChat = checkNotNull(groupChat);
     }
 
-    public ChannelEvent(final Channel channel) {
-        this.channel = checkNotNull(channel);
+    public ChannelEvent(final GroupChat groupChat) {
+        this.groupChat = checkNotNull(groupChat);
     }
 
-    public Channel getChannel() {
-        return channel;
+    public GroupChat getChannel() {
+        return groupChat;
     }
 
 }

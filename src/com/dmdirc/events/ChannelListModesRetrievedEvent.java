@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 
 /**
  * Fired when channel list modes are retrieved.
@@ -31,13 +31,13 @@ public class ChannelListModesRetrievedEvent extends ChannelDisplayableEvent {
 
     private final char mode;
 
-    public ChannelListModesRetrievedEvent(final long timestamp, final Channel channel,
+    public ChannelListModesRetrievedEvent(final long timestamp, final GroupChat channel,
             final char mode) {
         super(timestamp, channel);
         this.mode = mode;
     }
 
-    public ChannelListModesRetrievedEvent(final Channel channel, final char mode) {
+    public ChannelListModesRetrievedEvent(final GroupChat channel, final char mode) {
         super(channel);
         this.mode = mode;
     }

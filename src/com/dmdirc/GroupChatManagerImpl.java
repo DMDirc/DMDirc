@@ -218,7 +218,7 @@ public class GroupChatManagerImpl implements GroupChatManager {
 
     @Handler
     void handleChannelClosing(final ChannelClosedEvent event) {
-        final Channel channel = event.getChannel();
+        final GroupChat channel = event.getChannel();
         connection.getWindowModel().getTabCompleter()
                 .removeEntry(TabCompletionType.CHANNEL, channel.getName());
         channels.remove(channel.getName());
