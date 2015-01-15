@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.context;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.interfaces.GroupChat;
 
 /**
  * A specialised {@link CommandContext} for commands executed in channels.
@@ -33,29 +33,29 @@ import com.dmdirc.commandparser.CommandInfo;
  */
 public class ChannelCommandContext extends ChatCommandContext {
 
-    /** The channel associated with the command. */
-    private final Channel channel;
+    /** The group chat associated with the command. */
+    private final GroupChat groupChat;
 
     /**
-     * Creates a new channel command context.
+     * Creates a new group chat command context.
      *
      * @param source      The source of the command
      * @param commandInfo The command info object which associated the command with the input
-     * @param channel     The channel associated with the command
+     * @param groupChat  The group chat associated with the command
      */
     public ChannelCommandContext(final FrameContainer source,
-            final CommandInfo commandInfo, final Channel channel) {
-        super(source, commandInfo, channel);
-        this.channel = channel;
+            final CommandInfo commandInfo, final GroupChat groupChat) {
+        super(source, commandInfo, groupChat);
+        this.groupChat = groupChat;
     }
 
     /**
-     * Retrieves the channel associated with this context.
+     * Retrieves the group chat associated with this context.
      *
-     * @return This context's channel
+     * @return This context's group chat
      */
-    public Channel getChannel() {
-        return channel;
+    public GroupChat getGroupChat() {
+        return groupChat;
     }
 
 }

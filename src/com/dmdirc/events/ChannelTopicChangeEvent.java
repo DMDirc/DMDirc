@@ -22,8 +22,8 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
 import com.dmdirc.Topic;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
 /**
@@ -34,14 +34,14 @@ public class ChannelTopicChangeEvent extends ChannelDisplayableEvent {
     private final Topic topic;
     private final GroupChatUser user;
 
-    public ChannelTopicChangeEvent(final long timestamp, final Channel channel,
+    public ChannelTopicChangeEvent(final long timestamp, final GroupChat channel,
             final Topic topic, final GroupChatUser user) {
         super(timestamp, channel);
         this.topic = topic;
         this.user = user;
     }
 
-    public ChannelTopicChangeEvent(final Channel channel, final Topic topic,
+    public ChannelTopicChangeEvent(final GroupChat channel, final Topic topic,
             final GroupChatUser user) {
         super(channel);
         this.topic = topic;

@@ -30,7 +30,6 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
-import com.dmdirc.parser.interfaces.ChannelInfo;
 
 import java.util.Optional;
 
@@ -56,12 +55,10 @@ public class BanTest {
     @Mock private Channel channel;
     @Mock private CommandController controller;
     @Mock private FrameContainer container;
-    @Mock private ChannelInfo channelInfo;
     private Ban command;
 
     @Before
     public void setup() {
-        when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channel.getConnection()).thenReturn(Optional.of(connection));
         when(connection.getUser("user")).thenReturn(user1);
         when(connection.getUser("*!*@my.host.name")).thenReturn(user2);
@@ -87,8 +84,8 @@ public class BanTest {
         command.execute(container, new CommandArguments(controller, "/ban user"),
                 new ChannelCommandContext(null, Ban.INFO, channel));
 
-        verify(channelInfo).alterMode(true, 'b', "*!*@HOSTNAME");
-        verify(channelInfo).flushModes();
+        verify(channel).setMode('b', "*!*@HOSTNAME");
+        verify(channel).flushModes();
     }
 
     /** Tests that the ban command works if given a mask not a username. */
@@ -97,7 +94,7 @@ public class BanTest {
         command.execute(container, new CommandArguments(controller, "/ban *!*@my.host.name"),
                 new ChannelCommandContext(null, Ban.INFO, channel));
 
-        verify(channelInfo).alterMode(true, 'b', "*!*@my.host.name");
-        verify(channelInfo).flushModes();
+        verify(channel).setMode('b', "*!*@my.host.name");
+        verify(channel).flushModes();
     }
 }

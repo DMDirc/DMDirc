@@ -46,6 +46,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 import javax.inject.Inject;
 
 import net.engio.mbassy.listener.Handler;
@@ -62,7 +63,10 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
             "join <channel [key]>[,channel [key]...] - joins the specified channel(s)",
             CommandType.TYPE_SERVER);
     /** A map of channel name mentions. */
+    @GuardedBy("mentionsLock")
     private final MapList<FrameContainer, String> mentions = new MapList<>();
+    /** Lock to synchronise on when accessing mentions. */
+    private final Object mentionsLock = new Object();
 
     /**
      * Creates a new instance of the join channel command.
@@ -110,9 +114,11 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
                 .doLinks(event.getLine())
                 .split(Character.toString(Styliser.CODE_CHANNEL));
 
-        for (int i = 1; i < parts.length; i += 2) {
-            // All of the odd parts of the array are channel names
-            mentions.add(event.getFrameContainer(), parts[i]);
+        synchronized (mentionsLock) {
+            for (int i = 1; i < parts.length; i += 2) {
+                // All of the odd parts of the array are channel names
+                mentions.add(event.getFrameContainer(), parts[i]);
+            }
         }
     }
 
@@ -170,8 +176,10 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
         final List<String> results = new ArrayList<>();
 
         // Check the window itself
-        if (mentions.containsKey(source)) {
-            results.addAll(mentions.get(source));
+        synchronized (mentionsLock) {
+            if (mentions.containsKey(source)) {
+                results.addAll(mentions.get(source));
+            }
         }
 
         // Check the parent window

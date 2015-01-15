@@ -22,14 +22,14 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 
 /**
  * Event raised when a channel is opened.
  */
 public class ChannelOpenedEvent extends ChannelDisplayableEvent {
 
-    public ChannelOpenedEvent(final Channel channel) {
+    public ChannelOpenedEvent(final GroupChat channel) {
         super(channel);
     }
 

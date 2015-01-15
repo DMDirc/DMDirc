@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.Channel;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
@@ -32,6 +31,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.GroupChat;
 
 import javax.annotation.Nonnull;
 
@@ -42,10 +42,8 @@ public class ChannelCommandParser extends ChatCommandParser {
 
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
-    /**
-     * The channel instance that this parser is attached to.
-     */
-    private Channel channel;
+    /** The group chat instance that this parser is attached to. */
+    private GroupChat groupChat;
 
     /**
      * Creates a new instance of ChannelCommandParser.
@@ -54,15 +52,17 @@ public class ChannelCommandParser extends ChatCommandParser {
      * @param commandController The controller to load commands from.
      * @param eventBus          Event bus to post events on
      */
-    public ChannelCommandParser(final FrameContainer owner, final CommandController commandController,
+    public ChannelCommandParser(final FrameContainer owner,
+            final CommandController commandController,
             final DMDircMBassador eventBus) {
         super(owner, commandController, eventBus);
     }
 
     @Override
     public void setOwner(final FrameContainer owner) {
-        if (channel == null) {
-            channel = (Channel) owner;
+        if (groupChat == null) {
+            // TODO: Can't assume that framecontainers may be group chats.
+            groupChat = (GroupChat) owner;
         }
 
         super.setOwner(owner);
@@ -80,7 +80,7 @@ public class ChannelCommandParser extends ChatCommandParser {
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args) {
-        return new ChannelCommandContext(origin, commandInfo, channel);
+        return new ChannelCommandContext(origin, commandInfo, groupChat);
     }
 
     @Override

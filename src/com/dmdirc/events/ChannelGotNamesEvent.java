@@ -22,18 +22,18 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 
 /**
  * Fired when a channel names event is received.
  */
 public class ChannelGotNamesEvent extends ChannelEvent {
 
-    public ChannelGotNamesEvent(final long timestamp, final Channel channel) {
+    public ChannelGotNamesEvent(final long timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 
-    public ChannelGotNamesEvent(final Channel channel) {
+    public ChannelGotNamesEvent(final GroupChat channel) {
         super(channel);
     }
 

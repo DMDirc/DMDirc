@@ -22,14 +22,14 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 
 /**
  * Event raised when a channel is closed.
  */
 public class ChannelClosedEvent extends ChannelDisplayableEvent {
 
-    public ChannelClosedEvent(final Channel channel) {
+    public ChannelClosedEvent(final GroupChat channel) {
         super(channel);
     }
 
