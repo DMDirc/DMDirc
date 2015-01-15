@@ -43,13 +43,17 @@ public class DMDircMBassador extends MBassador<DMDircEvent> {
         setupErrorHandler();
     }
 
+    @SuppressWarnings("TypeMayBeWeakened")
     public DMDircMBassador(final BusConfiguration configuration) {
         super(configuration);
         setupErrorHandler();
     }
 
     private void setupErrorHandler() {
-        addErrorHandler(error -> publish(
-                new AppErrorEvent(ErrorLevel.HIGH, error.getCause(), error.getMessage(), "")));
+        addErrorHandler(e -> {
+            @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+            final Throwable error = e.getCause().getCause();
+            publish(new AppErrorEvent(ErrorLevel.HIGH, error.getCause(), error.getMessage(), ""));
+        });
     }
 }
