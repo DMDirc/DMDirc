@@ -22,18 +22,18 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 
 /**
  * Fired when the properties of the users in a list changes.
  */
 public class NickListUpdatedEvent extends NickListEvent {
 
-    public NickListUpdatedEvent(final long timestamp, final Channel channel) {
+    public NickListUpdatedEvent(final long timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 
-    public NickListUpdatedEvent(final Channel channel) {
+    public NickListUpdatedEvent(final GroupChat channel) {
         super(channel);
     }
 }

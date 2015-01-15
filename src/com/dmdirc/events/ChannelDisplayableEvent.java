@@ -22,8 +22,8 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.GroupChat;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,11 +38,11 @@ public abstract class ChannelDisplayableEvent extends ChannelEvent implements Di
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
-    public ChannelDisplayableEvent(final long timestamp, final Channel channel) {
+    public ChannelDisplayableEvent(final long timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 
-    public ChannelDisplayableEvent(final Channel channel) {
+    public ChannelDisplayableEvent(final GroupChat channel) {
         super(channel);
     }
 
@@ -73,7 +73,7 @@ public abstract class ChannelDisplayableEvent extends ChannelEvent implements Di
 
     @Override
     public FrameContainer getSource() {
-        return getChannel();
+        return getChannel().getWindowModel();
     }
 
 }

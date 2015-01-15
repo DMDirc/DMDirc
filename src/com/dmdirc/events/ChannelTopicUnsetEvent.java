@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
 /**
@@ -32,13 +32,13 @@ public class ChannelTopicUnsetEvent extends ChannelDisplayableEvent {
 
     private final GroupChatUser client;
 
-    public ChannelTopicUnsetEvent(final long timestamp, final Channel channel,
+    public ChannelTopicUnsetEvent(final long timestamp, final GroupChat channel,
             final GroupChatUser client) {
         super(timestamp, channel);
         this.client = client;
     }
 
-    public ChannelTopicUnsetEvent(final Channel channel, final GroupChatUser client) {
+    public ChannelTopicUnsetEvent(final GroupChat channel, final GroupChatUser client) {
         super(channel);
         this.client = client;
     }

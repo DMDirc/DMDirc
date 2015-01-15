@@ -1,6 +1,5 @@
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
 import com.dmdirc.interfaces.GroupChat;
 
 /**
@@ -8,11 +7,11 @@ import com.dmdirc.interfaces.GroupChat;
  */
 public abstract class NickListEvent extends ChannelEvent {
 
-    public NickListEvent(final long timestamp, final Channel channel) {
+    public NickListEvent(final long timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 
-    public NickListEvent(final Channel channel) {
+    public NickListEvent(final GroupChat channel) {
         super(channel);
     }
 }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.User;
 
 /**
@@ -32,13 +32,13 @@ public class ChannelSelfJoinEvent extends ChannelDisplayableEvent {
 
     private final User client;
 
-    public ChannelSelfJoinEvent(final long timestamp, final Channel channel,
+    public ChannelSelfJoinEvent(final long timestamp, final GroupChat channel,
             final User client) {
         super(timestamp, channel);
         this.client = client;
     }
 
-    public ChannelSelfJoinEvent(final Channel channel, final User client) {
+    public ChannelSelfJoinEvent(final GroupChat channel, final User client) {
         super(channel);
         this.client = client;
     }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 
 /**
  * Fired when channel modes are discovered.
@@ -31,13 +31,13 @@ public class ChannelModesDiscoveredEvent extends ChannelDisplayableEvent {
 
     private final String modes;
 
-    public ChannelModesDiscoveredEvent(final long timestamp, final Channel channel,
+    public ChannelModesDiscoveredEvent(final long timestamp, final GroupChat channel,
             final String modes) {
         super(timestamp, channel);
         this.modes = modes;
     }
 
-    public ChannelModesDiscoveredEvent(final Channel channel, final String modes) {
+    public ChannelModesDiscoveredEvent(final GroupChat channel, final String modes) {
         super(channel);
         this.modes = modes;
     }

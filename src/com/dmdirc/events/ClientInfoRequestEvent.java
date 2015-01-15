@@ -25,6 +25,7 @@ package com.dmdirc.events;
 import com.dmdirc.ui.core.about.InfoItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class ClientInfoRequestEvent extends DMDircEvent {
         Collections.addAll(this.newItems, newItems);
     }
 
-    public List<InfoItem> getNewInfoItems() {
+    public Collection<InfoItem> getNewInfoItems() {
         return Collections.unmodifiableList(newItems);
     }
 }

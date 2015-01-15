@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
 /**
@@ -33,14 +33,14 @@ public class ChannelSelfNickChangeEvent extends ChannelDisplayableEvent {
     private final GroupChatUser client;
     private final String oldNick;
 
-    public ChannelSelfNickChangeEvent(final long timestamp, final Channel channel,
+    public ChannelSelfNickChangeEvent(final long timestamp, final GroupChat channel,
             final GroupChatUser client, final String oldNick) {
         super(timestamp, channel);
         this.client = client;
         this.oldNick = oldNick;
     }
 
-    public ChannelSelfNickChangeEvent(final Channel channel, final GroupChatUser client,
+    public ChannelSelfNickChangeEvent(final GroupChat channel, final GroupChatUser client,
             final String oldNick) {
         super(channel);
         this.client = client;

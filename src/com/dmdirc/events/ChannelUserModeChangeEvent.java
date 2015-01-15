@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Channel;
+import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
 /**
@@ -34,7 +34,7 @@ public class ChannelUserModeChangeEvent extends ChannelDisplayableEvent {
     private final GroupChatUser victim;
     private final String modes;
 
-    public ChannelUserModeChangeEvent(final long timestamp, final Channel channel,
+    public ChannelUserModeChangeEvent(final long timestamp, final GroupChat channel,
             final GroupChatUser user, final GroupChatUser victim, final String modes) {
         super(timestamp, channel);
         this.user = user;
@@ -42,7 +42,7 @@ public class ChannelUserModeChangeEvent extends ChannelDisplayableEvent {
         this.modes = modes;
     }
 
-    public ChannelUserModeChangeEvent(final Channel channel, final GroupChatUser user,
+    public ChannelUserModeChangeEvent(final GroupChat channel, final GroupChatUser user,
             final GroupChatUser victim, final String modes) {
         super(channel);
         this.user = user;
