@@ -213,7 +213,7 @@ public class Server extends FrameContainer implements Connection {
         this.userSettings = userSettings;
         this.messageEncoderFactory = messageEncoderFactory;
         this.userManager = userManager;
-        this.groupChatManager = groupChatManagerFactory.create(this, executorService);
+        this.groupChatManager = groupChatManagerFactory.create(this);
         this.inviteManager = new InviteManagerImpl(this);
 
         awayMessage = Optional.empty();
