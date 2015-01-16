@@ -86,9 +86,6 @@ public class Channel extends FrameContainer implements GroupChat {
     private final GroupChatUserManager groupChatUserManager;
     /** Whether we're in this channel or not. */
     private boolean isOnChannel;
-    /** Whether we should send WHO requests for this channel. */
-    @ConfigBinding(domain = "channel", key = "sendwho")
-    private volatile boolean sendWho;
     /** Whether we should show mode prefixes in text. */
     @ConfigBinding(domain = "channel", key = "showmodeprefix")
     private volatile boolean showModePrefix;
@@ -229,7 +226,6 @@ public class Channel extends FrameContainer implements GroupChat {
         final User me = connection.getLocalUser().get();
         getEventBus().publishAsync(new ChannelSelfJoinEvent(this, me));
 
-        checkWho();
         setIcon("channel");
 
         connection.getInviteManager().removeInvites(channelInfo.getName());
@@ -297,15 +293,6 @@ public class Channel extends FrameContainer implements GroupChat {
 
         // Trigger action for the window closing
         getEventBus().publish(new ChannelClosedEvent(this));
-    }
-
-    /**
-     * Called every {general.whotime} seconds to check if the channel needs to send a who request.
-     */
-    public void checkWho() {
-        if (isOnChannel && sendWho) {
-            channelInfo.sendWho();
-        }
     }
 
     /**
