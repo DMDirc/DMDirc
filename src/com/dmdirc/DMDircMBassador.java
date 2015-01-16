@@ -35,6 +35,8 @@ import net.engio.mbassy.bus.config.Feature;
  */
 public class DMDircMBassador extends MBassador<DMDircEvent> {
 
+    private final Object errorHandlerLock = new Object();
+
     public DMDircMBassador() {
         super(new BusConfiguration().addFeature(Feature.SyncPubSub.Default())
                 .addFeature(Feature.AsynchronousHandlerInvocation.Default(1, 1)).addFeature(
@@ -49,11 +51,27 @@ public class DMDircMBassador extends MBassador<DMDircEvent> {
         setupErrorHandler();
     }
 
+    @SuppressWarnings({
+            "ThrowableResultOfMethodCallIgnored",
+            "CallToPrintStackTrace",
+            "UseOfSystemOutOrSystemErr"
+    })
     private void setupErrorHandler() {
         addErrorHandler(e -> {
-            @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-            final Throwable error = e.getCause().getCause();
-            publish(new AppErrorEvent(ErrorLevel.HIGH, error.getCause(), error.getMessage(), ""));
+            if (Thread.holdsLock(errorHandlerLock)) {
+                // ABORT ABORT ABORT - we're publishing an error on the same thread we just tried
+                // to publish an error on. Something in the error reporting pipeline must be
+                // breaking, so don't try adding any more errors.
+                System.err.println("ERROR: Error when reporting error");
+                e.getCause().printStackTrace();
+                return;
+            }
+
+            synchronized (errorHandlerLock) {
+                final Throwable error = e.getCause().getCause();
+                publish(new AppErrorEvent(ErrorLevel.HIGH, error.getCause(), error.getMessage(),
+                        ""));
+            }
         });
     }
 }

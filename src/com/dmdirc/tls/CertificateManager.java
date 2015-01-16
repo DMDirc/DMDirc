@@ -285,54 +285,18 @@ public class CertificateManager implements X509TrustManager {
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType)
             throws CertificateException {
-        this.chain = chain;
+        this.chain = Arrays.copyOf(chain, chain.length);
         problems.clear();
 
-        boolean verified = false;
-        boolean manual = false;
+        checkHost(chain);
 
-        if (checkHost) {
-            // Check that the cert is issued to the correct host
-            verified = isValidHost(chain[0]);
-
-            if (!verified) {
-                problems.add(new CertificateDoesntMatchHostException(
-                        "Certificate was not issued to " + serverName));
-            }
-
-            verified = false;
+        if (checkIssuer(chain)) {
+            problems.clear();
         }
 
-        for (X509Certificate cert : chain) {
-            final TrustResult trustResult = isTrusted(cert);
-
-            if (checkDate) {
-                // Check that the certificate is in-date
-                try {
-                    cert.checkValidity();
-                } catch (CertificateException ex) {
-                    problems.add(ex);
-                }
-            }
-
-            if (checkIssuer) {
-                // Check that we trust an issuer
-
-                verified |= trustResult.isTrusted();
-            }
-
-            if (trustResult == TrustResult.TRUSTED_MANUALLY) {
-                manual = true;
-            }
-        }
-
-        if (!verified && checkIssuer) {
-            problems.add(new CertificateNotTrustedException("Issuer is not trusted"));
-        }
-
-        if (!problems.isEmpty() && !manual) {
-            eventBus.publishAsync(new ServerCertificateProblemEncounteredEvent(
-                    connection, this, Arrays.asList(chain), problems));
+        if (!problems.isEmpty()) {
+            eventBus.publishAsync(new ServerCertificateProblemEncounteredEvent(connection, this,
+                    Arrays.asList(chain), problems));
 
             try {
                 actionSem.acquire();
@@ -340,7 +304,6 @@ public class CertificateManager implements X509TrustManager {
                 throw new CertificateException("Thread aborted", ie);
             } finally {
                 problems.clear();
-
                 eventBus.publishAsync(new ServerCertificateProblemResolvedEvent(connection, this));
             }
 
@@ -358,8 +321,59 @@ public class CertificateManager implements X509TrustManager {
                     break;
             }
         }
-        if (manual) {
-            problems.clear();
+    }
+
+    /**
+     * Checks that some issuer in the certificate chain is trusted, either by the global CA list,
+     * or manually by the user.
+     *
+     * @param chain The chain of certificates to check.
+     * @return True if the certificate is trusted manually, false otherwise (i.e., trusted globally
+     * OR untrusted).
+     */
+    private boolean checkIssuer(final X509Certificate... chain) {
+        boolean manual = false;
+        boolean verified = false;
+        for (X509Certificate cert : chain) {
+            final TrustResult trustResult = isTrusted(cert);
+
+            if (checkDate) {
+                // Check that the certificate is in-date
+                try {
+                    cert.checkValidity();
+                } catch (CertificateException ex) {
+                    problems.add(ex);
+                }
+            }
+
+            if (checkIssuer) {
+                // Check that we trust an issuer
+                verified |= trustResult.isTrusted();
+            }
+
+            if (trustResult == TrustResult.TRUSTED_MANUALLY) {
+                manual = true;
+            }
+        }
+
+        if (!verified && checkIssuer) {
+            problems.add(new CertificateNotTrustedException("Issuer is not trusted"));
+        }
+        return manual;
+    }
+
+    /**
+     * Checks that the host of the leaf certificate is the same as the server we are connected to.
+     *
+     * @param chain The chain of certificates to check.
+     */
+    private void checkHost(final X509Certificate... chain) {
+        if (checkHost) {
+            // Check that the cert is issued to the correct host
+            if (!isValidHost(chain[0])) {
+                problems.add(new CertificateDoesntMatchHostException(
+                        "Certificate was not issued to " + serverName));
+            }
         }
     }
 

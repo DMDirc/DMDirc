@@ -188,7 +188,9 @@ public interface WindowModel {
      *
      * @param line      The line to be added
      * @param timestamp Whether or not to display the timestamp for this line
+     * @deprecated Timestamps are always displayed.
      */
+    @Deprecated
     void addLine(String line, boolean timestamp);
 
     /**
