@@ -63,7 +63,6 @@ general:
   silencechar=.
   submitErrors=false
   ui=swing
-  whotime=60000
 
 notifications:
   authNotice=server
@@ -185,7 +184,6 @@ treeview:
 channel:
   splitusermodes=false
   hideduplicatemodes=false
-  sendwho=false
   showmodeprefix=true
   topichistorysize=10
   encoding=UTF-8

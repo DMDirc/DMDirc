@@ -190,14 +190,6 @@ public class PreferencesDialogModel {
                 "Show individual mode lines for each mode change that affects"
                 + " a user (e.g. op, devoice)", configManager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "channel", "sendwho", "Send channel WHOs",
-                "Request information (away state, hostname, etc) on channel "
-                + "users automatically", configManager, identity));
-        category.addSetting(new PreferencesSetting(PreferencesType.DURATION,
-                "general", "whotime", "Who request interval",
-                "How often to send WHO requests for a channel (if enabled)",
-                configManager, identity));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "showmodeprefix", "Show mode prefix",
                 "Prefix users' names with their mode (e.g. @) in channels",
                 configManager, identity));
