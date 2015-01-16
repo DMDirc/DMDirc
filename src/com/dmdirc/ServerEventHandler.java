@@ -42,6 +42,7 @@ import com.dmdirc.events.ServerNoticeEvent;
 import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.events.ServerPingSentEvent;
 import com.dmdirc.events.ServerServerNoticeEvent;
+import com.dmdirc.events.ServerStonedEvent;
 import com.dmdirc.events.ServerUnknownActionEvent;
 import com.dmdirc.events.ServerUnknownMessageEvent;
 import com.dmdirc.events.ServerUnknownNoticeEvent;
@@ -331,7 +332,7 @@ public class ServerEventHandler extends EventHandler implements
         if (parser.getPingTime()
                 >= owner.getConfigManager().getOptionInt("server", "pingtimeout")) {
             LOG.warn("Server appears to be stoned, reconnecting");
-            owner.handleNotification("stonedServer", owner.getAddress());
+            eventBus.publishAsync(new ServerStonedEvent(owner));
             owner.reconnect();
         }
     }

@@ -30,6 +30,7 @@ import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
+import com.dmdirc.events.ServerReconnectScheduledEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.InviteManager;
@@ -439,7 +440,7 @@ public class Server extends FrameContainer implements Connection {
             final int delay = Math.max(1000,
                     getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay"));
 
-            handleNotification("connectRetry", getAddress(), delay / 1000);
+            getEventBus().publishAsync(new ServerReconnectScheduledEvent(this, delay / 1000));
 
             reconnectTimerFuture = executorService.schedule(() -> {
                 synchronized (myStateLock) {
@@ -850,8 +851,6 @@ public class Server extends FrameContainer implements Connection {
             return;
         }
 
-        handleNotification("socketClosed", getAddress());
-
         getEventBus().publish(new ServerDisconnectedEvent(this));
 
         eventHandler.unregisterCallbacks();
@@ -955,8 +954,6 @@ public class Server extends FrameContainer implements Connection {
             }
 
             getEventBus().publish(new ServerConnectErrorEvent(this, description));
-
-            handleNotification("connectError", getAddress(), description);
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure")) {
                 doDelayedReconnect();
