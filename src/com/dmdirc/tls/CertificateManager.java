@@ -47,6 +47,7 @@ import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,8 +63,6 @@ import javax.naming.ldap.Rdn;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509TrustManager;
-
-import com.migcomponents.migbase64.Base64;
 
 /**
  * Manages storage and validation of certificates used when connecting to SSL servers.
@@ -200,7 +199,7 @@ public class CertificateManager implements X509TrustManager {
      */
     public TrustResult isTrusted(final X509Certificate certificate) {
         try {
-            final String sig = Base64.encodeToString(certificate.getSignature(), false);
+            final String sig = Base64.getEncoder().encodeToString(certificate.getSignature());
 
             if (config.hasOptionString("ssl", "trusted") && config.getOptionList("ssl",
                     "trusted").contains(sig)) {
@@ -351,7 +350,7 @@ public class CertificateManager implements X509TrustManager {
                 case IGNORE_PERMANENTLY:
                     final List<String> list = new ArrayList<>(config
                             .getOptionList("ssl", "trusted"));
-                    list.add(Base64.encodeToString(chain[0].getSignature(), false));
+                    list.add(Base64.getEncoder().encodeToString(chain[0].getSignature()));
                     userSettings.setOption("ssl", "trusted", list);
                     break;
                 case IGNORE_TEMPORARILY:
