@@ -27,13 +27,16 @@ import com.dmdirc.util.colours.Colour;
 /**
  * Describes a property that may be set on a {@link DisplayableEvent} to affect its display.
  */
-public final class DisplayProperty<T> {
+@SuppressWarnings("UnusedDeclaration") // Generic type used for compile-time validation only
+public interface DisplayProperty<T> {
 
     /** The foreground colour of text relating to the event. */
-    public static final DisplayProperty<Colour> FOREGROUND_COLOUR = new DisplayProperty<>();
+    DisplayProperty<Colour> FOREGROUND_COLOUR = new DisplayPropertyImpl<>();
     /** The background colour of text relating to the event. */
-    public static final DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayProperty<>();
+    DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayPropertyImpl<>();
     /** Whether to suppress display of the event. */
-    public static final DisplayProperty<Void> DO_NOT_DISPLAY = new DisplayProperty<>();
+    DisplayProperty<Void> DO_NOT_DISPLAY = new DisplayPropertyImpl<>();
+
+    final class DisplayPropertyImpl<T> implements DisplayProperty<T> {}
 
 }
