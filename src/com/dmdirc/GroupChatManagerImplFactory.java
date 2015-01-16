@@ -25,8 +25,6 @@ package com.dmdirc;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.IdentityFactory;
 
-import java.util.concurrent.ScheduledExecutorService;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -48,11 +46,8 @@ public class GroupChatManagerImplFactory {
         this.channelFactory = channelFactory;
     }
 
-    public GroupChatManagerImpl create(
-            final Connection connection,
-            final ScheduledExecutorService executorService) {
-        return new GroupChatManagerImpl(connection, identityFactory, channelFactory.get(),
-                executorService);
+    public GroupChatManagerImpl create(final Connection connection) {
+        return new GroupChatManagerImpl(connection, identityFactory, channelFactory.get());
     }
 
 }

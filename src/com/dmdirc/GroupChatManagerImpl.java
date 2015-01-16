@@ -39,9 +39,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import net.engio.mbassy.listener.Handler;
@@ -65,19 +62,12 @@ public class GroupChatManagerImpl implements GroupChatManager {
     /** A set of channels we want to join without focusing. */
     private final Collection<String> backgroundChannels = new HashSet<>();
 
-    private final ScheduledExecutorService executorService;
-
-    /** The future used when a who timer is scheduled. */
-    private ScheduledFuture<?> whoTimerFuture;
-
     public GroupChatManagerImpl(final Connection connection,
             final IdentityFactory identityFactory,
-            final ChannelFactory channelFactory,
-            final ScheduledExecutorService executorService) {
+            final ChannelFactory channelFactory) {
         this.connection = connection;
         this.identityFactory = identityFactory;
         this.channelFactory = channelFactory;
-        this.executorService = executorService;
     }
 
     @Override
@@ -188,10 +178,6 @@ public class GroupChatManagerImpl implements GroupChatManager {
     }
 
     public void handleSocketClosed() {
-        if (whoTimerFuture != null) {
-            whoTimerFuture.cancel(false);
-        }
-
         channels.resetAll();
 
         if (connection.getWindowModel().getConfigManager()
@@ -209,11 +195,6 @@ public class GroupChatManagerImpl implements GroupChatManager {
             requests.addAll(channels.asJoinRequests());
         }
         join(requests.toArray(new ChannelJoinRequest[requests.size()]));
-
-        final int whoTime = connection.getWindowModel().getConfigManager()
-                .getOptionInt("general", "whotime");
-        whoTimerFuture = executorService.scheduleAtFixedRate(
-                channels.getWhoRunnable(), whoTime, whoTime, TimeUnit.MILLISECONDS);
     }
 
     @Handler

@@ -131,14 +131,4 @@ public class ChannelMap {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Creates a runnable that, when run, will cause each channel in the map at that time to check
-     * its 'who' status.
-     *
-     * @return A new runnable.
-     */
-    public Runnable getWhoRunnable() {
-        return () -> channels.values().forEach(Channel::checkWho);
-    }
-
 }
