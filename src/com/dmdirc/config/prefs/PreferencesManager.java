@@ -149,11 +149,6 @@ public class PreferencesManager {
                 + " a user (e.g. op, devoice)",
                 manager, identity));
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "channel", "sendwho", "Send channel WHOs",
-                "Request information (away state, hostname, etc) on channel "
-                + "users automatically",
-                manager, identity));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "showmodeprefix", "Show mode prefix",
                 "Prefix users' names with their mode (e.g. @) in channels",
                 manager, identity));
