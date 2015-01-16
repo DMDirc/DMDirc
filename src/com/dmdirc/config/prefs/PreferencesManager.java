@@ -144,11 +144,6 @@ public class PreferencesManager {
                 + " any settings specified here will overwrite global settings");
 
         category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
-                "channel", "splitusermodes", "Split user modes",
-                "Show individual mode lines for each mode change that affects"
-                + " a user (e.g. op, devoice)",
-                manager, identity));
-        category.addSetting(new PreferencesSetting(PreferencesType.BOOLEAN,
                 "channel", "showmodeprefix", "Show mode prefix",
                 "Prefix users' names with their mode (e.g. @) in channels",
                 manager, identity));

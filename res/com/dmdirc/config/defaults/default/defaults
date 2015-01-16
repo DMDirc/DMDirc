@@ -182,8 +182,6 @@ treeview:
   foregroundcolour=false:0
 
 channel:
-  splitusermodes=false
-  hideduplicatemodes=false
   showmodeprefix=true
   topichistorysize=10
   encoding=UTF-8
