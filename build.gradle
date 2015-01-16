@@ -38,7 +38,6 @@ dependencies {
 
     bundle group: 'com.squareup.dagger', name: 'dagger', version: '1.2.1'
     bundle group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.08'
-    bundle group: 'com.brsanthu', name: 'migbase64', version: '2.2'
     bundle group: 'net.kencochrane.raven', name: 'raven', version: '6.0.0'
     bundle group: 'com.google.guava', name:'guava', version: '18.0'
     bundle group: 'net.engio', name: 'mbassador', version: '1.2.0'
