@@ -25,16 +25,19 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 
 /**
- * Fire when a server disconnects.
+ * Event raised when a reconnection attempt has been scheduled.
  */
-public class ServerDisconnectedEvent extends ServerDisplayableEvent {
+public class ServerReconnectScheduledEvent extends ServerDisplayableEvent {
 
-    public ServerDisconnectedEvent(final Connection connection) {
+    private final int seconds;
+
+    public ServerReconnectScheduledEvent(final Connection connection, final int seconds) {
         super(connection);
+        this.seconds = seconds;
     }
 
-    public ServerDisconnectedEvent(final long timestamp, final Connection connection) {
-        super(timestamp, connection);
+    public int getSeconds() {
+        return seconds;
     }
 
 }

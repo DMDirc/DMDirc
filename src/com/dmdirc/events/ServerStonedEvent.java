@@ -25,16 +25,12 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 
 /**
- * Fire when a server disconnects.
+ * Event raised when a server appears to be 'stoned' (i.e., non-responsive).
  */
-public class ServerDisconnectedEvent extends ServerDisplayableEvent {
+public class ServerStonedEvent extends ServerDisplayableEvent {
 
-    public ServerDisconnectedEvent(final Connection connection) {
+    public ServerStonedEvent(final Connection connection) {
         super(connection);
-    }
-
-    public ServerDisconnectedEvent(final long timestamp, final Connection connection) {
-        super(timestamp, connection);
     }
 
 }

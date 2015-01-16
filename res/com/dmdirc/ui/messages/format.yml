@@ -8,6 +8,18 @@ ServerCtcpEvent:
 ServerCtcpReplyEvent:
   format: "-!- CTCP {{type}} reply from {{user.nickname}}: {{content}}."
   colour: 4
+ServerDisconnectedEvent:
+  format: "-!- You have been disconnected from the server."
+  colour: 2
+ServerConnectErrorEvent:
+  format: "Error connecting: {{message}}"
+  colour: 2
+ServerReconnectScheduledEvent:
+  format: "Reconnecting in {{seconds}} seconds..."
+  colour: 2
+ServerStonedEvent:
+  format: "-!- Disconnected from a non-responsive server."
+  colour: 2
 
 ################## Channel join/part/quit events ###################################################
 
@@ -142,8 +154,6 @@ CommandOutputEvent:
 #  selfCTCP=4->- [%1$s] %2$s
 #  selfNotice=5>%1$s> %2$s
 #  selfMessage=>[%1$s]> %2$s
-#  connectError=2Error connecting: %2$s
-#  connectRetry=2Reconnecting in %2$u...
 #  serverConnecting=Connecting to %1$s:%2$s...
 #  back=14You are no longer marked as away.
 #  serverDisconnectInProgress=A disconnection attempt is in progress, please wait...
@@ -152,8 +162,6 @@ CommandOutputEvent:
 #  away=14You are now marked as away (%1$s14).
 #  rawCommand=10>>> %1$s
 #  unknownCommand=14Unknown command %1$s.
-#  socketClosed=2-!- You have been disconnected from the server.
-#  stonedServer=2-!- Disconnected from a non-responsive server.
 #  motdStart=10%1$s
 #  motdLine=10%1$s
 #  motdEnd=10%1$s
