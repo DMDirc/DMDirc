@@ -20,6 +20,30 @@ ServerReconnectScheduledEvent:
 ServerStonedEvent:
   format: "-!- Disconnected from a non-responsive server."
   colour: 2
+ServerMotdStartEvent:
+  format: "{{message}}"
+  colour: 10
+ServerMotdLineEvent:
+  format: "{{message}}"
+  colour: 10
+ServerMotdEndEvent:
+  format: "{{message}}"
+  colour: 10
+ServerAwayEvent:
+  format: "You are now marked as away ({{reason}})."
+  colour: 14
+ServerBackEvent:
+  format: "You are no longer marked as away."
+  colour: 14
+
+################## Server messaging events #########################################################
+
+ServerNoticeEvent:
+  format: "-{{user.nickname}}- {{message}}"
+  colour: 5
+ServerServerNoticeEvent:
+  format: "-{{user.nickname}}- {{message}}"
+  colour: 5
 
 ################## Channel join/part/quit events ###################################################
 
@@ -139,11 +163,8 @@ CommandOutputEvent:
   format: "{{message}}"
 
 ################## TODO ############################################################################
-#  channelSplitUserMode_default=3* %1$s%2$s sets mode %9$s on %6$s.
 #  channelNoModes=3* There are no channel modes for %2$s.
 #  channelModeDiscovered=3* Channel modes for %2$s are: %1$s.
-#  privateNotice=5-%1$s- %4$s
-#  serverNotice=5-%1$s- %4$s
 #  userModeChanged=3* %1$s sets user mode: %4$s.
 #  userNoModes=3* No user modes.
 #  userModeDiscovered=3* User modes are: %4$s.
@@ -155,18 +176,11 @@ CommandOutputEvent:
 #  selfNotice=5>%1$s> %2$s
 #  selfMessage=>[%1$s]> %2$s
 #  serverConnecting=Connecting to %1$s:%2$s...
-#  back=14You are no longer marked as away.
 #  serverDisconnectInProgress=A disconnection attempt is in progress, please wait...
 #  serverConnectInProgress=A connection attempt is in progress, please wait...
 #  authNotice=5-AUTH- %1$s
-#  away=14You are now marked as away (%1$s14).
 #  rawCommand=10>>> %1$s
 #  unknownCommand=14Unknown command %1$s.
-#  motdStart=10%1$s
-#  motdLine=10%1$s
-#  motdEnd=10%1$s
-#  rawIn=<< %1$s
-#  rawOut=>> %1$s
 #  commandOutput=%1$s
 #  actionTooLong=Warning: action too long to be sent
 #  tabCompletion=14Multiple possibilities: %1$s
