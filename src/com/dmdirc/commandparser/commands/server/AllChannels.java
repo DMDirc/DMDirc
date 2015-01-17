@@ -71,7 +71,8 @@ public class AllChannels extends Command implements IntelligentCommand {
         final String command = args.getArgumentsAsString();
 
         for (GroupChat channel : server.getGroupChatManager().getChannels()) {
-            channel.getWindowModel().getCommandParser().parseCommand(channel.getWindowModel(),
+            channel.getWindowModel().getCommandParser().parseCommand(
+                    (FrameContainer) channel.getWindowModel(),
                     command);
         }
     }

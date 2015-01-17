@@ -73,7 +73,7 @@ public abstract class ChannelDisplayableEvent extends ChannelEvent implements Di
 
     @Override
     public FrameContainer getSource() {
-        return getChannel().getWindowModel();
+        return (FrameContainer) getChannel().getWindowModel();
     }
 
 }
