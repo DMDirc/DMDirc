@@ -435,7 +435,8 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     @Override
     public void removeListener(final ConfigChangeListener listener) {
         synchronized (listeners) {
-            listeners.keys().forEach(k -> listeners.remove(k, listener));
+            final Iterable<String> keys = new HashSet<>(listeners.keySet());
+            keys.forEach(k -> listeners.remove(k, listener));
         }
     }
 
