@@ -28,13 +28,6 @@ package com.dmdirc.interfaces;
 public interface PrivateChat extends Chat {
 
     /**
-     * Returns the host that this query is with.
-     *
-     * @return The full host that this query is with
-     */
-    String getHost();
-
-    /**
      * Returns the current nickname of the user that this query is with.
      *
      * @return The nickname of this query's user
