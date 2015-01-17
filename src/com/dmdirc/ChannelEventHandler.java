@@ -45,7 +45,6 @@ import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.ChannelTopicUnsetEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
-import com.dmdirc.events.ChannelUserModeChangeEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.common.CallbackManager;
@@ -64,12 +63,10 @@ import com.dmdirc.parser.interfaces.callbacks.ChannelModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelModeNoticeListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelNamesListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelNickChangeListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelNonUserModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelNoticeListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
 import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelUserModeChangeListener;
 import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
 import com.dmdirc.util.EventUtils;
 
@@ -88,10 +85,8 @@ public class ChannelEventHandler extends EventHandler implements
         ChannelMessageListener, ChannelNamesListener, ChannelTopicListener,
         ChannelJoinListener, ChannelPartListener, ChannelKickListener,
         ChannelQuitListener, ChannelActionListener, ChannelNickChangeListener,
-        ChannelModeChangeListener, ChannelUserModeChangeListener,
-        ChannelCtcpListener, OtherAwayStateListener, ChannelNoticeListener,
-        ChannelNonUserModeChangeListener, ChannelModeNoticeListener,
-        ChannelListModeListener {
+        ChannelModeChangeListener, ChannelCtcpListener, OtherAwayStateListener,
+        ChannelNoticeListener, ChannelModeNoticeListener, ChannelListModeListener {
 
     /** The channel that owns this event handler. */
     private final Channel owner;
@@ -279,46 +274,21 @@ public class ChannelEventHandler extends EventHandler implements
             final String modes) {
         checkParser(parser);
 
-        if (!owner.getConfigManager().getOptionBool("channel", "splitusermodes")
-                || !owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
-            if (host.isEmpty()) {
-                final ChannelModesDiscoveredEvent event = new ChannelModesDiscoveredEvent(
-                        date.getTime(), owner, modes.length() <= 1 ? "" : modes);
-                final String format = EventUtils.postDisplayable(eventBus, event,
-                        modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
-                owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
-            } else if (isMyself(client)) {
-                eventBus.publishAsync(new ChannelSelfModeChangeEvent(date.getTime(), owner,
-                        groupChatUserManager.getUserFromClient(client, owner), modes));
-            } else {
-                eventBus.publishAsync(new ChannelModeChangeEvent(date.getTime(), owner,
-                        groupChatUserManager.getUserFromClient(client, owner), modes));
-            }
+        if (host.isEmpty()) {
+            final ChannelModesDiscoveredEvent event = new ChannelModesDiscoveredEvent(
+                    date.getTime(), owner, modes.length() <= 1 ? "" : modes);
+            final String format = EventUtils.postDisplayable(eventBus, event,
+                    modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
+            owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
+        } else if (isMyself(client)) {
+            eventBus.publishAsync(new ChannelSelfModeChangeEvent(date.getTime(), owner,
+                    groupChatUserManager.getUserFromClient(client, owner), modes));
+        } else {
+            eventBus.publishAsync(new ChannelModeChangeEvent(date.getTime(), owner,
+                    groupChatUserManager.getUserFromClient(client, owner), modes));
         }
 
         owner.refreshClients();
-    }
-
-    @Override
-    public void onChannelUserModeChanged(final Parser parser, final Date date,
-            final ChannelInfo channel, final ChannelClientInfo targetClient,
-            final ChannelClientInfo client, final String host, final String mode) {
-        checkParser(parser);
-
-        if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")) {
-            String format = "channelSplitUserMode_" + mode;
-
-            if (!owner.getConfigManager().hasOptionString("formatter", format)) {
-                format = "channelSplitUserMode_default";
-            }
-
-            final ChannelUserModeChangeEvent event = new ChannelUserModeChangeEvent(date.getTime(),
-                    owner, groupChatUserManager.getUserFromClient(client, owner),
-                    groupChatUserManager.getUserFromClient(targetClient, owner), mode);
-            final String result = EventUtils.postDisplayable(eventBus, event, format);
-            owner.doNotification(date, result, groupChatUserManager.getUserFromClient(client, owner),
-                    groupChatUserManager.getUserFromClient(targetClient, owner), mode);
-        }
     }
 
     @Override
@@ -357,32 +327,6 @@ public class ChannelEventHandler extends EventHandler implements
 
         eventBus.publishAsync(new ChannelNoticeEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner), message));
-    }
-
-    @Override
-    public void onChannelNonUserModeChanged(final Parser parser, final Date date,
-            final ChannelInfo channel, final ChannelClientInfo client,
-            final String host, final String modes) {
-        checkParser(parser);
-
-        if (owner.getConfigManager().getOptionBool("channel", "splitusermodes")
-                && owner.getConfigManager().getOptionBool("channel", "hideduplicatemodes")) {
-            if (host.isEmpty()) {
-                final ChannelModesDiscoveredEvent event = new ChannelModesDiscoveredEvent(
-                        date.getTime(), owner, modes.length() <= 1 ? "" : modes);
-                final String format = EventUtils.postDisplayable(eventBus, event,
-                        modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
-                owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
-            } else if (isMyself(client)) {
-                eventBus.publishAsync(new ChannelSelfModeChangeEvent(date.getTime(), owner,
-                        groupChatUserManager.getUserFromClient(client, owner), modes));
-            } else {
-                eventBus.publishAsync(new ChannelModeChangeEvent(date.getTime(), owner,
-                        groupChatUserManager.getUserFromClient(client, owner), modes));
-            }
-        }
-
-        owner.refreshClients();
     }
 
     @Override

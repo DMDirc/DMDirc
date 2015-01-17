@@ -24,7 +24,9 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.util.EventUtils;
 
 import net.engio.mbassy.listener.Handler;
 
@@ -72,17 +74,28 @@ public class BackBuffer {
      *
      * @param event The event to be displayed.
      */
-    @Handler
-    public void handleDisplayableEvent(final DisplayableEvent event) {
-        if (event.getSource().equals(owner)) {
+    @Handler(priority = EventUtils.PRIORITY_DISPLAYABLE_EVENT_HANDLER)
+    private void handleDisplayableEvent(final DisplayableEvent event) {
+        if (shouldDisplay(event)) {
             formatter.format(event).map(s -> s.split("\n")).ifPresent(
                     t -> {
                         for (String line : t) {
                             document.addText(event.getTimestamp(), event
-                                            .getDisplayProperties(), line);
+                                    .getDisplayProperties(), line);
                         }
                     });
         }
+    }
+
+    /**
+     * Determines if the specified event should be displayed in this backbuffer.
+     *
+     * @param event The event to check
+     * @return True if the event should be displayed, false otherwise.
+     */
+    private boolean shouldDisplay(final DisplayableEvent event) {
+        return event.getSource().equals(owner)
+                && !event.getDisplayProperty(DisplayProperty.DO_NOT_DISPLAY).isPresent();
     }
 
     public IRCDocument getDocument() {

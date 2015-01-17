@@ -29,8 +29,10 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.util.ClientInfo;
-import com.dmdirc.util.collections.MapList;
 import com.dmdirc.util.validators.Validator;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,7 +61,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     /** A list of sources for this config manager. */
     private final List<ConfigProvider> sources = new ArrayList<>();
     /** The listeners registered for this manager. */
-    private final MapList<String, ConfigChangeListener> listeners = new MapList<>();
+    private final Multimap<String, ConfigChangeListener> listeners = ArrayListMultimap.create();
     /** The config binder to use for this manager. */
     private final ConfigBinder binder;
     /** The manager to use to fetch global state. */
@@ -433,7 +435,8 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     @Override
     public void removeListener(final ConfigChangeListener listener) {
         synchronized (listeners) {
-            listeners.removeFromAll(listener);
+            final Iterable<String> keys = new HashSet<>(listeners.keySet());
+            keys.forEach(k -> listeners.remove(k, listener));
         }
     }
 
@@ -446,7 +449,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     private void addListener(final String key,
             final ConfigChangeListener listener) {
         synchronized (listeners) {
-            listeners.add(key, listener);
+            listeners.put(key, listener);
         }
     }
 

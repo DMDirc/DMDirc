@@ -27,7 +27,7 @@ import com.dmdirc.interfaces.Connection;
 /**
  * Fire when a server disconnects.
  */
-public class ServerDisconnectedEvent extends ServerEvent {
+public class ServerDisconnectedEvent extends ServerDisplayableEvent {
 
     public ServerDisconnectedEvent(final Connection connection) {
         super(connection);

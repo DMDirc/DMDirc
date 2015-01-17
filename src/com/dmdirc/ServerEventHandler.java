@@ -42,6 +42,7 @@ import com.dmdirc.events.ServerNoticeEvent;
 import com.dmdirc.events.ServerNumericEvent;
 import com.dmdirc.events.ServerPingSentEvent;
 import com.dmdirc.events.ServerServerNoticeEvent;
+import com.dmdirc.events.ServerStonedEvent;
 import com.dmdirc.events.ServerUnknownActionEvent;
 import com.dmdirc.events.ServerUnknownMessageEvent;
 import com.dmdirc.events.ServerUnknownNoticeEvent;
@@ -184,9 +185,9 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Override
     public void onErrorInfo(final Parser parser, final Date date, final ParserError errorInfo) {
-        final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
 
         final StringBuilder errorString = new StringBuilder();
         errorString.append("Parser exception.\n\n");
@@ -205,6 +206,7 @@ public class ServerEventHandler extends EventHandler implements
         final Exception ex = errorInfo.isException() ? errorInfo.getException()
                 : new Exception(errorString.toString()); // NOPMD
 
+        final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
         if (errorInfo.isUserError()) {
             eventBus.publishAsync(new UserErrorEvent(errorLevel, ex, errorInfo.getData(), ""));
         } else {
@@ -229,7 +231,6 @@ public class ServerEventHandler extends EventHandler implements
     public void onPrivateCTCPReply(final Parser parser, final Date date, final String type,
             final String message, final String host) {
         checkParser(parser);
-
         eventBus.publish(new ServerCtcpReplyEvent(owner, owner.getUser(host), type, message));
     }
 
@@ -244,50 +245,34 @@ public class ServerEventHandler extends EventHandler implements
     public void onPrivateNotice(final Parser parser, final Date date,
             final String message, final String host) {
         checkParser(parser);
-
-        final ServerNoticeEvent event = new ServerNoticeEvent(owner, owner.getLocalUser().get(),
-                message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "privateNotice");
-        owner.doNotification(format, owner.getUser(host), message);
+        eventBus.publishAsync(new ServerNoticeEvent(owner, owner.getLocalUser().get(), message));
     }
 
     @Override
     public void onServerNotice(final Parser parser, final Date date,
             final String message, final String host) {
         checkParser(parser);
-
-        final ServerServerNoticeEvent event = new ServerServerNoticeEvent(owner,
-                owner.getLocalUser().get(), message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "serverNotice");
-        owner.doNotification(format, owner.getUser(host), message);
+        eventBus.publishAsync(new ServerServerNoticeEvent(owner, owner.getLocalUser().get(),
+                message));
     }
 
     @Override
     public void onMOTDStart(final Parser parser, final Date date, final String data) {
         checkParser(parser);
-
-        final ServerMotdStartEvent event = new ServerMotdStartEvent(owner, data);
-        final String format = EventUtils.postDisplayable(eventBus, event, "motdStart");
-        owner.doNotification(format, data);
+        eventBus.publishAsync(new ServerMotdStartEvent(owner, data));
     }
 
     @Override
     public void onMOTDLine(final Parser parser, final Date date, final String data) {
         checkParser(parser);
-
-        final ServerMotdLineEvent event = new ServerMotdLineEvent(owner, data);
-        final String format = EventUtils.postDisplayable(eventBus, event, "motdLine");
-        owner.doNotification(format, data);
+        eventBus.publishAsync(new ServerMotdLineEvent(owner, data));
     }
 
     @Override
     public void onMOTDEnd(final Parser parser, final Date date,
             final boolean noMOTD, final String data) {
         checkParser(parser);
-
-        final ServerMotdEndEvent event = new ServerMotdEndEvent(owner, data);
-        final String format = EventUtils.postDisplayable(eventBus, event, "motdEnd");
-        owner.doNotification(format, data);
+        eventBus.publishAsync(new ServerMotdEndEvent(owner, data));
     }
 
     @Override
@@ -331,7 +316,7 @@ public class ServerEventHandler extends EventHandler implements
         if (parser.getPingTime()
                 >= owner.getConfigManager().getOptionInt("server", "pingtimeout")) {
             LOG.warn("Server appears to be stoned, reconnecting");
-            owner.handleNotification("stonedServer", owner.getAddress());
+            eventBus.publishAsync(new ServerStonedEvent(owner));
             owner.reconnect();
         }
     }
@@ -339,14 +324,12 @@ public class ServerEventHandler extends EventHandler implements
     @Override
     public void onPingSent(final Parser parser, final Date date) {
         checkParser(parser);
-
         eventBus.publishAsync(new ServerPingSentEvent(owner));
     }
 
     @Override
     public void onPingSuccess(final Parser parser, final Date date) {
         checkParser(parser);
-
         eventBus.publishAsync(new ServerGotPingEvent(owner,
                 owner.getParser().get().getServerLatency()));
     }
@@ -359,13 +342,9 @@ public class ServerEventHandler extends EventHandler implements
         owner.updateAwayState(currentState == AwayState.AWAY ? Optional.of(reason) : Optional.empty());
 
         if (currentState == AwayState.AWAY) {
-            final ServerAwayEvent event = new ServerAwayEvent(owner, reason);
-            final String format = EventUtils.postDisplayable(eventBus, event, "away");
-            owner.doNotification(format, reason);
+            eventBus.publishAsync(new ServerAwayEvent(owner, reason));
         } else if (oldState != AwayState.UNKNOWN) {
-            final ServerBackEvent event = new ServerBackEvent(owner);
-            final String format = EventUtils.postDisplayable(eventBus, event, "back");
-            owner.doNotification(format);
+            eventBus.publishAsync(new ServerBackEvent(owner));
         }
     }
 

@@ -22,21 +22,22 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.util.colours.Colour;
+import com.dmdirc.interfaces.Connection;
 
 /**
- * Describes a property that may be set on a {@link DisplayableEvent} to affect its display.
+ * Event raised when a reconnection attempt has been scheduled.
  */
-@SuppressWarnings("UnusedDeclaration") // Generic type used for compile-time validation only
-public interface DisplayProperty<T> {
+public class ServerReconnectScheduledEvent extends ServerDisplayableEvent {
 
-    /** The foreground colour of text relating to the event. */
-    DisplayProperty<Colour> FOREGROUND_COLOUR = new DisplayPropertyImpl<>();
-    /** The background colour of text relating to the event. */
-    DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayPropertyImpl<>();
-    /** Whether to suppress display of the event. */
-    DisplayProperty<Void> DO_NOT_DISPLAY = new DisplayPropertyImpl<>();
+    private final int seconds;
 
-    final class DisplayPropertyImpl<T> implements DisplayProperty<T> {}
+    public ServerReconnectScheduledEvent(final Connection connection, final int seconds) {
+        super(connection);
+        this.seconds = seconds;
+    }
+
+    public int getSeconds() {
+        return seconds;
+    }
 
 }

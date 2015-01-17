@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -95,9 +95,9 @@ public class IdentityManagerTest {
                 baseDirectory, identitiesDirectory, eventBus, clientInfo);
         identityManager.initialise();
 
-        final List<ConfigProvider> profiles = identityManager.getProvidersByType("profile");
+        final Collection<ConfigProvider> profiles = identityManager.getProvidersByType("profile");
         assertEquals(1, profiles.size());
-        assertEquals("New Profile", profiles.get(0).getName());
+        assertEquals("New Profile", profiles.stream().findAny().get().getName());
     }
 
 }

@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces.config;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Defines the interface implemented by the object in charge of DMDirc's identities.
@@ -68,7 +68,7 @@ public interface IdentityController {
      *
      * @since 0.6.4
      */
-    List<ConfigProvider> getProvidersByType(String type);
+    Collection<ConfigProvider> getProvidersByType(String type);
 
     /**
      * Loads user-defined identity files.

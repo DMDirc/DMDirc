@@ -24,9 +24,10 @@ package com.dmdirc.ui.input;
 
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.util.collections.MapList;
 
-import java.util.List;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 import java.util.Locale;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public class TabCompleter {
     /** The controller to use to retrieve command information. */
     private final CommandController commandController;
     /** The entries in this completer. */
-    private final MapList<TabCompletionType, String> entries = new MapList<>();
+    private final Multimap<TabCompletionType, String> entries = ArrayListMultimap.create();
 
     /**
      * Creates a new instance of {@link TabCompleter}.
@@ -91,7 +92,7 @@ public class TabCompleter {
             final AdditionalTabTargets additionals) {
         final TabCompletionMatches result = new TabCompletionMatches();
 
-        final MapList<TabCompletionType, String> targets = new MapList<>(entries);
+        final Multimap<TabCompletionType, String> targets = ArrayListMultimap.create(entries);
 
         final boolean caseSensitive = configManager.getOptionBool("tabcompletion", "casesensitive");
         final boolean allowEmpty = configManager.getOptionBool("tabcompletion", "allowempty");
@@ -101,26 +102,25 @@ public class TabCompleter {
         }
 
         if (additionals != null) {
-            targets.safeGet(TabCompletionType.ADDITIONAL).addAll(additionals);
+            targets.putAll(TabCompletionType.ADDITIONAL, additionals);
         }
 
-        for (Map.Entry<TabCompletionType, List<String>> typeEntry : targets.entrySet()) {
-            if (additionals != null && !additionals.shouldInclude(typeEntry.getKey())) {
+        for (Map.Entry<TabCompletionType, String> entry : targets.entries()) {
+            // TODO: This can probably be replaced with a stream + filter chain
+            if (additionals != null && !additionals.shouldInclude(entry.getKey())) {
                 // If we're not including this type, skip to the next.
                 continue;
             }
 
-            for (String entry : typeEntry.getValue()) {
-                // Skip over duplicates
-                if (result.hasResult(entry)) {
-                    continue;
-                }
+            // Skip over duplicates
+            if (result.hasResult(entry.getValue())) {
+                continue;
+            }
 
-                if (caseSensitive && entry.startsWith(partial)
-                        || !caseSensitive && entry.toLowerCase(Locale.getDefault())
-                                .startsWith(partial.toLowerCase(Locale.getDefault()))) {
-                    result.addResult(entry);
-                }
+            if (caseSensitive && entry.getValue().startsWith(partial)
+                    || !caseSensitive && entry.getValue().toLowerCase(Locale.getDefault())
+                            .startsWith(partial.toLowerCase(Locale.getDefault()))) {
+                result.addResult(entry.getValue());
             }
         }
 
@@ -142,7 +142,7 @@ public class TabCompleter {
      * @param entry The new entry to be added
      */
     public void addEntry(final TabCompletionType type, final String entry) {
-        entries.add(type, entry);
+        entries.put(type, entry);
 
         if (type == TabCompletionType.COMMAND && entry.length() > 1
                 && entry.charAt(0) == commandController.getCommandChar()
@@ -193,7 +193,7 @@ public class TabCompleter {
      * @param type The type of entry to clear
      */
     public void clear(final TabCompletionType type) {
-        entries.clear(type);
+        entries.removeAll(type);
     }
 
 }
