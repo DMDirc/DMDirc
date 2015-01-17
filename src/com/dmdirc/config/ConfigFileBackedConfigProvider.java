@@ -27,15 +27,14 @@ import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.util.collections.WeakList;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.validators.Validator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Nullable;
 
@@ -70,7 +70,8 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
     /** The global config manager. */
     protected ConfigManager globalConfig;
     /** The config change listeners for this source. */
-    protected final List<ConfigChangeListener> listeners = new WeakList<>();
+    protected final List<WeakReference<ConfigChangeListener>> listeners =
+            new CopyOnWriteArrayList<>();
     /** The event bus to post error events to. */
     private final DMDircMBassador eventBus;
     /** Whether this identity needs to be saved. */
@@ -274,9 +275,10 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
      * @since 0.6.3m1
      */
     private void fireSettingChange(final String domain, final String key) {
-        for (ConfigChangeListener listener : new ArrayList<>(listeners)) {
-            listener.configChanged(domain, key);
-        }
+        listeners.stream()
+                .map(WeakReference::get)
+                .filter(Objects::nonNull)
+                .forEach(l -> l.configChanged(domain, key));
     }
 
     @Override
@@ -518,12 +520,15 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
 
     @Override
     public void addListener(final ConfigChangeListener listener) {
-        listeners.add(listener);
+        listeners.add(new WeakReference<>(listener));
     }
 
     @Override
     public void removeListener(final ConfigChangeListener listener) {
-        listeners.remove(listener);
+        listeners.stream().filter(w -> {
+            final ConfigChangeListener target = w.get();
+            return target == null || target.equals(listener);
+        }).forEach(listeners::remove);
     }
 
     /**
