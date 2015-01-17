@@ -418,11 +418,8 @@ public class ServerEventHandler extends EventHandler implements
 
         if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
-            final QuerySelfMessageEvent event = new QuerySelfMessageEvent(owner.getQuery(target),
-                    owner.getLocalUser().get(), message);
-            final String format = EventUtils.postDisplayable(eventBus, event,
-                    "querySelfExternalMessage");
-            owner.getQuery(target).doNotification(format, owner.getLocalUser(), message);
+            eventBus.publishAsync(new QuerySelfMessageEvent(owner.getQuery(target),
+                    owner.getLocalUser().get(), message));
         } else {
             final ServerUnknownMessageEvent event
                     = new ServerUnknownMessageEvent(owner, host, target, message);
@@ -438,11 +435,8 @@ public class ServerEventHandler extends EventHandler implements
 
         if (parser.getLocalClient().equals(parser.getClient(host))) {
             // Local client
-            final QuerySelfActionEvent event = new QuerySelfActionEvent(owner.getQuery(target),
-                    owner.getLocalUser().get(), message);
-            final String format = EventUtils.postDisplayable(eventBus, event,
-                    "querySelfExternalAction");
-            owner.getQuery(target).doNotification(format, owner.getLocalUser(), message);
+            eventBus.publishAsync(new QuerySelfActionEvent(owner.getQuery(target),
+                    owner.getLocalUser().get(), message));
         } else {
             final ServerUnknownActionEvent event
                     = new ServerUnknownActionEvent(owner, host, target, message);
