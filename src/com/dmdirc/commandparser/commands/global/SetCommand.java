@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -37,6 +36,7 @@ import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -104,7 +104,7 @@ public class SetCommand extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         @Nullable final CommandFlagResult res = handler.process(origin, args);
 
@@ -180,7 +180,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param isSilent Whether or not the command is being silenced or not
      * @param manager  The config manager to use to retrieve data
      */
-    private void doDomainList(final FrameContainer origin, final boolean isSilent,
+    private void doDomainList(final WindowModel origin, final boolean isSilent,
             final AggregateConfigProvider manager) {
         final StringBuilder output = new StringBuilder(67);
 
@@ -204,7 +204,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param manager  The config manager to use to retrieve data
      * @param domain   The domain to be inspected
      */
-    private void doOptionsList(final FrameContainer origin,
+    private void doOptionsList(final WindowModel origin,
             final boolean isSilent, final ReadOnlyConfigProvider manager, final String domain) {
         final StringBuilder output = new StringBuilder(24);
 
@@ -237,7 +237,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param domain   The domain of the option
      * @param option   The name of the option
      */
-    private void doShowOption(final FrameContainer origin,
+    private void doShowOption(final WindowModel origin,
             final boolean isSilent, final ReadOnlyConfigProvider manager,
             final String domain, final String option) {
         if (manager.hasOptionString(domain, option)) {
@@ -258,7 +258,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param option   The name of the option
      * @param newvalue The value the option should be set to
      */
-    private void doSetOption(final FrameContainer origin,
+    private void doSetOption(final WindowModel origin,
             final boolean isSilent, final ConfigProvider identity,
             final String domain, final String option, final String newvalue) {
         identity.setOption(domain, option, newvalue);
@@ -278,7 +278,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param option   The name of the option
      * @param data     The data to be appended
      */
-    private void doAppendOption(final FrameContainer origin,
+    private void doAppendOption(final WindowModel origin,
             final boolean isSilent, final ConfigProvider identity,
             final ReadOnlyConfigProvider manager,
             final String domain, final String option, final String data) {
@@ -296,7 +296,7 @@ public class SetCommand extends Command implements IntelligentCommand {
      * @param domain   The domain of the option
      * @param option   The name of the option
      */
-    private void doUnsetOption(final FrameContainer origin,
+    private void doUnsetOption(final WindowModel origin,
             final boolean isSilent, final ConfigProvider identity, final String domain,
             final String option) {
         identity.unsetOption(domain, option);

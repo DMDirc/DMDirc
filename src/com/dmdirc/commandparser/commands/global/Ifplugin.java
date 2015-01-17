@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -85,7 +86,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length <= 1) {
             showUsage(origin, args.isSilent(), "ifplugin", "<[!]plugin> <command>");
@@ -106,7 +107,8 @@ public class Ifplugin extends Command implements IntelligentCommand {
 
         if (result != negative) {
             if (origin.isWritable()) {
-                origin.getCommandParser().parseCommand(origin, args.getArgumentsAsString(1));
+                origin.getCommandParser().parseCommand(
+                        (FrameContainer) origin, args.getArgumentsAsString(1));
             } else {
                 globalCommandParserProvider.get()
                         .parseCommand(globalWindowProvider.get(), args.getArgumentsAsString(1));

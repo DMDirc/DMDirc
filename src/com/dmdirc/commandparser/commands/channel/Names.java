@@ -36,6 +36,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
 import javax.annotation.Nonnull;
@@ -64,7 +65,7 @@ public class Names extends Command implements IntelligentCommand,
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         final GroupChat channel = ((ChannelCommandContext) context).getGroupChat();
         channel.getConnection().get().getParser().get().sendRawMessage("NAMES "

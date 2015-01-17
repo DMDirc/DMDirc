@@ -22,10 +22,10 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.messages.Styliser;
 
 import javax.annotation.Nonnull;
@@ -59,7 +59,7 @@ public abstract class Command {
      * @param type     The type of message to send
      * @param args     The arguments of the message
      */
-    protected final void sendLine(@Nullable final FrameContainer target,
+    protected final void sendLine(@Nullable final WindowModel target,
             final boolean isSilent, final String type, final Object... args) {
         if (!isSilent && target != null) {
             target.addLine(type, args);
@@ -74,7 +74,7 @@ public abstract class Command {
      * @param name     The name of the command that's raising the error
      * @param args     The arguments that the command accepts or expects
      */
-    protected final void showUsage(@Nullable final FrameContainer target,
+    protected final void showUsage(@Nullable final WindowModel target,
             final boolean isSilent, final String name, final String args) {
         sendLine(target, isSilent, "commandUsage",
                 controller.getCommandChar(),
@@ -144,7 +144,7 @@ public abstract class Command {
      *
      * @since 0.6.4
      */
-    public abstract void execute(@Nonnull FrameContainer origin, CommandArguments args,
+    public abstract void execute(@Nonnull WindowModel origin, CommandArguments args,
             CommandContext context);
 
 }

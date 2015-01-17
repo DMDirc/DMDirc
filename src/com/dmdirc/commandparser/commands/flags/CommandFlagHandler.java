@@ -22,8 +22,8 @@
 
 package com.dmdirc.commandparser.commands.flags;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,7 +75,7 @@ public class CommandFlagHandler {
      *         encountered.
      */
     @Nullable
-    public CommandFlagResult process(final FrameContainer origin,
+    public CommandFlagResult process(final WindowModel origin,
             final CommandArguments arguments) {
         final Map<CommandFlag, Integer> results = parse(origin, arguments);
 
@@ -93,7 +93,7 @@ public class CommandFlagHandler {
      *         the <code>arguments</code> object. If an error occurs, null is returned.
      */
     @Nullable
-    protected Map<CommandFlag, Integer> parse(final FrameContainer origin,
+    protected Map<CommandFlag, Integer> parse(final WindowModel origin,
             final CommandArguments arguments) {
         enabledFlags.clear();
         disabledBy.clear();
@@ -177,7 +177,7 @@ public class CommandFlagHandler {
      */
     protected int readArguments(final CommandFlag flag,
             final CommandArguments arguments, final int offset, final int argCount,
-            final FrameContainer origin, final Map<CommandFlag, Integer> results) {
+            final WindowModel origin, final Map<CommandFlag, Integer> results) {
         final int lastArg = argCount + offset - 1;
 
         if (arguments.getArguments().length <= lastArg) {
@@ -251,7 +251,7 @@ public class CommandFlagHandler {
      * @param messageType The type of the line to be sent
      * @param args        The arguments for the specified messageType
      */
-    protected static void sendLine(final FrameContainer origin, final boolean isSilent,
+    protected static void sendLine(final WindowModel origin, final boolean isSilent,
             final String messageType, final Object... args) {
         if (origin != null && !isSilent) {
             origin.addLine(messageType, args);

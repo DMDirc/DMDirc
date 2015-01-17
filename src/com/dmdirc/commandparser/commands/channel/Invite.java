@@ -35,6 +35,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -63,7 +64,7 @@ public class Invite extends Command implements ExternalCommand {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length < 1) {
             sendLine(origin, args.isSilent(), FORMAT_ERROR,

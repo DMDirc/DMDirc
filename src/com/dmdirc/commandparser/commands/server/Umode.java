@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -34,6 +33,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public class Umode extends Command {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         final Connection connection = ((ServerCommandContext) context).getConnection();
         if (connection.getState() != ServerState.CONNECTED) {

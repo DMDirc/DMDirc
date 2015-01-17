@@ -35,6 +35,7 @@ import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionFactory;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.util.InvalidURIException;
@@ -82,7 +83,7 @@ public class NewServer extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "newserver", "<host[:[+]port]> [password]");
@@ -95,7 +96,7 @@ public class NewServer extends Command implements IntelligentCommand {
                     profileManager.getDefault());
             server.connect();
         } catch (InvalidURIException ex) {
-            origin.getEventBus().publishAsync(new CommandErrorEvent(origin,
+            origin.getEventBus().publishAsync(new CommandErrorEvent((FrameContainer) origin,
                     "Invalid URI: " + ex.getMessage() +
                             (ex.getCause() == null ? "" : ": " + ex.getCause().getMessage())));
         }
