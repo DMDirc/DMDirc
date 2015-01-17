@@ -153,6 +153,7 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
     public void handleErrorDeleted(final ProgramErrorDeletedEvent event) {
         errors.stream().filter(e -> e.getProgramError().equals(event.getError()))
                 .findFirst().ifPresent(e -> {
+            errorManager.deleteError(e.getProgramError());
             errors.remove(e);
             listenerList.getCallable(ErrorsDialogModelListener.class).errorDeleted(e);
             setSelectedError(Optional.empty());
@@ -161,9 +162,13 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     @Handler
     public void handleErrorAdded(final NonFatalProgramErrorEvent event) {
-        final DisplayableError error = getDisplayableError(event.getError());
-        errors.add(error);
-        listenerList.getCallable(ErrorsDialogModelListener.class).errorAdded(error);
+        final Optional<DisplayableError> de = errors.stream().filter(
+                e -> e.getProgramError().equals(event.getError())).findFirst();
+        if (!de.isPresent()) {
+            final DisplayableError error = getDisplayableError(event.getError());
+            errors.add(error);
+            listenerList.getCallable(ErrorsDialogModelListener.class).errorAdded(error);
+        }
     }
 
     private DisplayableError getDisplayableError(final ProgramError error) {
