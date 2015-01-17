@@ -26,6 +26,8 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -78,6 +80,14 @@ public class DisplayableError {
 
     public void setReportStatus(final ErrorReportStatus reportStatus) {
         this.reportStatus = reportStatus;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("Severity", getSeverity())
+                .add("Summary", getSummary())
+                .toString();
     }
 
     @Override
