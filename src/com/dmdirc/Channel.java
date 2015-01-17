@@ -51,9 +51,10 @@ import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.messages.sink.MessageSinkManager;
-import com.dmdirc.util.collections.RollingList;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.colours.ColourUtils;
+
+import com.google.common.collect.EvictingQueue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +62,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -77,7 +79,7 @@ public class Channel extends FrameContainer implements GroupChat {
     /** The connection this channel is on. */
     private final Connection connection;
     /** A list of previous topics we've seen. */
-    private final RollingList<Topic> topics;
+    private final Queue<Topic> topics;
     /** Our event handler. */
     private final ChannelEventHandler eventHandler;
     /** The migrator to use to migrate our config provider. */
@@ -136,7 +138,8 @@ public class Channel extends FrameContainer implements GroupChat {
 
         getConfigManager().getBinder().bind(this, Channel.class);
 
-        topics = new RollingList<>(getConfigManager().getOptionInt("channel", "topichistorysize"));
+        topics = EvictingQueue.create(
+                getConfigManager().getOptionInt("channel", "topichistorysize"));
 
         eventHandler = new ChannelEventHandler(this, getEventBus(), groupChatUserManager);
 
@@ -470,17 +473,17 @@ public class Channel extends FrameContainer implements GroupChat {
     @Override
     public List<Topic> getTopics() {
         synchronized (topics) {
-            return new ArrayList<>(topics.getList());
+            return new ArrayList<>(topics);
         }
     }
 
     @Override
     public Optional<Topic> getCurrentTopic() {
         synchronized (topics) {
-            if (topics.getList().isEmpty()) {
+            if (topics.isEmpty()) {
                 return Optional.empty();
             } else {
-                return Optional.of(topics.get(topics.getList().size() - 1));
+                return Optional.of(getTopics().get(topics.size() - 1));
             }
         }
     }
