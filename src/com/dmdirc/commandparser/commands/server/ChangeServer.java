@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
 
@@ -67,7 +68,7 @@ public class ChangeServer extends Command {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
             showUsage(origin, args.isSilent(), "server", "<host[:[+]port]> [password]");
@@ -80,7 +81,8 @@ public class ChangeServer extends Command {
             connection.connect(address, connection.getProfile());
         } catch (InvalidURIException ex) {
             origin.getEventBus().publishAsync(
-                    new CommandErrorEvent(origin, "Invalid URI: " + ex.getMessage() +
+                    new CommandErrorEvent(
+                            (FrameContainer) origin, "Invalid URI: " + ex.getMessage() +
                             (ex.getCause() == null ? "" : ": " + ex.getCause().getMessage())));
         }
     }

@@ -35,6 +35,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -83,10 +84,10 @@ public class OpenWindow extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         int start = 0;
-        FrameContainer parent = null;
+        WindowModel parent = null;
 
         if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
             final Optional<Connection> connection = origin.getConnection();
@@ -107,12 +108,13 @@ public class OpenWindow extends Command implements IntelligentCommand {
             showUsage(origin, args.isSilent(), "openwindow",
                     "[--server|--child] <name> [title]");
         } else {
-            final FrameContainer window;
+            final WindowModel window;
 
             if (parent == null) {
                 window = windowManager.findCustomWindow(args.getArguments()[start]);
             } else {
-                window = windowManager.findCustomWindow(parent, args.getArguments()[start]);
+                window = windowManager.findCustomWindow(
+                        (FrameContainer) parent, args.getArguments()[start]);
             }
 
             final String title = args.getArguments().length > start + 1
@@ -125,9 +127,9 @@ public class OpenWindow extends Command implements IntelligentCommand {
                             configProvider, eventBus, backBufferFactory);
                     windowManager.addWindow(newWindow);
                 } else {
-                    newWindow = new CustomWindow(args.getArguments()[start], title, parent,
-                            backBufferFactory);
-                    windowManager.addWindow(parent, newWindow);
+                    newWindow = new CustomWindow(args.getArguments()[start], title,
+                            (FrameContainer) parent, backBufferFactory);
+                    windowManager.addWindow((FrameContainer) parent, newWindow);
                 }
             } else {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,

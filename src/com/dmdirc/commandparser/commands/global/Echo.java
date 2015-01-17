@@ -37,6 +37,7 @@ import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.events.CommandOutputEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -84,7 +85,7 @@ public class Echo extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         @Nullable final CommandFlagResult results = handler.process(origin, args);
 
@@ -104,12 +105,13 @@ public class Echo extends Command implements IntelligentCommand {
 
         if (results.hasFlag(targetFlag)) {
             FrameContainer frame = null;
-            Optional<FrameContainer> target = Optional.ofNullable(origin);
+            Optional<WindowModel> target = Optional.ofNullable(origin);
 
             while (frame == null && target.isPresent()) {
-                frame = windowManager.findCustomWindow(target.get(),
+                frame = windowManager.findCustomWindow((FrameContainer) target.get(),
                         results.getArgumentsAsString(targetFlag));
-                target = target.get().getParent();
+                // TODO: Somewhat insane...
+                target = Optional.ofNullable((WindowModel) target.get().getParent().orElse(null));
             }
 
             if (frame == null) {
@@ -124,8 +126,8 @@ public class Echo extends Command implements IntelligentCommand {
                         results.getArgumentsAsString()));
             }
         } else if (!args.isSilent()) {
-            origin.getEventBus().publishAsync(new CommandOutputEvent(origin, time.getTime(),
-                    results.getArgumentsAsString()));
+            origin.getEventBus().publishAsync(new CommandOutputEvent((FrameContainer) origin,
+                    time.getTime(), results.getArgumentsAsString()));
         }
     }
 
@@ -150,7 +152,7 @@ public class Echo extends Command implements IntelligentCommand {
             //Children of Current Window's server
             connection
                     .map(Connection::getWindowModel)
-                    .map(FrameContainer::getChildren)
+                    .map(WindowModel::getChildren)
                     .ifPresent(windowList::addAll);
 
             //Global Windows

@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.ServerState;
 import com.dmdirc.ServerStatus;
@@ -341,7 +340,7 @@ public interface Connection {
      *
      * @return A model for windows based on this connection.
      */
-    FrameContainer getWindowModel();
+    WindowModel getWindowModel();
 
     /**
      * Returns the available channel modes applicable to users.

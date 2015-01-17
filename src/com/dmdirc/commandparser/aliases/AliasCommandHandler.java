@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;
 
@@ -43,11 +44,12 @@ public class AliasCommandHandler extends Command {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin, final CommandArguments args,
+    public void execute(@Nonnull final WindowModel origin, final CommandArguments args,
             final CommandContext context) {
         if (args.getArguments().length >= alias.getMinArguments()) {
             for (String line : alias.getSubstitution().split("\n")) {
-                origin.getCommandParser().parseCommand(origin, getSubstituteCommand(line, args));
+                origin.getCommandParser().parseCommand((FrameContainer) origin,
+                        getSubstituteCommand(line, args));
             }
         } else {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, alias.getName() + " requires at least "

@@ -66,7 +66,7 @@ public class LastCommandMessageSink implements MessageSink {
 
         final Collection<FrameContainer> containers = new ArrayList<>();
 
-        final FrameContainer connectionContainer = source.getConnection()
+        final FrameContainer connectionContainer = (FrameContainer) source.getConnection()
                 .get().getWindowModel();
         containers.add(connectionContainer);
         containers.addAll(connectionContainer.getChildren());

@@ -65,8 +65,8 @@ public class CustomWindowMessageSink implements MessageSink {
             final FrameContainer source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
-        final FrameContainer connectionContainer = source.getConnection()
-                .get().getWindowModel();
+        final FrameContainer connectionContainer = (FrameContainer)
+                source.getConnection().get().getWindowModel();
         FrameContainer targetWindow = windowManager
                 .findCustomWindow(connectionContainer, patternMatches[0]);
 

@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
@@ -69,13 +70,13 @@ public class AllServers extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         final String command = args.getArgumentsAsString();
 
         for (Connection target : connectionManager.getConnections()) {
             target.getWindowModel().getCommandParser()
-                    .parseCommand(target.getWindowModel(), command);
+                    .parseCommand((FrameContainer) target.getWindowModel(), command);
         }
     }
 

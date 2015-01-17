@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -31,6 +30,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.Styliser;
@@ -66,7 +66,7 @@ public class Help extends Command implements IntelligentCommand {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length == 0) {
             showAllCommands(origin, args.isSilent());
@@ -81,7 +81,7 @@ public class Help extends Command implements IntelligentCommand {
      * @param origin   The window the command was executed in
      * @param isSilent Whether this command has been silenced or not
      */
-    private void showAllCommands(final FrameContainer origin, final boolean isSilent) {
+    private void showAllCommands(final WindowModel origin, final boolean isSilent) {
         final List<String> commands = new ArrayList<>(origin.getCommandParser()
                 .getCommands().keySet());
 
@@ -118,7 +118,7 @@ public class Help extends Command implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      * @param name     The name of the command to display info for
      */
-    private void showCommand(final FrameContainer origin, final boolean isSilent,
+    private void showCommand(final WindowModel origin, final boolean isSilent,
             final String name) {
         final Map.Entry<CommandInfo, Command> command;
 

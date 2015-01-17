@@ -37,6 +37,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
 
@@ -65,7 +66,7 @@ public class ShowTopic extends Command implements ExternalCommand {
     }
 
     @Override
-    public void execute(@Nonnull final FrameContainer origin,
+    public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         final GroupChat channel = ((ChannelCommandContext) context).getGroupChat();
         if (args.getArguments().length == 0) {
