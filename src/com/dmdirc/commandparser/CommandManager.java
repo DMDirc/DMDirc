@@ -34,7 +34,9 @@ import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.util.collections.MapList;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +54,7 @@ public class CommandManager implements CommandController {
     /** A list of commands that have been instantiated. */
     private final Map<CommandInfo, Command> commands = new HashMap<>();
     /** A list of command parsers that have been instantiated. */
-    private final MapList<CommandType, CommandParser> parsers = new MapList<>();
+    private final Multimap<CommandType, CommandParser> parsers = ArrayListMultimap.create();
     /** The manager to use to iterate servers. */
     private final ConnectionManager connectionManager;
     /** Provider to use to retrieve the global window. */
@@ -220,7 +222,7 @@ public class CommandManager implements CommandController {
                     parser.registerCommand(pair.getValue(), pair.getKey());
                 }
 
-                parsers.add(type, parser);
+                parsers.put(type, parser);
             }
         }
     }

@@ -34,13 +34,15 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.ClientInfo;
-import com.dmdirc.util.collections.MapList;
-import com.dmdirc.util.collections.WeakMapList;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.FileUtils;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -49,9 +51,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -80,7 +82,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Standard identities are inserted with a <code>null</code> key, custom identities use their
      * custom type as the key.
      */
-    private final MapList<String, ConfigProvider> identities = new MapList<>();
+    private final Multimap<String, ConfigProvider> identities = ArrayListMultimap.create();
     /** Map of paths to corresponding config providers, to facilitate reloading. */
     private final Map<Path, ConfigProvider> configProvidersByPath = new ConcurrentHashMap<>();
     /** The event bus to post events to. */
@@ -91,7 +93,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Listeners for standard identities are inserted with a <code>null</code> key, listeners for a
      * specific custom type use their type as the key.
      */
-    private final MapList<String, ConfigProviderListener> listeners = new WeakMapList<>();
+    private final Multimap<String, WeakReference<ConfigProviderListener>> listeners =
+            ArrayListMultimap.create();
     /** Client info objecty. */
     private final ClientInfo clientInfo;
     /** The identity file used for the global config. */
@@ -283,13 +286,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @since 0.6.4
      */
     private Iterable<ConfigProvider> getAllIdentities() {
-        final Collection<ConfigProvider> res = new LinkedHashSet<>();
-
-        for (Map.Entry<String, List<ConfigProvider>> entry : identities.entrySet()) {
-            res.addAll(entry.getValue());
-        }
-
-        return res;
+        return identities.values();
     }
 
     /**
@@ -372,20 +369,21 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
         final String target = getGroup(identity);
 
-        if (identities.containsValue(target, identity)) {
+        if (identities.containsEntry(target, identity)) {
             removeConfigProvider(identity);
         }
 
         synchronized (identities) {
-            identities.add(target, identity);
+            identities.put(target, identity);
         }
 
         LOG.debug("Adding identity: {} (group: {})", new Object[]{identity, target});
 
         synchronized (listeners) {
-            for (ConfigProviderListener listener : listeners.safeGet(target)) {
-                listener.configProviderAdded(identity);
-            }
+            listeners.get(target).stream()
+                    .map(WeakReference::get)
+                    .filter(Objects::nonNull)
+                    .forEach(l -> l.configProviderAdded(identity));
         }
     }
 
@@ -395,7 +393,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
         final String group = getGroup(identity);
 
-        checkArgument(identities.containsValue(group, identity));
+        checkArgument(identities.containsEntry(group, identity));
 
         Path path = null;
         for (Map.Entry<Path, ConfigProvider> entry : configProvidersByPath.entrySet()) {
@@ -413,9 +411,10 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         synchronized (listeners) {
-            for (ConfigProviderListener listener : listeners.safeGet(group)) {
-                listener.configProviderRemoved(identity);
-            }
+            listeners.get(group).stream()
+                    .map(WeakReference::get)
+                    .filter(Objects::nonNull)
+                    .forEach(l -> l.configProviderRemoved(identity));
         }
     }
 
@@ -426,7 +425,12 @@ public class IdentityManager implements IdentityFactory, IdentityController {
 
     @Override
     public void unregisterIdentityListener(final ConfigProviderListener listener) {
-        listeners.removeFromAll(listener);
+        synchronized (listeners) {
+            listeners.entries().stream().filter(e -> {
+                final ConfigProviderListener value = e.getValue().get();
+                return value == null || value.equals(listener);
+            }).forEach(e -> listeners.remove(e.getKey(), e.getValue()));
+        }
     }
 
     @Override
@@ -434,13 +438,13 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         checkNotNull(listener);
 
         synchronized (listeners) {
-            listeners.add(type, listener);
+            listeners.put(type, new WeakReference<>(listener));
         }
     }
 
     @Override
-    public List<ConfigProvider> getProvidersByType(final String type) {
-        return Collections.unmodifiableList(identities.safeGet(type));
+    public Collection<ConfigProvider> getProvidersByType(final String type) {
+        return Collections.unmodifiableCollection(identities.get(type));
     }
 
     /**
@@ -455,7 +459,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final List<ConfigProvider> sources = new ArrayList<>();
 
         synchronized (identities) {
-            sources.addAll(identities.safeGet(null).stream()
+            sources.addAll(identities.get(null).stream()
                     .filter(manager::identityApplies)
                     .collect(Collectors.toList()));
         }
@@ -491,7 +495,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String myTarget = (channel + '@' + network).toLowerCase();
 
         synchronized (identities) {
-            for (ConfigProvider identity : identities.safeGet(null)) {
+            for (ConfigProvider identity : identities.get(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.CHANNEL
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -516,7 +520,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String myTarget = network.toLowerCase();
 
         synchronized (identities) {
-            for (ConfigProvider identity : identities.safeGet(null)) {
+            for (ConfigProvider identity : identities.get(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.NETWORK
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -541,7 +545,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String myTarget = server.toLowerCase();
 
         synchronized (identities) {
-            for (ConfigProvider identity : identities.safeGet(null)) {
+            for (ConfigProvider identity : identities.get(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.SERVER
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;

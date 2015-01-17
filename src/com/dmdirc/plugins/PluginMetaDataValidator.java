@@ -23,7 +23,8 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.updater.Version;
-import com.dmdirc.util.collections.MapList;
+
+import com.google.common.collect.Multimap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class PluginMetaDataValidator {
      * @return A collection of errors that occurred (if any)
      */
     public Collection<String> validate(final Map<String, PluginMetaData> plugins,
-            final MapList<String, String> services) {
+            final Multimap<String, String> services) {
         errors.clear();
 
         checkMetaData();
@@ -100,7 +101,7 @@ public class PluginMetaDataValidator {
      * @param services A map of known services
      */
     protected void checkRequirements(final Map<String, PluginMetaData> plugins,
-            final MapList<String, String> services) {
+            final Multimap<String, String> services) {
         checkOS(metadata.getRequirements().get("os"), System.getProperty("os.name"), System.
                 getProperty("os.version"), System.getProperty("os.arch"));
         checkFiles(metadata.getRequirements().get("files"));
@@ -114,7 +115,7 @@ public class PluginMetaDataValidator {
      * @param knownServices A map of known services
      * @param services      Required services
      */
-    private void checkServices(final MapList<String, String> knownServices,
+    private void checkServices(final Multimap<String, String> knownServices,
             final Collection<String> services) {
         if (services == null || services.isEmpty()) {
             return;
@@ -127,7 +128,7 @@ public class PluginMetaDataValidator {
 
             if (!knownServices.containsKey(type)
                     || !"any".equalsIgnoreCase(name)
-                    && !knownServices.containsValue(type, name)) {
+                    && !knownServices.containsEntry(type, name)) {
                 errors.add("Service " + name + " of type " + type
                         + " not available");
             }
