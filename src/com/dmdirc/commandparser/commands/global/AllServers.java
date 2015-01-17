@@ -75,7 +75,7 @@ public class AllServers extends Command implements IntelligentCommand {
 
         for (Connection target : connectionManager.getConnections()) {
             target.getWindowModel().getCommandParser()
-                    .parseCommand(target.getWindowModel(), command);
+                    .parseCommand((FrameContainer) target.getWindowModel(), command);
         }
     }
 

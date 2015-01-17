@@ -37,6 +37,7 @@ import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
 import com.dmdirc.events.CommandOutputEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
@@ -150,7 +151,7 @@ public class Echo extends Command implements IntelligentCommand {
             //Children of Current Window's server
             connection
                     .map(Connection::getWindowModel)
-                    .map(FrameContainer::getChildren)
+                    .map(WindowModel::getChildren)
                     .ifPresent(windowList::addAll);
 
             //Global Windows

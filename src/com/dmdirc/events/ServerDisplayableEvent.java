@@ -74,7 +74,7 @@ public abstract class ServerDisplayableEvent extends ServerEvent implements Disp
 
     @Override
     public FrameContainer getSource() {
-        return getConnection().getWindowModel();
+        return (FrameContainer) getConnection().getWindowModel();
     }
 
 }

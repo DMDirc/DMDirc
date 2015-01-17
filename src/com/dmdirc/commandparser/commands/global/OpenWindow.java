@@ -96,7 +96,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
                 return;
             }
 
-            parent = connection.get().getWindowModel();
+            parent = (FrameContainer) connection.get().getWindowModel();
             start = 1;
         } else if (args.getArguments().length > 0 && "--child".equals(args.getArguments()[0])) {
             parent = origin;
