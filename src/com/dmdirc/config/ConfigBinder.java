@@ -28,7 +28,9 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.util.collections.MapList;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Executable;
@@ -48,7 +50,7 @@ import javax.annotation.Nonnull;
 public class ConfigBinder {
 
     /** A map of instances to created listeners. */
-    private final MapList<Object, ConfigChangeListener> listeners = new MapList<>();
+    private final Multimap<Object, ConfigChangeListener> listeners = ArrayListMultimap.create();
     /** The default domain to use. */
     private final Optional<String> defaultDomain;
     /** The configuration manager to use to retrieve settings. */
@@ -219,7 +221,7 @@ public class ConfigBinder {
     private void addListeners(final Object instance,
             final Collection<ConfigChangeListener> newListeners) {
         synchronized (listeners) {
-            listeners.add(instance, newListeners);
+            listeners.putAll(instance, newListeners);
         }
     }
 
@@ -230,8 +232,8 @@ public class ConfigBinder {
      */
     public void unbind(final Object instance) {
         synchronized (listeners) {
-            listeners.safeGet(instance).forEach(manager::removeListener);
-            listeners.remove(instance);
+            listeners.get(instance).forEach(manager::removeListener);
+            listeners.removeAll(instance);
         }
     }
 

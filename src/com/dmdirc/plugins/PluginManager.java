@@ -29,7 +29,9 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;
-import com.dmdirc.util.collections.MapList;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -366,7 +368,7 @@ public class PluginManager {
             }
         }
 
-        final MapList<String, String> newServices = new MapList<>();
+        final Multimap<String, String> newServices = ArrayListMultimap.create();
         final Map<String, PluginMetaData> newPluginsByName = new HashMap<>();
         final Map<String, PluginMetaData> newPluginsByPath = new HashMap<>();
 
@@ -389,13 +391,13 @@ public class PluginManager {
 
                     for (String service : targetMetaData.getServices()) {
                         final String[] parts = service.split(" ", 2);
-                        newServices.add(parts[1], parts[0]);
+                        newServices.put(parts[1], parts[0]);
                     }
 
                     for (String export : targetMetaData.getExports()) {
                         final String[] parts = export.split(" ");
                         final String name = parts.length > 4 ? parts[4] : parts[0];
-                        newServices.add("export", name);
+                        newServices.put("export", name);
                     }
                 }
             } catch (MalformedURLException mue) {

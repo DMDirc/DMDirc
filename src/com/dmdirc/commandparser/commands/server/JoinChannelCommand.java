@@ -38,7 +38,9 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.collections.MapList;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +66,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
             CommandType.TYPE_SERVER);
     /** A map of channel name mentions. */
     @GuardedBy("mentionsLock")
-    private final MapList<FrameContainer, String> mentions = new MapList<>();
+    private final Multimap<FrameContainer, String> mentions = ArrayListMultimap.create();
     /** Lock to synchronise on when accessing mentions. */
     private final Object mentionsLock = new Object();
 
@@ -117,7 +119,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
         synchronized (mentionsLock) {
             for (int i = 1; i < parts.length; i += 2) {
                 // All of the odd parts of the array are channel names
-                mentions.add(event.getFrameContainer(), parts[i]);
+                mentions.put(event.getFrameContainer(), parts[i]);
             }
         }
     }
