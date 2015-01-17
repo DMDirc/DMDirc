@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.parser.common.CompositionState;
 
 import java.util.Optional;
@@ -73,6 +72,6 @@ public interface Chat {
      *
      * @return A model for windows based on this connection.
      */
-    FrameContainer getWindowModel();
+    WindowModel getWindowModel();
 
 }
