@@ -28,9 +28,6 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import java.util.Locale;
-import java.util.Map;
-
 import javax.annotation.Nullable;
 
 /**
@@ -89,10 +86,8 @@ public class TabCompleter {
      * @return A TabCompleterResult containing any matches found
      */
     public TabCompletionMatches complete(final String partial,
-            final AdditionalTabTargets additionals) {
+            @Nullable final AdditionalTabTargets additionals) {
         final TabCompletionMatches result = new TabCompletionMatches();
-
-        final Multimap<TabCompletionType, String> targets = ArrayListMultimap.create(entries);
 
         final boolean caseSensitive = configManager.getOptionBool("tabcompletion", "casesensitive");
         final boolean allowEmpty = configManager.getOptionBool("tabcompletion", "allowempty");
@@ -101,28 +96,24 @@ public class TabCompleter {
             return result;
         }
 
+        final Multimap<TabCompletionType, String> targets = ArrayListMultimap.create(entries);
         if (additionals != null) {
             targets.putAll(TabCompletionType.ADDITIONAL, additionals);
         }
 
-        for (Map.Entry<TabCompletionType, String> entry : targets.entries()) {
-            // TODO: This can probably be replaced with a stream + filter chain
-            if (additionals != null && !additionals.shouldInclude(entry.getKey())) {
-                // If we're not including this type, skip to the next.
-                continue;
-            }
-
-            // Skip over duplicates
-            if (result.hasResult(entry.getValue())) {
-                continue;
-            }
-
-            if (caseSensitive && entry.getValue().startsWith(partial)
-                    || !caseSensitive && entry.getValue().toLowerCase(Locale.getDefault())
-                            .startsWith(partial.toLowerCase(Locale.getDefault()))) {
-                result.addResult(entry.getValue());
-            }
-        }
+        targets.keys().stream()
+                // Filter out keys that aren't allowed by the additional argument (if present)
+                .filter(k -> additionals == null || additionals.shouldInclude(k))
+                // Select all values for the valid keys
+                .flatMap(k -> targets.get(k).stream())
+                // Filter out values that don't case sensitively match, if case sensitivity is on
+                .filter(v -> !caseSensitive || v.startsWith(partial))
+                // Filter out values that don't case INsensitively match, if case sensitivity is off
+                .filter(v -> caseSensitive || v.toLowerCase().startsWith(partial.toLowerCase()))
+                // Filter out duplicates
+                .distinct()
+                // Add them all to the result
+                .forEach(result::addResult);
 
         if (parent != null) {
             if (additionals != null) {
