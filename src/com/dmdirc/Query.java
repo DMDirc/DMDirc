@@ -136,8 +136,11 @@ public class Query extends FrameContainer implements PrivateActionListener,
 
     @Override
     public int getMaxLineLength() {
+        // TODO: The parser layer should abstract this
         return connection.getState() == ServerState.CONNECTED ? connection.getParser().get()
-                .getMaxLength("PRIVMSG", getHost()) : -1;
+                .getMaxLength("PRIVMSG", user.getNickname()
+                        + '!' + user.getUsername().orElse("")
+                        + '@' + user.getHostname().orElse("")) : -1;
     }
 
     @Override
@@ -147,7 +150,7 @@ public class Query extends FrameContainer implements PrivateActionListener,
             return;
         }
 
-        final int maxLineLength = connection.getParser().get().getMaxLength("PRIVMSG", getHost());
+        final int maxLineLength = getMaxLineLength();
 
         if (maxLineLength >= action.length() + 2) {
             connection.getParser().get().sendAction(getNickname(), action);
@@ -268,21 +271,13 @@ public class Query extends FrameContainer implements PrivateActionListener,
     }
 
     @Override
-    public String getHost() {
-        // TODO: Icky, IRC specific. Kill with fire.
-        return user.getNickname()
-                + '!' + user.getUsername().orElse("")
-                + '@' + user.getHostname().orElse("");
-    }
-
-    @Override
     public String getNickname() {
         return user.getNickname();
     }
 
     @Override
     public void setCompositionState(final CompositionState state) {
-        connection.getParser().get().setCompositionState(getHost(), state);
+        connection.getParser().get().setCompositionState(user.getNickname(), state);
     }
 
     @Override
