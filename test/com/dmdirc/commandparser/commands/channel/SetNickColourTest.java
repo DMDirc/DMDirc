@@ -22,7 +22,6 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.events.DisplayProperty;
@@ -30,6 +29,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.util.colours.Colour;
@@ -46,7 +46,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyChar;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,6 +61,7 @@ public class SetNickColourTest {
     @Mock private ColourManagerFactory colourManagerFactory;
     @Mock private ColourManager colourManager;
     @Mock private CommandController controller;
+    @Mock private WindowModel tiw;
     private SetNickColour command;
 
     @Before
@@ -80,7 +80,6 @@ public class SetNickColourTest {
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments(controller, "/foo"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
 
@@ -89,7 +88,6 @@ public class SetNickColourTest {
 
     @Test
     public void testUsageNicknameValid() {
-        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments(controller, "/foo moo"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
         verify(channel).refreshClients();
@@ -98,7 +96,6 @@ public class SetNickColourTest {
 
     @Test
     public void testUsageNicknameInvalid() {
-        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments(controller, "/foo foo"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
         verify(channel, never()).refreshClients();
@@ -108,7 +105,6 @@ public class SetNickColourTest {
 
     @Test
     public void testUsageInvalidColour() {
-        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments(controller, "/foo moo omg"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
 
@@ -117,7 +113,6 @@ public class SetNickColourTest {
 
     @Test
     public void testUsageValidColour() {
-        final FrameContainer tiw = mock(FrameContainer.class);
         command.execute(tiw, new CommandArguments(controller, "/foo moo 4"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
         verify(channel).refreshClients();

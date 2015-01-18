@@ -21,11 +21,11 @@
  */
 package com.dmdirc.commandparser.commands.chat;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.interfaces.Chat;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
 public class MeTest {
 
     @Mock private Chat chat;
-    @Mock private FrameContainer frameContainer;
+    @Mock private WindowModel frameContainer;
     @Mock private CommandController controller;
     private Me command;
 

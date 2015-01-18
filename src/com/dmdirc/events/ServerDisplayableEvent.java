@@ -22,8 +22,8 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -73,8 +73,8 @@ public abstract class ServerDisplayableEvent extends ServerEvent implements Disp
     }
 
     @Override
-    public FrameContainer getSource() {
-        return (FrameContainer) getConnection().getWindowModel();
+    public WindowModel getSource() {
+        return getConnection().getWindowModel();
     }
 
 }

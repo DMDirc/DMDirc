@@ -22,22 +22,22 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Event fired when some input has been entered into the client.
  */
 public class ClientUserInputEvent extends DMDircEvent {
 
-    private final FrameContainer container;
+    private final WindowModel container;
     private final StringBuffer buffer;
 
-    public ClientUserInputEvent(final FrameContainer container, final StringBuffer buffer) {
+    public ClientUserInputEvent(final WindowModel container, final StringBuffer buffer) {
         this.container = container;
         this.buffer = buffer;
     }
 
-    public FrameContainer getFrameContainer() {
+    public WindowModel getFrameContainer() {
         return container;
     }
 

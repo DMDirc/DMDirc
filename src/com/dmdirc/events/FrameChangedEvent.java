@@ -22,20 +22,20 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Base class for all frame info events.
  */
 public class FrameChangedEvent extends DMDircEvent {
 
-    private final FrameContainer container;
+    private final WindowModel container;
 
-    public FrameChangedEvent(final FrameContainer container) {
+    public FrameChangedEvent(final WindowModel container) {
         this.container = container;
     }
 
-    public FrameContainer getContainer() {
+    public WindowModel getContainer() {
         return container;
     }
 }

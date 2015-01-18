@@ -22,14 +22,14 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Fired when a frame component is added.
  */
 public class FrameComponentAddedEvent extends FrameComponentEvent {
 
-    public FrameComponentAddedEvent(final FrameContainer container, final String component) {
+    public FrameComponentAddedEvent(final WindowModel container, final String component) {
         super(container, component);
     }
 }

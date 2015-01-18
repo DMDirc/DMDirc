@@ -22,20 +22,20 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Event fired when a new frame has been focused.
  */
 public class ClientFrameChangedEvent extends DMDircEvent {
 
-    private final FrameContainer container;
+    private final WindowModel container;
 
-    public ClientFrameChangedEvent(final FrameContainer container) {
+    public ClientFrameChangedEvent(final WindowModel container) {
         this.container = container;
     }
 
-    public FrameContainer getFrameContainer() {
+    public WindowModel getFrameContainer() {
         return container;
     }
 

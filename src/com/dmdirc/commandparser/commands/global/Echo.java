@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.CustomWindow;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -121,12 +120,11 @@ public class Echo extends Command implements IntelligentCommand {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "Unable to find target window");
             } else if (!args.isSilent()) {
-                frame.getEventBus().publishAsync(new CommandOutputEvent(
-                        (FrameContainer) frame, time.getTime(),
+                frame.getEventBus().publishAsync(new CommandOutputEvent(frame, time.getTime(),
                         results.getArgumentsAsString()));
             }
         } else if (!args.isSilent()) {
-            origin.getEventBus().publishAsync(new CommandOutputEvent((FrameContainer) origin,
+            origin.getEventBus().publishAsync(new CommandOutputEvent(origin,
                     time.getTime(), results.getArgumentsAsString()));
         }
     }

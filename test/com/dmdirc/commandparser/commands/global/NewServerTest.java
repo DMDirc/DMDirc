@@ -22,7 +22,6 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.profiles.Profile;
@@ -31,6 +30,7 @@ import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionFactory;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.util.URIParser;
 
@@ -59,7 +59,7 @@ public class NewServerTest {
     @Mock private CommandController controller;
     @Mock private ProfileManager profileManager;
     @Mock private Profile identity;
-    @Mock private FrameContainer container;
+    @Mock private WindowModel container;
     @Mock private ServiceManager serviceManager;
     @Mock private ConnectionFactory factory;
     @Mock private Connection connection;

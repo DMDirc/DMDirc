@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandInfoPair;
@@ -201,8 +200,7 @@ public abstract class CommandParser implements Serializable {
         if (someValid) {
             for (String channelName : parts) {
                 if (!server.getGroupChatManager().isValidChannelName(channelName)) {
-                    origin.getEventBus().publishAsync(new CommandErrorEvent(
-                            (FrameContainer) origin,
+                    origin.getEventBus().publishAsync(new CommandErrorEvent(origin,
                             "Invalid channel name: " + channelName));
                     continue;
                 }
@@ -337,7 +335,7 @@ public abstract class CommandParser implements Serializable {
         if (origin == null) {
             eventBus.publish(new UnknownCommandEvent(null, args.getCommandName(), args.getArguments()));
         } else {
-            final UnknownCommandEvent event = new UnknownCommandEvent((FrameContainer) origin,
+            final UnknownCommandEvent event = new UnknownCommandEvent(origin,
                     args.getCommandName(), args.getArguments());
             final String format = EventUtils.postDisplayable(eventBus, event, "unknownCommand");
 

@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Event raised when a command outputs some generic text to the user.
@@ -31,13 +31,13 @@ public class CommandOutputEvent extends BaseDisplayableEvent {
 
     private final String message;
 
-    public CommandOutputEvent(final FrameContainer source, final long timestamp,
+    public CommandOutputEvent(final WindowModel source, final long timestamp,
             final String message) {
         super(timestamp, source);
         this.message = message;
     }
 
-    public CommandOutputEvent(final FrameContainer source, final String message) {
+    public CommandOutputEvent(final WindowModel source, final String message) {
         super(source);
         this.message = message;
     }

@@ -22,22 +22,22 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Event fired when a line has been added to a window.
  */
 public class ClientLineAddedEvent extends DMDircEvent {
 
-    private final FrameContainer container;
+    private final WindowModel container;
     private final String line;
 
-    public ClientLineAddedEvent(final FrameContainer container, final String line) {
+    public ClientLineAddedEvent(final WindowModel container, final String line) {
         this.container = container;
         this.line = line;
     }
 
-    public FrameContainer getFrameContainer() {
+    public WindowModel getFrameContainer() {
         return container;
     }
 

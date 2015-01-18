@@ -22,13 +22,13 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.util.URIParser;
 
@@ -55,7 +55,7 @@ public class ChangeServerTest {
     @Mock private DMDircMBassador eventBus;
     @Mock private ErrorManager errorManager;
     @Mock private CommandController controller;
-    @Mock private FrameContainer tiw;
+    @Mock private WindowModel tiw;
     @Mock private Profile profile;
     @Mock private Connection connection;
     private ChangeServer command;

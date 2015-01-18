@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.WindowModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ import static org.mockito.Mockito.when;
 public class InviteManagerImplTest {
 
     @Mock private Connection connection;
-    @Mock private FrameContainer frameContainer;
+    @Mock private WindowModel frameContainer;
     @Mock private DMDircMBassador eventBus;
     @Mock private User user;
 

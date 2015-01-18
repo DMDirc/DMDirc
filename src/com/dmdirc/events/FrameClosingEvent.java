@@ -22,14 +22,14 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Fired when a window is closed in the client.
  */
 public class FrameClosingEvent extends FrameEvent {
 
-    public FrameClosingEvent(final FrameContainer container) {
+    public FrameClosingEvent(final WindowModel container) {
         super(container);
     }
 }

@@ -24,13 +24,13 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Channel;
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.harness.TestCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatManager;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.util.Optional;
@@ -57,7 +57,7 @@ public class CommandParserTest {
     @Mock private CommandInfo channelCommandInfo;
     @Mock private Command command;
     @Mock private Command channelCommand;
-    @Mock private FrameContainer container;
+    @Mock private WindowModel container;
     @Mock private Channel channel;
     @Mock private Connection connection;
     @Mock private GroupChatManager groupChatManager;

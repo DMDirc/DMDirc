@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -96,7 +95,7 @@ public class NewServer extends Command implements IntelligentCommand {
                     profileManager.getDefault());
             server.connect();
         } catch (InvalidURIException ex) {
-            origin.getEventBus().publishAsync(new CommandErrorEvent((FrameContainer) origin,
+            origin.getEventBus().publishAsync(new CommandErrorEvent(origin,
                     "Invalid URI: " + ex.getMessage() +
                             (ex.getCause() == null ? "" : ": " + ex.getCause().getMessage())));
         }

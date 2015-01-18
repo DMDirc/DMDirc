@@ -22,8 +22,8 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -72,8 +72,8 @@ public abstract class ChannelDisplayableEvent extends ChannelEvent implements Di
     }
 
     @Override
-    public FrameContainer getSource() {
-        return (FrameContainer) getChannel().getWindowModel();
+    public WindowModel getSource() {
+        return getChannel().getWindowModel();
     }
 
 }

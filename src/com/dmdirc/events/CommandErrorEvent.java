@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Event raised when a command encounters an error and needs to provide feedback to the user.
@@ -31,7 +31,7 @@ public class CommandErrorEvent extends BaseDisplayableEvent {
 
     private final String message;
 
-    public CommandErrorEvent(final FrameContainer source, final String message) {
+    public CommandErrorEvent(final WindowModel source, final String message) {
         super(source);
         this.message = message;
     }
