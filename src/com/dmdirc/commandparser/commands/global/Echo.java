@@ -104,14 +104,13 @@ public class Echo extends Command implements IntelligentCommand {
         }
 
         if (results.hasFlag(targetFlag)) {
-            FrameContainer frame = null;
+            WindowModel frame = null;
             Optional<WindowModel> target = Optional.ofNullable(origin);
 
             while (frame == null && target.isPresent()) {
-                frame = windowManager.findCustomWindow((FrameContainer) target.get(),
+                frame = windowManager.findCustomWindow(target.get(),
                         results.getArgumentsAsString(targetFlag));
-                // TODO: Somewhat insane...
-                target = Optional.ofNullable((WindowModel) target.get().getParent().orElse(null));
+                target = target.flatMap(WindowModel::getParent);
             }
 
             if (frame == null) {
@@ -122,7 +121,8 @@ public class Echo extends Command implements IntelligentCommand {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,
                         "Unable to find target window");
             } else if (!args.isSilent()) {
-                frame.getEventBus().publishAsync(new CommandOutputEvent(frame, time.getTime(),
+                frame.getEventBus().publishAsync(new CommandOutputEvent(
+                        (FrameContainer) frame, time.getTime(),
                         results.getArgumentsAsString()));
             }
         } else if (!args.isSilent()) {
@@ -143,7 +143,7 @@ public class Echo extends Command implements IntelligentCommand {
                 || arg == 3 && "--target".equals(context.getPreviousArgs().get(2))
                 && "--ts".equals(context.getPreviousArgs().get(0))) {
 
-            final Collection<FrameContainer> windowList = new ArrayList<>();
+            final Collection<WindowModel> windowList = new ArrayList<>();
             final Optional<Connection> connection = context.getWindow().getConnection();
 
             //Active window's Children
@@ -159,7 +159,7 @@ public class Echo extends Command implements IntelligentCommand {
             windowList.addAll(windowManager.getRootWindows());
             targets.addAll(
                     windowList.stream().filter(customWindow -> customWindow instanceof CustomWindow)
-                            .map(FrameContainer::getName).collect(Collectors.toList()));
+                            .map(WindowModel::getName).collect(Collectors.toList()));
 
             targets.excludeAll();
         } else if (arg == 1 && "--ts".equals(context.getPreviousArgs().get(0))) {

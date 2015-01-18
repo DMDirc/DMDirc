@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -186,14 +185,14 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
         }
 
         // Check the parent window
-        final Optional<FrameContainer> parent = source.getParent();
+        final Optional<WindowModel> parent = source.getParent();
         if (checkParents && parent.isPresent()) {
             results.addAll(checkSource(parent.get(), true, false));
         }
 
         // Check the children window
         if (checkChildren) {
-            for (FrameContainer child : source.getChildren()) {
+            for (WindowModel child : source.getChildren()) {
                 results.addAll(checkSource(child, false, true));
             }
         }

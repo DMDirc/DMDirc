@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.messages.BackBufferFactory;
@@ -65,7 +66,7 @@ public class CustomWindow extends FrameContainer {
 
     @Override
     public Optional<Connection> getConnection() {
-        return getParent().flatMap(FrameContainer::getConnection);
+        return getParent().flatMap(WindowModel::getConnection);
     }
 
 }
