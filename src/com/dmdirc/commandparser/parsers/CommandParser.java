@@ -38,6 +38,7 @@ import com.dmdirc.events.UnknownCommandEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.collections.RollingList;
@@ -94,7 +95,7 @@ public abstract class CommandParser implements Serializable {
      *
      * @since 0.6.4
      */
-    public abstract void setOwner(final FrameContainer owner);
+    public abstract void setOwner(final WindowModel owner);
 
     /** Loads the relevant commands into the parser. */
     protected abstract void loadCommands();
@@ -140,7 +141,7 @@ public abstract class CommandParser implements Serializable {
      *
      * @since 0.6.4
      */
-    public final void parseCommand(@Nonnull final FrameContainer origin, final String line,
+    public final void parseCommand(@Nonnull final WindowModel origin, final String line,
             final boolean parseChannel) {
         checkNotNull(origin);
 
@@ -176,7 +177,7 @@ public abstract class CommandParser implements Serializable {
      *
      * @return True iff the command was handled, false otherwise
      */
-    protected boolean handleChannelCommand(@Nonnull final FrameContainer origin,
+    protected boolean handleChannelCommand(@Nonnull final WindowModel origin,
             final CommandArguments args, final boolean parseChannel) {
         final boolean silent = args.isSilent();
         final String command = args.getCommandName();
@@ -200,7 +201,8 @@ public abstract class CommandParser implements Serializable {
         if (someValid) {
             for (String channelName : parts) {
                 if (!server.getGroupChatManager().isValidChannelName(channelName)) {
-                    origin.getEventBus().publishAsync(new CommandErrorEvent(origin,
+                    origin.getEventBus().publishAsync(new CommandErrorEvent(
+                            (FrameContainer) origin,
                             "Invalid channel name: " + channelName));
                     continue;
                 }
@@ -301,7 +303,7 @@ public abstract class CommandParser implements Serializable {
      * @return The context for the command.
      */
     protected abstract CommandContext getCommandContext(
-            final FrameContainer origin,
+            final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args);
@@ -316,7 +318,7 @@ public abstract class CommandParser implements Serializable {
      * @param context     The context to use when executing the command
      */
     protected abstract void executeCommand(
-            @Nonnull final FrameContainer origin,
+            @Nonnull final WindowModel origin,
             final CommandInfo commandInfo, final Command command,
             final CommandArguments args, final CommandContext context);
 
@@ -330,13 +332,13 @@ public abstract class CommandParser implements Serializable {
      *
      * @since 0.6.3m1
      */
-    protected void handleInvalidCommand(final FrameContainer origin,
+    protected void handleInvalidCommand(final WindowModel origin,
             final CommandArguments args) {
         if (origin == null) {
             eventBus.publish(new UnknownCommandEvent(null, args.getCommandName(), args.getArguments()));
         } else {
-            final UnknownCommandEvent event = new UnknownCommandEvent(origin, args.getCommandName(),
-                    args.getArguments());
+            final UnknownCommandEvent event = new UnknownCommandEvent((FrameContainer) origin,
+                    args.getCommandName(), args.getArguments());
             final String format = EventUtils.postDisplayable(eventBus, event, "unknownCommand");
 
             origin.addLine(format, args.getCommandName());
@@ -350,7 +352,7 @@ public abstract class CommandParser implements Serializable {
      * @param origin The window in which the command was typed
      * @param line   The line input by the user
      */
-    protected abstract void handleNonCommand(final FrameContainer origin,
+    protected abstract void handleNonCommand(final WindowModel origin,
             final String line);
 
     /**

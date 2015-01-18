@@ -34,6 +34,7 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.annotation.Nonnull;
@@ -65,7 +66,7 @@ public class ServerCommandParser extends GlobalCommandParser {
     private Connection server;
 
     @Override
-    public void setOwner(final FrameContainer owner) {
+    public void setOwner(final WindowModel owner) {
         if (server == null && owner instanceof Connection) {
             server = (Connection) owner;
         }
@@ -81,7 +82,7 @@ public class ServerCommandParser extends GlobalCommandParser {
 
     @Override
     protected CommandContext getCommandContext(
-            final FrameContainer origin,
+            final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args) {
@@ -90,7 +91,7 @@ public class ServerCommandParser extends GlobalCommandParser {
 
     @Override
     protected void executeCommand(
-            @Nonnull final FrameContainer origin,
+            @Nonnull final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,
@@ -101,7 +102,8 @@ public class ServerCommandParser extends GlobalCommandParser {
                     && server.getState() != ServerState.CONNECTING)
                     || !server.getParser().isPresent())) {
                 if (!args.isSilent()) {
-                    origin.getEventBus().publishAsync(new CommandErrorEvent(origin,
+                    origin.getEventBus().publishAsync(new CommandErrorEvent(
+                            (FrameContainer) origin,
                             "You must be connected to use this command"));
                 }
             } else {
@@ -120,7 +122,7 @@ public class ServerCommandParser extends GlobalCommandParser {
      * @param line   The line input by the user
      */
     @Override
-    protected void handleNonCommand(final FrameContainer origin, final String line) {
+    protected void handleNonCommand(final WindowModel origin, final String line) {
         server.sendLine(line);
     }
 

@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.context;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.interfaces.Chat;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
 
@@ -45,11 +45,11 @@ public class ChatCommandContext extends ServerCommandContext {
      * @param commandInfo The command info object which associated the command with the input
      * @param chat        The chat container associated with the command
      */
-    public ChatCommandContext(final FrameContainer source,
+    public ChatCommandContext(final WindowModel source,
             final CommandInfo commandInfo, final Chat chat) {
         super(source, commandInfo,
                 Optional.ofNullable(source)
-                        .flatMap(FrameContainer::getConnection)
+                        .flatMap(WindowModel::getConnection)
                         .orElse(null));
         this.chat = chat;
     }

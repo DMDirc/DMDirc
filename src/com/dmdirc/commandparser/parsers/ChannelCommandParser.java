@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;
 
@@ -59,7 +60,7 @@ public class ChannelCommandParser extends ChatCommandParser {
     }
 
     @Override
-    public void setOwner(final FrameContainer owner) {
+    public void setOwner(final WindowModel owner) {
         if (groupChat == null) {
             // TODO: Can't assume that framecontainers may be group chats.
             groupChat = (GroupChat) owner;
@@ -76,7 +77,7 @@ public class ChannelCommandParser extends ChatCommandParser {
 
     @Override
     protected CommandContext getCommandContext(
-            final FrameContainer origin,
+            final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args) {
@@ -85,7 +86,7 @@ public class ChannelCommandParser extends ChatCommandParser {
 
     @Override
     protected void executeCommand(
-            @Nonnull final FrameContainer origin,
+            @Nonnull final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,

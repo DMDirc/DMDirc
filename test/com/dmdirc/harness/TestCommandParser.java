@@ -23,13 +23,13 @@
 package com.dmdirc.harness;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.annotation.Nonnull;
@@ -59,7 +59,7 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected void executeCommand(@Nonnull final FrameContainer origin, final CommandInfo commandInfo, final Command command,
+    protected void executeCommand(@Nonnull final WindowModel origin, final CommandInfo commandInfo, final Command command,
             final CommandArguments args, final CommandContext context) {
         executedCommand = command;
         wasSilent = args.isSilent();
@@ -67,24 +67,24 @@ public class TestCommandParser extends CommandParser {
     }
 
     @Override
-    protected CommandContext getCommandContext(final FrameContainer origin, final CommandInfo commandInfo,
+    protected CommandContext getCommandContext(final WindowModel origin, final CommandInfo commandInfo,
             final Command command, final CommandArguments args) {
         return new CommandContext(origin, commandInfo);
     }
 
     @Override
-    protected void handleNonCommand(final FrameContainer origin, final String line) {
+    protected void handleNonCommand(final WindowModel origin, final String line) {
         nonCommandLine = line;
     }
 
     @Override
-    protected void handleInvalidCommand(final FrameContainer origin,
+    protected void handleInvalidCommand(final WindowModel origin,
             final CommandArguments args) {
         invalidCommand = args.getCommandName();
     }
 
     @Override
-    public void setOwner(final FrameContainer owner) {
+    public void setOwner(final WindowModel owner) {
         // Don't care
     }
 
