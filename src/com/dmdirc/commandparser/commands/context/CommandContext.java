@@ -22,8 +22,8 @@
 
 package com.dmdirc.commandparser.commands.context;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Provides information relating to the context that a command was executed in.
@@ -35,7 +35,7 @@ public class CommandContext {
     /** The command info object which associated the command with the input. */
     protected final CommandInfo commandInfo;
     /** The source of this command. */
-    protected final FrameContainer source;
+    protected final WindowModel source;
 
     /**
      * Creates a new command context.
@@ -43,7 +43,7 @@ public class CommandContext {
      * @param source      The source of the command
      * @param commandInfo The command info object which associated the command with the input
      */
-    public CommandContext(final FrameContainer source, final CommandInfo commandInfo) {
+    public CommandContext(final WindowModel source, final CommandInfo commandInfo) {
         this.source = source;
         this.commandInfo = commandInfo;
     }
@@ -63,7 +63,7 @@ public class CommandContext {
      *
      * @return The window the command came from, or null
      */
-    public FrameContainer getSource() {
+    public WindowModel getSource() {
         return source;
     }
 

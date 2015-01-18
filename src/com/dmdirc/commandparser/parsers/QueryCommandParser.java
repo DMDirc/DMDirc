@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;
 
@@ -61,7 +62,7 @@ public class QueryCommandParser extends ChatCommandParser {
     }
 
     @Override
-    public void setOwner(final FrameContainer owner) {
+    public void setOwner(final WindowModel owner) {
         if (query == null) {
             query = (Query) owner;
         }
@@ -78,7 +79,7 @@ public class QueryCommandParser extends ChatCommandParser {
 
     @Override
     protected CommandContext getCommandContext(
-            final FrameContainer origin,
+            final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args) {
@@ -87,7 +88,7 @@ public class QueryCommandParser extends ChatCommandParser {
 
     @Override
     protected void executeCommand(
-            @Nonnull final FrameContainer origin,
+            @Nonnull final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,

@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.logger.ErrorLevel;
 
@@ -67,7 +68,7 @@ public class GlobalCommandParser extends CommandParser {
     }
 
     @Override
-    public void setOwner(final FrameContainer owner) {
+    public void setOwner(final WindowModel owner) {
         // Don't care
     }
 
@@ -79,7 +80,7 @@ public class GlobalCommandParser extends CommandParser {
 
     @Override
     protected CommandContext getCommandContext(
-            final FrameContainer origin,
+            final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args) {
@@ -88,7 +89,7 @@ public class GlobalCommandParser extends CommandParser {
 
     @Override
     protected void executeCommand(
-            @Nonnull final FrameContainer origin,
+            @Nonnull final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,
@@ -104,14 +105,15 @@ public class GlobalCommandParser extends CommandParser {
      * @param line   The line input by the user
      */
     @Override
-    protected void handleNonCommand(final FrameContainer origin, final String line) {
+    protected void handleNonCommand(final WindowModel origin, final String line) {
         if (origin == null) {
             eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM,
                     new IllegalArgumentException("Invalid Global Command: " + line),
                     "Invalid Global Command: " + line, ""));
         } else {
             origin.getEventBus().publishAsync(
-                    new CommandErrorEvent(origin, "Invalid global command: " + line));
+                    new CommandErrorEvent((FrameContainer) origin,
+                            "Invalid global command: " + line));
         }
     }
 

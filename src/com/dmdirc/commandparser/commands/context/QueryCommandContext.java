@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.context;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * A query-specific command context.
@@ -43,7 +43,7 @@ public class QueryCommandContext extends ChatCommandContext {
      * @param commandInfo The command info object which associated the command with the input
      * @param query       The query associated with the command
      */
-    public QueryCommandContext(final FrameContainer source,
+    public QueryCommandContext(final WindowModel source,
             final CommandInfo commandInfo, final Query query) {
         super(source, commandInfo, query);
         this.query = query;

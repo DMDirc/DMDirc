@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.context;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * A command context for connection commands.
@@ -43,7 +43,7 @@ public class ServerCommandContext extends CommandContext {
      * @param commandInfo The command info object which associated the command with the input
      * @param connection      The connection associated with the command
      */
-    public ServerCommandContext(final FrameContainer source, final CommandInfo commandInfo,
+    public ServerCommandContext(final WindowModel source, final CommandInfo commandInfo,
             final Connection connection) {
         super(source, commandInfo);
         this.connection = connection;

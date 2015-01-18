@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.Chat;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;
 
@@ -61,7 +62,7 @@ public class ChatCommandParser extends ServerCommandParser {
     }
 
     @Override
-    public void setOwner(final FrameContainer owner) {
+    public void setOwner(final WindowModel owner) {
         if (this.owner == null && owner instanceof Chat) {
             this.owner = (Chat) owner;
         }
@@ -69,7 +70,7 @@ public class ChatCommandParser extends ServerCommandParser {
 
     @Override
     protected CommandContext getCommandContext(
-            final FrameContainer origin,
+            final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args) {
@@ -78,7 +79,7 @@ public class ChatCommandParser extends ServerCommandParser {
 
     @Override
     protected void executeCommand(
-            @Nonnull final FrameContainer origin,
+            @Nonnull final WindowModel origin,
             final CommandInfo commandInfo,
             final Command command,
             final CommandArguments args,
@@ -91,7 +92,7 @@ public class ChatCommandParser extends ServerCommandParser {
     }
 
     @Override
-    protected void handleNonCommand(final FrameContainer origin,
+    protected void handleNonCommand(final WindowModel origin,
             final String line) {
         owner.sendLine(line);
     }
