@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -52,7 +52,7 @@ public interface MessageSink {
      * @param args           The message arguments
      */
     void handleMessage(final MessageSinkManager dispatcher,
-            final FrameContainer source,
+            final WindowModel source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args);
 

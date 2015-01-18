@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
@@ -48,8 +47,7 @@ public class AliasCommandHandler extends Command {
             final CommandContext context) {
         if (args.getArguments().length >= alias.getMinArguments()) {
             for (String line : alias.getSubstitution().split("\n")) {
-                origin.getCommandParser().parseCommand((FrameContainer) origin,
-                        getSubstituteCommand(line, args));
+                origin.getCommandParser().parseCommand(origin, getSubstituteCommand(line, args));
             }
         } else {
             sendLine(origin, args.isSilent(), FORMAT_ERROR, alias.getName() + " requires at least "

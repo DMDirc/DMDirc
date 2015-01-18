@@ -63,7 +63,7 @@ public class CustomWindowMessageSink implements MessageSink {
 
     @Override
     public void handleMessage(final MessageSinkManager dispatcher,
-            final FrameContainer source,
+            final WindowModel source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
         final WindowModel connectionContainer =

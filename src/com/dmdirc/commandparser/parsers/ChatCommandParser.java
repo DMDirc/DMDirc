@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -55,7 +54,7 @@ public class ChatCommandParser extends ServerCommandParser {
      * @param commandController The controller to load commands from.
      * @param eventBus          Event but to post events on
      */
-    public ChatCommandParser(final FrameContainer owner, final CommandController commandController,
+    public ChatCommandParser(final WindowModel owner, final CommandController commandController,
             final DMDircMBassador eventBus) {
         super(owner.getConfigManager(), commandController, eventBus);
         super.setOwner(owner);
