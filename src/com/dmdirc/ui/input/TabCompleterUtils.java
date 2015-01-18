@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -87,7 +88,7 @@ public class TabCompleterUtils {
      */
     @Nullable
     private AdditionalTabTargets getIntelligentResults(
-            final FrameContainer window,
+            final WindowModel window,
             final CommandArguments args, final String partial) {
         if (!args.isCommand()) {
             return null;

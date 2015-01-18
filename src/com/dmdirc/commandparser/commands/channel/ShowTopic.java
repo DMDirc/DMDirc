@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Topic;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -89,7 +88,7 @@ public class ShowTopic extends Command implements ExternalCommand {
     }
 
     @Override
-    public void execute(final FrameContainer origin, final Connection connection,
+    public void execute(final WindowModel origin, final Connection connection,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length == 0) {
             connection.getParser().get().sendRawMessage("TOPIC " + channel);
