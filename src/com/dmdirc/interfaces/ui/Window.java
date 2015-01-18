@@ -23,6 +23,7 @@
 package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * The Window interface specifies common methods that should be implemented by all windows. It is
@@ -35,6 +36,6 @@ public interface Window {
      *
      * @return The container that owns this command window.
      */
-    FrameContainer getContainer();
+    WindowModel getContainer();
 
 }

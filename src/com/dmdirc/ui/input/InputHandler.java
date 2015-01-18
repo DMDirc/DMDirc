@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ClientUserInputEvent;
 import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.ui.InputField;
 import com.dmdirc.interfaces.ui.InputValidationListener;
@@ -106,7 +107,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** The CommandParser to use for our input. */
     protected final CommandParser commandParser;
     /** The frame that we belong to. */
-    protected final FrameContainer parentWindow;
+    protected final WindowModel parentWindow;
     /** The tab completion style. */
     protected TabCompletionStyle style;
     /** Our listener list. */
@@ -139,7 +140,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             final InputField target,
             final CommandController commandController,
             final CommandParser commandParser,
-            final FrameContainer parentWindow,
+            final WindowModel parentWindow,
             final TabCompleterUtils tabCompleterUtils,
             final DMDircMBassador eventBus) {
         buffer = new RollingList<>(parentWindow.getConfigManager()
@@ -285,7 +286,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             if (command != null && command.getValue() instanceof ValidatingCommand) {
                 final ValidationResponse vr = ((ValidatingCommand) command.getValue())
-                        .validateArguments(parentWindow, args);
+                        .validateArguments((FrameContainer) parentWindow, args);
 
                 if (vr.isFailure()) {
                     fireCommandFailure(vr.getFailureReason());
@@ -296,7 +297,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             if (command != null && command.getValue() instanceof WrappableCommand) {
                 final int count = ((WrappableCommand) command.getValue())
-                        .getLineCount(parentWindow, args);
+                        .getLineCount((FrameContainer) parentWindow, args);
                 fireLineWrap(count);
             }
         } else {
@@ -346,7 +347,7 @@ public abstract class InputHandler implements ConfigChangeListener {
         if (state != newState) {
             state = newState;
 
-            parentWindow.setCompositionState(state);
+            ((FrameContainer) parentWindow).setCompositionState(state);
         }
     }
 
@@ -433,7 +434,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             case KeyEvent.VK_ENTER:
                 if ((flags & HANDLE_RETURN) != 0 && !line.isEmpty()) {
-                    commandParser.parseCommandCtrl(parentWindow, line);
+                    commandParser.parseCommandCtrl((FrameContainer) parentWindow, line);
                     addToBuffer(line);
                 }
                 break;
@@ -550,7 +551,8 @@ public abstract class InputHandler implements ConfigChangeListener {
     private void doCommandTabCompletion(final String text, final int start,
             final int end, final boolean shiftPressed) {
         doNormalTabCompletion(text, start, end, shiftPressed,
-                tabCompleterUtils.getIntelligentResults(parentWindow, commandController,
+                tabCompleterUtils.getIntelligentResults((FrameContainer) parentWindow,
+                        commandController,
                         text.substring(0, start), text.substring(start, end)));
     }
 
@@ -584,9 +586,10 @@ public abstract class InputHandler implements ConfigChangeListener {
     public void enterPressed(final String line) {
         if (!line.isEmpty()) {
             final StringBuffer bufferedLine = new StringBuffer(line);
-            eventBus.publishAsync(new ClientUserInputEvent(parentWindow, bufferedLine));
+            eventBus.publishAsync(new ClientUserInputEvent(
+                    (FrameContainer) parentWindow, bufferedLine));
             addToBuffer(bufferedLine.toString());
-            commandParser.parseCommand(parentWindow, bufferedLine.toString());
+            commandParser.parseCommand((FrameContainer) parentWindow, bufferedLine.toString());
         }
 
         cancelTypingNotification();
