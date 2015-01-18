@@ -61,4 +61,8 @@ public class ChannelUserAwayEvent extends ChannelUserEvent {
         return reason;
     }
 
+    public String getReasonOrBlank() {
+        return reason.orElse("");
+    }
+
 }
