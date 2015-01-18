@@ -67,9 +67,9 @@ public abstract class FrameContainer implements WindowModel {
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
     /** The children of this frame. */
-    private final Collection<FrameContainer> children = new CopyOnWriteArrayList<>();
+    private final Collection<WindowModel> children = new CopyOnWriteArrayList<>();
     /** The parent of this frame. */
-    private final Optional<FrameContainer> parent;
+    private final Optional<WindowModel> parent;
     /** The name of the icon being used for this container's frame. */
     private String icon;
     /** The name of this container. */
@@ -190,7 +190,7 @@ public abstract class FrameContainer implements WindowModel {
     }
 
     @Override
-    public Optional<FrameContainer> getParent() {
+    public Optional<WindowModel> getParent() {
         return parent;
     }
 
@@ -225,17 +225,17 @@ public abstract class FrameContainer implements WindowModel {
     }
 
     @Override
-    public Collection<FrameContainer> getChildren() {
+    public Collection<WindowModel> getChildren() {
         return Collections.unmodifiableCollection(children);
     }
 
     @Override
-    public void addChild(final FrameContainer child) {
+    public void addChild(final WindowModel child) {
         children.add(child);
     }
 
     @Override
-    public void removeChild(final FrameContainer child) {
+    public void removeChild(final WindowModel child) {
         children.remove(child);
     }
 

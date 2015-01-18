@@ -23,6 +23,7 @@
 package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,17 +63,16 @@ public class LastCommandMessageSink implements MessageSink {
 
         final String command = String.format(patternMatches[0], escapedargs);
 
-        FrameContainer best = source;
+        WindowModel best = source;
 
-        final Collection<FrameContainer> containers = new ArrayList<>();
+        final Collection<WindowModel> containers = new ArrayList<>();
 
-        final FrameContainer connectionContainer = (FrameContainer) source.getConnection()
-                .get().getWindowModel();
+        final WindowModel connectionContainer = source.getConnection().get().getWindowModel();
         containers.add(connectionContainer);
         containers.addAll(connectionContainer.getChildren());
 
         long besttime = 0;
-        for (FrameContainer container : containers) {
+        for (WindowModel container : containers) {
             if (!container.isWritable()) {
                 continue;
             }

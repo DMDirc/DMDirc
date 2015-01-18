@@ -23,6 +23,7 @@
 package com.dmdirc.interfaces.ui;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * FrameListeners are registered with the {@link com.dmdirc.ui.WindowManager} to receive events
@@ -32,34 +33,31 @@ public interface FrameListener {
 
     /**
      * Adds a window to this frame manager.
-     *
-     * @param window The server to be added
+     *  @param window The server to be added
      * @param focus  Should this window become focused
      */
-    void addWindow(FrameContainer window, final boolean focus);
+    void addWindow(WindowModel window, final boolean focus);
 
     /**
      * Removes a window from this frame manager.
      *
      * @param window The server to be removed
      */
-    void delWindow(FrameContainer window);
+    void delWindow(WindowModel window);
 
     /**
      * Adds a new window to this frame manager.
-     *
-     * @param parent The parent to which the window belongs, or null
+     *  @param parent The parent to which the window belongs, or null
      * @param window The custom window to be added
      * @param focus  Should this window become focused
      */
-    void addWindow(FrameContainer parent, FrameContainer window, final boolean focus);
+    void addWindow(WindowModel parent, WindowModel window, final boolean focus);
 
     /**
      * Removes a window from this frame manager.
-     *
-     * @param parent The parent to which the window belongs, or null
+     *  @param parent The parent to which the window belongs, or null
      * @param window The custom window to be removed
      */
-    void delWindow(FrameContainer parent, FrameContainer window);
+    void delWindow(WindowModel parent, WindowModel window);
 
 }

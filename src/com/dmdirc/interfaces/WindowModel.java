@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
@@ -42,7 +41,7 @@ import java.util.Set;
  */
 public interface WindowModel {
 
-    Optional<FrameContainer> getParent();
+    Optional<WindowModel> getParent();
 
     String getIcon();
 
@@ -63,7 +62,7 @@ public interface WindowModel {
      *
      * @since 0.6.4
      */
-    Collection<FrameContainer> getChildren();
+    Collection<WindowModel> getChildren();
 
     /**
      * Adds a new child window to this frame.
@@ -72,7 +71,7 @@ public interface WindowModel {
      *
      * @since 0.6.4
      */
-    void addChild(FrameContainer child);
+    void addChild(WindowModel child);
 
     /**
      * Removes a child window from this frame.
@@ -81,7 +80,7 @@ public interface WindowModel {
      *
      * @since 0.6.4
      */
-    void removeChild(FrameContainer child);
+    void removeChild(WindowModel child);
 
     /**
      * Changes the title of this container, and fires a {@link FrameTitleChangedEvent}.
