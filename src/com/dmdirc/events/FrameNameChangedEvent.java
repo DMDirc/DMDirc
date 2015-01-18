@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Fired when a frame's name changes.
@@ -31,7 +31,7 @@ public class FrameNameChangedEvent extends FrameChangedEvent {
 
     private final String name;
 
-    public FrameNameChangedEvent(final FrameContainer container, final String name) {
+    public FrameNameChangedEvent(final WindowModel container, final String name) {
         super(container);
         this.name = name;
     }

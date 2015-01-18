@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.ClientModule;
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -112,8 +111,7 @@ public class GlobalCommandParser extends CommandParser {
                     "Invalid Global Command: " + line, ""));
         } else {
             origin.getEventBus().publishAsync(
-                    new CommandErrorEvent((FrameContainer) origin,
-                            "Invalid global command: " + line));
+                    new CommandErrorEvent(origin, "Invalid global command: " + line));
         }
     }
 

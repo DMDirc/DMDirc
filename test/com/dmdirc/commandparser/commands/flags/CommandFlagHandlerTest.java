@@ -21,9 +21,9 @@
  */
 package com.dmdirc.commandparser.commands.flags;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,8 +33,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(Parameterized.class)
 public class CommandFlagHandlerTest {
@@ -67,7 +71,7 @@ public class CommandFlagHandlerTest {
 
     @Test
     public void testParse() {
-        final FrameContainer container = mock(FrameContainer.class);
+        final WindowModel container = mock(WindowModel.class);
         final CommandController controller = mock(CommandController.class);
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');

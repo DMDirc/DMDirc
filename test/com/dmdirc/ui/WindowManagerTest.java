@@ -23,7 +23,7 @@ package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.ui.FrameListener;
 
 import java.util.Arrays;
@@ -52,9 +52,9 @@ import static org.mockito.Mockito.when;
 public class WindowManagerTest {
 
     @Mock private FrameListener frameListener;
-    @Mock private FrameContainer container;
-    @Mock private FrameContainer child;
-    @Mock private FrameContainer grandchild;
+    @Mock private WindowModel container;
+    @Mock private WindowModel child;
+    @Mock private WindowModel grandchild;
     @Mock private DMDircMBassador eventBus;
     private WindowManager manager;
 
@@ -67,13 +67,13 @@ public class WindowManagerTest {
     public void testAddRoot() {
         manager.addListener(frameListener);
 
-        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), anyBoolean());
-        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), anyBoolean());
+        verify(frameListener, never()).addWindow(anyObject(), anyBoolean());
+        verify(frameListener, never()).addWindow(anyObject(), anyObject(), anyBoolean());
 
         manager.addWindow(container);
 
         verify(frameListener).addWindow(same(container), eq(true));
-        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), anyBoolean());
+        verify(frameListener, never()).addWindow(anyObject(), anyObject(), anyBoolean());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class WindowManagerTest {
         manager.addListener(frameListener);
         manager.addWindow(container, child);
 
-        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), anyBoolean());
+        verify(frameListener, never()).addWindow(anyObject(), anyBoolean());
         verify(frameListener).addWindow(same(container), same(child), eq(true));
     }
 
@@ -106,9 +106,9 @@ public class WindowManagerTest {
 
         manager.removeWindow(child);
 
-        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), anyBoolean());
-        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), anyBoolean());
-        verify(frameListener, never()).delWindow((FrameContainer) anyObject());
+        verify(frameListener, never()).addWindow(anyObject(), anyBoolean());
+        verify(frameListener, never()).addWindow(anyObject(), anyObject(), anyBoolean());
+        verify(frameListener, never()).delWindow(anyObject());
         verify(frameListener).delWindow(same(container), same(child));
     }
 
@@ -119,10 +119,10 @@ public class WindowManagerTest {
         manager.removeListener(frameListener);
         manager.addWindow(container, child);
 
-        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), anyBoolean());
-        verify(frameListener, never()).addWindow((FrameContainer) anyObject(), (FrameContainer) anyObject(), anyBoolean());
-        verify(frameListener, never()).delWindow((FrameContainer) anyObject());
-        verify(frameListener, never()).delWindow((FrameContainer) anyObject(), (FrameContainer) anyObject());
+        verify(frameListener, never()).addWindow(anyObject(), anyBoolean());
+        verify(frameListener, never()).addWindow(anyObject(), anyObject(), anyBoolean());
+        verify(frameListener, never()).delWindow(anyObject());
+        verify(frameListener, never()).delWindow(anyObject(), anyObject());
     }
 
     @Test
@@ -197,10 +197,9 @@ public class WindowManagerTest {
 
     @Test
     public void testGetRootWindows() {
-        final FrameContainer root1 = mock(FrameContainer.class);
-        final FrameContainer root2 = mock(FrameContainer.class);
-        final Collection<FrameContainer> rootWindows
-                = Arrays.asList(root1, root2);
+        final WindowModel root1 = mock(WindowModel.class);
+        final WindowModel root2 = mock(WindowModel.class);
+        final Collection<WindowModel> rootWindows = Arrays.asList(root1, root2);
 
         manager.addWindow(root1);
         manager.addWindow(root2);
@@ -238,7 +237,7 @@ public class WindowManagerTest {
         when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
         when(customContainer.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{customChild, }));
+                new WindowModel[]{customChild, }));
 
         manager.addWindow(customContainer);
         manager.addWindow(customContainer, customChild);
@@ -254,7 +253,7 @@ public class WindowManagerTest {
         when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
         when(customContainer.getChildren()).thenReturn(Arrays.asList(
-                new FrameContainer[]{customChild, }));
+                new WindowModel[]{customChild, }));
 
         manager.addWindow(customContainer);
         manager.addWindow(customContainer, customChild);

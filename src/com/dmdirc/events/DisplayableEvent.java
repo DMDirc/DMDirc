@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
 
@@ -80,6 +80,6 @@ public interface DisplayableEvent {
     /**
      * Gets the source of the displayable event.
      */
-    FrameContainer getSource();
+    WindowModel getSource();
 
 }

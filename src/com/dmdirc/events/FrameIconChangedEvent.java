@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Fired when a frame icon changes.
@@ -31,7 +31,7 @@ public class FrameIconChangedEvent extends FrameChangedEvent {
 
     private final String icon;
 
-    public FrameIconChangedEvent(final FrameContainer container, final String icon) {
+    public FrameIconChangedEvent(final WindowModel container, final String icon) {
         super(container);
         this.icon = icon;
     }

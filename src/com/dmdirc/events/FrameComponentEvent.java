@@ -22,22 +22,22 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Base class for frame component events.
  */
 public abstract class FrameComponentEvent extends DMDircEvent {
 
-    private final FrameContainer container;
+    private final WindowModel container;
     private final String component;
 
-    public FrameComponentEvent(final FrameContainer container, final String component) {
+    public FrameComponentEvent(final WindowModel container, final String component) {
         this.container = container;
         this.component = component;
     }
 
-    public FrameContainer getContainer() {
+    public WindowModel getContainer() {
         return container;
     }
 

@@ -21,12 +21,12 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.aliases.AliasFactory;
 import com.dmdirc.commandparser.aliases.AliasManager;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
 import org.junit.Before;
@@ -38,7 +38,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Matchers.anyChar;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,6 +48,7 @@ public class AliasCommandTest {
     @Mock private AliasManager aliasManager;
     @Mock private CommandController controller;
     @Mock private TabCompleterUtils tabCompleterUtils;
+    @Mock private WindowModel tiw;
     private AliasCommand command;
 
     @Before
@@ -60,8 +60,6 @@ public class AliasCommandTest {
 
     @Test
     public void testUsageNoArgs() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-
         command.execute(tiw, new CommandArguments(controller, "/foo"),
                 new CommandContext(null, AliasCommand.INFO));
 
@@ -70,8 +68,6 @@ public class AliasCommandTest {
 
     @Test
     public void testUsageOneArg() {
-        final FrameContainer tiw = mock(FrameContainer.class);
-
         command.execute(tiw, new CommandArguments(controller, "/foo --remove"),
                 new CommandContext(null, AliasCommand.INFO));
 

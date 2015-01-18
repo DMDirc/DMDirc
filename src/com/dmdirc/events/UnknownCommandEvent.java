@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,11 +38,11 @@ public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent
     private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
-    @Nullable private final FrameContainer source;
+    @Nullable private final WindowModel source;
     private final String command;
     private final String[] arguments;
 
-    public UnknownCommandEvent(final long timestamp, @Nullable final FrameContainer source,
+    public UnknownCommandEvent(final long timestamp, @Nullable final WindowModel source,
             final String command, final String[] arguments) {
         super(timestamp);
         this.source = source;
@@ -50,7 +50,7 @@ public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent
         this.arguments = arguments;
     }
 
-    public UnknownCommandEvent(@Nullable final FrameContainer source, final String command,
+    public UnknownCommandEvent(@Nullable final WindowModel source, final String command,
             final String[] arguments) {
         this.source = source;
         this.command = command;
@@ -59,7 +59,7 @@ public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent
 
     @Override
     @Nullable
-    public FrameContainer getSource() {
+    public WindowModel getSource() {
         return source;
     }
 

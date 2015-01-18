@@ -21,12 +21,12 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
@@ -51,7 +51,7 @@ public class IfpluginTest {
     @Mock private TabCompleterUtils tabCompleterUtils;
     @Mock private CommandController controller;
     @Mock private PluginManager pluginManager;
-    @Mock private FrameContainer tiw;
+    @Mock private WindowModel tiw;
     private Ifplugin command;
 
     @Before

@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Fired when a frame title changes.
@@ -31,7 +31,7 @@ public class FrameTitleChangedEvent extends FrameChangedEvent {
 
     private final String title;
 
-    public FrameTitleChangedEvent(final FrameContainer container, final String title) {
+    public FrameTitleChangedEvent(final WindowModel container, final String title) {
         super(container);
         this.title = title;
     }

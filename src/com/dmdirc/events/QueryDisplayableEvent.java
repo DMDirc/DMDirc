@@ -22,8 +22,8 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -73,7 +73,7 @@ public abstract class QueryDisplayableEvent extends QueryEvent implements
     }
 
     @Override
-    public FrameContainer getSource() {
+    public WindowModel getSource() {
         return getQuery();
     }
 

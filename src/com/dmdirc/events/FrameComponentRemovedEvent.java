@@ -22,14 +22,14 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Fired when a frame component is removed.
  */
 public class FrameComponentRemovedEvent extends FrameComponentEvent {
 
-    public FrameComponentRemovedEvent(final FrameContainer container, final String component) {
+    public FrameComponentRemovedEvent(final WindowModel container, final String component) {
         super(container, component);
     }
 }

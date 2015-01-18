@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -102,8 +101,7 @@ public class ServerCommandParser extends GlobalCommandParser {
                     && server.getState() != ServerState.CONNECTING)
                     || !server.getParser().isPresent())) {
                 if (!args.isSilent()) {
-                    origin.getEventBus().publishAsync(new CommandErrorEvent(
-                            (FrameContainer) origin,
+                    origin.getEventBus().publishAsync(new CommandErrorEvent(origin,
                             "You must be connected to use this command"));
                 }
             } else {

@@ -23,13 +23,13 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 
@@ -57,7 +57,7 @@ public class KickReasonTest {
     @Mock private GroupChatUser groupChatUser;
     @Mock private Channel channel;
     @Mock private CommandController controller;
-    @Mock private FrameContainer container;
+    @Mock private WindowModel container;
     @Mock private ChannelInfo channelInfo;
     @Mock private AggregateConfigProvider configProvider;
     private KickReason command;

@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 import com.dmdirc.util.colours.Colour;
 
@@ -33,12 +33,12 @@ import java.util.Optional;
  */
 public class UnreadStatusChangedEvent extends DMDircEvent {
 
-    private final FrameContainer source;
+    private final WindowModel source;
     private final UnreadStatusManager manager;
     private final Optional<Colour> notificationColour;
     private final int unreadCount;
 
-    public UnreadStatusChangedEvent(final FrameContainer source, final UnreadStatusManager manager,
+    public UnreadStatusChangedEvent(final WindowModel source, final UnreadStatusManager manager,
             final Optional<Colour> notificationColour, final int unreadCount) {
         this.source = source;
         this.manager = manager;
@@ -46,7 +46,7 @@ public class UnreadStatusChangedEvent extends DMDircEvent {
         this.unreadCount = unreadCount;
     }
 
-    public FrameContainer getSource() {
+    public WindowModel getSource() {
         return source;
     }
 

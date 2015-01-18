@@ -347,6 +347,7 @@ public abstract class InputHandler implements ConfigChangeListener {
         if (state != newState) {
             state = newState;
 
+            // TODO: Not sure where this should be exposed...
             ((FrameContainer) parentWindow).setCompositionState(state);
         }
     }
@@ -585,8 +586,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     public void enterPressed(final String line) {
         if (!line.isEmpty()) {
             final StringBuffer bufferedLine = new StringBuffer(line);
-            eventBus.publishAsync(new ClientUserInputEvent(
-                    (FrameContainer) parentWindow, bufferedLine));
+            eventBus.publishAsync(new ClientUserInputEvent(parentWindow, bufferedLine));
             addToBuffer(bufferedLine.toString());
             commandParser.parseCommand(parentWindow, bufferedLine.toString());
         }

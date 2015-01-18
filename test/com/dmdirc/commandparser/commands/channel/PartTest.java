@@ -23,11 +23,11 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Before;
@@ -36,14 +36,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PartTest {
 
     @Mock private Channel channel;
-    @Mock private FrameContainer origin;
-    @Mock private FrameContainer windowModel;
+    @Mock private WindowModel origin;
+    @Mock private WindowModel windowModel;
     @Mock private AggregateConfigProvider manager;
     @Mock private CommandController controller;
     private Part command;
