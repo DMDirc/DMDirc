@@ -129,7 +129,7 @@ ChannelKickEvent:
              {{channel.name}}{{reason|bracketed}}.
   colour: 3
 ChannelUserAwayEvent:
-  format: "-- {{user.modePrefixedNickname}} is now away."
+  format: "-- {{user.modePrefixedNickname}} is now away{{reasonOrBlank|bracketed}}."
   colour: 14
 channelUserBackEvent:
   format: "-- {{user.modePrefixedNickname}} is now back."

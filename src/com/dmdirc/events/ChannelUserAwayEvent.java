@@ -25,18 +25,44 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.util.Optional;
+
 /**
  * Fire when a user sets away.
  */
 public class ChannelUserAwayEvent extends ChannelUserEvent {
 
+    private final Optional<String> reason;
+
     public ChannelUserAwayEvent(final long timestamp, final GroupChat channel,
             final GroupChatUser user) {
         super(timestamp, channel, user);
+        reason = Optional.empty();
     }
 
     public ChannelUserAwayEvent(final GroupChat channel, final GroupChatUser user) {
         super(channel, user);
+        reason = Optional.empty();
+    }
+
+    public ChannelUserAwayEvent(final long timestamp, final GroupChat channel,
+            final GroupChatUser user, final Optional<String> reason) {
+        super(timestamp, channel, user);
+        this.reason = reason;
+    }
+
+    public ChannelUserAwayEvent(final GroupChat channel, final GroupChatUser user,
+            final Optional<String> reason) {
+        super(channel, user);
+        this.reason = reason;
+    }
+
+    public Optional<String> getReason() {
+        return reason;
+    }
+
+    public String getReasonOrBlank() {
+        return reason.orElse("");
     }
 
 }
