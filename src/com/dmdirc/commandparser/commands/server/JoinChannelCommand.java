@@ -67,7 +67,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
             CommandType.TYPE_SERVER);
     /** A map of channel name mentions. */
     @GuardedBy("mentionsLock")
-    private final Multimap<FrameContainer, String> mentions = ArrayListMultimap.create();
+    private final Multimap<WindowModel, String> mentions = ArrayListMultimap.create();
     /** Lock to synchronise on when accessing mentions. */
     private final Object mentionsLock = new Object();
 
@@ -128,7 +128,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
     @Override
     public AdditionalTabTargets getSuggestions(final int arg,
             final IntelligentCommandContext context) {
-        final FrameContainer source = context.getWindow();
+        final WindowModel source = context.getWindow();
         final Connection connection = source.getConnection().get();
         final List<String> results = checkSource(source, true, true);
 
@@ -174,7 +174,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
      *
      * @since 0.6.4
      */
-    protected List<String> checkSource(final FrameContainer source,
+    protected List<String> checkSource(final WindowModel source,
             final boolean checkParents, final boolean checkChildren) {
         final List<String> results = new ArrayList<>();
 

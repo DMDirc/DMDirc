@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * An external command is a channel command that can be executed from outside of the channel.
@@ -40,7 +40,7 @@ public interface ExternalCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args     Arguments passed to this command
      */
-    void execute(FrameContainer origin, Connection connection, String channel,
+    void execute(WindowModel origin, Connection connection, String channel,
             boolean isSilent, CommandArguments args);
 
 }

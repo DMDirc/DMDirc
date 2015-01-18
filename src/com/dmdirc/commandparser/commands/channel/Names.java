@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -73,7 +72,7 @@ public class Names extends Command implements IntelligentCommand,
     }
 
     @Override
-    public void execute(final FrameContainer origin, final Connection connection,
+    public void execute(final WindowModel origin, final Connection connection,
             final String channel, final boolean isSilent, final CommandArguments args) {
         connection.getParser().get().sendRawMessage("NAMES " + channel);
     }
