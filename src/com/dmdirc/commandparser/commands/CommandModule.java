@@ -382,7 +382,7 @@ public class CommandModule {
 
     /**
      * Provides the /whois command.
-     * 
+     *
      * @param command The instantiated command.
      *
      * @return The command's details

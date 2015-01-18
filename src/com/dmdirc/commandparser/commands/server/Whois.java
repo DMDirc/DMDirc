@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
- *
+ * Requests information about another user on the server.
  */
 @CommandOptions(allowOffline = false)
 public class Whois extends Command {

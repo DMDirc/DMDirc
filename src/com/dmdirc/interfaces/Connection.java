@@ -416,6 +416,11 @@ public interface Connection {
      */
     Optional<String> getNickname();
 
+    /**
+     * Requests information about another user on the server.
+     *
+     * @param user User to request information about
+     */
     void requestUserInfo(User user);
 
 }
