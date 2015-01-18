@@ -1076,6 +1076,11 @@ public class Server extends FrameContainer implements Connection {
         return parser.map(Parser::getLocalClient).map(ClientInfo::getNickname);
     }
 
+    @Override
+    public void requestUserInfo(final User user) {
+        parser.ifPresent(p -> p.sendWhois(user.getNickname()));
+    }
+
     /**
      * Utility method to get a result from the parser while holding the {@link #parserLock}
      * read lock.

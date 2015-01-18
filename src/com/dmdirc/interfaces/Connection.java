@@ -416,4 +416,6 @@ public interface Connection {
      */
     Optional<String> getNickname();
 
+    void requestUserInfo(User user);
+
 }

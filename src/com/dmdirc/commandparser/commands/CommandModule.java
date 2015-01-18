@@ -64,6 +64,7 @@ import com.dmdirc.commandparser.commands.server.Raw;
 import com.dmdirc.commandparser.commands.server.RawServerCommand;
 import com.dmdirc.commandparser.commands.server.Reconnect;
 import com.dmdirc.commandparser.commands.server.Umode;
+import com.dmdirc.commandparser.commands.server.Whois;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
 
@@ -380,6 +381,18 @@ public class CommandModule {
     }
 
     /**
+     * Provides the /whois command.
+     * 
+     * @param command The instantiated command.
+     *
+     * @return The command's details
+     */
+    @Provides(type = Provides.Type.SET)
+    public CommandDetails getCommand(final Whois command) {
+        return new SimpleCommandDetails(command, Whois.INFO);
+    }
+
+    /**
      * Provides a set of raw commands.
      *
      * @param controller The controller to use for command info.
@@ -389,7 +402,7 @@ public class CommandModule {
     @Provides(type = Provides.Type.SET_VALUES)
     public Set<CommandDetails> getRawCommands(final CommandController controller) {
         final Set<CommandDetails> results = new HashSet<>();
-        for (String name : new String[]{"lusers", "map", "motd", "oper", "whois", "who"}) {
+        for (String name : new String[]{"lusers", "map", "motd", "oper", "who"}) {
             final RawServerCommand rawCommand = new RawServerCommand(controller, name);
             results.add(new SimpleCommandDetails(rawCommand, rawCommand));
         }
