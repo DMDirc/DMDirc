@@ -286,7 +286,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             if (command != null && command.getValue() instanceof ValidatingCommand) {
                 final ValidationResponse vr = ((ValidatingCommand) command.getValue())
-                        .validateArguments((FrameContainer) parentWindow, args);
+                        .validateArguments(parentWindow, args);
 
                 if (vr.isFailure()) {
                     fireCommandFailure(vr.getFailureReason());
@@ -297,7 +297,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             if (command != null && command.getValue() instanceof WrappableCommand) {
                 final int count = ((WrappableCommand) command.getValue())
-                        .getLineCount((FrameContainer) parentWindow, args);
+                        .getLineCount(parentWindow, args);
                 fireLineWrap(count);
             }
         } else {
@@ -434,7 +434,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
             case KeyEvent.VK_ENTER:
                 if ((flags & HANDLE_RETURN) != 0 && !line.isEmpty()) {
-                    commandParser.parseCommandCtrl((FrameContainer) parentWindow, line);
+                    commandParser.parseCommandCtrl(parentWindow, line);
                     addToBuffer(line);
                 }
                 break;
@@ -551,8 +551,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     private void doCommandTabCompletion(final String text, final int start,
             final int end, final boolean shiftPressed) {
         doNormalTabCompletion(text, start, end, shiftPressed,
-                tabCompleterUtils.getIntelligentResults((FrameContainer) parentWindow,
-                        commandController,
+                tabCompleterUtils.getIntelligentResults(parentWindow, commandController,
                         text.substring(0, start), text.substring(start, end)));
     }
 
@@ -589,7 +588,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             eventBus.publishAsync(new ClientUserInputEvent(
                     (FrameContainer) parentWindow, bufferedLine));
             addToBuffer(bufferedLine.toString());
-            commandParser.parseCommand((FrameContainer) parentWindow, bufferedLine.toString());
+            commandParser.parseCommand(parentWindow, bufferedLine.toString());
         }
 
         cancelTypingNotification();

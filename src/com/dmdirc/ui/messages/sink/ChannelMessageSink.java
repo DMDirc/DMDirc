@@ -22,9 +22,9 @@
 
 package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Date;
 import java.util.Optional;
@@ -53,7 +53,7 @@ public class ChannelMessageSink implements MessageSink {
 
     @Override
     public void handleMessage(final MessageSinkManager dispatcher,
-            final FrameContainer source,
+            final WindowModel source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
         final String channelName = String.format(patternMatches[0], args);

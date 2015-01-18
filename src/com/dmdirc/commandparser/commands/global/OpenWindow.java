@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.CustomWindow;
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -113,8 +112,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
             if (parent == null) {
                 window = windowManager.findCustomWindow(args.getArguments()[start]);
             } else {
-                window = windowManager.findCustomWindow(
-                        (FrameContainer) parent, args.getArguments()[start]);
+                window = windowManager.findCustomWindow(parent, args.getArguments()[start]);
             }
 
             final String title = args.getArguments().length > start + 1
@@ -127,9 +125,9 @@ public class OpenWindow extends Command implements IntelligentCommand {
                             configProvider, eventBus, backBufferFactory);
                     windowManager.addWindow(newWindow);
                 } else {
-                    newWindow = new CustomWindow(args.getArguments()[start], title,
-                            (FrameContainer) parent, backBufferFactory);
-                    windowManager.addWindow((FrameContainer) parent, newWindow);
+                    newWindow = new CustomWindow(args.getArguments()[start], title, parent,
+                            backBufferFactory);
+                    windowManager.addWindow(parent, newWindow);
                 }
             } else {
                 sendLine(origin, args.isSilent(), FORMAT_ERROR,

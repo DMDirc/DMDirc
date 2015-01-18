@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -76,7 +75,7 @@ public class AllServers extends Command implements IntelligentCommand {
 
         for (Connection target : connectionManager.getConnections()) {
             target.getWindowModel().getCommandParser()
-                    .parseCommand((FrameContainer) target.getWindowModel(), command);
+                    .parseCommand(target.getWindowModel(), command);
         }
     }
 

@@ -22,8 +22,8 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Wrapping commands are commands whose arguments may be wrapped into multiple lines when sending.
@@ -40,6 +40,6 @@ public interface WrappableCommand {
      *
      * @since 0.6.3m1
      */
-    int getLineCount(FrameContainer origin, CommandArguments arguments);
+    int getLineCount(WindowModel origin, CommandArguments arguments);
 
 }

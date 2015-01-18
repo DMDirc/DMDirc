@@ -35,6 +35,7 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.InviteManager;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
@@ -766,7 +767,7 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
-    public FrameContainer getWindowModel() {
+    public WindowModel getWindowModel() {
         return this;
     }
 

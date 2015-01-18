@@ -42,7 +42,7 @@ public class CustomWindow extends FrameContainer {
     public CustomWindow(
             final String name,
             final String title,
-            final FrameContainer parent,
+            final WindowModel parent,
             final BackBufferFactory backBufferFactory) {
         super(parent, "custom", name, title, parent.getConfigManager(), backBufferFactory,
                 parent.getEventBus(),

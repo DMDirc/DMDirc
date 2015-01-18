@@ -40,6 +40,7 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.parser.common.ChannelListModeItem;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
@@ -116,13 +117,12 @@ public class Channel extends FrameContainer implements GroupChat {
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager) {
-        super((FrameContainer) connection.getWindowModel(), "channel-inactive",
+        super(connection.getWindowModel(), "channel-inactive",
                 newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                new ChannelCommandParser((FrameContainer) connection.getWindowModel(),
-                        commandController,  eventBus),
+                new ChannelCommandParser(connection.getWindowModel(), commandController,  eventBus),
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,
                         CommandType.TYPE_CHAT),
@@ -523,7 +523,7 @@ public class Channel extends FrameContainer implements GroupChat {
     }
 
     @Override
-    public FrameContainer getWindowModel() {
+    public WindowModel getWindowModel() {
         return this;
     }
 

@@ -60,7 +60,7 @@ public class QueryFactory {
     public Query getQuery(final Connection connection, final User user) {
         final Query query = new Query(connection, user, tabCompleterFactory, commandController,
                 messageSinkManager, backBufferFactory);
-        windowManager.addWindow((FrameContainer) connection.getWindowModel(), query);
+        windowManager.addWindow(connection.getWindowModel(), query);
         connection.getWindowModel().getEventBus().publish(new QueryOpenedEvent(query));
         return query;
     }

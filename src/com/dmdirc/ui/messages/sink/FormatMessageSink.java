@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -48,7 +48,7 @@ public class FormatMessageSink implements MessageSink {
 
     @Override
     public void handleMessage(final MessageSinkManager dispatcher,
-            final FrameContainer source,
+            final WindowModel source,
             final String[] patternMatches, final Date date,
             final String messageType, final Object... args) {
         dispatcher.dispatchMessage(source, date, patternMatches[0], patternMatches[1], args);

@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
@@ -107,8 +106,7 @@ public class Ifplugin extends Command implements IntelligentCommand {
 
         if (result != negative) {
             if (origin.isWritable()) {
-                origin.getCommandParser().parseCommand(
-                        (FrameContainer) origin, args.getArgumentsAsString(1));
+                origin.getCommandParser().parseCommand(origin, args.getArgumentsAsString(1));
             } else {
                 globalCommandParserProvider.get()
                         .parseCommand(globalWindowProvider.get(), args.getArgumentsAsString(1));

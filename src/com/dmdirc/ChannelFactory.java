@@ -69,7 +69,7 @@ public class ChannelFactory {
         final Channel channel = new Channel(connection, channelInfo, configMigrator,
                 tabCompleterFactory, commandController, messageSinkManager, eventBus,
                 backBufferFactory, groupChatUserManager);
-        windowManager.addWindow((FrameContainer) connection.getWindowModel(), channel);
+        windowManager.addWindow(connection.getWindowModel(), channel);
         connection.getWindowModel().getEventBus().publish(new ChannelOpenedEvent(channel));
         return channel;
     }

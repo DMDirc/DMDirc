@@ -37,6 +37,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
@@ -80,12 +81,12 @@ public class Query extends FrameContainer implements PrivateActionListener,
             final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final BackBufferFactory backBufferFactory) {
-        super((FrameContainer) connection.getWindowModel(), "query",
+        super(connection.getWindowModel(), "query",
                 user.getNickname(),
                 user.getNickname(),
                 connection.getWindowModel().getConfigManager(),
                 backBufferFactory,
-                new QueryCommandParser((FrameContainer) connection.getWindowModel(),
+                new QueryCommandParser(connection.getWindowModel(),
                         commandController, connection.getWindowModel().getEventBus()),
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         connection.getWindowModel().getConfigManager(),
@@ -281,7 +282,7 @@ public class Query extends FrameContainer implements PrivateActionListener,
     }
 
     @Override
-    public FrameContainer getWindowModel() {
+    public WindowModel getWindowModel() {
         return this;
     }
 

@@ -23,8 +23,8 @@
 package com.dmdirc.ui.messages.sink;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.logger.ErrorLevel;
 
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class MessageSinkManager {
      * @param messageType The type (or 'format') of the message
      * @param args        The message arguments
      */
-    public void dispatchMessage(final FrameContainer source, final Date date,
+    public void dispatchMessage(final WindowModel source, final Date date,
             final String messageType, final Object... args) {
         final String target;
         if (source.getConfigManager().hasOptionString(CONFIG_DOMAIN, messageType)) {
@@ -98,7 +98,7 @@ public class MessageSinkManager {
      * @param targetSink  The textual representation of the destination sink
      * @param args        The message arguments
      */
-    public void dispatchMessage(final FrameContainer source, final Date date,
+    public void dispatchMessage(final WindowModel source, final Date date,
             final String messageType, final String targetSink, final Object... args) {
         for (MessageSink sink : sinks) {
             final Matcher matcher = sink.getPattern().matcher(targetSink);

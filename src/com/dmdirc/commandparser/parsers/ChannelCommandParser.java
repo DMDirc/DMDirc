@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -53,7 +52,7 @@ public class ChannelCommandParser extends ChatCommandParser {
      * @param commandController The controller to load commands from.
      * @param eventBus          Event bus to post events on
      */
-    public ChannelCommandParser(final FrameContainer owner,
+    public ChannelCommandParser(final WindowModel owner,
             final CommandController commandController,
             final DMDircMBassador eventBus) {
         super(owner, commandController, eventBus);

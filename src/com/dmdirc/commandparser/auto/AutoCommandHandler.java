@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -79,7 +78,7 @@ public class AutoCommandHandler {
                 event.getConnection().getAddress(), event.getConnection().getProfile().getName())) {
             final WindowModel container = event.getConnection().getWindowModel();
             final CommandParser parser = container.getCommandParser();
-            execute((FrameContainer) container, parser);
+            execute(container, parser);
         }
     }
 
@@ -99,7 +98,7 @@ public class AutoCommandHandler {
         return target.map(value::equalsIgnoreCase).orElse(true);
     }
 
-    private void execute(final FrameContainer origin, final CommandParser parser) {
+    private void execute(final WindowModel origin, final CommandParser parser) {
         for (String line : autoCommand.getResponse().split("\n")) {
             parser.parseCommand(origin, commandController.getCommandChar() + line);
         }
