@@ -278,7 +278,7 @@ public abstract class CommandParser implements Serializable {
      *
      * @since 0.6.4
      */
-    public void parseCommand(@Nonnull final FrameContainer origin, final String line) {
+    public void parseCommand(@Nonnull final WindowModel origin, final String line) {
         parseCommand(origin, line, true);
     }
 
@@ -288,7 +288,7 @@ public abstract class CommandParser implements Serializable {
      * @param origin The window in which the command was typed
      * @param line   The line to be parsed
      */
-    public void parseCommandCtrl(final FrameContainer origin, final String line) {
+    public void parseCommandCtrl(final WindowModel origin, final String line) {
         handleNonCommand(origin, line);
     }
 

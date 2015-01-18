@@ -118,7 +118,7 @@ public abstract class FrameContainer implements WindowModel {
      * Instantiate new frame container.
      */
     protected FrameContainer(
-            @Nullable final FrameContainer parent,
+            @Nullable final WindowModel parent,
             final String icon,
             final String name,
             final String title,
@@ -151,7 +151,7 @@ public abstract class FrameContainer implements WindowModel {
      * Instantiate new frame container that accepts user input.
      */
     protected FrameContainer(
-            @Nullable final FrameContainer parent,
+            @Nullable final WindowModel parent,
             final String icon,
             final String name,
             final String title,
