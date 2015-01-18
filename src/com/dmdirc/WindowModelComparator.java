@@ -24,6 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.PrivateChat;
+import com.dmdirc.interfaces.WindowModel;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -33,7 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Compares FrameContainers by name.
  */
-public class FrameContainerComparator implements Comparator<FrameContainer>, Serializable {
+public class WindowModelComparator implements Comparator<WindowModel>, Serializable {
 
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
@@ -53,7 +55,7 @@ public class FrameContainerComparator implements Comparator<FrameContainer>, Ser
         "item1.toString() returns a non-null value",
         "item2.toString() returns a non-null value"
     })
-    public int compare(final FrameContainer item1, final FrameContainer item2) {
+    public int compare(final WindowModel item1, final WindowModel item2) {
         checkNotNull(item1);
         checkNotNull(item2);
         checkNotNull(item1.getName());
@@ -83,8 +85,8 @@ public class FrameContainerComparator implements Comparator<FrameContainer>, Ser
      * @return True iff the new container should be before the old container
      */
     private static boolean sortBefore(
-            final FrameContainer item1,
-            final FrameContainer item2) {
+            final WindowModel item1,
+            final WindowModel item2) {
         return getPosition(item1) < getPosition(item2);
     }
 
@@ -96,8 +98,8 @@ public class FrameContainerComparator implements Comparator<FrameContainer>, Ser
      *
      * @return True iff the new container should be after the old container
      */
-    private static boolean sortAfter(final FrameContainer item1,
-            final FrameContainer item2) {
+    private static boolean sortAfter(final WindowModel item1,
+            final WindowModel item2) {
         return getPosition(item1) > getPosition(item2);
     }
 
@@ -108,14 +110,15 @@ public class FrameContainerComparator implements Comparator<FrameContainer>, Ser
      *
      * @return Position of the frame container
      */
-    private static int getPosition(final FrameContainer item) {
+    private static int getPosition(final WindowModel item) {
+        // TODO: At some point theses will be separate from WindowModels.
         if (item instanceof GlobalWindow) {
             return 0;
         } else if (item instanceof Connection) {
             return 1;
         } else if (item instanceof GroupChat) {
             return 2;
-        } else if (item instanceof Query) {
+        } else if (item instanceof PrivateChat) {
             return 3;
         } else {
             return 4;
