@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -72,8 +71,7 @@ public class AllChannels extends Command implements IntelligentCommand {
         final String command = args.getArgumentsAsString();
 
         for (GroupChat channel : server.getGroupChatManager().getChannels()) {
-            channel.getWindowModel().getCommandParser().parseCommand(
-                    (FrameContainer) channel.getWindowModel(),
+            channel.getWindowModel().getCommandParser().parseCommand(channel.getWindowModel(),
                     command);
         }
     }

@@ -23,9 +23,9 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.EventUtils;
 
 import net.engio.mbassy.listener.Handler;
@@ -39,10 +39,10 @@ public class BackBuffer {
     private final Styliser styliser;
     private final DMDircMBassador eventBus;
     private final EventFormatter formatter;
-    private final FrameContainer owner;
+    private final WindowModel owner;
 
     public BackBuffer(
-            final FrameContainer owner,
+            final WindowModel owner,
             final ColourManagerFactory colourManagerFactory,
             final EventFormatter formatter) {
         this.owner = owner;

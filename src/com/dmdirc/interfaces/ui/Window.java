@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces.ui;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.interfaces.WindowModel;
 
 /**

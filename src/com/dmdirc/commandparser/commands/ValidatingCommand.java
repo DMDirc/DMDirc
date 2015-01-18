@@ -22,8 +22,8 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.validators.ValidationResponse;
 
 /**
@@ -42,6 +42,6 @@ public interface ValidatingCommand {
      *
      * @since 0.6.3m1
      */
-    ValidationResponse validateArguments(FrameContainer origin, CommandArguments arguments);
+    ValidationResponse validateArguments(WindowModel origin, CommandArguments arguments);
 
 }

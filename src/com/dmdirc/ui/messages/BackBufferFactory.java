@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.WindowModel;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -44,7 +44,7 @@ public class BackBufferFactory {
         this.formatter = formatter;
     }
 
-    public BackBuffer getBackBuffer(final FrameContainer owner) {
+    public BackBuffer getBackBuffer(final WindowModel owner) {
         return new BackBuffer(owner, colourManagerFactory, formatter);
     }
 

@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.chat;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -73,7 +72,7 @@ public class Me extends Command implements ValidatingCommand {
 
     @Override
     public ValidationResponse validateArguments(
-            final FrameContainer origin,
+            final WindowModel origin,
             final CommandArguments arguments) {
         final int length = 2 + arguments.getArgumentsAsString().length();
 

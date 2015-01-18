@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -132,7 +131,7 @@ public class TabCompleterUtils {
      */
     @Nullable
     public AdditionalTabTargets getIntelligentResults(
-            final FrameContainer window, final CommandController commandController,
+            final WindowModel window, final CommandController commandController,
             final String text, final String partial) {
         return getIntelligentResults(window,
                 new CommandArguments(commandController, text), partial);
