@@ -35,7 +35,7 @@ public interface DisplayProperty<T> {
     /** The background colour of text relating to the event. */
     DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayPropertyImpl<>();
     /** Whether to suppress display of the event. */
-    DisplayProperty<Void> DO_NOT_DISPLAY = new DisplayPropertyImpl<>();
+    DisplayProperty<Boolean> DO_NOT_DISPLAY = new DisplayPropertyImpl<>();
 
     final class DisplayPropertyImpl<T> implements DisplayProperty<T> {}
 

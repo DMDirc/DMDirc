@@ -182,4 +182,9 @@ public interface GroupChat extends Chat {
      * @return The current value of the mode.
      */
     String getModeValue(final char mode);
+
+    /**
+     * Requests information about all the {@link User}s in this GroupChat.
+     */
+    void requestUsersInfo();
 }

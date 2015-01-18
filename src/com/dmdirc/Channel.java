@@ -563,4 +563,9 @@ public class Channel extends FrameContainer implements GroupChat {
         return channelInfo.getMode(mode);
     }
 
+    @Override
+    public void requestUsersInfo() {
+        channelInfo.sendWho();
+    }
+
 }
