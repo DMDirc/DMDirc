@@ -123,7 +123,7 @@ public class PreferencesManager {
                 "Reconnect message", "Default quit message to use when reconnecting",
                 manager, identity));
 
-        eventBus.publish(new ConnectionPrefsRequestedEvent(category));
+        eventBus.publish(new ConnectionPrefsRequestedEvent(category, manager, identity));
 
         return category;
     }
@@ -226,7 +226,7 @@ public class PreferencesManager {
                 "Number of items of input history to keep",
                 manager, identity));
 
-        eventBus.publish(new GroupChatPrefsRequestedEvent(category));
+        eventBus.publish(new GroupChatPrefsRequestedEvent(category, manager, identity));
 
         return category;
     }

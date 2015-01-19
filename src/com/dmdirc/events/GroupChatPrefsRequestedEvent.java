@@ -23,6 +23,8 @@
 package com.dmdirc.events;
 
 import com.dmdirc.config.prefs.PreferencesCategory;
+import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.ConfigProvider;
 
 /**
  * Raised when the group chat preferences are requested.
@@ -30,13 +32,25 @@ import com.dmdirc.config.prefs.PreferencesCategory;
 public class GroupChatPrefsRequestedEvent extends PreferencesEvent {
 
     private final PreferencesCategory category;
+    private final AggregateConfigProvider config;
+    private final ConfigProvider identity;
 
-    public GroupChatPrefsRequestedEvent(final PreferencesCategory category) {
+    public GroupChatPrefsRequestedEvent(final PreferencesCategory category,
+            final AggregateConfigProvider config, final ConfigProvider identity) {
         this.category = category;
+        this.config = config;
+        this.identity = identity;
     }
 
     public PreferencesCategory getCategory() {
         return category;
     }
 
+    public ConfigProvider getIdentity() {
+        return identity;
+    }
+
+    public AggregateConfigProvider getConfig() {
+        return config;
+    }
 }
