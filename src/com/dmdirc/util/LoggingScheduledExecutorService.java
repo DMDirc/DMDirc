@@ -74,7 +74,13 @@ public class LoggingScheduledExecutorService extends ScheduledThreadPoolExecutor
         super.afterExecute(r, t);
         if (t == null && r instanceof Future<?>) {
             try {
-                ((Future<?>) r).get();
+                if (((Future<?>) r).isDone()) {
+                    // If a periodic task completes successfully it is reset before this method
+                    // is called, and get() will block indefinitely. If it is not scheduled to run
+                    // again, or if it has thrown an exception and been stopped by the executor,
+                    // then isDone() will return true and we can safely call get().
+                    ((Future<?>) r).get();
+                }
             } catch (ExecutionException ex) {
                 afterExecute.accept(r, ex);
             } catch (InterruptedException ex) {
