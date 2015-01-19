@@ -29,6 +29,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -80,10 +81,10 @@ public class LoggingExecutorService extends ThreadPoolExecutor {
         if (t == null && r instanceof Future<?>) {
             try {
             ((Future<?>) r).get();
+            } catch (CancellationException | InterruptedException ex) {
+                //Ignore
             } catch (ExecutionException ex) {
                 afterExecute.accept(r, ex);
-            } catch (InterruptedException ex) {
-                //Ignore
             }
         }
         if (t != null) {
