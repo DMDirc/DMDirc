@@ -28,6 +28,7 @@ import com.dmdirc.logger.ErrorLevel;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -81,10 +82,10 @@ public class LoggingScheduledExecutorService extends ScheduledThreadPoolExecutor
                     // then isDone() will return true and we can safely call get().
                     ((Future<?>) r).get();
                 }
+            } catch (CancellationException | InterruptedException ex) {
+                //Ignore
             } catch (ExecutionException ex) {
                 afterExecute.accept(r, ex);
-            } catch (InterruptedException ex) {
-                //Ignore
             }
         }
         if (t != null) {
