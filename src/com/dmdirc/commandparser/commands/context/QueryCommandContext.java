@@ -22,8 +22,8 @@
 
 package com.dmdirc.commandparser.commands.context;
 
-import com.dmdirc.Query;
 import com.dmdirc.commandparser.CommandInfo;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.WindowModel;
 
 /**
@@ -34,7 +34,7 @@ import com.dmdirc.interfaces.WindowModel;
 public class QueryCommandContext extends ChatCommandContext {
 
     /** The query the command was executed for. */
-    private final Query query;
+    private final PrivateChat query;
 
     /**
      * Creates a new query command context.
@@ -44,7 +44,7 @@ public class QueryCommandContext extends ChatCommandContext {
      * @param query       The query associated with the command
      */
     public QueryCommandContext(final WindowModel source,
-            final CommandInfo commandInfo, final Query query) {
+            final CommandInfo commandInfo, final PrivateChat query) {
         super(source, commandInfo, query);
         this.query = query;
     }
@@ -54,7 +54,7 @@ public class QueryCommandContext extends ChatCommandContext {
      *
      * @return This context's query
      */
-    public Query getQuery() {
+    public PrivateChat getQuery() {
         return query;
     }
 

@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;
@@ -46,7 +47,7 @@ public class QueryCommandParser extends ChatCommandParser {
     /**
      * The query instance that this parser is attached to.
      */
-    private final Query query;
+    private final PrivateChat query;
 
     /**
      * Creates a new instance of QueryCommandParser.
@@ -56,7 +57,7 @@ public class QueryCommandParser extends ChatCommandParser {
      * @param eventBus          Event bus to post events on
      */
     public QueryCommandParser(final WindowModel owner, final CommandController commandController,
-            final DMDircMBassador eventBus, final Query query) {
+            final DMDircMBassador eventBus, final PrivateChat query) {
         super(owner, commandController, eventBus, query);
         this.query = query;
     }
