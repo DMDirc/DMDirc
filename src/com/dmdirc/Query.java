@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.QueryActionEvent;
@@ -33,7 +32,6 @@ import com.dmdirc.events.QueryNickChangeEvent;
 import com.dmdirc.events.QueryQuitEvent;
 import com.dmdirc.events.QuerySelfActionEvent;
 import com.dmdirc.events.QuerySelfMessageEvent;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.User;
@@ -78,7 +76,6 @@ public class Query extends FrameContainer implements PrivateActionListener,
             final Connection connection,
             final User user,
             final TabCompleterFactory tabCompleterFactory,
-            final CommandController commandController,
             final MessageSinkManager messageSinkManager,
             final BackBufferFactory backBufferFactory) {
         super(connection.getWindowModel(), "query",
@@ -86,8 +83,6 @@ public class Query extends FrameContainer implements PrivateActionListener,
                 user.getNickname(),
                 connection.getWindowModel().getConfigManager(),
                 backBufferFactory,
-                new QueryCommandParser(connection.getWindowModel(),
-                        commandController, connection.getWindowModel().getEventBus()),
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         connection.getWindowModel().getConfigManager(),
                         CommandType.TYPE_QUERY, CommandType.TYPE_CHAT),

@@ -47,6 +47,11 @@ public class ServerCommandParser extends GlobalCommandParser {
     private static final long serialVersionUID = 1;
 
     /**
+     * The server instance that this parser is attached to.
+     */
+    private final Connection server;
+
+    /**
      * Creates a new command parser for server commands.
      *
      * @param configManager     Config manager to read settings from
@@ -56,21 +61,10 @@ public class ServerCommandParser extends GlobalCommandParser {
     public ServerCommandParser(
             final AggregateConfigProvider configManager,
             final CommandController commandController,
-            final DMDircMBassador eventBus) {
+            final DMDircMBassador eventBus,
+            final Connection connection) {
         super(configManager, commandController, eventBus);
-    }
-    /**
-     * The server instance that this parser is attached to.
-     */
-    private Connection server;
-
-    @Override
-    public void setOwner(final WindowModel owner) {
-        if (server == null && owner instanceof Connection) {
-            server = (Connection) owner;
-        }
-
-        super.setOwner(owner);
+        this.server = connection;
     }
 
     /** Loads the relevant commands into the parser. */

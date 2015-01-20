@@ -56,12 +56,13 @@ public class GlobalWindow extends FrameContainer {
             final GlobalCommandParser parser, final TabCompleterFactory tabCompleterFactory,
             final MessageSinkManager messageSinkManager,
             final DMDircMBassador eventBus, final BackBufferFactory backBufferFactory) {
-        super(null, "icon", "Global", "(Global)", config, backBufferFactory, parser,
+        super(null, "icon", "Global", "(Global)", config, backBufferFactory,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
                 messageSinkManager, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
         initBackBuffer();
+        setCommandParser(parser);
     }
 
     @Override

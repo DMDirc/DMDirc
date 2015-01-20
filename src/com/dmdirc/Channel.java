@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
@@ -35,7 +34,6 @@ import com.dmdirc.events.NickListClientAddedEvent;
 import com.dmdirc.events.NickListClientRemovedEvent;
 import com.dmdirc.events.NickListClientsChangedEvent;
 import com.dmdirc.events.NickListUpdatedEvent;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
@@ -103,18 +101,14 @@ public class Channel extends FrameContainer implements GroupChat {
      * @param newChannelInfo      The parser's channel object that corresponds to this channel
      * @param configMigrator      The config migrator which provides the config for this channel.
      * @param tabCompleterFactory The factory to use to create tab completers.
-     * @param commandController   The controller to load commands from.
      * @param messageSinkManager  The sink manager to use to despatch messages.
-     * @param eventBus            The bus to despatch events onto.
      */
     public Channel(
             final Connection connection,
             final ChannelInfo newChannelInfo,
             final ConfigProviderMigrator configMigrator,
             final TabCompleterFactory tabCompleterFactory,
-            final CommandController commandController,
             final MessageSinkManager messageSinkManager,
-            final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager) {
         super(connection.getWindowModel(), "channel-inactive",
@@ -122,7 +116,6 @@ public class Channel extends FrameContainer implements GroupChat {
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                new ChannelCommandParser(connection.getWindowModel(), commandController,  eventBus),
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,
                         CommandType.TYPE_CHAT),

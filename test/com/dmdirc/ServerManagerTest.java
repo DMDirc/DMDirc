@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.interfaces.CommandController;
@@ -92,7 +91,7 @@ public class ServerManagerTest {
                 anyString())).thenReturn(configProviderMigrator);
         when(configProviderMigrator.getConfigProvider()).thenReturn(configProvider);
 
-        when(serverFactoryImpl.getServer(eq(configProviderMigrator), any(CommandParser.class),
+        when(serverFactoryImpl.getServer(eq(configProviderMigrator),
                 any(ScheduledExecutorService.class), uriCaptor.capture(), eq(profile)))
                 .thenReturn(server);
     }

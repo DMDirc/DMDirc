@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ServerConnectErrorEvent;
@@ -177,7 +176,6 @@ public class Server extends FrameContainer implements Connection {
      */
     public Server(
             final ConfigProviderMigrator configMigrator,
-            final CommandParser commandParser,
             final ParserFactory parserFactory,
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
@@ -197,7 +195,6 @@ public class Server extends FrameContainer implements Connection {
                 getHost(uri),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                commandParser,
                 tabCompleterFactory.getTabCompleter(configMigrator.getConfigProvider(),
                         CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL),
                 messageSinkManager,

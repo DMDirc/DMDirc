@@ -66,11 +66,6 @@ public class GlobalCommandParser extends CommandParser {
         this.eventBus = eventBus;
     }
 
-    @Override
-    public void setOwner(final WindowModel owner) {
-        // Don't care
-    }
-
     /** Loads the relevant commands into the parser. */
     @Override
     protected void loadCommands() {

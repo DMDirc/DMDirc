@@ -87,15 +87,6 @@ public abstract class CommandParser implements Serializable {
         loadCommands();
     }
 
-    /**
-     * Sets the owner of this command parser.
-     *
-     * @param owner The container which owns this parser
-     *
-     * @since 0.6.4
-     */
-    public abstract void setOwner(final WindowModel owner);
-
     /** Loads the relevant commands into the parser. */
     protected abstract void loadCommands();
 

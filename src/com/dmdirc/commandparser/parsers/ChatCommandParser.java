@@ -45,7 +45,7 @@ public class ChatCommandParser extends ServerCommandParser {
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /** The container that owns this parser. */
-    private Chat owner;
+    private final Chat owner;
 
     /**
      * Creates a new chat command parser that belongs to a child of the specified server.
@@ -54,17 +54,13 @@ public class ChatCommandParser extends ServerCommandParser {
      * @param commandController The controller to load commands from.
      * @param eventBus          Event but to post events on
      */
-    public ChatCommandParser(final WindowModel owner, final CommandController commandController,
-            final DMDircMBassador eventBus) {
-        super(owner.getConfigManager(), commandController, eventBus);
-        super.setOwner(owner);
-    }
-
-    @Override
-    public void setOwner(final WindowModel owner) {
-        if (this.owner == null && owner instanceof Chat) {
-            this.owner = (Chat) owner;
-        }
+    public ChatCommandParser(
+            final WindowModel owner,
+            final CommandController commandController,
+            final DMDircMBassador eventBus,
+            final Chat chat) {
+        super(owner.getConfigManager(), commandController, eventBus, chat.getConnection().get());
+        this.owner = chat;
     }
 
     @Override

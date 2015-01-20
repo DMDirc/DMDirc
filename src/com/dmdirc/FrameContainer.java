@@ -96,12 +96,6 @@ public abstract class FrameContainer implements WindowModel {
     private BackBuffer backBuffer;
 
     /**
-     * The command parser used for commands in this container.
-     * <p>
-     * Only defined if this container is {@link #writable}.
-     */
-    private final Optional<CommandParser> commandParser;
-    /**
      * The manager to use to dispatch messages to sinks.
      * <p>
      * Only defined if this container is {@link #writable}.
@@ -113,6 +107,13 @@ public abstract class FrameContainer implements WindowModel {
      * Only defined if this container is {@link #writable}.
      */
     private final Optional<TabCompleter> tabCompleter;
+
+    /**
+     * The command parser used for commands in this container.
+     * <p>
+     * Only defined if this container is {@link #writable}.
+     */
+    private Optional<CommandParser> commandParser = Optional.empty();
 
     /**
      * Instantiate new frame container.
@@ -132,7 +133,6 @@ public abstract class FrameContainer implements WindowModel {
         this.title = title;
         this.components = new HashSet<>(components);
         this.writable = false;
-        this.commandParser = Optional.empty();
         this.tabCompleter = Optional.empty();
         this.messageSinkManager = Optional.empty();
         this.backBufferFactory = backBufferFactory;
@@ -157,7 +157,6 @@ public abstract class FrameContainer implements WindowModel {
             final String title,
             final AggregateConfigProvider config,
             final BackBufferFactory backBufferFactory,
-            final CommandParser commandParser,
             final TabCompleter tabCompleter,
             final MessageSinkManager messageSinkManager,
             final DMDircMBassador eventBus,
@@ -168,11 +167,9 @@ public abstract class FrameContainer implements WindowModel {
         this.title = title;
         this.components = new HashSet<>(components);
         this.writable = true;
-        this.commandParser = Optional.of(commandParser);
         this.tabCompleter = Optional.of(tabCompleter);
         this.messageSinkManager = Optional.of(messageSinkManager);
         this.backBufferFactory = backBufferFactory;
-        commandParser.setOwner(this);
 
         eventBusManager = new ChildEventBusManager(eventBus);
         eventBusManager.connect();
@@ -187,6 +184,10 @@ public abstract class FrameContainer implements WindowModel {
     protected void initBackBuffer() {
         backBuffer = backBufferFactory.getBackBuffer(this);
         backBuffer.startAddingEvents();
+    }
+
+    public void setCommandParser(final CommandParser commandParser) {
+        this.commandParser = Optional.ofNullable(commandParser);
     }
 
     @Override
