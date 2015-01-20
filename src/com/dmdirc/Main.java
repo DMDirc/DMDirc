@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.GlobalWindow.GlobalWindowManager;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.events.FeedbackNagEvent;
 import com.dmdirc.events.FirstRunEvent;
@@ -178,13 +177,6 @@ public class Main {
         commandLineParser.processArguments(connectionManager);
 
         globalWindowManager.init();
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            lifecycleComponents.forEach(SystemLifecycleComponent::shutDown);
-            eventBus.publishAsync(new ClientClosedEvent());
-            connectionManager.disconnectAll("Unexpected shutdown");
-            identityManager.saveAll();
-        }, "Shutdown thread"));
     }
 
     /**
