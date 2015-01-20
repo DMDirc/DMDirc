@@ -46,7 +46,7 @@ public class QueryCommandParser extends ChatCommandParser {
     /**
      * The query instance that this parser is attached to.
      */
-    private Query query;
+    private final Query query;
 
     /**
      * Creates a new instance of QueryCommandParser.
@@ -56,17 +56,9 @@ public class QueryCommandParser extends ChatCommandParser {
      * @param eventBus          Event bus to post events on
      */
     public QueryCommandParser(final WindowModel owner, final CommandController commandController,
-            final DMDircMBassador eventBus) {
-        super(owner, commandController, eventBus);
-    }
-
-    @Override
-    public void setOwner(final WindowModel owner) {
-        if (query == null) {
-            query = (Query) owner;
-        }
-
-        super.setOwner(query);
+            final DMDircMBassador eventBus, final Query query) {
+        super(owner, commandController, eventBus, query);
+        this.query = query;
     }
 
     /** Loads the relevant commands into the parser. */

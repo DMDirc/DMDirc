@@ -43,7 +43,7 @@ public class ChannelCommandParser extends ChatCommandParser {
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
     /** The group chat instance that this parser is attached to. */
-    private GroupChat groupChat;
+    private final GroupChat groupChat;
 
     /**
      * Creates a new instance of ChannelCommandParser.
@@ -52,20 +52,14 @@ public class ChannelCommandParser extends ChatCommandParser {
      * @param commandController The controller to load commands from.
      * @param eventBus          Event bus to post events on
      */
-    public ChannelCommandParser(final WindowModel owner,
+    public ChannelCommandParser(
+            final WindowModel owner,
             final CommandController commandController,
-            final DMDircMBassador eventBus) {
-        super(owner, commandController, eventBus);
-    }
+            final DMDircMBassador eventBus,
+            final GroupChat groupChat) {
+        super(owner, commandController, eventBus, groupChat);
 
-    @Override
-    public void setOwner(final WindowModel owner) {
-        if (groupChat == null) {
-            // TODO: Can't assume that framecontainers may be group chats.
-            groupChat = (GroupChat) owner;
-        }
-
-        super.setOwner(owner);
+        this.groupChat = groupChat;
     }
 
     @Override

@@ -83,9 +83,4 @@ public class TestCommandParser extends CommandParser {
         invalidCommand = args.getCommandName();
     }
 
-    @Override
-    public void setOwner(final WindowModel owner) {
-        // Don't care
-    }
-
 }

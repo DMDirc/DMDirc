@@ -22,8 +22,9 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
@@ -49,6 +50,7 @@ public class ServerFactoryImpl {
     private final IdentityFactory identityFactory;
     private final MessageSinkManager messageSinkManager;
     private final Provider<QueryFactory> queryFactory;
+    private final Provider<CommandController> commandController;
     private final DMDircMBassador eventBus;
     private final MessageEncoderFactory messageEncoderFactory;
     private final ConfigProvider userSettings;
@@ -63,6 +65,7 @@ public class ServerFactoryImpl {
             final IdentityFactory identityFactory,
             final MessageSinkManager messageSinkManager,
             final Provider<QueryFactory> queryFactory,
+            final Provider<CommandController> commandController,
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             @ClientModule.UserConfig final ConfigProvider userSettings,
@@ -74,6 +77,7 @@ public class ServerFactoryImpl {
         this.identityFactory = identityFactory;
         this.messageSinkManager = messageSinkManager;
         this.queryFactory = queryFactory;
+        this.commandController = commandController;
         this.eventBus = eventBus;
         this.messageEncoderFactory = messageEncoderFactory;
         this.userSettings = userSettings;
@@ -84,14 +88,16 @@ public class ServerFactoryImpl {
 
     public Server getServer(
             final ConfigProviderMigrator configMigrator,
-            final CommandParser commandParser,
             final ScheduledExecutorService executorService,
             final URI uri,
             final Profile profile) {
-        return new Server(configMigrator, commandParser, parserFactory,
+        final Server server = new Server(configMigrator, parserFactory,
                 tabCompleterFactory, identityFactory, messageSinkManager,
                 queryFactory.get(), eventBus, messageEncoderFactory, userSettings,
                 groupChatManagerFactory, executorService, uri, profile, backBufferFactory,
                 userManager);
+        server.setCommandParser(new ServerCommandParser(server.getConfigManager(),
+                commandController.get(), eventBus, server));
+        return server;
     }
 }

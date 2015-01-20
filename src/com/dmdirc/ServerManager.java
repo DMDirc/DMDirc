@@ -110,8 +110,6 @@ public class ServerManager implements ConnectionManager {
 
         final Server server = serverFactoryImpl.getServer(
                 configProvider,
-                new ServerCommandParser(configProvider.getConfigProvider(), commandController.get(),
-                        eventBus),
                 Executors.newScheduledThreadPool(1,
                         new ThreadFactoryBuilder().setNameFormat("server-timer-%d").build()),
                 uri,

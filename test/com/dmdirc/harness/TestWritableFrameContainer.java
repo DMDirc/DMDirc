@@ -48,12 +48,12 @@ public class TestWritableFrameContainer extends FrameContainer {
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory) {
         super(null, "raw", "Raw", "(Raw)", cm, backBufferFactory,
-                new GlobalCommandParser(cm, commandManager, eventBus),
                 new TabCompleter(mock(CommandController.class), cm),
                 messageSinkManager,
                 eventBus,
                 Collections.<String>emptySet());
 
+        setCommandParser(new GlobalCommandParser(cm, commandManager, eventBus));
         this.lineLength = lineLength;
     }
 
