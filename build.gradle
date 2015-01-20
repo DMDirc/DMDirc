@@ -36,6 +36,7 @@ dependencies {
     compile group: 'com.squareup.dagger', name: 'dagger-compiler', version: '1.2.1'
     compile group: 'com.google.auto.value', name: 'auto-value', version: '1.0'
 
+    bundle group: 'org.slf4j', name: 'slf4j-api', version:'1.7.10'
     bundle group: 'com.squareup.dagger', name: 'dagger', version: '1.2.1'
     bundle group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.08'
     bundle group: 'net.kencochrane.raven', name: 'raven', version: '6.0.0'
