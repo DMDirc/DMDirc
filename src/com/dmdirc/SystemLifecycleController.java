@@ -23,28 +23,48 @@
 package com.dmdirc;
 
 import com.dmdirc.ClientModule.GlobalConfig;
+import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
+import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.IdentityController;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Simple {@link LifecycleController} implementation that calls {@link System#exit(int)}.
  */
+@Singleton
 public class SystemLifecycleController implements LifecycleController {
 
     /** Controller to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
+    /** Components to shut down when the client quits. */
+    private final Set<SystemLifecycleComponent> lifecycleComponents;
     /** Manager to use to disconnect servers. */
     private final ConnectionManager connectionManager;
+    /** The event bus to raise client closed events on. */
+    private final DMDircMBassador eventBus;
+    /** The identity controller to save when quitting. */
+    private final IdentityController identityController;
 
     @Inject
     public SystemLifecycleController(
             @GlobalConfig final AggregateConfigProvider configProvider,
-            final ConnectionManager connectionManager) {
+            final Set<SystemLifecycleComponent> lifecycleComponents,
+            final ConnectionManager connectionManager,
+            final DMDircMBassador eventBus,
+            final IdentityController identityController) {
         this.configProvider = configProvider;
+        this.lifecycleComponents = new HashSet<>(lifecycleComponents);
         this.connectionManager = connectionManager;
+        this.eventBus = eventBus;
+        this.identityController = identityController;
     }
 
     @Override
@@ -64,6 +84,11 @@ public class SystemLifecycleController implements LifecycleController {
 
     @Override
     public void quit(final String reason, final int exitCode) {
+        lifecycleComponents.forEach(SystemLifecycleComponent::shutDown);
+
+        // TODO: Make all of these into lifecycle components
+        eventBus.publish(new ClientClosedEvent());
+        identityController.saveAll();
         connectionManager.disconnectAll(reason);
 
         System.exit(exitCode);
