@@ -96,6 +96,8 @@ import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.EventUtils;
 
+import com.google.common.base.Strings;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -280,15 +282,7 @@ public class ServerEventHandler extends EventHandler implements
             final String[] token) {
         checkParser(parser);
 
-        String snumeric = String.valueOf(numeric);
-
-        if (numeric < 10) {
-            snumeric = "00" + snumeric;
-        } else if (numeric < 100) {
-            snumeric = '0' + snumeric;
-        }
-
-        final String sansIrcd = "numeric_" + snumeric;
+        final String sansIrcd = "numeric_" + Strings.padStart(String.valueOf(numeric), 3, '0');
         String target = "";
 
         if (owner.getConfigManager().hasOptionString("formatter", sansIrcd)) {
