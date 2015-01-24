@@ -24,22 +24,22 @@ package com.dmdirc.lists;
 
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.common.ChannelJoinRequest;
+import com.dmdirc.parser.events.GroupListEndEvent;
+import com.dmdirc.parser.events.GroupListEntryEvent;
+import com.dmdirc.parser.events.GroupListStartEvent;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.interfaces.callbacks.GroupListEndListener;
-import com.dmdirc.parser.interfaces.callbacks.GroupListEntryListener;
-import com.dmdirc.parser.interfaces.callbacks.GroupListStartListener;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.ObservableList;
 import com.dmdirc.util.collections.ObservableListDecorator;
 
-import java.util.Date;
 import java.util.LinkedList;
+
+import net.engio.mbassy.listener.Handler;
 
 /**
  * Manages a group list request.
  */
-public class GroupListManager implements GroupListStartListener,
-        GroupListEntryListener, GroupListEndListener {
+public class GroupListManager {
 
     /** List of registered listeners. */
     private final ListenerList listenerList = new ListenerList();
@@ -68,27 +68,24 @@ public class GroupListManager implements GroupListStartListener,
         groups.clear();
 
         connection.getParser().ifPresent(p -> {
-            p.getCallbackManager().addCallback(GroupListStartListener.class, this);
-            p.getCallbackManager().addCallback(GroupListEntryListener.class, this);
-            p.getCallbackManager().addCallback(GroupListEndListener.class, this);
+            p.getCallbackManager().subscribe(this);
             p.requestGroupList(searchTerm);
         });
     }
 
-    @Override
-    public void onGroupListStart(final Parser parser, final Date date) {
+    @Handler
+    public void onGroupListStart(final GroupListStartEvent event) {
         listenerList.getCallable(GroupListObserver.class).onGroupListStarted();
     }
 
-    @Override
-    public void onGroupListEntry(final Parser parser, final Date date,
-            final String name, final int users, final String topic) {
-        groups.add(new GroupListEntry(name, users, topic));
+    @Handler
+    public void onGroupListEntry(final GroupListEntryEvent event) {
+        groups.add(new GroupListEntry(event.getName(), event.getUsers(), event.getTopic()));
     }
 
-    @Override
-    public void onGroupListEnd(final Parser parser, final Date date) {
-        parser.getCallbackManager().delAllCallback(this);
+    @Handler
+    public void onGroupListEnd(final GroupListEndEvent event) {
+        event.getParser().getCallbackManager().unsubscribe(this);
         listenerList.getCallable(GroupListObserver.class).onGroupListFinished();
     }
 

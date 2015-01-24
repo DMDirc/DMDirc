@@ -40,13 +40,13 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.CallbackManager;
 import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.common.CompositionState;
+import com.dmdirc.parser.events.CompositionStateChangeEvent;
+import com.dmdirc.parser.events.NickChangeEvent;
+import com.dmdirc.parser.events.PrivateActionEvent;
+import com.dmdirc.parser.events.PrivateMessageEvent;
+import com.dmdirc.parser.events.QuitEvent;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.interfaces.callbacks.CompositionStateChangeListener;
-import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
-import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
-import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
-import com.dmdirc.parser.interfaces.callbacks.QuitListener;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
@@ -54,18 +54,17 @@ import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import java.awt.Toolkit;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import net.engio.mbassy.listener.Handler;
 
 /**
  * The Query class represents the client's view of a query with another user. It handles callbacks
  * for query events from the parser, maintains the corresponding QueryWindow, and handles user input
  * for the query.
  */
-public class Query extends FrameContainer implements PrivateActionListener,
-        PrivateMessageListener, NickChangeListener, QuitListener,
-        CompositionStateChangeListener, PrivateChat {
+public class Query extends FrameContainer implements PrivateChat {
 
     /** The connection this Query is on. */
     private final Connection connection;
@@ -158,18 +157,16 @@ public class Query extends FrameContainer implements PrivateActionListener,
         }
     }
 
-    @Override
-    public void onPrivateMessage(final Parser parser, final Date date,
-            final String message, final String host) {
+    @Handler
+    public void onPrivateMessage(final PrivateMessageEvent event) {
         getEventBus().publishAsync(
-                new QueryMessageEvent(this, connection.getUser(host), message));
+                new QueryMessageEvent(this, connection.getUser(event.getHost()), event.getMessage()));
     }
 
-    @Override
-    public void onPrivateAction(final Parser parser, final Date date,
-            final String message, final String host) {
+    @Handler
+    public void onPrivateAction(final PrivateActionEvent event) {
         getEventBus().publishAsync(
-                new QueryActionEvent(this, connection.getUser(host), message));
+                new QueryActionEvent(this, connection.getUser(event.getHost()), event.getMessage()));
     }
 
     /**
@@ -187,33 +184,23 @@ public class Query extends FrameContainer implements PrivateActionListener,
         final String nick = getNickname();
 
         try {
-            callbackManager.addCallback(PrivateActionListener.class, this, nick);
-            callbackManager.addCallback(PrivateMessageListener.class, this, nick);
-            callbackManager.addCallback(CompositionStateChangeListener.class, this, nick);
-            callbackManager.addCallback(QuitListener.class, this);
-            callbackManager.addCallback(NickChangeListener.class, this);
+            callbackManager.subscribe(this);
         } catch (CallbackNotFoundException ex) {
             getEventBus().publishAsync(new AppErrorEvent(ErrorLevel.HIGH, ex,
                     "Unable to get query events", ex.getMessage()));
         }
     }
 
-    @Override
-    public void onNickChanged(final Parser parser, final Date date,
-            final ClientInfo client, final String oldNick) {
+    @Handler
+    public void onNickChanged(final NickChangeEvent event) {
+        final ClientInfo client = event.getClient();
+        final String oldNick = event.getOldNick();
         if (client.getNickname().equals(getNickname())) {
             final CallbackManager callbackManager = connection.getParser().get().getCallbackManager();
 
-            callbackManager.delCallback(PrivateActionListener.class, this);
-            callbackManager.delCallback(PrivateMessageListener.class, this);
-            callbackManager.delCallback(CompositionStateChangeListener.class, this);
-
+            // TODO: Not specific now.
             try {
-                callbackManager.addCallback(PrivateActionListener.class, this, client.getNickname());
-                callbackManager.
-                        addCallback(PrivateMessageListener.class, this, client.getNickname());
-                callbackManager.addCallback(CompositionStateChangeListener.class, this, client.
-                        getNickname());
+                callbackManager.subscribe(this);
             } catch (CallbackNotFoundException ex) {
                 getEventBus().publishAsync(
                         new AppErrorEvent(ErrorLevel.HIGH, ex, "Unable to get query events",
@@ -229,18 +216,16 @@ public class Query extends FrameContainer implements PrivateActionListener,
         }
     }
 
-    @Override
-    public void onQuit(final Parser parser, final Date date,
-            final ClientInfo client, final String reason) {
-        if (client.getNickname().equals(getNickname())) {
-            getEventBus().publish(new QueryQuitEvent(this, reason));
+    @Handler
+    public void onQuit(final QuitEvent event) {
+        if (event.getClient().getNickname().equals(getNickname())) {
+            getEventBus().publish(new QueryQuitEvent(this, event.getReason()));
         }
     }
 
-    @Override
-    public void onCompositionStateChanged(final Parser parser, final Date date,
-            final CompositionState state, final String host) {
-        if (state == CompositionState.TYPING) {
+    @Handler
+    public void onCompositionStateChanged(final CompositionStateChangeEvent event) {
+        if (event.getState() == CompositionState.TYPING) {
             addComponent(WindowComponent.TYPING_INDICATOR.getIdentifier());
         } else {
             removeComponent(WindowComponent.TYPING_INDICATOR.getIdentifier());
@@ -257,7 +242,8 @@ public class Query extends FrameContainer implements PrivateActionListener,
         super.close();
 
         // Remove any callbacks or listeners
-        connection.getParser().map(Parser::getCallbackManager).ifPresent(cm -> cm.delAllCallback(this));
+        connection.getParser().map(Parser::getCallbackManager).ifPresent(cm -> cm.unsubscribe(this));
+
 
         // Trigger action for the window closing
         getEventBus().publishAsync(new QueryClosedEvent(this));

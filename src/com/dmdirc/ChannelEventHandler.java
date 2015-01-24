@@ -47,27 +47,14 @@ import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.parser.common.AwayState;
-import com.dmdirc.parser.common.CallbackManager;
+import com.dmdirc.parser.events.ChannelCTCPEvent;
+import com.dmdirc.parser.events.ChannelListModeEvent;
+import com.dmdirc.parser.events.ChannelNamesEvent;
+import com.dmdirc.parser.events.ChannelTopicEvent;
+import com.dmdirc.parser.events.OtherAwayStateEvent;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
-import com.dmdirc.parser.interfaces.callbacks.ChannelActionListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelCtcpListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelJoinListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelKickListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelListModeListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelMessageListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelModeChangeListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelModeNoticeListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelNamesListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelNickChangeListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelNoticeListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelPartListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelQuitListener;
-import com.dmdirc.parser.interfaces.callbacks.ChannelTopicListener;
-import com.dmdirc.parser.interfaces.callbacks.OtherAwayStateListener;
 import com.dmdirc.util.EventUtils;
 
 import com.google.common.base.Strings;
@@ -78,15 +65,12 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import net.engio.mbassy.listener.Handler;
+
 /**
  * Handles events for channel objects.
  */
-public class ChannelEventHandler extends EventHandler implements
-        ChannelMessageListener, ChannelNamesListener, ChannelTopicListener,
-        ChannelJoinListener, ChannelPartListener, ChannelKickListener,
-        ChannelQuitListener, ChannelActionListener, ChannelNickChangeListener,
-        ChannelModeChangeListener, ChannelCtcpListener, OtherAwayStateListener,
-        ChannelNoticeListener, ChannelModeNoticeListener, ChannelListModeListener {
+public class ChannelEventHandler extends EventHandler {
 
     /** The channel that owns this event handler. */
     private final Channel owner;
@@ -96,21 +80,9 @@ public class ChannelEventHandler extends EventHandler implements
 
     public ChannelEventHandler(final Channel owner, final DMDircMBassador eventBus,
             final GroupChatUserManager groupChatUserManager) {
-        super(eventBus);
         this.owner = owner;
         this.eventBus = eventBus;
         this.groupChatUserManager = groupChatUserManager;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected <T extends CallbackInterface> void addCallback(final CallbackManager cbm,
-            final Class<T> type) {
-        if (OtherAwayStateListener.class.equals(type)) {
-            cbm.addCallback(type, (T) this);
-        } else {
-            cbm.addCallback(type, (T) this, owner.getChannelInfo().getName());
-        }
     }
 
     @Nonnull
@@ -131,36 +103,36 @@ public class ChannelEventHandler extends EventHandler implements
                 .map(c -> client.getClient().equals(c)).orElse(false);
     }
 
-    @Override
-    public void onChannelMessage(final Parser parser, final Date date,
-            final ChannelInfo channel, final ChannelClientInfo client,
-            final String message, final String host) {
-        checkParser(parser);
+    @Handler
+    public void onChannelMessage(final com.dmdirc.parser.events.ChannelMessageEvent event) {
+        checkParser(event.getParser());
 
-        eventBus.publishAsync(new ChannelMessageEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner), message));
+        eventBus.publishAsync(new ChannelMessageEvent(event.getDate().getTime(), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getMessage()));
     }
 
-    @Override
-    public void onChannelGotNames(final Parser parser, final Date date, final ChannelInfo channel) {
-        checkParser(parser);
+    @Handler
+    public void onChannelGotNames(final ChannelNamesEvent event) {
+        checkParser(event.getParser());
 
-        owner.setClients(channel.getChannelClients().stream()
+        owner.setClients(event.getChannel().getChannelClients().stream()
                 .map(client -> groupChatUserManager.getUserFromClient(client, owner))
                 .collect(Collectors.toList()));
-        eventBus.publishAsync(new ChannelGotNamesEvent(date.getTime(), owner));
+        eventBus.publishAsync(new ChannelGotNamesEvent(event.getDate().getTime(), owner));
     }
 
-    @Override
-    public void onChannelTopic(final Parser parser, final Date date,
-            final ChannelInfo channel, final boolean isJoinTopic) {
-        checkParser(parser);
+    @Handler
+    public void onChannelTopic(final ChannelTopicEvent event) {
+        checkParser(event.getParser());
+
+        final ChannelInfo channel = event.getChannel();
+        final Date date = event.getDate();
 
         final Topic topic = Topic.create(channel.getTopic(),
                 owner.getUser(getConnection().getUser(channel.getTopicSetter())).orElse(null),
                 channel.getTopicTime());
 
-        if (isJoinTopic) {
+        if (event.isJoinTopic()) {
             if (Strings.isNullOrEmpty(channel.getTopic())) {
                 eventBus.publishAsync(new ChannelNoTopicEvent(owner));
             } else {
@@ -181,7 +153,7 @@ public class ChannelEventHandler extends EventHandler implements
 
         final Optional<Topic> currentTopic = owner.getCurrentTopic();
         final boolean hasNewTopic = !Strings.isNullOrEmpty(channel.getTopic());
-        if (!isJoinTopic
+        if (!event.isJoinTopic()
                 || !currentTopic.isPresent() && hasNewTopic
                 || currentTopic.isPresent() && !channel.getTopic().equals(
                         owner.getCurrentTopic().get().getTopic())) {
@@ -193,20 +165,22 @@ public class ChannelEventHandler extends EventHandler implements
         }
     }
 
-    @Override
-    public void onChannelJoin(final Parser parser, final Date date, final ChannelInfo channel,
-            final ChannelClientInfo client) {
-        checkParser(parser);
+    @Handler
+    public void onChannelJoin(final com.dmdirc.parser.events.ChannelJoinEvent event) {
+        checkParser(event.getParser());
 
-        eventBus.publish(new ChannelJoinEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner)));
-        owner.addClient(groupChatUserManager.getUserFromClient(client, owner));
+        eventBus.publish(new ChannelJoinEvent(event.getDate().getTime(), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner)));
+        owner.addClient(groupChatUserManager.getUserFromClient(event.getClient(), owner));
     }
 
-    @Override
-    public void onChannelPart(final Parser parser, final Date date, final ChannelInfo channel,
-            final ChannelClientInfo client, final String reason) {
-        checkParser(parser);
+    @Handler
+    public void onChannelPart(final com.dmdirc.parser.events.ChannelPartEvent event) {
+        checkParser(event.getParser());
+
+        final ChannelClientInfo client = event.getClient();
+        final Date date = event.getDate();
+        final String reason = event.getReason();
 
         if (isMyself(client)) {
             eventBus.publishAsync(new ChannelSelfPartEvent(date.getTime(), owner,
@@ -218,66 +192,67 @@ public class ChannelEventHandler extends EventHandler implements
         owner.removeClient(groupChatUserManager.getUserFromClient(client, owner));
     }
 
-    @Override
-    public void onChannelKick(final Parser parser, final Date date, final ChannelInfo channel,
-            final ChannelClientInfo kickedClient, final ChannelClientInfo client,
-            final String reason, final String host) {
-        checkParser(parser);
+    @Handler
+    public void onChannelKick(final com.dmdirc.parser.events.ChannelKickEvent event) {
+        checkParser(event.getParser());
+        final ChannelClientInfo kickedClient = event.getKickedClient();
 
-        eventBus.publishAsync(new ChannelKickEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner),
-                groupChatUserManager.getUserFromClient(kickedClient, owner), reason));
+        eventBus.publishAsync(new ChannelKickEvent(event.getDate().getTime(), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner),
+                groupChatUserManager.getUserFromClient(kickedClient, owner), event.getReason()));
         owner.removeClient(groupChatUserManager.getUserFromClient(kickedClient, owner));
     }
 
-    @Override
-    public void onChannelQuit(final Parser parser, final Date date, final ChannelInfo channel,
-            final ChannelClientInfo client, final String reason) {
-        checkParser(parser);
+    @Handler
+    public void onChannelQuit(final com.dmdirc.parser.events.ChannelQuitEvent event) {
+        checkParser(event.getParser());
 
-        eventBus.publishAsync(new ChannelQuitEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner), reason));
-        owner.removeClient(groupChatUserManager.getUserFromClient(client, owner));
+        eventBus.publishAsync(new ChannelQuitEvent(event.getDate().getTime(), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getReason()));
+        owner.removeClient(groupChatUserManager.getUserFromClient(event.getClient(), owner));
     }
 
-    @Override
-    public void onChannelAction(final Parser parser, final Date date, final ChannelInfo channel,
-            final ChannelClientInfo client, final String message,
-            final String host) {
-        checkParser(parser);
+    @Handler
+    public void onChannelAction(final com.dmdirc.parser.events.ChannelActionEvent event) {
+        checkParser(event.getParser());
 
-        eventBus.publishAsync(new ChannelActionEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner), message));
+        eventBus.publishAsync(new ChannelActionEvent(event.getDate().getTime(), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getMessage()));
     }
 
-    @Override
-    public void onChannelNickChanged(final Parser parser, final Date date,
-            final ChannelInfo channel, final ChannelClientInfo client, final String oldNick) {
-        checkParser(parser);
+    @Handler
+    public void onChannelNickChanged(final com.dmdirc.parser.events.ChannelNickChangeEvent event) {
+        checkParser(event.getParser());
+
+        final String oldNick = event.getOldNick();
+        final ChannelClientInfo client = event.getClient();
 
         owner.renameClient(oldNick, client.getClient().getNickname());
 
         if (isMyself(client)) {
             eventBus.publishAsync(
-                    new ChannelSelfNickChangeEvent(date.getTime(), owner,
+                    new ChannelSelfNickChangeEvent(event.getDate().getTime(), owner,
                             groupChatUserManager.getUserFromClient(client, owner), oldNick));
         } else {
             eventBus.publishAsync(
-                    new ChannelNickChangeEvent(date.getTime(), owner,
+                    new ChannelNickChangeEvent(event.getDate().getTime(), owner,
                             groupChatUserManager.getUserFromClient(client, owner), oldNick));
         }
     }
 
-    @Override
-    public void onChannelModeChanged(final Parser parser, final Date date,
-            final ChannelInfo channel, final ChannelClientInfo client, final String host,
-            final String modes) {
-        checkParser(parser);
+    @Handler
+    public void onChannelModeChanged(final com.dmdirc.parser.events.ChannelModeChangeEvent event) {
+        checkParser(event.getParser());
+
+        final String host = event.getHost();
+        final String modes = event.getModes();
+        final ChannelClientInfo client = event.getClient();
+        final Date date = event.getDate();
 
         if (host.isEmpty()) {
-            final ChannelModesDiscoveredEvent event = new ChannelModesDiscoveredEvent(
+            final ChannelModesDiscoveredEvent coreEvent = new ChannelModesDiscoveredEvent(
                     date.getTime(), owner, modes.length() <= 1 ? "" : modes);
-            final String format = EventUtils.postDisplayable(eventBus, event,
+            final String format = EventUtils.postDisplayable(eventBus, coreEvent,
                     modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
             owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
         } else if (isMyself(client)) {
@@ -291,66 +266,65 @@ public class ChannelEventHandler extends EventHandler implements
         owner.refreshClients();
     }
 
-    @Override
-    public void onChannelCTCP(final Parser parser, final Date date,
-            final ChannelInfo channel, final ChannelClientInfo client,
-            final String type, final String message, final String host) {
-        checkParser(parser);
+    @Handler
+    public void onChannelCTCP(final ChannelCTCPEvent event) {
+        checkParser(event.getParser());
 
-        final ChannelCtcpEvent event = new ChannelCtcpEvent(date.getTime(), owner,
+        final ChannelClientInfo client = event.getClient();
+        final String message = event.getMessage();
+        final Date date = event.getDate();
+        final String type = event.getType();
+
+        final ChannelCtcpEvent coreEvent = new ChannelCtcpEvent(date.getTime(), owner,
                 groupChatUserManager.getUserFromClient(client, owner),type, message);
-        eventBus.publish(event);
-        if (!event.isHandled()) {
+        eventBus.publish(coreEvent);
+        if (!coreEvent.isHandled()) {
             getConnection().sendCTCPReply(client.getClient().getNickname(), type, message);
         }
     }
 
-    @Override
-    public void onAwayStateOther(final Parser parser, final Date date,
-            final ClientInfo client, final AwayState oldState, final AwayState state) {
-        checkParser(parser);
+    @Handler
+    public void onAwayStateOther(final OtherAwayStateEvent event) {
+        checkParser(event.getParser());
 
-        owner.getUser(owner.getConnection().get().getUser(client.getNickname())).ifPresent(c -> {
-            if (state == AwayState.AWAY) {
-                eventBus.publishAsync(new ChannelUserAwayEvent(date.getTime(), owner, c));
-            } else {
-                eventBus.publishAsync(new ChannelUserBackEvent(date.getTime(), owner, c));
-            }
-        });
+        owner.getUser(owner.getConnection().get().getUser(event.getClient().getNickname()))
+                .ifPresent(c -> {
+                    if (event.getNewState() == AwayState.AWAY) {
+                        eventBus.publishAsync(
+                                new ChannelUserAwayEvent(event.getDate().getTime(), owner, c));
+                    } else {
+                        eventBus.publishAsync(
+                                new ChannelUserBackEvent(event.getDate().getTime(), owner, c));
+                    }
+                });
     }
 
-    @Override
-    public void onChannelNotice(final Parser parser, final Date date,
-            final ChannelInfo channel, final ChannelClientInfo client,
-            final String message, final String host) {
-        checkParser(parser);
+    @Handler
+    public void onChannelNotice(final com.dmdirc.parser.events.ChannelNoticeEvent event) {
+        checkParser(event.getParser());
 
-        eventBus.publishAsync(new ChannelNoticeEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner), message));
+        eventBus.publishAsync(new ChannelNoticeEvent(event.getDate().getTime(), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getMessage()));
     }
 
-    @Override
-    public void onChannelModeNotice(final Parser parser, final Date date,
-            final ChannelInfo channel, final char prefix,
-            final ChannelClientInfo client, final String message,
-            final String host) {
-        checkParser(parser);
+    @Handler
+    public void onChannelModeNotice(final com.dmdirc.parser.events.ChannelModeNoticeEvent event) {
+        checkParser(event.getParser());
 
-        eventBus.publishAsync(new ChannelModeNoticeEvent(date.getTime(), owner,
-                groupChatUserManager.getUserFromClient(client, owner), String.valueOf(prefix),
-                message));
+        eventBus.publishAsync(new ChannelModeNoticeEvent(event.getDate().getTime(), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner), String.valueOf
+                (event.getPrefix()), event.getMessage()));
     }
 
-    @Override
-    public void onChannelGotListModes(final Parser parser, final Date date,
-            final ChannelInfo channel, final char mode) {
-        checkParser(parser);
+    @Handler
+    public void onChannelGotListModes(final ChannelListModeEvent event) {
+        checkParser(event.getParser());
 
-        final ChannelListModesRetrievedEvent event = new ChannelListModesRetrievedEvent(
-                date.getTime(), owner, mode);
-        final String format = EventUtils.postDisplayable(eventBus, event,
+        final ChannelListModesRetrievedEvent coreEvent = new ChannelListModesRetrievedEvent(
+                event.getDate().getTime(), owner, event.getMode());
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent,
                 "channelListModeRetrieved");
-        owner.doNotification(date, format, mode);
+        owner.doNotification(event.getDate(), format, event.getMode());
     }
 
 }

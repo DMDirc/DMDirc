@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.events.AppErrorEvent;
+import com.dmdirc.events.DMDircEvent;
 import com.dmdirc.events.QuerySelfActionEvent;
 import com.dmdirc.events.QuerySelfMessageEvent;
 import com.dmdirc.events.ServerAuthNoticeEvent;
@@ -55,48 +56,40 @@ import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.AwayState;
-import com.dmdirc.parser.common.CallbackManager;
-import com.dmdirc.parser.common.ParserError;
-import com.dmdirc.parser.interfaces.ChannelInfo;
-import com.dmdirc.parser.interfaces.ClientInfo;
+import com.dmdirc.parser.events.AuthNoticeEvent;
+import com.dmdirc.parser.events.AwayStateEvent;
+import com.dmdirc.parser.events.ChannelSelfJoinEvent;
+import com.dmdirc.parser.events.ConnectErrorEvent;
+import com.dmdirc.parser.events.ErrorInfoEvent;
+import com.dmdirc.parser.events.InviteEvent;
+import com.dmdirc.parser.events.MOTDEndEvent;
+import com.dmdirc.parser.events.MOTDLineEvent;
+import com.dmdirc.parser.events.MOTDStartEvent;
+import com.dmdirc.parser.events.NickChangeEvent;
+import com.dmdirc.parser.events.NickInUseEvent;
+import com.dmdirc.parser.events.NumericEvent;
+import com.dmdirc.parser.events.PingFailureEvent;
+import com.dmdirc.parser.events.PingSentEvent;
+import com.dmdirc.parser.events.PingSuccessEvent;
+import com.dmdirc.parser.events.PrivateActionEvent;
+import com.dmdirc.parser.events.PrivateCTCPEvent;
+import com.dmdirc.parser.events.PrivateCTCPReplyEvent;
+import com.dmdirc.parser.events.PrivateMessageEvent;
+import com.dmdirc.parser.events.PrivateNoticeEvent;
+import com.dmdirc.parser.events.ServerReadyEvent;
+import com.dmdirc.parser.events.SocketCloseEvent;
+import com.dmdirc.parser.events.UnknownActionEvent;
+import com.dmdirc.parser.events.UnknownMessageEvent;
+import com.dmdirc.parser.events.UnknownNoticeEvent;
+import com.dmdirc.parser.events.UserModeChangeEvent;
+import com.dmdirc.parser.events.UserModeDiscoveryEvent;
+import com.dmdirc.parser.events.WallDesyncEvent;
+import com.dmdirc.parser.events.WallopEvent;
+import com.dmdirc.parser.events.WalluserEvent;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.interfaces.callbacks.AuthNoticeListener;
-import com.dmdirc.parser.interfaces.callbacks.AwayStateListener;
-import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
-import com.dmdirc.parser.interfaces.callbacks.ChannelSelfJoinListener;
-import com.dmdirc.parser.interfaces.callbacks.ConnectErrorListener;
-import com.dmdirc.parser.interfaces.callbacks.ErrorInfoListener;
-import com.dmdirc.parser.interfaces.callbacks.InviteListener;
-import com.dmdirc.parser.interfaces.callbacks.MotdEndListener;
-import com.dmdirc.parser.interfaces.callbacks.MotdLineListener;
-import com.dmdirc.parser.interfaces.callbacks.MotdStartListener;
-import com.dmdirc.parser.interfaces.callbacks.NickChangeListener;
-import com.dmdirc.parser.interfaces.callbacks.NickInUseListener;
-import com.dmdirc.parser.interfaces.callbacks.NumericListener;
-import com.dmdirc.parser.interfaces.callbacks.PingFailureListener;
-import com.dmdirc.parser.interfaces.callbacks.PingSentListener;
-import com.dmdirc.parser.interfaces.callbacks.PingSuccessListener;
-import com.dmdirc.parser.interfaces.callbacks.PrivateActionListener;
-import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpListener;
-import com.dmdirc.parser.interfaces.callbacks.PrivateCtcpReplyListener;
-import com.dmdirc.parser.interfaces.callbacks.PrivateMessageListener;
-import com.dmdirc.parser.interfaces.callbacks.PrivateNoticeListener;
-import com.dmdirc.parser.interfaces.callbacks.ServerErrorListener;
-import com.dmdirc.parser.interfaces.callbacks.ServerNoticeListener;
-import com.dmdirc.parser.interfaces.callbacks.ServerReadyListener;
-import com.dmdirc.parser.interfaces.callbacks.SocketCloseListener;
-import com.dmdirc.parser.interfaces.callbacks.UnknownActionListener;
-import com.dmdirc.parser.interfaces.callbacks.UnknownMessageListener;
-import com.dmdirc.parser.interfaces.callbacks.UnknownNoticeListener;
-import com.dmdirc.parser.interfaces.callbacks.UserModeChangeListener;
-import com.dmdirc.parser.interfaces.callbacks.UserModeDiscoveryListener;
-import com.dmdirc.parser.interfaces.callbacks.WallDesyncListener;
-import com.dmdirc.parser.interfaces.callbacks.WallopListener;
-import com.dmdirc.parser.interfaces.callbacks.WalluserListener;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.EventUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -106,22 +99,13 @@ import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.engio.mbassy.listener.Handler;
+
 
 /**
  * Handles parser events for a Server object.
  */
-public class ServerEventHandler extends EventHandler implements
-        ChannelSelfJoinListener, PrivateMessageListener, PrivateActionListener,
-        ErrorInfoListener, PrivateCtcpListener, PrivateCtcpReplyListener,
-        SocketCloseListener, PrivateNoticeListener, MotdStartListener,
-        MotdLineListener, MotdEndListener, NumericListener, PingFailureListener,
-        PingSuccessListener, AwayStateListener, ConnectErrorListener,
-        NickInUseListener, AuthNoticeListener, UnknownNoticeListener,
-        UserModeChangeListener, InviteListener, WallopListener,
-        WalluserListener, WallDesyncListener, NickChangeListener,
-        ServerErrorListener, PingSentListener, UserModeDiscoveryListener,
-        ServerNoticeListener, UnknownMessageListener, UnknownActionListener,
-        ServerReadyListener {
+public class ServerEventHandler extends EventHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServerEventHandler.class);
 
@@ -140,17 +124,9 @@ public class ServerEventHandler extends EventHandler implements
      */
     public ServerEventHandler(final Server owner, final GroupChatManagerImpl groupChatManager,
             final DMDircMBassador eventBus) {
-        super(eventBus);
         this.owner = owner;
         this.groupChatManager = groupChatManager;
         this.eventBus = eventBus;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected <T extends CallbackInterface> void addCallback(
-            final CallbackManager cbm, final Class<T> type) {
-        cbm.addCallback(type, (T) this);
     }
 
     @Nonnull
@@ -159,161 +135,138 @@ public class ServerEventHandler extends EventHandler implements
         return owner;
     }
 
-    @Override
-    public void onChannelSelfJoin(final Parser parser, final Date date, final ChannelInfo channel) {
-        checkParser(parser);
-        groupChatManager.addChannel(channel);
+    @Handler
+    public void onChannelSelfJoin(final ChannelSelfJoinEvent event) {
+        checkParser(event.getParser());
+        groupChatManager.addChannel(event.getChannel());
     }
 
-    @Override
-    public void onPrivateMessage(final Parser parser, final Date date, final String message,
-            final String host) {
-        checkParser(parser);
+    @Handler
+    public void onPrivateMessage(final PrivateMessageEvent event) {
+        checkParser(event.getParser());
 
-        if (!owner.hasQuery(host)) {
-            owner.getQuery(host).onPrivateMessage(parser, date, message, host);
+        if (!owner.hasQuery(event.getHost())) {
+            owner.getQuery(event.getHost()).onPrivateMessage(event);
         }
     }
 
-    @Override
-    public void onPrivateAction(final Parser parser, final Date date, final String message,
-            final String host) {
-        checkParser(parser);
+    @Handler
+    public void onPrivateAction(final PrivateActionEvent event) {
+        checkParser(event.getParser());
 
-        if (!owner.hasQuery(host)) {
-            owner.getQuery(host).onPrivateAction(parser, date, message, host);
+        if (!owner.hasQuery(event.getHost())) {
+            owner.getQuery(event.getHost()).onPrivateAction(event);
         }
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    @Override
-    public void onErrorInfo(final Parser parser, final Date date, final ParserError errorInfo) {
+    @Handler
+    public void onErrorInfo(final ErrorInfoEvent event) {
 
         final StringBuilder errorString = new StringBuilder();
         errorString.append("Parser exception.\n\n");
 
         errorString.append("\tLast line:\t");
-        errorString.append(errorInfo.getLastLine()).append('\n');
+        errorString.append(event.getErrorInfo().getLastLine()).append('\n');
 
         errorString.append("\tServer:\t");
         errorString.append(owner.getAddress()).append('\n');
 
         errorString.append("\tAdditional Information:\n");
-        for (final String line : parser.getServerInformationLines()) {
+        for (final String line : event.getParser().getServerInformationLines()) {
             errorString.append("\t\t").append(line).append('\n');
         }
 
-        final Exception ex = errorInfo.isException() ? errorInfo.getException()
+        final Exception ex = event.getErrorInfo().isException() ? event.getErrorInfo().getException()
                 : new Exception(errorString.toString()); // NOPMD
 
         final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
-        if (errorInfo.isUserError()) {
-            eventBus.publishAsync(new UserErrorEvent(errorLevel, ex, errorInfo.getData(), ""));
+        if (event.getErrorInfo().isUserError()) {
+            eventBus.publishAsync(new UserErrorEvent(errorLevel, ex, event.getErrorInfo().getData(), ""));
         } else {
-            eventBus.publishAsync(new AppErrorEvent(errorLevel, ex, errorInfo.getData(), ""));
+            eventBus.publishAsync(new AppErrorEvent(errorLevel, ex, event.getErrorInfo().getData(), ""));
         }
     }
 
-    @Override
-    public void onPrivateCTCP(final Parser parser, final Date date, final String type,
-            final String message, final String host) {
-        checkParser(parser);
+    @Handler
+    public void onPrivateCTCP(final PrivateCTCPEvent event) {
+        checkParser(event.getParser());
 
-        final ServerCtcpEvent event = new ServerCtcpEvent(owner, owner.getUser(host),
-                type, message);
-        eventBus.publish(event);
-        if (!event.isHandled()) {
-            owner.sendCTCPReply(owner.getUser(host).getNickname(), type, message);
+        final ServerCtcpEvent coreEvent = new ServerCtcpEvent(owner, owner.getUser(event.getHost()),
+                event.getType(), event.getMessage());
+        eventBus.publish(coreEvent);
+        if (!coreEvent.isHandled()) {
+            owner.sendCTCPReply(owner.getUser(event.getHost()).getNickname(), event.getType(),
+                    event.getMessage());
         }
     }
 
-    @Override
-    public void onPrivateCTCPReply(final Parser parser, final Date date, final String type,
-            final String message, final String host) {
-        checkParser(parser);
-        eventBus.publish(new ServerCtcpReplyEvent(owner, owner.getUser(host), type, message));
+    @Handler
+    public void onPrivateCTCPReply(final PrivateCTCPReplyEvent event) {
+        checkParser(event.getParser());
+        eventBus.publish(new ServerCtcpReplyEvent(owner, owner.getUser(event.getHost()),
+                event.getType(), event.getMessage()));
     }
 
-    @Override
-    public void onSocketClosed(final Parser parser, final Date date) {
-        if (owner.getParser().orElse(null) == parser) {
+    @Handler
+    public void onSocketClosed(final SocketCloseEvent event) {
+        if (owner.getParser().orElse(null) == event.getParser()) {
             owner.onSocketClosed();
         }
     }
 
-    @Override
-    public void onPrivateNotice(final Parser parser, final Date date,
-            final String message, final String host) {
-        checkParser(parser);
-        eventBus.publishAsync(new ServerNoticeEvent(owner, owner.getLocalUser().get(), message));
+    @Handler
+    public void onPrivateNotice(final PrivateNoticeEvent event) {
+        checkParser(event.getParser());
+        eventBus.publishAsync(new ServerNoticeEvent(owner, owner.getLocalUser().get(),
+                event.getMessage()));
     }
 
-    @Override
-    public void onServerNotice(final Parser parser, final Date date,
-            final String message, final String host) {
-        checkParser(parser);
-        eventBus.publishAsync(new ServerServerNoticeEvent(owner, owner.getLocalUser().get(),
-                message));
+    @Handler
+    public void onServerNotice(final com.dmdirc.parser.events.ServerNoticeEvent event) {
+        checkParser(event.getParser());
+        eventBus.publishAsync(
+                new ServerServerNoticeEvent(owner, owner.getLocalUser().get(), event.getMessage()));
     }
 
-    @Override
-    public void onMOTDStart(final Parser parser, final Date date, final String data) {
-        checkParser(parser);
-        eventBus.publishAsync(new ServerMotdStartEvent(owner, data));
+    @Handler
+    public void onMOTDStart(final MOTDStartEvent event) {
+        checkParser(event.getParser());
+        eventBus.publishAsync(new ServerMotdStartEvent(owner, event.getData()));
     }
 
-    @Override
-    public void onMOTDLine(final Parser parser, final Date date, final String data) {
-        checkParser(parser);
-        eventBus.publishAsync(new ServerMotdLineEvent(owner, data));
+    @Handler
+    public void onMOTDLine(final MOTDLineEvent event) {
+        checkParser(event.getParser());
+        eventBus.publishAsync(new ServerMotdLineEvent(owner, event.getData()));
     }
 
-    @Override
-    public void onMOTDEnd(final Parser parser, final Date date,
-            final boolean noMOTD, final String data) {
-        checkParser(parser);
-        eventBus.publishAsync(new ServerMotdEndEvent(owner, data));
+    @Handler
+    public void onMOTDEnd(final MOTDEndEvent event) {
+        checkParser(event.getParser());
+        eventBus.publishAsync(new ServerMotdEndEvent(owner, event.getData()));
     }
 
-    @Override
-    public void onNumeric(final Parser parser, final Date date, final int numeric,
-            final String[] token) {
-        checkParser(parser);
-
-        String snumeric = String.valueOf(numeric);
-
-        if (numeric < 10) {
-            snumeric = "00" + snumeric;
-        } else if (numeric < 100) {
-            snumeric = '0' + snumeric;
-        }
-
-        final String sansIrcd = "numeric_" + snumeric;
-        String target = "";
-
-        if (owner.getConfigManager().hasOptionString("formatter", sansIrcd)) {
-            target = sansIrcd;
-        } else if (owner.getConfigManager().hasOptionString("formatter", "numeric_unknown")) {
-            target = "numeric_unknown";
-        }
-
-        final ServerNumericEvent event = new ServerNumericEvent(owner, numeric, token);
-        final String format = EventUtils.postDisplayable(eventBus, event, target);
-        owner.handleNotification(format, (Object[]) token);
+    @Handler
+    public void onNumeric(final NumericEvent event) {
+        checkParser(event.getParser());
+        final DMDircEvent coreEvent = new ServerNumericEvent(owner, event.getNumeric(),
+                event.getToken());
+        eventBus.publishAsync(coreEvent);
     }
 
-    @Override
-    public void onPingFailed(final Parser parser, final Date date) {
-        checkParser(parser);
+    @Handler
+    public void onPingFailed(final PingFailureEvent event) {
+        checkParser(event.getParser());
 
         eventBus.publishAsync(new StatusBarMessageEvent(new StatusMessage(
                 "No ping reply from " + owner.getName() + " for over " +
-                        (int) Math.floor(parser.getPingTime() / 1000.0) + " seconds.",
+                        (int) Math.floor(event.getParser().getPingTime() / 1000.0) + " seconds.",
                 owner.getConfigManager())));
 
-        eventBus.publishAsync(new ServerNoPingEvent(owner, parser.getPingTime()));
+        eventBus.publishAsync(new ServerNoPingEvent(owner, event.getParser().getPingTime()));
 
-        if (parser.getPingTime()
+        if (event.getParser().getPingTime()
                 >= owner.getConfigManager().getOptionInt("server", "pingtimeout")) {
             LOG.warn("Server appears to be stoned, reconnecting");
             eventBus.publishAsync(new ServerStonedEvent(owner));
@@ -321,47 +274,47 @@ public class ServerEventHandler extends EventHandler implements
         }
     }
 
-    @Override
-    public void onPingSent(final Parser parser, final Date date) {
-        checkParser(parser);
+    @Handler
+    public void onPingSent(final PingSentEvent event) {
+        checkParser(event.getParser());
         eventBus.publishAsync(new ServerPingSentEvent(owner));
     }
 
-    @Override
-    public void onPingSuccess(final Parser parser, final Date date) {
-        checkParser(parser);
+    @Handler
+    public void onPingSuccess(final PingSuccessEvent event) {
+        checkParser(event.getParser());
         eventBus.publishAsync(new ServerGotPingEvent(owner,
                 owner.getParser().get().getServerLatency()));
     }
 
-    @Override
-    public void onAwayState(final Parser parser, final Date date, final AwayState oldState,
-            final AwayState currentState, final String reason) {
-        checkParser(parser);
+    @Handler
+    public void onAwayState(final AwayStateEvent event) {
+        checkParser(event.getParser());
 
-        owner.updateAwayState(currentState == AwayState.AWAY ? Optional.of(reason) : Optional.empty());
+        owner.updateAwayState(event.getNewState() == AwayState.AWAY ?
+                Optional.of(event.getReason()) : Optional.empty());
 
-        if (currentState == AwayState.AWAY) {
-            eventBus.publishAsync(new ServerAwayEvent(owner, reason));
-        } else if (oldState != AwayState.UNKNOWN) {
+        if (event.getNewState() == AwayState.AWAY) {
+            eventBus.publishAsync(new ServerAwayEvent(owner, event.getReason()));
+        } else if (event.getOldState() != AwayState.UNKNOWN) {
             eventBus.publishAsync(new ServerBackEvent(owner));
         }
     }
 
-    @Override
-    public void onConnectError(final Parser parser, final Date date, final ParserError errorInfo) {
-        checkParser(parser);
-        owner.onConnectError(errorInfo);
+    @Handler
+    public void onConnectError(final ConnectErrorEvent event) {
+        checkParser(event.getParser());
+        owner.onConnectError(event.getErrorInfo());
     }
 
-    @Override
-    public void onNickInUse(final Parser parser, final Date date, final String nickname) {
-        checkParser(parser);
+    @Handler
+    public void onNickInUse(final NickInUseEvent event) {
+        checkParser(event.getParser());
 
-        final String lastNick = parser.getLocalClient().getNickname();
+        final String lastNick = event.getParser().getLocalClient().getNickname();
 
         // If our last nick is still valid, ignore the in use message
-        if (!parser.getStringConverter().equalsIgnoreCase(lastNick, nickname)) {
+        if (!event.getParser().getStringConverter().equalsIgnoreCase(lastNick, event.getNickname())) {
             return;
         }
 
@@ -373,7 +326,7 @@ public class ServerEventHandler extends EventHandler implements
         // Loop so we can check case sensitivity
         for (String alt : alts) {
             offset++;
-            if (parser.getStringConverter().equalsIgnoreCase(alt, lastNick)) {
+            if (event.getParser().getStringConverter().equalsIgnoreCase(alt, lastNick)) {
                 break;
             }
         }
@@ -382,160 +335,154 @@ public class ServerEventHandler extends EventHandler implements
             newNick = alts.get(offset);
         }
 
-        parser.getLocalClient().setNickname(newNick);
+        event.getParser().getLocalClient().setNickname(newNick);
     }
 
-    @Override
-    public void onServerReady(final Parser parser, final Date date) {
-        checkParser(parser);
+    @Handler
+    public void onServerReady(final ServerReadyEvent event) {
+        checkParser(event.getParser());
         owner.onPost005();
     }
 
-    @Override
-    public void onNoticeAuth(final Parser parser, final Date date, final String data) {
-        checkParser(parser);
+    @Handler
+    public void onNoticeAuth(final AuthNoticeEvent event) {
+        checkParser(event.getParser());
 
-        final ServerAuthNoticeEvent event = new ServerAuthNoticeEvent(owner, data);
-        final String format = EventUtils.postDisplayable(eventBus, event, "authNotice");
-        owner.doNotification(format, data);
+        final ServerAuthNoticeEvent coreEvent = new ServerAuthNoticeEvent(owner, event.getMessage());
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "authNotice");
+        owner.doNotification(format, event.getDate());
     }
 
-    @Override
-    public void onUnknownNotice(final Parser parser, final Date date, final String message,
-            final String target, final String host) {
-        checkParser(parser);
+    @Handler
+    public void onUnknownNotice(final UnknownNoticeEvent event) {
+        checkParser(event.getParser());
 
         final ServerUnknownNoticeEvent
-                event = new ServerUnknownNoticeEvent(owner, host, target, message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "unknownNotice");
-        owner.doNotification(format, host, target, message);
+                coreEvent = new ServerUnknownNoticeEvent(owner, event.getHost(), event.getTarget(),
+                event.getMessage());
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "unknownNotice");
+        owner.doNotification(format, event.getHost(), event.getTarget(), event.getMessage());
     }
 
-    @Override
-    public void onUnknownMessage(final Parser parser, final Date date, final String message,
-            final String target, final String host) {
-        checkParser(parser);
+    @Handler
+    public void onUnknownMessage(final UnknownMessageEvent event) {
+        checkParser(event.getParser());
 
-        if (parser.getLocalClient().equals(parser.getClient(host))) {
+        if (event.getParser().getLocalClient().equals(event.getParser().getClient(event.getHost()))) {
             // Local client
-            eventBus.publishAsync(new QuerySelfMessageEvent(owner.getQuery(target),
-                    owner.getLocalUser().get(), message));
+            eventBus.publishAsync(
+                    new QuerySelfMessageEvent(owner.getQuery(event.getTarget()), owner.getLocalUser().get(),
+                            event.getMessage()));
         } else {
-            final ServerUnknownMessageEvent event
-                    = new ServerUnknownMessageEvent(owner, host, target, message);
-            final String format = EventUtils.postDisplayable(eventBus, event, "unknownMessage");
-            owner.doNotification(format, host, target, message);
+            final ServerUnknownMessageEvent coreEvent
+                    = new ServerUnknownMessageEvent(owner, event.getHost(), event.getTarget(), event.getMessage());
+            final String format = EventUtils.postDisplayable(eventBus, coreEvent, "unknownMessage");
+            owner.doNotification(format, event.getHost(), event.getTarget(), event.getMessage());
         }
     }
 
-    @Override
-    public void onUnknownAction(final Parser parser, final Date date, final String message,
-            final String target, final String host) {
-        checkParser(parser);
+    @Handler
+    public void onUnknownAction(final UnknownActionEvent event) {
+        checkParser(event.getParser());
 
-        if (parser.getLocalClient().equals(parser.getClient(host))) {
+        if (event.getParser().getLocalClient().equals(event.getParser().getClient(event.getHost()))) {
             // Local client
-            eventBus.publishAsync(new QuerySelfActionEvent(owner.getQuery(target),
-                    owner.getLocalUser().get(), message));
+            eventBus.publishAsync(
+                    new QuerySelfActionEvent(owner.getQuery(event.getTarget()), owner.getLocalUser().get(),
+                            event.getMessage()));
         } else {
-            final ServerUnknownActionEvent event
-                    = new ServerUnknownActionEvent(owner, host, target, message);
-            final String format = EventUtils.postDisplayable(eventBus, event, "unknownAction");
-            owner.doNotification(format, host, target, message);
+            final ServerUnknownActionEvent coreEvent
+                    = new ServerUnknownActionEvent(owner, event.getHost(), event.getTarget(), event.getMessage());
+            final String format = EventUtils.postDisplayable(eventBus, coreEvent, "unknownAction");
+            owner.doNotification(format, event.getHost(), event.getTarget(), event.getMessage());
         }
     }
 
-    @Override
-    public void onUserModeChanged(final Parser parser, final Date date,
-            final ClientInfo client, final String host, final String modes) {
-        checkParser(parser);
+    @Handler
+    public void onUserModeChanged(final UserModeChangeEvent event) {
+        checkParser(event.getParser());
 
-        final ServerUserModesEvent event = new ServerUserModesEvent(owner,
-                owner.getUser(client.getHostname()), modes);
-        final String format = EventUtils.postDisplayable(eventBus, event, "userModeChanged");
-        owner.doNotification(format, owner.getUser(client.getHostname()), modes);
+        final ServerUserModesEvent coreEvent = new ServerUserModesEvent(owner,
+                owner.getUser(event.getClient().getHostname()), event.getModes());
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "userModeChanged");
+        owner.doNotification(format, owner.getUser(event.getClient().getHostname()), event.getModes());
     }
 
-    @Override
-    public void onUserModeDiscovered(final Parser parser, final Date date,
-            final ClientInfo client, final String modes) {
-        checkParser(parser);
+    @Handler
+    public void onUserModeDiscovered(final UserModeDiscoveryEvent event) {
+        checkParser(event.getParser());
 
-        final ServerUserModesEvent event = new ServerUserModesEvent(owner,
-                owner.getUser(client.getHostname()), modes);
-        final String format = EventUtils.postDisplayable(eventBus, event,
-                modes.isEmpty() || "+".equals(modes) ? "userNoModes" : "userModeDiscovered");
-        owner.doNotification(format, owner.getUser(client.getHostname()), modes);
+        final ServerUserModesEvent coreEvent = new ServerUserModesEvent(owner,
+                owner.getUser(event.getClient().getHostname()), event.getModes());
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent,
+                event.getModes().isEmpty() || "+".equals(event.getModes()) ? "userNoModes" : "userModeDiscovered");
+        owner.doNotification(format, owner.getUser(event.getClient().getHostname()), event.getModes());
     }
 
-    @Override
-    public void onInvite(final Parser parser, final Date date, final String userHost,
-            final String channel) {
-        checkParser(parser);
+    @Handler
+    public void onInvite(final InviteEvent event) {
+        checkParser(event.getParser());
 
-        final Invite invite = new Invite(owner.getInviteManager(), channel, owner.getUser(userHost));
+        final Invite invite = new Invite(owner.getInviteManager(), event.getChannel(),
+                owner.getUser(event.getUserHost()));
         owner.getInviteManager().addInvite(invite);
-        final ServerInviteReceivedEvent event = new ServerInviteReceivedEvent(owner,
-                owner.getUser(userHost), channel, invite);
-        final String format = EventUtils.postDisplayable(eventBus, event, "inviteReceived");
-        owner.doNotification(format, owner.getUser(userHost), channel);
+        final ServerInviteReceivedEvent coreEvent = new ServerInviteReceivedEvent(owner,
+                owner.getUser(event.getUserHost()), event.getChannel(), invite);
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "inviteReceived");
+        owner.doNotification(format, owner.getUser(event.getUserHost()), event.getChannel());
     }
 
-    @Override
-    public void onWallop(final Parser parser, final Date date, final String message,
-            final String host) {
-        checkParser(parser);
+    @Handler
+    public void onWallop(final WallopEvent event) {
+        checkParser(event.getParser());
 
-        final ServerWallopsEvent event = new ServerWallopsEvent(owner,
-                owner.getUser(host), message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "wallop");
-        owner.doNotification(format, owner.getUser(host), message);
+        final ServerWallopsEvent coreEvent = new ServerWallopsEvent(owner,
+                owner.getUser(event.getHost()), event.getMessage());
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "wallop");
+        owner.doNotification(format, owner.getUser(event.getHost()), event.getMessage());
 
     }
 
-    @Override
-    public void onWalluser(final Parser parser, final Date date, final String message,
-            final String host) {
-        checkParser(parser);
+    @Handler
+    public void onWalluser(final WalluserEvent event) {
+        checkParser(event.getParser());
 
-        final ServerWallusersEvent event = new ServerWallusersEvent(owner,
-                owner.getLocalUser().get(), message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "walluser");
-        owner.doNotification(format, owner.getUser(host), message);
+        final ServerWallusersEvent coreEvent = new ServerWallusersEvent(owner,
+                owner.getLocalUser().get(), event.getMessage());
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "walluser");
+        owner.doNotification(format, owner.getUser(event.getHost()), event.getMessage());
     }
 
-    @Override
-    public void onWallDesync(final Parser parser, final Date date, final String message,
-            final String host) {
-        checkParser(parser);
+    @Handler
+    public void onWallDesync(final WallDesyncEvent event) {
+        checkParser(event.getParser());
 
-        final ServerWalldesyncEvent event = new ServerWalldesyncEvent(owner,
-                owner.getLocalUser().get(), message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "walldesync");
-        owner.doNotification(format, owner.getUser(host), message);
+        final ServerWalldesyncEvent coreEvent = new ServerWalldesyncEvent(owner,
+                owner.getLocalUser().get(), event.getMessage());
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "walldesync");
+        owner.doNotification(format, owner.getUser(event.getHost()), event.getMessage());
     }
 
-    @Override
-    public void onNickChanged(final Parser parser, final Date date, final ClientInfo client,
-            final String oldNick) {
-        checkParser(parser);
+    @Handler
+    public void onNickChanged(final NickChangeEvent event) {
+        checkParser(event.getParser());
 
-        if (client.equals(owner.getParser().get().getLocalClient())) {
-            final ServerNickChangeEvent event = new ServerNickChangeEvent(owner, oldNick,
-                    client.getNickname());
-            final String format = EventUtils.postDisplayable(eventBus, event, "selfNickChange");
-            owner.doNotification(format, oldNick, client.getNickname());
+        if (event.getClient().equals(owner.getParser().get().getLocalClient())) {
+            final ServerNickChangeEvent coreEvent = new ServerNickChangeEvent(owner,
+                    event.getOldNick(), event.getClient().getNickname());
+            final String format = EventUtils.postDisplayable(eventBus, coreEvent, "selfNickChange");
+            owner.doNotification(format, event.getOldNick(), event.getClient().getNickname());
             owner.updateTitle();
         }
     }
 
-    @Override
-    public void onServerError(final Parser parser, final Date date, final String message) {
-        checkParser(parser);
+    @Handler
+    public void onServerError(final com.dmdirc.parser.events.ServerErrorEvent event) {
+        checkParser(event.getParser());
 
-        final ServerErrorEvent event = new ServerErrorEvent(owner, message);
-        final String format = EventUtils.postDisplayable(eventBus, event, "serverError");
-        owner.doNotification(format, message);
+        final ServerErrorEvent coreEvent = new ServerErrorEvent(owner, event.getMessage());
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "serverError");
+        owner.doNotification(format, event.getMessage());
     }
 
     @Override
