@@ -22,69 +22,35 @@
 
 package com.dmdirc;
 
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.parser.common.CallbackManager;
-import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.parser.interfaces.callbacks.CallbackInterface;
 
 import javax.annotation.Nonnull;
 
 /**
  * Abstracts some behaviour used by Event Handlers.
  */
-public abstract class EventHandler implements CallbackInterface {
-
-    private final DMDircMBassador eventBus;
+public abstract class EventHandler {
 
     /**
      * Creates a new instance.
-     *
-     * @param eventBus The event bus to post errors to.
      */
-    protected EventHandler(final DMDircMBassador eventBus) {
-        this.eventBus = eventBus;
+    protected EventHandler() {
     }
 
     /**
      * Registers all callbacks that this event handler implements with the owner's parser.
      */
     public void registerCallbacks() {
-        final CallbackManager cbm = getConnection().getParser().get().getCallbackManager();
-
-        try {
-            for (Class<?> iface : getClass().getInterfaces()) {
-                if (CallbackInterface.class.isAssignableFrom(iface)) {
-                    addCallback(cbm, iface.asSubclass(CallbackInterface.class));
-                }
-            }
-        } catch (CallbackNotFoundException exception) {
-            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.FATAL, exception,
-                    "Unable to register callbacks", ""));
-        }
+        getConnection().getParser().get().getCallbackManager().subscribe(this);
     }
 
     /**
      * Unregisters all callbacks that have been registered by this event handler.
      */
     public void unregisterCallbacks() {
-        getConnection().getParser().map(Parser::getCallbackManager)
-                .ifPresent(cm -> cm.delAllCallback(this));
+        getConnection().getParser().map(Parser::getCallbackManager).ifPresent(cm -> cm.unsubscribe(this));
     }
-
-    /**
-     * Adds a callback to this event handler.
-     *
-     * @param <T>  The type of callback to be added
-     * @param cbm  The callback manager to use
-     * @param type The type of the callback to be added
-     *
-     * @throws CallbackNotFoundException if the specified callback isn't found
-     */
-    protected abstract <T extends CallbackInterface> void addCallback(
-            final CallbackManager cbm, final Class<T> type);
 
     /**
      * Retrieves the connection that this event handler is for.

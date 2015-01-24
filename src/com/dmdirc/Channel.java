@@ -282,7 +282,7 @@ public class Channel extends FrameContainer implements GroupChat {
         getConfigManager().getBinder().unbind(this);
 
         connection.getParser().map(Parser::getCallbackManager)
-                .ifPresent(cm -> cm.delAllCallback(eventHandler));
+                .ifPresent(cm -> cm.unsubscribe(eventHandler));
 
         // Trigger any actions neccessary
         if (isOnChannel && connection.getState() != ServerState.CLOSING) {
