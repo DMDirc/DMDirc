@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.events.AppErrorEvent;
-import com.dmdirc.events.DMDircEvent;
 import com.dmdirc.events.QuerySelfActionEvent;
 import com.dmdirc.events.QuerySelfMessageEvent;
 import com.dmdirc.events.ServerAuthNoticeEvent;
@@ -89,6 +88,8 @@ import com.dmdirc.parser.events.WalluserEvent;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.EventUtils;
+
+import com.google.common.base.Strings;
 
 import java.util.List;
 import java.util.Optional;
@@ -250,9 +251,21 @@ public class ServerEventHandler extends EventHandler {
     @Handler
     public void onNumeric(final NumericEvent event) {
         checkParser(event.getParser());
-        final DMDircEvent coreEvent = new ServerNumericEvent(owner, event.getNumeric(),
+
+        final String sansIrcd = "numeric_" + Strings
+                .padStart(String.valueOf(event.getNumeric()), 3, '0');
+        String target = "";
+
+        if (owner.getConfigManager().hasOptionString("formatter", sansIrcd)) {
+            target = sansIrcd;
+        } else if (owner.getConfigManager().hasOptionString("formatter", "numeric_unknown")) {
+            target = "numeric_unknown";
+        }
+
+        final ServerNumericEvent coreEvent = new ServerNumericEvent(owner, event.getNumeric(),
                 event.getToken());
-        eventBus.publishAsync(coreEvent);
+        final String format = EventUtils.postDisplayable(eventBus, coreEvent, target);
+        owner.handleNotification(format, (Object[]) event.getToken());
     }
 
     @Handler
