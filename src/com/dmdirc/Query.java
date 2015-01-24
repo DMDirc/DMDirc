@@ -159,12 +159,21 @@ public class Query extends FrameContainer implements PrivateChat {
 
     @Handler
     public void onPrivateMessage(final PrivateMessageEvent event) {
+        if (!checkQuery(event.getHost())) {
+            return;
+        }
+        if (checkQuery(event.getHost())) {
+
+        }
         getEventBus().publishAsync(
                 new QueryMessageEvent(this, connection.getUser(event.getHost()), event.getMessage()));
     }
 
     @Handler
     public void onPrivateAction(final PrivateActionEvent event) {
+        if (!checkQuery(event.getHost())) {
+            return;
+        }
         getEventBus().publishAsync(
                 new QueryActionEvent(this, connection.getUser(event.getHost()), event.getMessage()));
     }
@@ -193,6 +202,9 @@ public class Query extends FrameContainer implements PrivateChat {
 
     @Handler
     public void onNickChanged(final NickChangeEvent event) {
+        if (!checkQuery(event.getClient().getHostname())) {
+            return;
+        }
         final ClientInfo client = event.getClient();
         final String oldNick = event.getOldNick();
         if (client.getNickname().equals(getNickname())) {
@@ -218,6 +230,9 @@ public class Query extends FrameContainer implements PrivateChat {
 
     @Handler
     public void onQuit(final QuitEvent event) {
+        if (!checkQuery(event.getClient().getHostname())) {
+            return;
+        }
         if (event.getClient().getNickname().equals(getNickname())) {
             getEventBus().publish(new QueryQuitEvent(this, event.getReason()));
         }
@@ -225,6 +240,9 @@ public class Query extends FrameContainer implements PrivateChat {
 
     @Handler
     public void onCompositionStateChanged(final CompositionStateChangeEvent event) {
+        if (!checkQuery(event.getHost())) {
+            return;
+        }
         if (event.getState() == CompositionState.TYPING) {
             addComponent(WindowComponent.TYPING_INDICATOR.getIdentifier());
         } else {
@@ -270,6 +288,10 @@ public class Query extends FrameContainer implements PrivateChat {
     @Override
     public User getUser() {
         return user;
+    }
+
+    private boolean checkQuery(final String host) {
+        return user.getHostname().orElse("").equals(host);
     }
 
 }

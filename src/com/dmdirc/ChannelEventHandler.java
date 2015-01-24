@@ -106,6 +106,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelMessage(final com.dmdirc.parser.events.ChannelMessageEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         eventBus.publishAsync(new ChannelMessageEvent(event.getDate().getTime(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getMessage()));
@@ -114,6 +117,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelGotNames(final ChannelNamesEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         owner.setClients(event.getChannel().getChannelClients().stream()
                 .map(client -> groupChatUserManager.getUserFromClient(client, owner))
@@ -124,6 +130,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelTopic(final ChannelTopicEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         final ChannelInfo channel = event.getChannel();
         final Date date = event.getDate();
@@ -168,6 +177,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelJoin(final com.dmdirc.parser.events.ChannelJoinEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         eventBus.publish(new ChannelJoinEvent(event.getDate().getTime(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner)));
@@ -177,6 +189,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelPart(final com.dmdirc.parser.events.ChannelPartEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         final ChannelClientInfo client = event.getClient();
         final Date date = event.getDate();
@@ -195,6 +210,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelKick(final com.dmdirc.parser.events.ChannelKickEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
         final ChannelClientInfo kickedClient = event.getKickedClient();
 
         eventBus.publishAsync(new ChannelKickEvent(event.getDate().getTime(), owner,
@@ -206,6 +224,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelQuit(final com.dmdirc.parser.events.ChannelQuitEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         eventBus.publishAsync(new ChannelQuitEvent(event.getDate().getTime(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getReason()));
@@ -215,6 +236,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelAction(final com.dmdirc.parser.events.ChannelActionEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         eventBus.publishAsync(new ChannelActionEvent(event.getDate().getTime(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getMessage()));
@@ -223,6 +247,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelNickChanged(final com.dmdirc.parser.events.ChannelNickChangeEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         final String oldNick = event.getOldNick();
         final ChannelClientInfo client = event.getClient();
@@ -243,6 +270,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelModeChanged(final com.dmdirc.parser.events.ChannelModeChangeEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         final String host = event.getHost();
         final String modes = event.getModes();
@@ -269,6 +299,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelCTCP(final ChannelCTCPEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         final ChannelClientInfo client = event.getClient();
         final String message = event.getMessage();
@@ -302,6 +335,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelNotice(final com.dmdirc.parser.events.ChannelNoticeEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         eventBus.publishAsync(new ChannelNoticeEvent(event.getDate().getTime(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getMessage()));
@@ -310,6 +346,9 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelModeNotice(final com.dmdirc.parser.events.ChannelModeNoticeEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         eventBus.publishAsync(new ChannelModeNoticeEvent(event.getDate().getTime(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner), String.valueOf
@@ -319,12 +358,19 @@ public class ChannelEventHandler extends EventHandler {
     @Handler
     public void onChannelGotListModes(final ChannelListModeEvent event) {
         checkParser(event.getParser());
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
 
         final ChannelListModesRetrievedEvent coreEvent = new ChannelListModesRetrievedEvent(
                 event.getDate().getTime(), owner, event.getMode());
         final String format = EventUtils.postDisplayable(eventBus, coreEvent,
                 "channelListModeRetrieved");
         owner.doNotification(event.getDate(), format, event.getMode());
+    }
+
+    private boolean checkChannel(final ChannelInfo channelInfo) {
+        return owner.getChannelInfo().equals(channelInfo);
     }
 
 }
