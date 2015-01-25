@@ -27,7 +27,7 @@ import com.dmdirc.interfaces.GroupChat;
 /**
  * Fired when channel list modes are retrieved.
  */
-public class ChannelListModesRetrievedEvent extends ChannelDisplayableEvent {
+public class ChannelListModesRetrievedEvent extends ChannelEvent {
 
     private final char mode;
 

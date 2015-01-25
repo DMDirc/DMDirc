@@ -361,9 +361,7 @@ public class ServerEventHandler extends EventHandler {
     public void onNoticeAuth(final AuthNoticeEvent event) {
         checkParser(event.getParser());
 
-        final ServerAuthNoticeEvent coreEvent = new ServerAuthNoticeEvent(owner, event.getMessage());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "authNotice");
-        owner.doNotification(format, event.getDate());
+        eventBus.publishAsync(new ServerAuthNoticeEvent(owner, event.getMessage()));
     }
 
     @Handler
@@ -439,10 +437,8 @@ public class ServerEventHandler extends EventHandler {
         final Invite invite = new Invite(owner.getInviteManager(), event.getChannel(),
                 owner.getUser(event.getUserHost()));
         owner.getInviteManager().addInvite(invite);
-        final ServerInviteReceivedEvent coreEvent = new ServerInviteReceivedEvent(owner,
-                owner.getUser(event.getUserHost()), event.getChannel(), invite);
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "inviteReceived");
-        owner.doNotification(format, owner.getUser(event.getUserHost()), event.getChannel());
+        eventBus.publishAsync(new ServerInviteReceivedEvent(owner,
+                owner.getUser(event.getUserHost()), event.getChannel(), invite));
     }
 
     @Handler
@@ -493,9 +489,7 @@ public class ServerEventHandler extends EventHandler {
     public void onServerError(final com.dmdirc.parser.events.ServerErrorEvent event) {
         checkParser(event.getParser());
 
-        final ServerErrorEvent coreEvent = new ServerErrorEvent(owner, event.getMessage());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "serverError");
-        owner.doNotification(format, event.getMessage());
+        eventBus.publishAsync(new ServerErrorEvent(owner, event.getMessage()));
     }
 
     @Override

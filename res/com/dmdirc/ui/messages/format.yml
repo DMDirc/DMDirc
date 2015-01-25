@@ -35,6 +35,15 @@ ServerAwayEvent:
 ServerBackEvent:
   format: "You are no longer marked as away."
   colour: 14
+ServerAuthNoticeEvent:
+  format: -AUTH- {{notice}}
+  colour: 5
+ServerInviteReceivedEvent:
+  format: * You have been invited to {{channel}} by {{user.nickname}}.
+  colour: 2
+ServerErrorEvent:
+  format: ERROR: {{reason}}
+  colour: 4
 
 ################## Server messaging events #########################################################
 
@@ -168,7 +177,6 @@ CommandOutputEvent:
 #  userModeChanged=3* %1$s sets user mode: %4$s.
 #  userNoModes=3* No user modes.
 #  userModeDiscovered=3* User modes are: %4$s.
-#  inviteReceived=2* You have been invited to %4$s by %1$s.
 #  walluser=5!%1$s! %4$s
 #  wallop=5$%1$s$ %4$s
 #  walldesync=5/%1$s/ %4$s
@@ -178,13 +186,11 @@ CommandOutputEvent:
 #  serverConnecting=Connecting to %1$s:%2$s...
 #  serverDisconnectInProgress=A disconnection attempt is in progress, please wait...
 #  serverConnectInProgress=A connection attempt is in progress, please wait...
-#  authNotice=5-AUTH- %1$s
 #  rawCommand=10>>> %1$s
 #  unknownCommand=14Unknown command %1$s.
 #  commandOutput=%1$s
 #  actionTooLong=Warning: action too long to be sent
 #  tabCompletion=14Multiple possibilities: %1$s
-#  serverError=4ERROR: %1$s
 #  serverUnknownProtocol=4Unknown protocol '%1$s'. Unable to connect.
 #  selfNickChange=3* You are now known as %2$s.
 #  unknownNotice=5-[%1$s:%2$s]- %3$s
