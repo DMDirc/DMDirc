@@ -76,19 +76,16 @@ public class CoreGlobalAutoCommandsDialogModel implements GlobalAutoCommandsDial
 
     @Override
     public Validator<String> getResponseValidator() {
-        checkState(loaded);
         return responseValidator;
     }
 
     @Override
     public boolean isResponseValid() {
-        checkState(loaded);
         return !getResponseValidator().validate(autoCommand.getResponse()).isFailure();
     }
 
     @Override
     public boolean isSaveAllowed() {
-        checkState(loaded);
         return isResponseValid();
     }
 
