@@ -146,8 +146,18 @@ public class CoreGlobalAutoCommandsDialogModelTest {
         instance.setResponse("test");
         assertTrue(instance.isSaveAllowed());
         instance.save();
-        verify(autoCommandManager).addAutoCommand(eq(AutoCommand.create(Optional.empty(),
-                Optional.empty(), Optional.empty(), "test")));
+        verify(autoCommandManager).addAutoCommand(eq(AutoCommand
+                .create(Optional.empty(), Optional.empty(), Optional.empty(), "test")));
+    }
+
+    @Test
+    public void testSave_EmptyResponse() throws Exception {
+        instance.load();
+        instance.setResponse("");
+        assertTrue(instance.isSaveAllowed());
+        instance.save();
+        verify(autoCommandManager).removeAutoCommand(eq(AutoCommand
+                .create(Optional.empty(), Optional.empty(), Optional.empty(), "")));
     }
 
     @Test
