@@ -216,7 +216,7 @@ public class Server extends FrameContainer implements Connection {
         this.inviteManager = new InviteManagerImpl(this);
 
         awayMessage = Optional.empty();
-        eventHandler = new ServerEventHandler(this, groupChatManager, eventBus);
+        eventHandler = new ServerEventHandler(this, groupChatManager, getEventBus());
 
         this.address = uri;
         this.profile = profile;
