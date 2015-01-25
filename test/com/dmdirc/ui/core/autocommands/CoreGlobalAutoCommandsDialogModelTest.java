@@ -118,20 +118,6 @@ public class CoreGlobalAutoCommandsDialogModelTest {
     }
 
     @Test
-    public void testIsResponseValid_EmptyGlobal() throws Exception {
-        when(autoCommandManager.getGlobalAutoCommand()).thenReturn(Optional.empty());
-        instance.load();
-        assertFalse(instance.isResponseValid());
-    }
-
-    @Test
-    public void testIsResponseValid_Empty() throws Exception {
-        instance.load();
-        instance.setResponse("");
-        assertFalse(instance.isResponseValid());
-    }
-
-    @Test
     public void testIsResponseValid_CommandChar() throws Exception {
         instance.load();
         instance.setResponse("/moo");
@@ -146,27 +132,11 @@ public class CoreGlobalAutoCommandsDialogModelTest {
     }
 
     @Test
-    public void testIsSaveAllowed_InvalidResponse() throws Exception {
-        instance.load();
-        assertTrue(instance.isSaveAllowed());
-        instance.setResponse("");
-        assertFalse(instance.isSaveAllowed());
-    }
-
-    @Test
     public void testIsSaveAllowed() throws Exception {
         instance.load();
         assertTrue(instance.isSaveAllowed());
         instance.setResponse("test");
         assertTrue(instance.isSaveAllowed());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testSave_NotAllowed() throws Exception {
-        instance.load();
-        instance.setResponse("");
-        assertFalse(instance.isSaveAllowed());
-        instance.save();
     }
 
     @Test

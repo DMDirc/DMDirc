@@ -27,8 +27,6 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.util.validators.ValidationResponse;
 import com.dmdirc.util.validators.Validator;
 
-import com.google.common.base.Strings;
-
 import javax.inject.Inject;
 
 /**
@@ -45,9 +43,6 @@ public class ResponseValidator implements Validator<String> {
 
     @Override
     public ValidationResponse validate(final String object) {
-        if (Strings.isNullOrEmpty(object)) {
-            return new ValidationResponse("Response cannot be empty");
-        }
         for (String line : object.split("\n")) {
             if (line.startsWith(commandChar)) {
                 return new ValidationResponse("Lines should not start with a command character");

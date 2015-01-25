@@ -96,8 +96,10 @@ public class CoreGlobalAutoCommandsDialogModel implements GlobalAutoCommandsDial
     public void save() {
         checkState(loaded);
         checkState(isSaveAllowed());
-        if (globalAutoCommand.isPresent()) {
+        if (globalAutoCommand.isPresent() && !autoCommand.getResponse().isEmpty()) {
             autoCommandManager.replaceAutoCommand(globalAutoCommand.get(), getAutoCommand(autoCommand));
+        } else if (globalAutoCommand.isPresent()) {
+            autoCommandManager.removeAutoCommand(getAutoCommand(autoCommand));
         } else {
             autoCommandManager.addAutoCommand(getAutoCommand(autoCommand));
         }

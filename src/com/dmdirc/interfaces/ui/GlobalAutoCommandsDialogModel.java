@@ -45,8 +45,8 @@ public interface GlobalAutoCommandsDialogModel {
     /**
      * Sets the response to be included in the global {@link AutoCommand}.
      *
-     * @param response New response.  Should never be null, this may be empty, but the dialog should
-     *                 not try to save whilst it is empty.
+     * @param response New response.  Should never be null, making this empty will remove the
+     *                 global auto command
      */
     void setResponse(final String response);
 
