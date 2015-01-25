@@ -362,11 +362,8 @@ public class ChannelEventHandler extends EventHandler {
             return;
         }
 
-        final ChannelListModesRetrievedEvent coreEvent = new ChannelListModesRetrievedEvent(
-                event.getDate().getTime(), owner, event.getMode());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent,
-                "channelListModeRetrieved");
-        owner.doNotification(event.getDate(), format, event.getMode());
+        eventBus.publishAsync(new ChannelListModesRetrievedEvent(
+                event.getDate().getTime(), owner, event.getMode()));
     }
 
     private boolean checkChannel(final ChannelInfo channelInfo) {
