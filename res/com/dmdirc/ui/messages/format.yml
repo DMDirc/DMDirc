@@ -36,13 +36,13 @@ ServerBackEvent:
   format: "You are no longer marked as away."
   colour: 14
 ServerAuthNoticeEvent:
-  format: -AUTH- {{notice}}
+  format: "-AUTH- {{notice}}"
   colour: 5
 ServerInviteReceivedEvent:
-  format: * You have been invited to {{channel}} by {{user.nickname}}.
+  format: "* You have been invited to {{channel}} by {{user.nickname}}."
   colour: 2
 ServerErrorEvent:
-  format: ERROR: {{reason}}
+  format: "ERROR: {{reason}}"
   colour: 4
 
 ################## Server messaging events #########################################################
