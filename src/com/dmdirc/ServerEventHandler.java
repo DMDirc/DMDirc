@@ -67,6 +67,7 @@ import com.dmdirc.parser.events.MOTDStartEvent;
 import com.dmdirc.parser.events.NickChangeEvent;
 import com.dmdirc.parser.events.NickInUseEvent;
 import com.dmdirc.parser.events.NumericEvent;
+import com.dmdirc.parser.events.ParserErrorEvent;
 import com.dmdirc.parser.events.PingFailureEvent;
 import com.dmdirc.parser.events.PingSentEvent;
 import com.dmdirc.parser.events.PingSuccessEvent;
@@ -158,6 +159,13 @@ public class ServerEventHandler extends EventHandler {
         if (!owner.hasQuery(event.getHost())) {
             owner.getQuery(event.getHost()).onPrivateAction(event);
         }
+    }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    @Handler
+    public void onErrorInfo(final ParserErrorEvent event) {
+        eventBus.publishAsync(new AppErrorEvent(ErrorLevel.UNKNOWN, event.getThrowable(),
+                event.getThrowable().getMessage(), ""));
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
