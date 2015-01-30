@@ -52,6 +52,7 @@ import com.dmdirc.events.ServerWallopsEvent;
 import com.dmdirc.events.ServerWallusersEvent;
 import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.events.UserInfoResponseEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.AwayState;
@@ -81,6 +82,7 @@ import com.dmdirc.parser.events.SocketCloseEvent;
 import com.dmdirc.parser.events.UnknownActionEvent;
 import com.dmdirc.parser.events.UnknownMessageEvent;
 import com.dmdirc.parser.events.UnknownNoticeEvent;
+import com.dmdirc.parser.events.UserInfoEvent;
 import com.dmdirc.parser.events.UserModeChangeEvent;
 import com.dmdirc.parser.events.UserModeDiscoveryEvent;
 import com.dmdirc.parser.events.WallDesyncEvent;
@@ -159,6 +161,13 @@ public class ServerEventHandler extends EventHandler {
         if (!owner.hasQuery(event.getHost())) {
             owner.getQuery(event.getHost()).onPrivateAction(event);
         }
+    }
+
+    @Handler
+    public void onWhoisEvent(final UserInfoEvent event) {
+        checkParser(event.getParser());
+        eventBus.publishAsync(new UserInfoResponseEvent(owner, event.getDate().getTime(),
+                owner.getUser(event.getClient().getNickname()), event.getInfo()));
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
