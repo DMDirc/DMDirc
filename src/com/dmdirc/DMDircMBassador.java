@@ -68,7 +68,7 @@ public class DMDircMBassador extends MBassador<DMDircEvent> {
             }
 
             synchronized (errorHandlerLock) {
-                final Throwable error = e.getCause().getCause();
+                final Throwable error = e.getCause();
                 publish(new AppErrorEvent(ErrorLevel.HIGH, error.getCause(), error.getMessage(),
                         ""));
             }
