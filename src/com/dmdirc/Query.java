@@ -162,9 +162,6 @@ public class Query extends FrameContainer implements PrivateChat {
         if (!checkQuery(event.getHost())) {
             return;
         }
-        if (checkQuery(event.getHost())) {
-
-        }
         getEventBus().publishAsync(
                 new QueryMessageEvent(this, connection.getUser(event.getHost()), event.getMessage()));
     }
@@ -291,7 +288,7 @@ public class Query extends FrameContainer implements PrivateChat {
     }
 
     private boolean checkQuery(final String host) {
-        return user.getHostname().orElse("").equals(host);
+        return connection.getUser(host).getNickname().equals(user.getNickname());
     }
 
 }
