@@ -26,6 +26,7 @@ import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.events.ClientInfoRequestEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.AboutDialogModel;
@@ -65,17 +66,19 @@ public class CoreAboutDialogModel implements AboutDialogModel {
     private List<Developer> otherDevelopers;
     private List<InfoItem> info;
     private List<LicensedComponent> licences;
+    private CommandLineParser commandLineParser;
 
     @Inject
     public CoreAboutDialogModel(@GlobalConfig final AggregateConfigProvider globalConfig,
             @Directory(CommandLineOptionsModule.DirectoryType.BASE) final Path baseDirectory,
             final ClientInfo clientInfo, final DMDircMBassador eventBus,
-            final PluginManager pluginManager) {
+            final PluginManager pluginManager, final CommandLineParser commandLineParser) {
         this.globalConfig = globalConfig;
         this.baseDirectory = baseDirectory;
         this.clientInfo = clientInfo;
         this.eventBus = eventBus;
         this.pluginManager = pluginManager;
+        this.commandLineParser = commandLineParser;
         about = "";
         mainDevelopers = new ArrayList<>();
         otherDevelopers = new ArrayList<>();
@@ -118,7 +121,9 @@ public class CoreAboutDialogModel implements AboutDialogModel {
                         InfoItem.create("Java Default charset",
                                 Charset.defaultCharset().displayName()),
                         InfoItem.create("Client Uptime",
-                                DateUtils.formatDuration((int) clientInfo.getUptime() / 1000)));
+                                DateUtils.formatDuration((int) clientInfo.getUptime() / 1000)),
+                        InfoItem.create("Launcher Version",
+                                commandLineParser.getLauncherVersion().orElse("Unknown")));
     }
 
     private List<LicensedComponent> createLicensedComponents() {
