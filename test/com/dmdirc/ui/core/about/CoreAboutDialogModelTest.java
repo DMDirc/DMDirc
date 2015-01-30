@@ -23,6 +23,7 @@
 package com.dmdirc.ui.core.about;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
@@ -34,6 +35,7 @@ import com.google.common.collect.Lists;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +59,7 @@ public class CoreAboutDialogModelTest {
     @Mock private PluginMetaData pluginMetaData2;
     @Mock private PluginInfo pluginInfo1;
     @Mock private PluginInfo pluginInfo2;
+    @Mock private CommandLineParser commandLineParser;
     private CoreAboutDialogModel instance;
 
     @Before
@@ -74,7 +77,9 @@ public class CoreAboutDialogModelTest {
         when(pluginInfo2.getMetaData()).thenReturn(pluginMetaData2);
         when(pluginMetaData1.getFriendlyName()).thenReturn("Plugin1");
         when(pluginMetaData2.getFriendlyName()).thenReturn("Plugin2");
-        instance = new CoreAboutDialogModel(globalConfig, path, clientInfo, eventBus, pluginManager);
+        when(commandLineParser.getLauncherVersion()).thenReturn(Optional.of("Unknown"));
+        instance = new CoreAboutDialogModel(globalConfig, path, clientInfo, eventBus,
+                pluginManager, commandLineParser);
         instance.load();
     }
 
@@ -109,7 +114,7 @@ public class CoreAboutDialogModelTest {
 
     @Test
     public void testGetInfo() throws Exception {
-        assertEquals(6, instance.getInfo().size());
+        assertEquals(7, instance.getInfo().size());
     }
 
     @Test

@@ -38,6 +38,7 @@ import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -78,7 +79,7 @@ public class CommandLineParser {
     /** Whether to disable error reporting or not. */
     private boolean disablereporting;
     /** The version string passed for the launcher. */
-    private String launcherVersion;
+    private Optional<String> launcherVersion;
     /** The configuration directory. */
     private String configDirectory;
     /** The RMI server we're using. */
@@ -101,6 +102,7 @@ public class CommandLineParser {
         this.globalConfigProvider = globalConfigProvider;
         this.uriParser = uriParser;
         this.systemInfo = systemInfo;
+        launcherVersion = Optional.empty();
     }
 
     /**
@@ -239,7 +241,7 @@ public class CommandLineParser {
                 doHelp();
                 break;
             case 'l':
-                launcherVersion = param;
+                launcherVersion = Optional.ofNullable(param);
                 break;
             case 'p':
                 doDirectory(Paths.get(systemInfo.getProperty("user.dir")));
@@ -416,7 +418,7 @@ public class CommandLineParser {
      *
      * @return The version supplied by the launcher, or {@code null} if no launcher is identified.
      */
-    public String getLauncherVersion() {
+    public Optional<String> getLauncherVersion() {
         return launcherVersion;
     }
 
