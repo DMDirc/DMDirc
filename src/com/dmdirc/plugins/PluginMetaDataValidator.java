@@ -225,7 +225,7 @@ public class PluginMetaDataValidator {
                 if (target.getVersion().compareTo(new Version(data[1])) < 0) {
                     errors.add("Plugin '" + data[0]
                             + "' is too old (required version: " + data[1]
-                            + ", actual version: " + target.getVersion() + ")");
+                            + ", actual version: " + target.getVersion() + ')');
                 }
 
                 // Check plugin maximum version matches.
@@ -233,7 +233,7 @@ public class PluginMetaDataValidator {
                         new Version(data[2])) > 0) {
                     errors.add("Plugin '" + data[0]
                             + "' is too new (required version: " + data[2]
-                            + ", actual version: " + target.getVersion() + ")");
+                            + ", actual version: " + target.getVersion() + ')');
                 }
             }
         }

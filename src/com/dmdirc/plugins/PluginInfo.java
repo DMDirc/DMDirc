@@ -734,15 +734,6 @@ public class PluginInfo implements ServiceProvider {
     }
 
     /**
-     * Does this plugin contain any persistent classes?
-     *
-     * @return true if this plugin contains any persistent classes, else false
-     */
-    public boolean hasPersistent() {
-        return !metaData.getPersistentClasses().isEmpty();
-    }
-
-    /**
      * Get a list of all persistent classes in this plugin
      *
      * @return List of all persistent classes in this plugin

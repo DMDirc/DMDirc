@@ -52,8 +52,8 @@ public class ExportInfo {
     public ExportedService getExportedService() {
         try {
             final Class<?> c = pluginInfo.getPluginClassLoader().loadClass(className, false);
-            final Plugin p = className.equals(pluginInfo.getMetaData().getMainClass()) ? pluginInfo.
-                    getPlugin() : null;
+            final Plugin p = className.equals(pluginInfo.getMetaData().getMainClass())
+                    ? pluginInfo.getPlugin() : null;
             return new ExportedService(c, methodName, p);
         } catch (ClassNotFoundException | IllegalArgumentException cnfe) {
             return null;

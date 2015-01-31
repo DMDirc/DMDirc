@@ -150,7 +150,7 @@ public class Service {
 
     @Override
     public String toString() {
-        return "Service: " + type + "->" + name + " (Providers: " + serviceproviders.size() + ")";
+        return "Service: " + type + "->" + name + " (Providers: " + serviceproviders.size() + ')';
     }
 
 }

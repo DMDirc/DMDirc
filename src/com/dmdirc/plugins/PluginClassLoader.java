@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 
 public class PluginClassLoader extends ClassLoader {
 
@@ -54,17 +54,6 @@ public class PluginClassLoader extends ClassLoader {
     }
 
     /**
-     * Get a PluginClassLoader that is a subclassloader of this one.
-     *
-     * @param info PluginInfo the new classloader will be for
-     *
-     * @return A classloader configured with this one as its parent
-     */
-    public PluginClassLoader getSubClassLoader(final PluginInfo info) {
-        return new PluginClassLoader(info, globalLoader, this);
-    }
-
-    /**
      * Load the plugin with the given className.
      *
      * @param name Class Name of plugin
@@ -87,8 +76,7 @@ public class PluginClassLoader extends ClassLoader {
      * @return True if the specified class is loaded, false otherwise
      */
     public boolean isClassLoaded(final String name, final boolean checkGlobal) {
-        return findLoadedClass(name) != null || (checkGlobal
-                && globalLoader.isClassLoaded(name));
+        return findLoadedClass(name) != null || checkGlobal && globalLoader.isClassLoaded(name);
     }
 
     /**
@@ -178,10 +166,7 @@ public class PluginClassLoader extends ClassLoader {
     @Override
     protected URL findResource(final String name) {
         try {
-            final URL url = pluginInfo.getPath(name).toUri().toURL();
-            if (url != null) {
-                return url;
-            }
+            return pluginInfo.getPath(name).toUri().toURL();
         } catch (IOException ioe) {
             // Do nothing, fall through
         }
@@ -202,7 +187,7 @@ public class PluginClassLoader extends ClassLoader {
     protected Enumeration<URL> findResources(final String name)
             throws IOException {
         final URL resource = findResource(name);
-        final List<URL> resources = new ArrayList<>();
+        final Collection<URL> resources = new ArrayList<>();
 
         if (resource != null) {
             resources.add(resource);

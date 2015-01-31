@@ -84,7 +84,7 @@ public class CorePluginExtractor {
                 }
 
                 final File newDir = new File(resourceName.substring(0,
-                        resourceName.lastIndexOf('/')) + "/");
+                        resourceName.lastIndexOf('/')) + '/');
 
                 if (!newDir.exists()) {
                     newDir.mkdirs();
