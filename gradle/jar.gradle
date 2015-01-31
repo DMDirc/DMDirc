@@ -56,7 +56,8 @@ jar {
     }
 
     from { configurations.bundle.collect { it.isDirectory() ? it : zipTree(it) } } {
-        exclude 'META-INF/**'
+        exclude 'META-INF/*'
+        exclude 'META-INF/maven/**'
     }
 
     manifest {
