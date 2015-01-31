@@ -30,9 +30,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,6 +55,7 @@ public class PluginManager {
     private final Map<String, PluginInfo> knownPlugins = new HashMap<>();
     /** Set of known plugins' metadata. */
     private final Collection<PluginMetaData> plugins = new HashSet<>();
+    private final PluginFileHandler fileHandler;
     /** Directory where plugins are stored. */
     private final String directory;
     /** The identity controller to use to find configuration options. */
@@ -88,10 +86,12 @@ public class PluginManager {
             final IdentityController identityController,
             final UpdateManager updateManager,
             final ObjectGraph objectGraph,
+            final PluginFileHandler fileHandler,
             final String directory) {
         this.identityController = identityController;
         this.serviceManager = serviceManager;
         this.updateManager = updateManager;
+        this.fileHandler = fileHandler;
         this.directory = directory;
         this.globalClassLoader = new GlobalClassLoader(this);
         this.objectGraph = objectGraph;
@@ -302,7 +302,7 @@ public class PluginManager {
     public void refreshPlugins() {
         applyUpdates();
 
-        final Collection<PluginMetaData> newPlugins = getAllPlugins();
+        final Collection<PluginMetaData> newPlugins = fileHandler.refresh(this);
 
         for (PluginMetaData plugin : newPlugins) {
             addPlugin(plugin.getRelativeFilename());
@@ -352,74 +352,7 @@ public class PluginManager {
      * @return A list of all installed or known plugins
      */
     public Collection<PluginMetaData> getAllPlugins() {
-        final Collection<PluginMetaData> res = new HashSet<>(plugins.size());
-
-        final Deque<File> dirs = new LinkedList<>();
-        final Collection<String> pluginPaths = new LinkedList<>();
-
-        dirs.add(new File(directory));
-
-        while (!dirs.isEmpty()) {
-            final File dir = dirs.pop();
-            if (dir.isDirectory()) {
-                dirs.addAll(Arrays.asList(dir.listFiles()));
-            } else if (dir.isFile() && dir.getName().endsWith(".jar")) {
-                pluginPaths.add(dir.getPath().substring(directory.length()));
-            }
-        }
-
-        final Multimap<String, String> newServices = ArrayListMultimap.create();
-        final Map<String, PluginMetaData> newPluginsByName = new HashMap<>();
-        final Map<String, PluginMetaData> newPluginsByPath = new HashMap<>();
-
-        // Initialise all of our metadata objects
-        for (String target : pluginPaths) {
-            try {
-                final PluginMetaData targetMetaData = new PluginMetaData(this,
-                        new URL("jar:file:" + directory + target
-                                + "!/META-INF/plugin.config"),
-                        Paths.get(directory, target));
-                targetMetaData.load();
-
-                if (targetMetaData.hasErrors()) {
-                    eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                            "Error reading plugin metadata for plugin " + target
-                            + ": " + targetMetaData.getErrors(), ""));
-                } else {
-                    newPluginsByName.put(targetMetaData.getName(), targetMetaData);
-                    newPluginsByPath.put(target, targetMetaData);
-
-                    for (String service : targetMetaData.getServices()) {
-                        final String[] parts = service.split(" ", 2);
-                        newServices.put(parts[1], parts[0]);
-                    }
-
-                    for (String export : targetMetaData.getExports()) {
-                        final String[] parts = export.split(" ");
-                        final String name = parts.length > 4 ? parts[4] : parts[0];
-                        newServices.put("export", name);
-                    }
-                }
-            } catch (MalformedURLException mue) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, mue,
-                        "Error creating URL for plugin " + target + ": " + mue.getMessage(), ""));
-            }
-        }
-
-        // Now validate all of the plugins
-        for (Map.Entry<String, PluginMetaData> target : newPluginsByPath.entrySet()) {
-            final PluginMetaDataValidator validator = new PluginMetaDataValidator(target.getValue());
-            final Collection<String> results = validator.validate(newPluginsByName, newServices);
-
-            if (results.isEmpty()) {
-                res.add(target.getValue());
-            } else {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                        "Plugin validation failed for " + target.getKey() + ": " + results, ""));
-            }
-        }
-
-        return res;
+        return fileHandler.getKnownPlugins();
     }
 
     /**

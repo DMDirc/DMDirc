@@ -52,9 +52,12 @@ public class PluginModule {
             final ObjectGraph objectGraph,
             final ServiceManager serviceManager,
             final CorePluginHelper pluginHelper,
+            final PluginFileHandler fileHandler,
             @Directory(DirectoryType.PLUGINS) final String directory) {
         final PluginManager manager = new PluginManager(eventBus, serviceManager,
-                identityController, updateManager, objectGraph, directory);
+                identityController, updateManager, objectGraph, fileHandler, directory);
+        manager.refreshPlugins();
+
         final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory, eventBus);
         pluginHelper.checkBundledPlugins(extractor, manager,
                 identityController.getGlobalConfiguration());
