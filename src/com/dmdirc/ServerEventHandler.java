@@ -88,7 +88,6 @@ import com.dmdirc.parser.events.UserModeDiscoveryEvent;
 import com.dmdirc.parser.events.WallDesyncEvent;
 import com.dmdirc.parser.events.WallopEvent;
 import com.dmdirc.parser.events.WalluserEvent;
-import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.EventUtils;
 
@@ -104,7 +103,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.engio.mbassy.listener.Handler;
-
 
 /**
  * Handles parser events for a Server object.
@@ -141,14 +139,11 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onChannelSelfJoin(final ChannelSelfJoinEvent event) {
-        checkParser(event.getParser());
         groupChatManager.addChannel(event.getChannel());
     }
 
     @Handler
     public void onPrivateMessage(final PrivateMessageEvent event) {
-        checkParser(event.getParser());
-
         if (!owner.hasQuery(event.getHost())) {
             owner.getQuery(event.getHost()).onPrivateMessage(event);
         }
@@ -156,8 +151,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onPrivateAction(final PrivateActionEvent event) {
-        checkParser(event.getParser());
-
         if (!owner.hasQuery(event.getHost())) {
             owner.getQuery(event.getHost()).onPrivateAction(event);
         }
@@ -165,7 +158,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onWhoisEvent(final UserInfoEvent event) {
-        checkParser(event.getParser());
         eventBus.publishAsync(new UserInfoResponseEvent(owner, event.getDate().getTime(),
                 owner.getUser(event.getClient().getNickname()), event.getInfo()));
     }
@@ -180,7 +172,6 @@ public class ServerEventHandler extends EventHandler {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Handler
     public void onErrorInfo(final ErrorInfoEvent event) {
-
         final StringBuilder errorString = new StringBuilder();
         errorString.append("Parser exception.\n\n");
 
@@ -208,8 +199,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onPrivateCTCP(final PrivateCTCPEvent event) {
-        checkParser(event.getParser());
-
         final ServerCtcpEvent coreEvent = new ServerCtcpEvent(owner, owner.getUser(event.getHost()),
                 event.getType(), event.getMessage());
         eventBus.publish(coreEvent);
@@ -221,7 +210,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onPrivateCTCPReply(final PrivateCTCPReplyEvent event) {
-        checkParser(event.getParser());
         eventBus.publish(new ServerCtcpReplyEvent(owner, owner.getUser(event.getHost()),
                 event.getType(), event.getMessage()));
     }
@@ -235,40 +223,33 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onPrivateNotice(final PrivateNoticeEvent event) {
-        checkParser(event.getParser());
         eventBus.publishAsync(new ServerNoticeEvent(owner, owner.getLocalUser().get(),
                 event.getMessage()));
     }
 
     @Handler
     public void onServerNotice(final com.dmdirc.parser.events.ServerNoticeEvent event) {
-        checkParser(event.getParser());
         eventBus.publishAsync(
                 new ServerServerNoticeEvent(owner, owner.getLocalUser().get(), event.getMessage()));
     }
 
     @Handler
     public void onMOTDStart(final MOTDStartEvent event) {
-        checkParser(event.getParser());
         eventBus.publishAsync(new ServerMotdStartEvent(owner, event.getData()));
     }
 
     @Handler
     public void onMOTDLine(final MOTDLineEvent event) {
-        checkParser(event.getParser());
         eventBus.publishAsync(new ServerMotdLineEvent(owner, event.getData()));
     }
 
     @Handler
     public void onMOTDEnd(final MOTDEndEvent event) {
-        checkParser(event.getParser());
         eventBus.publishAsync(new ServerMotdEndEvent(owner, event.getData()));
     }
 
     @Handler
     public void onNumeric(final NumericEvent event) {
-        checkParser(event.getParser());
-
         final String sansIrcd = "numeric_" + Strings
                 .padStart(String.valueOf(event.getNumeric()), 3, '0');
         String target = "";
@@ -287,8 +268,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onPingFailed(final PingFailureEvent event) {
-        checkParser(event.getParser());
-
         eventBus.publishAsync(new StatusBarMessageEvent(new StatusMessage(
                 "No ping reply from " + owner.getName() + " for over " +
                         (int) Math.floor(event.getParser().getPingTime() / 1000.0) + " seconds.",
@@ -306,21 +285,17 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onPingSent(final PingSentEvent event) {
-        checkParser(event.getParser());
         eventBus.publishAsync(new ServerPingSentEvent(owner));
     }
 
     @Handler
     public void onPingSuccess(final PingSuccessEvent event) {
-        checkParser(event.getParser());
         eventBus.publishAsync(new ServerGotPingEvent(owner,
                 owner.getParser().get().getServerLatency()));
     }
 
     @Handler
     public void onAwayState(final AwayStateEvent event) {
-        checkParser(event.getParser());
-
         owner.updateAwayState(event.getNewState() == AwayState.AWAY ?
                 Optional.of(event.getReason()) : Optional.empty());
 
@@ -333,14 +308,11 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onConnectError(final ConnectErrorEvent event) {
-        checkParser(event.getParser());
         owner.onConnectError(event.getErrorInfo());
     }
 
     @Handler
     public void onNickInUse(final NickInUseEvent event) {
-        checkParser(event.getParser());
-
         final String lastNick = event.getParser().getLocalClient().getNickname();
 
         // If our last nick is still valid, ignore the in use message
@@ -370,21 +342,16 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onServerReady(final ServerReadyEvent event) {
-        checkParser(event.getParser());
         owner.onPost005();
     }
 
     @Handler
     public void onNoticeAuth(final AuthNoticeEvent event) {
-        checkParser(event.getParser());
-
-        eventBus.publishAsync(new ServerAuthNoticeEvent(owner, event.getMessage()));
+         eventBus.publishAsync(new ServerAuthNoticeEvent(owner, event.getMessage()));
     }
 
     @Handler
     public void onUnknownNotice(final UnknownNoticeEvent event) {
-        checkParser(event.getParser());
-
         final ServerUnknownNoticeEvent
                 coreEvent = new ServerUnknownNoticeEvent(owner, event.getHost(), event.getTarget(),
                 event.getMessage());
@@ -394,8 +361,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onUnknownMessage(final UnknownMessageEvent event) {
-        checkParser(event.getParser());
-
         if (event.getParser().getLocalClient().equals(event.getParser().getClient(event.getHost()))) {
             // Local client
             eventBus.publishAsync(
@@ -411,8 +376,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onUnknownAction(final UnknownActionEvent event) {
-        checkParser(event.getParser());
-
         if (event.getParser().getLocalClient().equals(event.getParser().getClient(event.getHost()))) {
             // Local client
             eventBus.publishAsync(
@@ -428,8 +391,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onUserModeChanged(final UserModeChangeEvent event) {
-        checkParser(event.getParser());
-
         final ServerUserModesEvent coreEvent = new ServerUserModesEvent(owner,
                 owner.getUser(event.getClient().getHostname()), event.getModes());
         final String format = EventUtils.postDisplayable(eventBus, coreEvent, "userModeChanged");
@@ -438,8 +399,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onUserModeDiscovered(final UserModeDiscoveryEvent event) {
-        checkParser(event.getParser());
-
         final ServerUserModesEvent coreEvent = new ServerUserModesEvent(owner,
                 owner.getUser(event.getClient().getHostname()), event.getModes());
         final String format = EventUtils.postDisplayable(eventBus, coreEvent,
@@ -449,8 +408,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onInvite(final InviteEvent event) {
-        checkParser(event.getParser());
-
         final Invite invite = new Invite(owner.getInviteManager(), event.getChannel(),
                 owner.getUser(event.getUserHost()));
         owner.getInviteManager().addInvite(invite);
@@ -460,8 +417,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onWallop(final WallopEvent event) {
-        checkParser(event.getParser());
-
         final ServerWallopsEvent coreEvent = new ServerWallopsEvent(owner,
                 owner.getUser(event.getHost()), event.getMessage());
         final String format = EventUtils.postDisplayable(eventBus, coreEvent, "wallop");
@@ -471,8 +426,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onWalluser(final WalluserEvent event) {
-        checkParser(event.getParser());
-
         final ServerWallusersEvent coreEvent = new ServerWallusersEvent(owner,
                 owner.getLocalUser().get(), event.getMessage());
         final String format = EventUtils.postDisplayable(eventBus, coreEvent, "walluser");
@@ -481,8 +434,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onWallDesync(final WallDesyncEvent event) {
-        checkParser(event.getParser());
-
         final ServerWalldesyncEvent coreEvent = new ServerWalldesyncEvent(owner,
                 owner.getLocalUser().get(), event.getMessage());
         final String format = EventUtils.postDisplayable(eventBus, coreEvent, "walldesync");
@@ -491,8 +442,6 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onNickChanged(final NickChangeEvent event) {
-        checkParser(event.getParser());
-
         if (event.getClient().equals(owner.getParser().get().getLocalClient())) {
             final ServerNickChangeEvent coreEvent = new ServerNickChangeEvent(owner,
                     event.getOldNick(), event.getClient().getNickname());
@@ -504,23 +453,7 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onServerError(final com.dmdirc.parser.events.ServerErrorEvent event) {
-        checkParser(event.getParser());
-
         eventBus.publishAsync(new ServerErrorEvent(owner, event.getMessage()));
-    }
-
-    @Override
-    protected void checkParser(final Parser parser) {
-        super.checkParser(parser);
-
-        if (owner.getState() != ServerState.CONNECTED
-                && owner.getState() != ServerState.CONNECTING
-                && owner.getState() != ServerState.DISCONNECTING) {
-            throw new IllegalArgumentException("Event called from a parser (#"
-                    + owner.getStatus().getParserID(parser) + ") that "
-                    + "shouldn't be in use.\nState history:\n"
-                    + owner.getStatus().getTransitionHistory());
-        }
     }
 
 }
