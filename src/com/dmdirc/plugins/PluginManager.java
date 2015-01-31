@@ -158,9 +158,9 @@ public class PluginManager {
                 return false;
             }
 
-            if ((metadata.getUpdaterId() > 0 && metadata.getVersion().isValid())
-                    || (identityController.getGlobalConfiguration()
-                    .hasOptionInt("plugin-addonid", metadata.getName()))) {
+            if (metadata.getUpdaterId() > 0 && metadata.getVersion().isValid()
+                    || identityController.getGlobalConfiguration()
+                    .hasOptionInt("plugin-addonid", metadata.getName())) {
                 updateManager.addComponent(new PluginComponent(
                         identityController.getGlobalConfiguration(), pluginInfo));
             }

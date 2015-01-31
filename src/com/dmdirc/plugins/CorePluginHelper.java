@@ -22,7 +22,7 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.updater.Version;
 
 import javax.inject.Inject;
@@ -55,7 +55,7 @@ public class CorePluginHelper {
             final PluginManager pm,
             final String serviceType) {
         if (serviceManager.getServicesByType(serviceType).isEmpty()) {
-            corePluginExtractor.extractCorePlugins(serviceType + "_");
+            corePluginExtractor.extractCorePlugins(serviceType + '_');
             pm.refreshPlugins();
         }
     }
@@ -72,7 +72,7 @@ public class CorePluginHelper {
     public void checkBundledPlugins(
             final CorePluginExtractor corePluginExtractor,
             final PluginManager pm,
-            final AggregateConfigProvider config) {
+            final ReadOnlyConfigProvider config) {
         pm.getAllPlugins().stream().filter(plugin -> config
                 .hasOptionString("bundledplugins_versions", plugin.getName())).forEach(plugin -> {
             final Version bundled =

@@ -77,16 +77,16 @@ public class ServiceManagerImpl implements ServiceManager {
             NoSuchProviderException {
         final Service service = getService(type, name);
         if (service != null) {
-            ServiceProvider provider = service.getActiveProvider();
-            if (provider != null) {
-                return provider;
-            } else {
+            final ServiceProvider provider = service.getActiveProvider();
+            if (provider == null) {
                 // Try to activate the service then try again.
                 service.activate();
-                provider = service.getActiveProvider();
-                if (provider != null) {
-                    return provider;
+                final ServiceProvider activeProvider = service.getActiveProvider();
+                if (activeProvider != null) {
+                    return activeProvider;
                 }
+            } else {
+                return provider;
             }
         }
 

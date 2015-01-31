@@ -25,6 +25,7 @@ package com.dmdirc.plugins;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -32,21 +33,11 @@ import org.slf4j.LoggerFactory;
  */
 public class ExportedService {
 
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ExportedService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExportedService.class);
     /** Method we will be executing today! */
     private final Method method;
     /** Object we will be executing this method on. */
     private final Object object;
-
-    /**
-     * Create a new ExportedService object.
-     *
-     * @param myClass    class method is in.
-     * @param methodName Name of method
-     */
-    public ExportedService(final Class<?> myClass, final String methodName) {
-        this(myClass, methodName, null);
-    }
 
     /**
      * Create a new ExportedService object.
