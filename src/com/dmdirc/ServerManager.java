@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.FrameClosingEvent;
@@ -34,6 +33,7 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
+import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.WindowManager;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -43,6 +43,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executors;
@@ -181,11 +182,12 @@ public class ServerManager implements ConnectionManager {
                 .filter(s -> s.compareURI(uri)).findAny()
                 .orElse(createServer(uri, profile));
 
-        if (server.getState().isDisconnected()) {
+        final Optional<Parser> parser = server.getParser();
+        if (server.getState().isDisconnected() || !parser.isPresent()) {
             server.connect(uri, profile);
         } else {
             final Collection<? extends ChannelJoinRequest> joinRequests =
-                    server.getParser().get().extractChannels(uri);
+                    parser.get().extractChannels(uri);
             server.getGroupChatManager()
                     .join(joinRequests.toArray(new ChannelJoinRequest[joinRequests.size()]));
         }
