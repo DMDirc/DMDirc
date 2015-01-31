@@ -24,7 +24,6 @@ package com.dmdirc;
 
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
@@ -36,8 +35,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
-
-import javax.inject.Provider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,8 +60,6 @@ public class ServerManagerTest {
     @Mock private ConfigProviderMigrator configProviderMigrator;
     @Mock private Profile profile;
     @Mock private AggregateConfigProvider configProvider;
-    @Mock private Provider<CommandController> commandControllerProvider;
-    @Mock private CommandController commandController;
     @Mock private WindowManager windowManager;
     @Mock private ServerFactoryImpl serverFactoryImpl;
     @Mock private Server server;
@@ -78,12 +73,10 @@ public class ServerManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        serverManager = new ServerManager(profileManager, identityFactory,
-                commandControllerProvider, windowManager, serverFactoryImpl, eventBus);
+        serverManager = new ServerManager(profileManager, identityFactory, windowManager, serverFactoryImpl, eventBus);
 
         when(server.getState()).thenReturn(ServerState.DISCONNECTED);
         when(server.getGroupChatManager()).thenReturn(groupChatManager);
-        when(commandControllerProvider.get()).thenReturn(commandController);
 
         when(profileManager.getProfiles()).thenReturn(Collections.singletonList(profile));
         when(profileManager.getDefault()).thenReturn(profile);
