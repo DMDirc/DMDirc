@@ -104,30 +104,6 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testProfileOldWithAltNicks() throws IOException, InvalidIdentityFileException {
-        final ConfigFileBackedConfigProvider provider = getProvider("profile-old");
-        assertTrue(provider.isProfile());
-        assertEquals("nick1\nnick2\nnick3", provider.getOption("profile", "nicknames"));
-        assertEquals("ident", provider.getOption("profile", "ident"));
-        assertEquals("Guy Incognito", provider.getOption("profile", "realname"));
-
-        assertFalse(provider.hasOptionString("profile", "nickname"));
-        assertFalse(provider.hasOptionString("profile", "altnicknames"));
-    }
-
-    @Test
-    public void testProfileOldWithNoAlts() throws IOException, InvalidIdentityFileException {
-        final ConfigFileBackedConfigProvider provider = getProvider("profile-old-no-alts");
-        assertTrue(provider.isProfile());
-        assertEquals("nick1", provider.getOption("profile", "nicknames"));
-        assertEquals("ident", provider.getOption("profile", "ident"));
-        assertEquals("Guy Incognito", provider.getOption("profile", "realname"));
-
-        assertFalse(provider.hasOptionString("profile", "nickname"));
-        assertFalse(provider.hasOptionString("profile", "altnicknames"));
-    }
-
-    @Test
     public void testProfileNonProfileConfig() throws IOException, InvalidIdentityFileException {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         assertFalse(provider.isProfile());

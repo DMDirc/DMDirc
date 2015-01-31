@@ -96,10 +96,6 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
         this.eventBus = eventBus;
         initFile(forceDefault);
         myTarget = getTarget(forceDefault);
-
-        if (myTarget.isCustom(PROFILE_DOMAIN)) {
-            migrateProfile();
-        }
     }
 
     /**
@@ -119,10 +115,6 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
         this.eventBus = eventBus;
         initFile(forceDefault);
         myTarget = getTarget(forceDefault);
-
-        if (myTarget.isCustom(PROFILE_DOMAIN)) {
-            migrateProfile();
-        }
     }
 
     /**
@@ -140,10 +132,6 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
         this.eventBus = eventBus;
         this.file.setAutomake(true);
         this.myTarget = target;
-
-        if (myTarget.isCustom(PROFILE_DOMAIN)) {
-            migrateProfile();
-        }
     }
 
     /**
@@ -287,25 +275,6 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
             return getOption(DOMAIN, "name");
         } else {
             return "Unnamed";
-        }
-    }
-
-    /**
-     * Checks if this profile needs migrating from the old method of storing nicknames
-     * (profile.nickname + profile.altnicks) to the new method (profile.nicknames), and performs the
-     * migration if needed.
-     *
-     * @since 0.6.3m1
-     */
-    protected void migrateProfile() {
-        if (hasOptionString(PROFILE_DOMAIN, "nickname")) {
-            // Migrate
-
-            setOption(PROFILE_DOMAIN, "nicknames", getOption(PROFILE_DOMAIN, "nickname")
-                    + (hasOptionString(PROFILE_DOMAIN, "altnicks") ? '\n'
-                    + getOption(PROFILE_DOMAIN, "altnicks") : ""));
-            unsetOption(PROFILE_DOMAIN, "nickname");
-            unsetOption(PROFILE_DOMAIN, "altnicks");
         }
     }
 
