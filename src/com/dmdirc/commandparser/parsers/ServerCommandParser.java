@@ -38,6 +38,8 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.annotation.Nonnull;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A command parser used in the context of a server.
  */
@@ -64,7 +66,7 @@ public class ServerCommandParser extends GlobalCommandParser {
             final DMDircMBassador eventBus,
             final Connection connection) {
         super(configManager, commandController, eventBus);
-        this.server = connection;
+        this.server = checkNotNull(connection);
     }
 
     /** Loads the relevant commands into the parser. */
