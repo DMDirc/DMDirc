@@ -34,6 +34,7 @@ import com.dmdirc.events.ChannelModeChangeEvent;
 import com.dmdirc.events.ChannelModeNoticeEvent;
 import com.dmdirc.events.ChannelModesDiscoveredEvent;
 import com.dmdirc.events.ChannelNickChangeEvent;
+import com.dmdirc.events.ChannelNoModesDiscoveredEvent;
 import com.dmdirc.events.ChannelNoTopicEvent;
 import com.dmdirc.events.ChannelNoticeEvent;
 import com.dmdirc.events.ChannelPartEvent;
@@ -55,7 +56,6 @@ import com.dmdirc.parser.events.OtherAwayStateEvent;
 import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
-import com.dmdirc.util.EventUtils;
 
 import com.google.common.base.Strings;
 
@@ -280,11 +280,12 @@ public class ChannelEventHandler extends EventHandler {
         final Date date = event.getDate();
 
         if (host.isEmpty()) {
-            final ChannelModesDiscoveredEvent coreEvent = new ChannelModesDiscoveredEvent(
-                    date.getTime(), owner, modes.length() <= 1 ? "" : modes);
-            final String format = EventUtils.postDisplayable(eventBus, coreEvent,
-                    modes.length() <= 1 ? "channelNoModes" : "channelModeDiscovered");
-            owner.doNotification(date, format, modes.length() <= 1 ? "" : modes);
+            if (modes.length() <= 1) {
+                eventBus.publishAsync(new ChannelNoModesDiscoveredEvent(date.getTime(), owner));
+            } else {
+                eventBus.publishAsync(
+                        new ChannelModesDiscoveredEvent(date.getTime(), owner,modes));
+            }
         } else if (isMyself(client)) {
             eventBus.publishAsync(new ChannelSelfModeChangeEvent(date.getTime(), owner,
                     groupChatUserManager.getUserFromClient(client, owner), modes));
