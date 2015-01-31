@@ -25,8 +25,7 @@ package com.dmdirc.ui.input;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.CommandInfo;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.CommandInfoPair;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.parsers.CommandParser;
@@ -52,7 +51,6 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -281,11 +279,10 @@ public abstract class InputHandler implements ConfigChangeListener {
         final CommandArguments args = new CommandArguments(commandController, text);
 
         if (args.isCommand()) {
-            final Map.Entry<CommandInfo, Command> command = commandController
-                    .getCommand(args.getCommandName());
+            final CommandInfoPair command = commandParser.getCommand(args.getCommandName());
 
-            if (command != null && command.getValue() instanceof ValidatingCommand) {
-                final ValidationResponse vr = ((ValidatingCommand) command.getValue())
+            if (command != null && command.getCommand() instanceof ValidatingCommand) {
+                final ValidationResponse vr = ((ValidatingCommand) command.getCommand())
                         .validateArguments(parentWindow, args);
 
                 if (vr.isFailure()) {
@@ -295,8 +292,8 @@ public abstract class InputHandler implements ConfigChangeListener {
                 }
             }
 
-            if (command != null && command.getValue() instanceof WrappableCommand) {
-                final int count = ((WrappableCommand) command.getValue())
+            if (command != null && command.getCommand() instanceof WrappableCommand) {
+                final int count = ((WrappableCommand) command.getCommand())
                         .getLineCount(parentWindow, args);
                 fireLineWrap(count);
             }

@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -279,6 +280,17 @@ public abstract class CommandParser implements Serializable {
      */
     public void parseCommandCtrl(final WindowModel origin, final String line) {
         handleNonCommand(origin, line);
+    }
+
+    /**
+     * Gets the command with the given name that was previously registered with this parser.
+     *
+     * @param commandName The name of the command to retrieve.
+     * @return The command info pair, or {@code null} if the command does not exist.
+     */
+    @Nullable
+    public CommandInfoPair getCommand(final String commandName) {
+        return commands.get(commandName);
     }
 
     /**
