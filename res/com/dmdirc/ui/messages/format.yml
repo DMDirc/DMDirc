@@ -123,6 +123,12 @@ ChannelModeChangeEvent:
 ChannelSelfModeChangeEvent:
   format: "* You set mode: {{modes}}."
   colour: 3
+ChannelModesDiscoveredEvent:
+  format: "* Channel modes for {{channel.name}} are: {{modes}}."
+  colour: 3
+ChannelNoModesDiscoveredEvent:
+  format: "* There are no channel modes for {{channel.name}}."
+  colour: 3
 
 ################## Channel user events #############################################################
 
@@ -172,8 +178,6 @@ CommandOutputEvent:
   format: "{{message}}"
 
 ################## TODO ############################################################################
-#  channelNoModes=3* There are no channel modes for %2$s.
-#  channelModeDiscovered=3* Channel modes for %2$s are: %1$s.
 #  userModeChanged=3* %1$s sets user mode: %4$s.
 #  userNoModes=3* No user modes.
 #  userModeDiscovered=3* User modes are: %4$s.
