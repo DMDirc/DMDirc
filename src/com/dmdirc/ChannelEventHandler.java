@@ -105,7 +105,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelMessage(final com.dmdirc.parser.events.ChannelMessageEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -116,7 +115,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelGotNames(final ChannelNamesEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -129,7 +127,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelTopic(final ChannelTopicEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -176,7 +173,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelJoin(final com.dmdirc.parser.events.ChannelJoinEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -188,7 +184,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelPart(final com.dmdirc.parser.events.ChannelPartEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -209,7 +204,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelKick(final com.dmdirc.parser.events.ChannelKickEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -223,7 +217,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelQuit(final com.dmdirc.parser.events.ChannelQuitEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -235,7 +228,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelAction(final com.dmdirc.parser.events.ChannelActionEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -246,7 +238,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelNickChanged(final com.dmdirc.parser.events.ChannelNickChangeEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -269,7 +260,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelModeChanged(final com.dmdirc.parser.events.ChannelModeChangeEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -299,7 +289,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelCTCP(final ChannelCTCPEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -319,8 +308,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onAwayStateOther(final OtherAwayStateEvent event) {
-        checkParser(event.getParser());
-
         owner.getUser(owner.getConnection().get().getUser(event.getClient().getNickname()))
                 .ifPresent(c -> {
                     if (event.getNewState() == AwayState.AWAY) {
@@ -335,7 +322,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelNotice(final com.dmdirc.parser.events.ChannelNoticeEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -346,7 +332,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelModeNotice(final com.dmdirc.parser.events.ChannelModeNoticeEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }
@@ -358,7 +343,6 @@ public class ChannelEventHandler extends EventHandler {
 
     @Handler
     public void onChannelGotListModes(final ChannelListModeEvent event) {
-        checkParser(event.getParser());
         if (!checkChannel(event.getChannel())) {
             return;
         }

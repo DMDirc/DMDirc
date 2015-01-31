@@ -61,19 +61,4 @@ public abstract class EventHandler {
     @Nonnull
     protected abstract Connection getConnection();
 
-    /**
-     * Checks that the specified parser is the same as the one the server is currently claiming to
-     * be using. If it isn't, we raise an exception to prevent further (erroneous) processing.
-     *
-     * @param parser The parser to check
-     */
-    protected void checkParser(final Parser parser) {
-        if (parser != getConnection().getParser().orElse(null)) {
-            parser.disconnect("Shouldn't be in use");
-            throw new IllegalArgumentException("Event called from a parser that's not in use (#"
-                    + getConnection().getStatus().getParserID(parser)
-                    + ").\n\n " + getConnection().getStatus().getTransitionHistory());
-        }
-    }
-
 }
