@@ -22,12 +22,10 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.events.UserErrorEvent;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
@@ -49,7 +47,6 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import net.engio.mbassy.listener.Handler;
@@ -65,8 +62,6 @@ public class ServerManager implements ConnectionManager {
     private final Set<Server> servers = new CopyOnWriteArraySet<>();
     /** The manager to use to find profiles. */
     private final ProfileManager profileManager;
-    /** A provider of {@link CommandController}s to pass to servers. */
-    private final Provider<CommandController> commandController;
     /** The identity factory to give to servers. */
     private final IdentityFactory identityFactory;
     /** Window manager to add new servers to. */
@@ -81,7 +76,6 @@ public class ServerManager implements ConnectionManager {
      *
      * @param profileManager     The manager to use to find profiles.
      * @param identityFactory    The factory to use to create new identities.
-     * @param commandController  A provider of {@link CommandController}s to pass to servers.
      * @param windowManager      Window manager to add new servers to.
      * @param serverFactory      The factory to use to create servers.
      * @param eventBus           The event bus to pass to servers.
@@ -90,13 +84,11 @@ public class ServerManager implements ConnectionManager {
     public ServerManager(
             final ProfileManager profileManager,
             final IdentityFactory identityFactory,
-            final Provider<CommandController> commandController,
             final WindowManager windowManager,
             final ServerFactoryImpl serverFactory,
             final DMDircMBassador eventBus) {
         this.profileManager = profileManager;
         this.identityFactory = identityFactory;
-        this.commandController = commandController;
         this.windowManager = windowManager;
         this.serverFactoryImpl = serverFactory;
         this.eventBus = eventBus;
