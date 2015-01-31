@@ -110,7 +110,8 @@ public class PluginFileHandler {
             return Files.walk(directory, FileVisitOption.FOLLOW_LINKS)
                     .filter(p -> p.getFileName().toString().endsWith(".jar"))
                     .map(Path::toAbsolutePath)
-                    .map(path -> this.getMetaData(path, manager)).filter(Objects::nonNull)
+                    .map(path -> getMetaData(path, manager))
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (IOException ex) {
             eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, ex,
@@ -179,7 +180,7 @@ public class PluginFileHandler {
     }
 
     /**
-     * Validates each plugin uses a {@link PluginMetaDataValidator}, and returns those found to
+     * Validates each plugin using a {@link PluginMetaDataValidator}, and returns those found to
      * be valid.
      *
      * @param metadata The collection of metadata to validate.
