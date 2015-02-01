@@ -43,6 +43,10 @@ import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.plugins.ServiceProvider;
 import com.dmdirc.ui.WarningDialog;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.spi.ContextAware;
+
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.awt.GraphicsEnvironment;
@@ -58,9 +62,6 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.spi.ContextAware;
 import dagger.ObjectGraph;
 
 /**
@@ -266,8 +267,8 @@ public class Main {
             identityManager.getUserSettings().setOption("general", "firstRun", "false");
             eventBus.publish(new FirstRunEvent());
 
-            Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder()
-                    .setNameFormat("feedback-nag-%d").build()).schedule(
+            Executors.newSingleThreadScheduledExecutor(
+                    new ThreadFactoryBuilder().setNameFormat("feedback-nag-%d").build()).schedule(
                     () -> eventBus.publishAsync(new FeedbackNagEvent()), 5, TimeUnit.MINUTES);
         }
     }

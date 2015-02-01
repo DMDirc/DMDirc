@@ -24,6 +24,11 @@ package com.dmdirc.util;
 
 import com.dmdirc.logger.ErrorLevel;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
+
 import java.lang.reflect.Constructor;
 
 import javax.annotation.Nonnull;
@@ -31,11 +36,6 @@ import javax.annotation.Nullable;
 
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.StackTraceElementProxy;
 
 /**
  * Utility methods for logging in the client.
