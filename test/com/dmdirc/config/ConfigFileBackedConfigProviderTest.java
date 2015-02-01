@@ -22,7 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.io.InvalidConfigFileException;
@@ -65,7 +64,6 @@ public class ConfigFileBackedConfigProviderTest {
 
     @Mock private IdentityManager identityManager;
     @Mock private ConfigChangeListener changeListener;
-    @Mock private DMDircMBassador eventBus;
 
     private FileSystem fs;
 
@@ -80,18 +78,17 @@ public class ConfigFileBackedConfigProviderTest {
 
     @Test(expected = InvalidIdentityFileException.class)
     public void testNoName() throws IOException, InvalidIdentityFileException {
-        new ConfigFileBackedConfigProvider(identityManager, eventBus, fs.getPath("no-name"), false);
+        new ConfigFileBackedConfigProvider(identityManager, fs.getPath("no-name"), false);
     }
 
     @Test(expected = InvalidIdentityFileException.class)
     public void testNoTarget() throws IOException, InvalidIdentityFileException {
-        new ConfigFileBackedConfigProvider(identityManager,  eventBus,fs.getPath("no-target"), false);
+        new ConfigFileBackedConfigProvider(identityManager, fs.getPath("no-target"), false);
     }
 
     @Test(expected = InvalidIdentityFileException.class)
     public void testInvalidConfigFile() throws IOException, InvalidIdentityFileException {
-        new ConfigFileBackedConfigProvider(identityManager, eventBus,
-                fs.getPath("invalid-config-file"), false);
+        new ConfigFileBackedConfigProvider(identityManager, fs.getPath("invalid-config-file"), false);
     }
 
     @Test
@@ -321,8 +318,7 @@ public class ConfigFileBackedConfigProviderTest {
 
     private ConfigFileBackedConfigProvider getProvider(final String file)
             throws IOException, InvalidIdentityFileException {
-        return new ConfigFileBackedConfigProvider(identityManager, eventBus,
-                fs.getPath(file), false);
+        return new ConfigFileBackedConfigProvider(identityManager, fs.getPath(file), false);
     }
 
 }

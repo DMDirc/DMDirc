@@ -22,7 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Before;
@@ -41,12 +40,11 @@ import static org.mockito.Mockito.when;
 public class ConfigBinderTest {
 
     @Mock private AggregateConfigProvider configProvider;
-    @Mock private DMDircMBassador eventBus;
     private ConfigBinder binder;
 
     @Before
     public void setup() {
-        binder = new ConfigBinder(configProvider, eventBus);
+        binder = new ConfigBinder(configProvider);
     }
 
     @Test

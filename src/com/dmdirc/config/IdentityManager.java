@@ -24,7 +24,6 @@ package com.dmdirc.config;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -60,6 +59,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.dmdirc.util.LogUtils.FATAL_APP_ERROR;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -144,7 +144,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         addonSettings.put("name", "Addon defaults");
         addonConfigFile.addDomain("identity", addonSettings);
 
-        addonConfig = new ConfigFileBackedConfigProvider(this, eventBus, addonConfigFile, target);
+        addonConfig = new ConfigFileBackedConfigProvider(this, addonConfigFile, target);
         addConfigProvider(addonConfig);
     }
 
@@ -156,8 +156,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             loadIdentity(FileUtils.getPathForResource(getClass().getResource(
                     "defaults/default/formatter")));
         } catch (URISyntaxException ex) {
-            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.FATAL, ex,
-                    "Unable to load settings", ""));
+            LOG.error(FATAL_APP_ERROR, "Unable to load settings", ex);
         }
 
         final Path file = identitiesDirectory.resolve("modealiases");
@@ -265,8 +264,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         try {
-            final ConfigProvider provider = new ConfigFileBackedConfigProvider(this, eventBus,
-                    file, false);
+            final ConfigProvider provider = new ConfigFileBackedConfigProvider(this, file, false);
             addConfigProvider(provider);
             configProvidersByPath.put(file, provider);
         } catch (InvalidIdentityFileException ex) {
@@ -307,7 +305,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public void loadVersionIdentity() {
         try {
-            versionConfig = new ConfigFileBackedConfigProvider(eventBus, IdentityManager.class.
+            versionConfig = new ConfigFileBackedConfigProvider(IdentityManager.class.
                     getResourceAsStream("/com/dmdirc/version.config"), false);
             addConfigProvider(versionConfig);
         } catch (IOException | InvalidIdentityFileException ex) {
@@ -329,7 +327,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 Files.createFile(file);
             }
 
-            config = new ConfigFileBackedConfigProvider(this, eventBus, file, true);
+            config = new ConfigFileBackedConfigProvider(this, file, true);
             config.setOption("identity", "name", "Global config");
             configProvidersByPath.put(file, config);
             addConfigProvider(config);
@@ -653,7 +651,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         configFile.write();
 
         final ConfigFileBackedConfigProvider identity = new ConfigFileBackedConfigProvider(this,
-                eventBus, file, false);
+                file, false);
         addConfigProvider(identity);
 
         return identity;
