@@ -41,7 +41,7 @@ public class MessagesModule {
     @Singleton
     public MessageSinkManager getMessageSinkManager(final DMDircMBassador eventBus,
             final Set<MessageSink> defaultSinks) {
-        final MessageSinkManager messageSinkManager = new MessageSinkManager(eventBus);
+        final MessageSinkManager messageSinkManager = new MessageSinkManager();
         defaultSinks.forEach(messageSinkManager::addSink);
         return messageSinkManager;
     }

@@ -144,7 +144,7 @@ public class ClientModule {
             final DMDircMBassador eventBus,
             final IdentityController controller,
             @Directory(DirectoryType.THEMES) final String directory) {
-        final ThemeManager manager = new ThemeManager(eventBus, controller, directory);
+        final ThemeManager manager = new ThemeManager(controller, directory);
         manager.refreshAndLoadThemes();
         return manager;
     }

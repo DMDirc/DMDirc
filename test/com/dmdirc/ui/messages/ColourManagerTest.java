@@ -57,7 +57,7 @@ public class ColourManagerTest {
 
     @Before
     public void setup() {
-        manager = new ColourManager(configManager, eventBus);
+        manager = new ColourManager(configManager);
         verify(configManager).addChangeListener(anyString(), configListener.capture());
     }
 

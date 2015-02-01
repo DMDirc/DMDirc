@@ -55,8 +55,7 @@ public class IntelligentLinkingTest {
         when(connection.getGroupChatManager()).thenReturn(groupChatManager);
         when(groupChatManager.getChannelPrefixes()).thenReturn("#&+");
 
-        styliser = new Styliser(connection, manager, new ColourManager(manager,
-                mock(DMDircMBassador.class)));
+        styliser = new Styliser(connection, manager, new ColourManager(manager));
     }
 
     @Test

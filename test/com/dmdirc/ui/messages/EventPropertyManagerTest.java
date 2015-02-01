@@ -48,7 +48,7 @@ public class EventPropertyManagerTest {
 
     @Before
     public void setUp() {
-        manager = new EventPropertyManager(eventBus);
+        manager = new EventPropertyManager();
     }
 
     @Test
