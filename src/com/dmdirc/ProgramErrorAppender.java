@@ -25,31 +25,27 @@ package com.dmdirc;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.ProgramError;
 
-import java.lang.reflect.Constructor;
-
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.AppenderBase;
 
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+import static com.dmdirc.util.LogUtils.FATAL_APP_ERROR;
+import static com.dmdirc.util.LogUtils.FATAL_USER_ERROR;
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+import static com.dmdirc.util.LogUtils.getErrorLevel;
+import static com.dmdirc.util.LogUtils.getThrowable;
+
 /**
- *
+ * Converts log states into {@link ProgramError}s so they can be displayed to the user.
  */
 public class ProgramErrorAppender extends AppenderBase<ILoggingEvent> {
 
     private DMDircMBassador eventBus;
-    private Marker appError;
-    private Marker userError;
 
     @Override
     public void start() {
-        appError = MarkerFactory.getMarker("AppError");
-        userError = MarkerFactory.getMarker("UserError");
         if (eventBus == null) {
             addError("No eventBus set for the appender named ["+ name +"].");
             return;
@@ -62,63 +58,23 @@ public class ProgramErrorAppender extends AppenderBase<ILoggingEvent> {
         if (eventObject.getMarker() == null) {
             return;
         }
-        if (eventObject.getMarker() == appError) {
-            eventBus.publish(new AppErrorEvent(level(eventObject), throwable
-                    (eventObject), eventObject.getFormattedMessage(), ""));
-        }
-        if (eventObject.getMarker() == userError) {
-            eventBus.publish(new UserErrorEvent(level(eventObject), throwable
-                    (eventObject), eventObject.getFormattedMessage(), ""));
+        if (eventObject.getMarker() == APP_ERROR) {
+            eventBus.publish(new AppErrorEvent(
+                    getErrorLevel(eventObject.getLevel()),
+                    getThrowable(eventObject), eventObject.getFormattedMessage(), ""));
+        } else if (eventObject.getMarker() == USER_ERROR) {
+            eventBus.publish(new UserErrorEvent(getErrorLevel(eventObject.getLevel()),
+                    getThrowable(eventObject), eventObject.getFormattedMessage(), ""));
+        } else if (eventObject.getMarker() == FATAL_APP_ERROR) {
+            eventBus.publish(new AppErrorEvent(ErrorLevel.FATAL, getThrowable(eventObject),
+                    eventObject.getFormattedMessage(), ""));
+        } else if (eventObject.getMarker() == FATAL_USER_ERROR) {
+            eventBus.publish(new UserErrorEvent(ErrorLevel.FATAL, getThrowable(eventObject),
+                    eventObject.getFormattedMessage(), ""));
         }
     }
 
     public void setEventBus(final DMDircMBassador eventBus) {
         this.eventBus = eventBus;
-    }
-
-    private ErrorLevel level(final ILoggingEvent eventObject) {
-        final Level level = eventObject.getLevel();
-        if (level.equals(Level.ERROR)) {
-            return ErrorLevel.HIGH;
-        } else if (level.equals(Level.WARN)) {
-            return ErrorLevel.MEDIUM;
-        } else if (level.equals(Level.INFO)) {
-            return ErrorLevel.LOW;
-        } else {
-            return ErrorLevel.UNKNOWN;
-        }
-    }
-
-    private Throwable throwable(final ILoggingEvent eventObject) {
-        try {
-            return convert(eventObject.getThrowableProxy());
-        } catch (ReflectiveOperationException ex) {
-            return new IllegalStateException("Error converting exception");
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Throwable convert(final IThrowableProxy proxy)
-            throws ReflectiveOperationException {
-        final Class<Throwable> clazz = (Class<Throwable>) Class.forName(proxy.getClassName());
-        final Throwable throwable;
-        if (proxy.getCause() == null) {
-            final Constructor<Throwable> ctor = clazz.getDeclaredConstructor(String.class);
-            throwable = ctor.newInstance(proxy.getMessage());
-        } else {
-            final Constructor<Throwable> ctor = clazz.getDeclaredConstructor(String.class,
-                    Throwable.class);
-            throwable = ctor.newInstance(proxy.getMessage(), convert(proxy.getCause()));
-        }
-        throwable.setStackTrace(convert(proxy.getStackTraceElementProxyArray()));
-        return throwable;
-    }
-
-    private StackTraceElement[] convert(final StackTraceElementProxy... elements) {
-        final StackTraceElement[] returnValue = new StackTraceElement[elements.length];
-        for (int i = 0; i < elements.length; i++) {
-            returnValue[i] = elements[i].getStackTraceElement();
-        }
-        return returnValue;
     }
 }
