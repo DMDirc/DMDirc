@@ -22,9 +22,6 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
-
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
@@ -37,22 +34,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static java.nio.file.attribute.PosixFilePermissions.asFileAttribute;
-import static java.nio.file.attribute.PosixFilePermissions.fromString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultAliasInstallerTest {
-
-    @Mock private DMDircMBassador eventBus;
 
     private FileSystem fs;
     private Path path;
@@ -65,7 +53,7 @@ public class DefaultAliasInstallerTest {
                 .setAttributeViews("posix").build());
         path = fs.getPath("aliases.yml");
 
-        installer = new DefaultAliasInstaller(path, eventBus);
+        installer = new DefaultAliasInstaller(path);
     }
 
     @After
@@ -88,14 +76,6 @@ public class DefaultAliasInstallerTest {
     public void testCopiesDefaultAliases() throws IOException {
         installer.migrate();
         assertTrue(Files.exists(path));
-        verify(eventBus, never()).publish(any());
-    }
-
-    @Test
-    public void testRaisesErrorIfCannotCopyDefaultAliases() throws IOException {
-        Files.createFile(path, asFileAttribute(fromString("r--r--r--")));
-        installer.migrate();
-        verify(eventBus).publish(isA(AppErrorEvent.class));
     }
 
 }

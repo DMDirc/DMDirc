@@ -22,26 +22,28 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.Migrator;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
 import com.google.common.base.Joiner;
 
-import java.util.Optional;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
 
 /**
  * Migrates server/network-based action performs into auto commands.
@@ -49,18 +51,17 @@ import javax.inject.Singleton;
 @Singleton
 public class ActionServerPerformMigrator implements Migrator {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ActionServerPerformMigrator.class);
+
     private final Path directory;
     private final AutoCommandManager autoCommandManager;
-    private final DMDircMBassador eventBus;
 
     @Inject
     public ActionServerPerformMigrator(
             @Directory(DirectoryType.ACTIONS) final Path directory,
-            final AutoCommandManager autoCommandManager,
-            final DMDircMBassador eventBus) {
+            final AutoCommandManager autoCommandManager) {
         this.directory = directory.resolve("performs");
         this.autoCommandManager = autoCommandManager;
-        this.eventBus = eventBus;
     }
 
     @Override
@@ -78,8 +79,7 @@ public class ActionServerPerformMigrator implements Migrator {
             }
             Files.delete(directory);
         } catch (IOException ex) {
-            eventBus.publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to migrate performs", ex.getMessage()));
+            LOG.warn(APP_ERROR, "Unable to migrate performs", ex);
         }
     }
 

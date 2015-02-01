@@ -22,12 +22,9 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.Migrator;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
@@ -42,16 +39,22 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+
 /**
  * Migrates "alias" actions into proper aliases.
  */
 @Singleton
 public class ActionAliasMigrator implements Migrator {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ActionAliasMigrator.class);
+
     private final Path directory;
     private final AliasFactory aliasFactory;
     private final AliasManager aliasManager;
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new alias migrator.
@@ -59,18 +62,15 @@ public class ActionAliasMigrator implements Migrator {
      * @param directory    The base directory to read alias actions from.
      * @param aliasFactory The factory to use to create new aliases.
      * @param aliasManager The manager to add aliases to.
-     * @param eventBus     Bus to report errors on.
      */
     @Inject
     public ActionAliasMigrator(
             @Directory(DirectoryType.ACTIONS) final Path directory,
             final AliasFactory aliasFactory,
-            final AliasManager aliasManager,
-            final DMDircMBassador eventBus) {
+            final AliasManager aliasManager) {
         this.directory = directory.resolve("aliases");
         this.aliasFactory = aliasFactory;
         this.aliasManager = aliasManager;
-        this.eventBus = eventBus;
     }
 
     @Override
@@ -88,8 +88,7 @@ public class ActionAliasMigrator implements Migrator {
             }
             Files.delete(directory);
         } catch (IOException ex) {
-            eventBus.publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to migrate aliases", ex.getMessage()));
+            LOG.warn(APP_ERROR, "Unable to migrate aliases", ex);
         }
     }
 

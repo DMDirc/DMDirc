@@ -22,27 +22,29 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.Migrator;
-import com.dmdirc.logger.ErrorLevel;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+
 /**
  * Migrator that installs the default aliases file if the user does not currently have one.
  */
 public class DefaultAliasInstaller implements Migrator {
 
-    private final Path target;
-    private final DMDircMBassador eventBus;
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultAliasInstaller.class);
 
-    public DefaultAliasInstaller(final Path target, final DMDircMBassador eventBus) {
+    private final Path target;
+
+    public DefaultAliasInstaller(final Path target) {
         this.target = target;
-        this.eventBus = eventBus;
     }
 
     @Override
@@ -55,8 +57,7 @@ public class DefaultAliasInstaller implements Migrator {
         try (final InputStream stream = getClass().getResourceAsStream("defaults.yml")) {
             Files.copy(stream, target);
         } catch (IOException ex) {
-            eventBus.publish(new AppErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to extract default aliases", ""));
+            LOG.error(APP_ERROR, "Unable to extract default aliases", ex);
         }
     }
 
