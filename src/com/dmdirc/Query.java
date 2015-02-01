@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.QueryActionEvent;
 import com.dmdirc.events.QueryClosedEvent;
@@ -36,9 +35,7 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.CallbackManager;
-import com.dmdirc.parser.common.CallbackNotFoundException;
 import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.parser.events.CompositionStateChangeEvent;
 import com.dmdirc.parser.events.NickChangeEvent;
@@ -187,14 +184,7 @@ public class Query extends FrameContainer implements PrivateChat {
      */
     public void reregister() {
         final CallbackManager callbackManager = connection.getParser().get().getCallbackManager();
-        final String nick = getNickname();
-
-        try {
-            callbackManager.subscribe(this);
-        } catch (CallbackNotFoundException ex) {
-            getEventBus().publishAsync(new AppErrorEvent(ErrorLevel.HIGH, ex,
-                    "Unable to get query events", ex.getMessage()));
-        }
+        callbackManager.subscribe(this);
     }
 
     @Handler
@@ -205,17 +195,6 @@ public class Query extends FrameContainer implements PrivateChat {
         final ClientInfo client = event.getClient();
         final String oldNick = event.getOldNick();
         if (client.getNickname().equals(getNickname())) {
-            final CallbackManager callbackManager = connection.getParser().get().getCallbackManager();
-
-            // TODO: Not specific now.
-            try {
-                callbackManager.subscribe(this);
-            } catch (CallbackNotFoundException ex) {
-                getEventBus().publishAsync(
-                        new AppErrorEvent(ErrorLevel.HIGH, ex, "Unable to get query events",
-                                ex.getMessage()));
-            }
-
             connection.updateQuery(this, oldNick, client.getNickname());
 
             getEventBus().publish(new QueryNickChangeEvent(this, oldNick, client.getNickname()));
