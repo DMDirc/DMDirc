@@ -22,20 +22,23 @@
 
 package com.dmdirc;
 
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.DMDircEvent;
-import com.dmdirc.logger.ErrorLevel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
 
 /**
  * Generified MBassador.
  */
 public class DMDircMBassador extends MBassador<DMDircEvent> {
 
-    private final Object errorHandlerLock = new Object();
+    private static final Logger LOG = LoggerFactory.getLogger(DMDircMBassador.class);
 
     public DMDircMBassador() {
         super(new BusConfiguration().addFeature(Feature.SyncPubSub.Default())
@@ -51,27 +54,8 @@ public class DMDircMBassador extends MBassador<DMDircEvent> {
         setupErrorHandler();
     }
 
-    @SuppressWarnings({
-            "ThrowableResultOfMethodCallIgnored",
-            "CallToPrintStackTrace",
-            "UseOfSystemOutOrSystemErr"
-    })
     private void setupErrorHandler() {
-        addErrorHandler(e -> {
-            if (Thread.holdsLock(errorHandlerLock)) {
-                // ABORT ABORT ABORT - we're publishing an error on the same thread we just tried
-                // to publish an error on. Something in the error reporting pipeline must be
-                // breaking, so don't try adding any more errors.
-                System.err.println("ERROR: Error when reporting error");
-                e.getCause().printStackTrace();
-                return;
-            }
-
-            synchronized (errorHandlerLock) {
-                final Throwable error = e.getCause();
-                publish(new AppErrorEvent(ErrorLevel.HIGH, error.getCause(), error.getMessage(),
-                        ""));
-            }
-        });
+        addErrorHandler(e ->
+                LOG.error(APP_ERROR, "Error caused by event bus handler", e.getCause()));
     }
 }
