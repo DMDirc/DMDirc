@@ -27,8 +27,8 @@ import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -108,8 +108,6 @@ public class PluginMetaData {
     private boolean unloadable;
     /** The URL to the plugin. */
     private final Path pluginPath;
-    /** The URL to load the metadata from. */
-    private final URL url;
     /** The parent plugin manager. */
     private final PluginManager manager;
 
@@ -117,13 +115,11 @@ public class PluginMetaData {
      * Creates a new meta data reader for a config file at the specified URL.
      *
      * @param manager   Plugin manager
-     * @param url       The URL to load the config file from
      * @param pluginPath The path to the plugin that this data corresponds to
      */
-    public PluginMetaData(final PluginManager manager, final URL url, final Path pluginPath) {
+    public PluginMetaData(final PluginManager manager, final Path pluginPath) {
         this.manager = manager;
         this.pluginPath = pluginPath;
-        this.url = url;
     }
 
     /**
@@ -131,8 +127,8 @@ public class PluginMetaData {
      */
     public void load() {
         errors.clear();
-        try (final InputStream stream = url.openStream()) {
-            final ConfigFile configFile = new ConfigFile(stream);
+        try (FileSystem fs = FileSystems.newFileSystem(pluginPath, getClass().getClassLoader())) {
+            final ConfigFile configFile = new ConfigFile(fs.getPath("/META-INF/plugin.config"));
             configFile.read();
             readMetaData(configFile.getKeyDomain("metadata"));
             readVersion(configFile.getKeyDomain("version"));

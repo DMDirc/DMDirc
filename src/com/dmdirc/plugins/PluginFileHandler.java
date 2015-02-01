@@ -32,8 +32,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,12 +39,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -111,7 +107,6 @@ public class PluginFileHandler {
                     .filter(p -> p.getFileName().toString().endsWith(".jar"))
                     .map(Path::toAbsolutePath)
                     .map(path -> getMetaData(path, manager))
-                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (IOException ex) {
             eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, ex,
@@ -125,20 +120,12 @@ public class PluginFileHandler {
      *
      * @param path The path of the plugin to get metadata from.
      * @param manager The plugin manager to pass to new metadata instances.
-     * @return The metadata if it could be created, {@code null} otherwise.
+     * @return The metadata for the given plugin.
      */
-    @Nullable
     private PluginMetaData getMetaData(final Path path, final PluginManager manager) {
-        try {
-            final PluginMetaData metaData = new PluginMetaData(
-                    manager, new URL("jar:file:" + path + "!/META-INF/plugin.config"), path);
-            metaData.load();
-            return metaData;
-        } catch (MalformedURLException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Error creating URL for plugin " + path + ": " + ex.getMessage(), ""));
-            return null;
-        }
+        final PluginMetaData metaData = new PluginMetaData(manager, path);
+        metaData.load();
+        return metaData;
     }
 
     /**

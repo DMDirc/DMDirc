@@ -31,8 +31,6 @@ import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -144,8 +142,6 @@ public class PluginManager {
 
         try {
             final PluginMetaData metadata = new PluginMetaData(this,
-                    new URL("jar:file:" + directory + filename
-                            + "!/META-INF/plugin.config"),
                     Paths.get(directory, filename));
             metadata.load();
             final PluginInfo pluginInfo = new PluginInfo(this, serviceManager, directory, metadata,
@@ -169,9 +165,6 @@ public class PluginManager {
 
             eventBus.publishAsync(new PluginRefreshEvent());
             return true;
-        } catch (MalformedURLException mue) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, mue,
-                    "Error creating URL for plugin " + filename + ": " + mue.getMessage(), ""));
         } catch (PluginException e) {
             eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, e,
                     "Error loading plugin " + filename + ": " + e.getMessage(), ""));
