@@ -22,11 +22,8 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
-import com.dmdirc.events.UserErrorEvent;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.io.File;
@@ -36,34 +33,34 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 /**
  * Utility class that can extract bundled plugins.
  */
 @Singleton
 public class CorePluginExtractor {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CorePluginExtractor.class);
     /** The plugin manager to inform when plugins are updated. */
     private final PluginManager pluginManager;
     /** The directory to extract plugins to. */
     private final String pluginDir;
-    /** The event bus to post events to. */
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link CorePluginExtractor}.
      *
      * @param pluginManager The plugin manager to inform when plugins are updated.
      * @param pluginDir     The directory to extract plugins to.
-     * @param eventBus      The event bus to post events to.
      */
     @Inject
-    public CorePluginExtractor(
-            final PluginManager pluginManager,
-            @Directory(DirectoryType.PLUGINS) final String pluginDir,
-            final DMDircMBassador eventBus) {
+    public CorePluginExtractor(final PluginManager pluginManager,
+            @Directory(DirectoryType.PLUGINS) final String pluginDir) {
         this.pluginManager = pluginManager;
         this.pluginDir = pluginDir;
-        this.eventBus = eventBus;
     }
 
     /**
@@ -106,8 +103,7 @@ public class CorePluginExtractor {
                     }
                 }
             } catch (PluginException | IOException ex) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
-                        "Failed to extract plugins", ""));
+                LOG.info(USER_ERROR, "Failed to extract plugins.", ex);
             }
         }
     }

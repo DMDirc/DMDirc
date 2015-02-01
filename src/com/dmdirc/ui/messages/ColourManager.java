@@ -22,10 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.validators.ColourValidator;
 import com.dmdirc.util.validators.Validator;
@@ -33,12 +30,18 @@ import com.dmdirc.util.validators.Validator;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 /**
  * The colour manager manages the colour scheme for the IRC client. It allows other components to
  * use IRC colour codes instead of absolute colours.
  */
 public class ColourManager {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ColourManager.class);
     /** Default colours used for the standard 16 IRC colours. */
     private static final Colour[] DEFAULT_COLOURS = {
         Colour.WHITE, Colour.BLACK, new Colour(0, 0, 127), new Colour(0, 141, 0),
@@ -51,18 +54,14 @@ public class ColourManager {
     private final AggregateConfigProvider configManager;
     /** Actual colours we're using for the 16 IRC colours. */
     private final Colour[] ircColours = DEFAULT_COLOURS.clone();
-    /** Event bus to post errors to. */
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link ColourManager}.
      *
      * @param configManager The manager to read config settings from.
      */
-    public ColourManager(final AggregateConfigProvider configManager,
-            final DMDircMBassador eventBus) {
+    public ColourManager(final AggregateConfigProvider configManager) {
         this.configManager = configManager;
-        this.eventBus = eventBus;
 
         configManager.addChangeListener("colour", (domain, key) -> initColours());
 
@@ -122,9 +121,7 @@ public class ColourManager {
         }
 
         if (res == null) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM,
-                    new IllegalStateException("Invalid colour format: " + spec),
-                    "Invalid colour format: " + spec, ""));
+            LOG.warn(USER_ERROR, "Invalid colour format: {}", spec);
             res = fallback;
         } else {
             colourCache.put(spec, res);
@@ -147,8 +144,7 @@ public class ColourManager {
         }
 
         if (hex.length() < 6) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Invalid Colour: #" + hex, ""));
+            LOG.warn(USER_ERROR, "Invalid colour: #{}", hex);
             return Colour.WHITE;
         }
 
@@ -159,8 +155,7 @@ public class ColourManager {
                     Integer.parseInt(hex.substring(2, 4), 16),
                     Integer.parseInt(hex.substring(4, 6), 16));
         } catch (NumberFormatException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Invalid Colour: #" + hex, ""));
+            LOG.warn(USER_ERROR, "Invalid colour: #{}", hex);
             return Colour.WHITE;
         }
 
@@ -181,8 +176,7 @@ public class ColourManager {
         if (number >= 0 && number <= 15) {
             return ircColours[number];
         } else {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Invalid Colour: " + number, ""));
+            LOG.warn(USER_ERROR, "Invalid colour: {}", number);
             return Colour.WHITE;
         }
     }

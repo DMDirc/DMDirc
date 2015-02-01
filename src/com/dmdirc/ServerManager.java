@@ -25,12 +25,10 @@ package com.dmdirc;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.FrameClosingEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.WindowManager;
@@ -51,7 +49,12 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.engio.mbassy.listener.Handler;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 
 /**
  * The ServerManager maintains a list of all servers, and provides methods to search or iterate over
@@ -60,6 +63,7 @@ import net.engio.mbassy.listener.Handler;
 @Singleton
 public class ServerManager implements ConnectionManager {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ServerManager.class);
     /** All servers that currently exist. */
     private final Set<Server> servers = new CopyOnWriteArraySet<>();
     /** The manager to use to find profiles. */
@@ -209,8 +213,7 @@ public class ServerManager implements ConnectionManager {
             try {
                 connectToAddress(new URI("irc://irc.quakenet.org/DMDirc"));
             } catch (URISyntaxException ex) {
-                eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                        "Unable to construct new server", ""));
+                LOG.warn(USER_ERROR, "Unable to construct new server", ex);
             }
         } else {
             connectedServer.getGroupChatManager().join(new ChannelJoinRequest("#DMDirc"));

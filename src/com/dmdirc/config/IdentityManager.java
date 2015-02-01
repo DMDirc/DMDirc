@@ -24,14 +24,12 @@ package com.dmdirc.config;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.FileUtils;
@@ -60,6 +58,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.dmdirc.util.LogUtils.FATAL_APP_ERROR;
+import static com.dmdirc.util.LogUtils.FATAL_USER_ERROR;
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -165,9 +165,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             try {
                 Files.createDirectories(file);
             } catch (IOException ex) {
-                eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, ex,
-                        "Unable to create modealiases directory", "Please check file permissions " +
-                        "for " + file));
+                LOG.info(USER_ERROR, "Unable to create modealiases directory", file, ex);
             }
         }
 
@@ -176,10 +174,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 extractIdentities("modealiases");
             }
         } catch (IOException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.FATAL, ex,
-                    "Unable to iterate required directory '" + file + "'. Please check " +
-                            "file permissions or specify a different configuration " +
-                            "directory.", ""));
+            LOG.error(FATAL_USER_ERROR, "Unable to iterate required directory '{}'. Please check"
+                    + "file permissions or specify a different configuration directory.", file, ex);
             return;
         }
 
@@ -196,8 +192,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             FileUtils.copyResources(getClass().getResource("defaults/" + target),
                     identitiesDirectory);
         } catch (IOException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Unable to extract default identities: " + ex.getMessage(), ""));
+            LOG.warn(USER_ERROR, "Unable to extract default identities: {}", ex.getMessage(), ex);
         }
     }
 
@@ -207,8 +202,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             try {
                 Files.createDirectories(identitiesDirectory);
             } catch (IOException ex) {
-                eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                        "Unable to create identity dir", ""));
+                LOG.warn(USER_ERROR, "Unable to create identity dir", ex);
             }
         }
 
@@ -237,8 +231,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 }
             }
         } catch (IOException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to load user identity files from " + dir, ""));
+            LOG.warn(USER_ERROR, "Unable to load user identity files from: {}", dir, ex);
         }
     }
 
@@ -254,9 +247,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                 try {
                     configProvidersByPath.get(file).reload();
                 } catch (IOException ex) {
-                    eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                            "I/O error when reloading identity file: "
-                                    + file + " (" + ex.getMessage() + ')', ""));
+                    LOG.warn(USER_ERROR, "I/O error when reloading identity file: {} ({})",
+                            file, ex.getMessage(), ex);
                 } catch (InvalidConfigFileException ex) {
                     // Do nothing
                 }
@@ -268,11 +260,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             addConfigProvider(provider);
             configProvidersByPath.put(file, provider);
         } catch (InvalidIdentityFileException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Invalid identity file: " + file + " (" + ex.getMessage() + ')', ""));
+            LOG.warn(USER_ERROR, "Invalid identity file: {} ({})", file, ex.getMessage(), ex);
         } catch (IOException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "I/O error when reading identity file: " + file, ""));
+            LOG.warn(USER_ERROR, "I/O error when reading identity file: {}", file, ex);
         }
     }
 
@@ -309,8 +299,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                     getResourceAsStream("/com/dmdirc/version.config"), false);
             addConfigProvider(versionConfig);
         } catch (IOException | InvalidIdentityFileException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to load version information", ""));
+            LOG.warn(USER_ERROR, "Unable to load version information.", ex);
         }
     }
 
@@ -332,8 +321,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
             configProvidersByPath.put(file, config);
             addConfigProvider(config);
         } catch (IOException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "I/O error when loading global config: " + ex.getMessage(), ""));
+            LOG.warn(USER_ERROR, "I/O error when loading global config: {}", ex.getMessage(), ex);
         }
     }
 
@@ -569,8 +557,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             return createIdentity(settings);
         } catch (InvalidIdentityFileException | IOException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to create identity", ""));
+            LOG.warn(USER_ERROR, "Unable to create identity", ex);
             return null;
         }
     }
@@ -590,8 +577,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             return createIdentity(settings);
         } catch (InvalidIdentityFileException | IOException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to create identity", ""));
+            LOG.warn(USER_ERROR, "Unable to create identity", ex);
             return null;
         }
     }
@@ -606,8 +592,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         try {
             return createIdentity(settings);
         } catch (InvalidIdentityFileException | IOException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to create identity", ""));
+            LOG.warn(USER_ERROR, "Unable to create identity", ex);
             return null;
         }
     }

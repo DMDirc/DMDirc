@@ -22,33 +22,30 @@
 
 package com.dmdirc.ui.messages.sink;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.logger.ErrorLevel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 
 /**
  * Manages message sinks and facilitates dispatching of messages to sinks.
  */
 public class MessageSinkManager {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MessageSinkManager.class);
     /** The configuration domain to use for looking up default sinks. */
     public static final String CONFIG_DOMAIN = "notifications";
     /** The default sink to use if none is specified or in case of error. */
     public static final String DEFAULT_SINK = "self";
     /** A list of known sinks. */
-    private final List<MessageSink> sinks = new ArrayList<>();
-    /** Event bus to post errors to. */
-    private final DMDircMBassador eventBus;
-
-    public MessageSinkManager(final DMDircMBassador eventBus) {
-        this.eventBus = eventBus;
-    }
+    private final Collection<MessageSink> sinks = new ArrayList<>();
 
     /**
      * Adds a new sink to the list of known sinks.
@@ -116,8 +113,7 @@ public class MessageSinkManager {
         }
 
         // None of the sinks matched :(
-        eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                "Invalid target message sink for type " + messageType + ": " + targetSink, ""));
+        LOG.warn(USER_ERROR, "Invalid target message sink for type {}: {}", messageType, targetSink);
 
         if (!DEFAULT_SINK.equals(targetSink)) {
             dispatchMessage(source, date, messageType, DEFAULT_SINK, args);

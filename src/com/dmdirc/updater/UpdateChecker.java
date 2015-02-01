@@ -22,11 +22,8 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.updater.manager.CachingUpdateManager;
 import com.dmdirc.updater.manager.UpdateStatus;
 
@@ -35,12 +32,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 /**
  * The update checker contacts the DMDirc website to check to see if there are any updates
  * available.
  */
 public final class UpdateChecker implements Runnable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateChecker.class);
     /** The domain to use for updater settings. */
     private static final String DOMAIN = "updater";
     /** Semaphore used to prevent multiple invocations. */
@@ -51,23 +54,18 @@ public final class UpdateChecker implements Runnable {
     private final CachingUpdateManager updateManager;
     /** The controller to use to read and write settings. */
     private final IdentityController identityController;
-    /** The event bus to post errors to. */
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link UpdateChecker}.
      *
      * @param updateManager      The manager to use to perform updates.
      * @param identityController The controller to use to read and write settings.
-     * @param eventBus           The event bus to post errors to.
      */
     public UpdateChecker(
             final CachingUpdateManager updateManager,
-            final IdentityController identityController,
-            final DMDircMBassador eventBus) {
+            final IdentityController identityController) {
         this.updateManager = updateManager;
         this.identityController = identityController;
-        this.eventBus = eventBus;
     }
 
     @Override
@@ -84,7 +82,7 @@ public final class UpdateChecker implements Runnable {
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
             MUTEX.release();
-            init(updateManager, identityController, eventBus);
+            init(updateManager, identityController);
             return;
         }
 
@@ -95,7 +93,7 @@ public final class UpdateChecker implements Runnable {
         identityController.getUserSettings().setOption(DOMAIN,
                 "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
 
-        init(updateManager, identityController, eventBus);
+        init(updateManager, identityController);
 
         if (config.getOptionBool(DOMAIN, "autoupdate")) {
             updateManager.getComponents().stream()
@@ -114,12 +112,10 @@ public final class UpdateChecker implements Runnable {
      *
      * @param manager    Manager to monitor updates
      * @param controller The controller to use to retrieve and update settings.
-     * @param eventBus   The event bus to post errors to.
      */
     public static void init(
             final CachingUpdateManager manager,
-            final IdentityController controller,
-            final DMDircMBassador eventBus) {
+            final IdentityController controller) {
         final int last = controller.getGlobalConfiguration()
                 .getOptionInt(DOMAIN, "lastcheck");
         final int freq = controller.getGlobalConfiguration()
@@ -132,9 +128,8 @@ public final class UpdateChecker implements Runnable {
         }
 
         if (time > freq || time < 0) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null,
-                    "Attempted to schedule update check " + (time < 0
-                            ? "in the past" : "too far in the future") + ", rescheduling.", ""));
+            LOG.info(USER_ERROR, "Attempted to schedule update check " + (time < 0
+                            ? "in the past" : "too far in the future") + ", rescheduling.");
             time = 1;
         }
 
@@ -144,7 +139,7 @@ public final class UpdateChecker implements Runnable {
 
             @Override
             public void run() {
-                checkNow(manager, controller, eventBus);
+                checkNow(manager, controller);
             }
         }, time * 1000);
     }
@@ -154,13 +149,11 @@ public final class UpdateChecker implements Runnable {
      *
      * @param updateManager      The manager to use for checking.
      * @param identityController The controller to use to retrieve and update settings.
-     * @param eventBus           The event bus to post errors to.
      */
     public static void checkNow(
             final CachingUpdateManager updateManager,
-            final IdentityController identityController,
-            final DMDircMBassador eventBus) {
-        checkNow(updateManager, identityController, eventBus, "Update Checker thread");
+            final IdentityController identityController) {
+        checkNow(updateManager, identityController, "Update Checker thread");
     }
 
     /**
@@ -168,15 +161,13 @@ public final class UpdateChecker implements Runnable {
      *
      * @param updateManager      The manager to use for checking.
      * @param identityController The controller to use to retrieve and update settings.
-     * @param eventBus           The event bus to post errors to.
      * @param threadName         The name of the thread to use to run the checker in.
      */
     public static void checkNow(
             final CachingUpdateManager updateManager,
             final IdentityController identityController,
-            final DMDircMBassador eventBus,
             final String threadName) {
-        new Thread(new UpdateChecker(updateManager, identityController, eventBus), threadName)
+        new Thread(new UpdateChecker(updateManager, identityController), threadName)
                 .start();
     }
 

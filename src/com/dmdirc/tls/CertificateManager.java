@@ -25,11 +25,9 @@ package com.dmdirc.tls;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ServerCertificateProblemEncounteredEvent;
 import com.dmdirc.events.ServerCertificateProblemResolvedEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.logger.ErrorLevel;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,6 +62,11 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 /**
  * Manages storage and validation of certificates used when connecting to SSL servers.
  *
@@ -71,6 +74,7 @@ import javax.net.ssl.X509TrustManager;
  */
 public class CertificateManager implements X509TrustManager {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CertificateManager.class);
     /** Connection that owns this manager. */
     private final Connection connection;
     /** The server name the user is trying to connect to. */
@@ -140,8 +144,7 @@ public class CertificateManager implements X509TrustManager {
                             .collect(Collectors.toList()));
         } catch (CertificateException | IOException | InvalidAlgorithmParameterException |
                 KeyStoreException | NoSuchAlgorithmException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to load trusted certificates", ""));
+            LOG.warn(USER_ERROR, "Unable to load trusted certificates", ex);
         }
     }
 
@@ -172,11 +175,9 @@ public class CertificateManager implements X509TrustManager {
 
                 return kmf.getKeyManagers();
             } catch (FileNotFoundException ex) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                        "Certificate file not found", ""));
+                LOG.warn(USER_ERROR, "Certificate file not found", ex);
             } catch (GeneralSecurityException | IOException ex) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                        "Unable to get key manager", ""));
+                LOG.warn(USER_ERROR, "Unable to get key manager", ex);
             }
         }
 

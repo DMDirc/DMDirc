@@ -12,15 +12,12 @@ import javax.inject.Singleton;
 @Singleton
 public class MessageEncoderFactory {
 
-    private final DMDircMBassador eventBus;
-
     @Inject
-    public MessageEncoderFactory(final DMDircMBassador eventBus) {
-        this.eventBus = eventBus;
+    public MessageEncoderFactory() {
     }
 
     public MessageEncoder getMessageEncoder(final Connection connection, final Parser parser) {
-        return new MessageEncoder(connection, parser, eventBus);
+        return new MessageEncoder(connection, parser);
     }
 
 }
