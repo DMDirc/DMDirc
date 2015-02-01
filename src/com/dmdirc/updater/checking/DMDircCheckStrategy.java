@@ -28,6 +28,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
+import com.dmdirc.util.LogUtils;
 import com.dmdirc.util.io.Downloader;
 
 import java.io.IOException;
@@ -200,7 +201,8 @@ public class DMDircCheckStrategy implements UpdateCheckStrategy {
             return new BaseDownloadableResult(component, new URL(parts[5]),
                     parts[4], new Version(parts[3]));
         } catch (MalformedURLException ex) {
-            LOG.error("Unable to construct URL for update. Parts: {}", parts, ex);
+            LOG.error(LogUtils.APP_ERROR, "Unable to construct URL for update. Parts: {}", parts,
+                    ex);
             return null;
         }
     }
