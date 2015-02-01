@@ -22,9 +22,7 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.MissingModeAliasException;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.parser.interfaces.Parser;
@@ -32,9 +30,14 @@ import com.dmdirc.parser.interfaces.Parser;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.Listener;
 import net.engio.mbassy.listener.References;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
 
 /**
  * Watches for newly connected servers and raises errors about their mode aliases.
@@ -43,14 +46,13 @@ import net.engio.mbassy.listener.References;
 @Listener(references = References.Strong)
 public class ModeAliasReporter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ModeAliasReporter.class);
+
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server";
 
-    private final DMDircMBassador eventBus;
-
     @Inject
-    public ModeAliasReporter(final DMDircMBassador eventBus) {
-        this.eventBus = eventBus;
+    public ModeAliasReporter() {
     }
 
     @Handler
@@ -99,13 +101,12 @@ public class ModeAliasReporter {
             }
 
 
-            eventBus.publish(new AppErrorEvent(ErrorLevel.LOW,
-                    new MissingModeAliasException(
+            LOG.info(APP_ERROR, "Missing mode aliases", new MissingModeAliasException(
                             event.getConnection().getNetwork(),
                             parser,
                             configManager.getOption("identity", "modealiasversion"),
                             missing.toString()),
-                    missing + " [" + parser.getServerSoftwareType() + ']', ""));
+                    missing + " [" + parser.getServerSoftwareType() + ']', "");
         }
     }
 }

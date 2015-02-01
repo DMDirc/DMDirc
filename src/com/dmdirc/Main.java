@@ -175,7 +175,7 @@ public class Main {
      * Initialises the client.
      */
     public void init() {
-        Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler(eventBus));
+        Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
         setupLogback();
         migrators.stream().filter(Migrator::needsMigration).forEach(Migrator::migrate);
         commands.forEach(c -> commandManager.registerCommand(c.getCommand(), c.getInfo()));
