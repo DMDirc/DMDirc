@@ -25,13 +25,10 @@ package com.dmdirc.plugins;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigFileBackedConfigProvider;
 import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.PluginLoadedEvent;
 import com.dmdirc.events.PluginUnloadedEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.validators.ValidationResponse;
 
 import java.io.IOException;
@@ -56,6 +53,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dagger.ObjectGraph;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 
 /**
  * Stores plugin metadata and handles loading of plugin resources.
@@ -253,8 +253,8 @@ public class PluginInfo implements ServiceProvider {
                 directoryStream.forEach(this::loadIdentity);
             }
         } catch (final IOException ioe) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ioe,
-                    "Error finding identities in plugin '" + metaData.getName() + '\'', ""));
+            LOG.warn(USER_ERROR, "Error finding identities in plugin '{}'", metaData.getName(),
+                    ioe);
         }
     }
 
@@ -271,14 +271,12 @@ public class PluginInfo implements ServiceProvider {
                 identityController.addConfigProvider(configProvider);
                 configProviders.add(configProvider);
             }
-        } catch (final InvalidIdentityFileException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Error with identity file '" + path.getFileName() + "' in plugin '" +
-                            metaData.getName() + '\'', ""));
+        } catch (InvalidIdentityFileException ex) {
+            LOG.warn(USER_ERROR, "Error with identity file '{}' in plugin '{}'",
+                    path.getFileName(), metaData.getName(), ex);
         } catch (IOException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to load identity file '" + path.getFileName() + "' in plugin '" +
-                            metaData.getName() + '\'', ""));
+            LOG.warn(USER_ERROR, "Unable to load identity file '{}' in plugin '{}'",
+                    path.getFileName(), metaData.getName(), ex);
         }
     }
 
@@ -330,10 +328,10 @@ public class PluginInfo implements ServiceProvider {
      * files.
      */
     public void pluginUpdated() throws PluginException {
-            updateClassList();
-            updateMetaData();
-            updateProvides();
-            getDefaults();
+        updateClassList();
+        updateMetaData();
+        updateProvides();
+        getDefaults();
     }
 
     /**
@@ -597,23 +595,23 @@ public class PluginInfo implements ServiceProvider {
             lastError = "Class not found ('" + filename + ':' + classname + ':'
                     + classname.equals(metaData.getMainClass()) + "') - "
                     + cnfe.getMessage();
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, cnfe, lastError, ""));
+            LOG.info(USER_ERROR, lastError, cnfe);
         } catch (NoClassDefFoundError ncdf) {
             lastError = "Unable to instantiate plugin ('" + filename + ':'
                     + classname + ':'
                     + classname.equals(metaData.getMainClass())
                     + "') - Unable to find class: " + ncdf.getMessage();
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, ncdf, lastError, ""));
+            LOG.info(USER_ERROR, lastError, ncdf);
         } catch (VerifyError ve) {
             lastError = "Unable to instantiate plugin ('" + filename + ':'
                     + classname + ':'
                     + classname.equals(metaData.getMainClass())
                     + "') - Incompatible: " + ve.getMessage();
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, ve, lastError, ""));
+            LOG.info(USER_ERROR, lastError, ve);
         } catch (IllegalArgumentException | ReflectiveOperationException ex) {
             lastError = "Unable to instantiate class for plugin " + metaData.getName()
                     + ": " + classname;
-            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.LOW, ex, lastError, ""));
+            LOG.info(APP_ERROR, lastError, ex);
         }
     }
 
@@ -626,7 +624,7 @@ public class PluginInfo implements ServiceProvider {
                 lastError = "Prerequisites for plugin not met. ('"
                         + filename + ':' + metaData.getMainClass()
                         + "' -> '" + prerequisites.getFailureReason() + "') ";
-                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null, lastError, ""));
+                LOG.info(USER_ERROR, lastError);
             } else {
                 initialisePlugin((Plugin) temp);
             }
@@ -640,7 +638,7 @@ public class PluginInfo implements ServiceProvider {
             plugin.onLoad();
         } catch (LinkageError | Exception e) {
             lastError = "Error in onLoad for " + metaData.getName() + ':' + e.getMessage();
-            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
+            LOG.warn(APP_ERROR, lastError, e);
             unloadPlugin();
         }
     }
@@ -698,7 +696,7 @@ public class PluginInfo implements ServiceProvider {
             } catch (Exception | LinkageError e) {
                 lastError = "Error in onUnload for " + metaData.getName()
                         + ':' + e + " - " + e.getMessage();
-                eventBus.publishAsync(new AppErrorEvent(ErrorLevel.MEDIUM, e, lastError, ""));
+                LOG.warn(APP_ERROR, lastError, e);
             }
 
             //TODO plugin unloading shouldn't be done from here, event bus shouldn't be here.

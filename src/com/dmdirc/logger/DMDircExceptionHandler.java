@@ -22,28 +22,22 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+import static com.dmdirc.util.LogUtils.FATAL_APP_ERROR;
 
 /**
  * Passes uncaught exceptions to the logger.
  */
-public final class DMDircExceptionHandler implements
-        Thread.UncaughtExceptionHandler {
+public final class DMDircExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-    private final DMDircMBassador eventBus;
-
-    public DMDircExceptionHandler(final DMDircMBassador eventBus) {
-        this.eventBus = eventBus;
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(DMDircExceptionHandler.class);
 
     @Override
     public void uncaughtException(final Thread t, final Throwable e) {
-        if (e instanceof Error) {
-            eventBus.publish(new AppErrorEvent(ErrorLevel.FATAL, e, e.toString(), ""));
-        } else {
-            eventBus.publish(new AppErrorEvent(ErrorLevel.HIGH, e, e.toString(), ""));
-        }
+        LOG.error(e instanceof Error ? FATAL_APP_ERROR : APP_ERROR, "Uncaught exception", e);
     }
 
 }
