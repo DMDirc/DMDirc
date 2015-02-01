@@ -94,7 +94,7 @@ public abstract class BaseYamlStore<T> {
             yamlWriter.write(items.parallelStream().map(this::convertToYaml).collect(toList()));
             yamlWriter.close();
         } catch (IOException ex) {
-            LOG.error("Unable to write to {}", path, ex);
+            LOG.error(LogUtils.USER_ERROR, "Unable to write to {}", path, ex);
         }
     }
 

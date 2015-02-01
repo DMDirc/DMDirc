@@ -22,6 +22,8 @@
 
 package com.dmdirc.plugins;
 
+import com.dmdirc.util.LogUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -76,10 +78,9 @@ public class ExportedService {
     public Object execute(final Object... args) {
         try {
             return method.invoke(object, args);
-        } catch (final LinkageError | IllegalAccessException |
-                IllegalArgumentException | InvocationTargetException le) {
-            LOG.error("Error with exported service calling {}",
-                    method, le);
+        } catch (LinkageError | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException le) {
+            LOG.error(LogUtils.APP_ERROR, "Error with exported service calling {}", method, le);
             return null;
         }
     }
