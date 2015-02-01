@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.QuerySelfActionEvent;
 import com.dmdirc.events.QuerySelfMessageEvent;
 import com.dmdirc.events.ServerAuthNoticeEvent;
@@ -51,10 +50,8 @@ import com.dmdirc.events.ServerWalldesyncEvent;
 import com.dmdirc.events.ServerWallopsEvent;
 import com.dmdirc.events.ServerWallusersEvent;
 import com.dmdirc.events.StatusBarMessageEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.events.UserInfoResponseEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.events.AuthNoticeEvent;
 import com.dmdirc.parser.events.AwayStateEvent;
@@ -103,6 +100,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.engio.mbassy.listener.Handler;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 
 /**
  * Handles parser events for a Server object.
@@ -165,8 +165,7 @@ public class ServerEventHandler extends EventHandler {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Handler
     public void onErrorInfo(final ParserErrorEvent event) {
-        eventBus.publishAsync(new AppErrorEvent(ErrorLevel.UNKNOWN, event.getThrowable(),
-                event.getThrowable().getMessage(), ""));
+        LOG.warn(APP_ERROR, "Error in parser", event.getThrowable());
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
@@ -189,12 +188,8 @@ public class ServerEventHandler extends EventHandler {
         final Exception ex = event.getErrorInfo().isException() ? event.getErrorInfo().getException()
                 : new Exception(errorString.toString()); // NOPMD
 
-        final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
-        if (event.getErrorInfo().isUserError()) {
-            eventBus.publishAsync(new UserErrorEvent(errorLevel, ex, event.getErrorInfo().getData(), ""));
-        } else {
-            eventBus.publishAsync(new AppErrorEvent(errorLevel, ex, event.getErrorInfo().getData(), ""));
-        }
+        LOG.warn(event.getErrorInfo().isUserError() ? USER_ERROR : APP_ERROR,
+                event.getErrorInfo().getData(), ex);
     }
 
     @Handler

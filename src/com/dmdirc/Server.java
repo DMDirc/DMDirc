@@ -24,7 +24,6 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.profiles.Profile;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
@@ -39,7 +38,6 @@ import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.common.ParserError;
@@ -89,6 +87,7 @@ import javax.net.ssl.SSLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.dmdirc.util.LogUtils.APP_ERROR;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -252,9 +251,7 @@ public class Server extends FrameContainer implements Connection {
                     this.address = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(),
                             pd.getDefaultPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
                 } catch (URISyntaxException ex) {
-                    getEventBus().publish(
-                            new AppErrorEvent(ErrorLevel.MEDIUM, ex, "Unable to construct URI",
-                                    ""));
+                    LOG.warn(APP_ERROR, "Unable to construct URI", ex);
                 }
             });
         }
@@ -943,10 +940,8 @@ public class Server extends FrameContainer implements Connection {
                         || exception instanceof SSLException) {
                     description = exception.getMessage();
                 } else {
-                    getEventBus().publish(new AppErrorEvent(ErrorLevel.LOW,
-                            new IllegalArgumentException(exception),
-                            "Unknown socket error: " + exception.getClass().getCanonicalName(),
-                            ""));
+                    LOG.info(APP_ERROR, "Unknown socket error: {}",
+                            exception.getClass().getCanonicalName(), exception);
                     description = "Unknown error: " + exception.getMessage();
                 }
             }
