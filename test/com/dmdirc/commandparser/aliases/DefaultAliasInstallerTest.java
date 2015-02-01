@@ -32,13 +32,10 @@ import java.nio.file.Path;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static java.nio.file.attribute.PosixFilePermissions.asFileAttribute;
-import static java.nio.file.attribute.PosixFilePermissions.fromString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -79,14 +76,6 @@ public class DefaultAliasInstallerTest {
     public void testCopiesDefaultAliases() throws IOException {
         installer.migrate();
         assertTrue(Files.exists(path));
-    }
-
-    @Test
-    @Ignore("Needs updating to new logging framework, if possible")
-    public void testRaisesErrorIfCannotCopyDefaultAliases() throws IOException {
-        Files.createFile(path, asFileAttribute(fromString("r--r--r--")));
-        installer.migrate();
-        // verify(eventBus).publish(isA(AppErrorEvent.class));
     }
 
 }

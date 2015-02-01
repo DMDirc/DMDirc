@@ -22,8 +22,6 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.DMDircMBassador;
-
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
@@ -46,7 +44,6 @@ public class ActionAliasMigratorTest {
 
     @Mock private AliasFactory aliasFactory;
     @Mock private AliasManager aliasManager;
-    @Mock private DMDircMBassador eventBus;
 
     private FileSystem fs;
     private ActionAliasMigrator migrator1;
@@ -68,12 +65,9 @@ public class ActionAliasMigratorTest {
         Files.copy(getClass().getResource("no-trigger").openStream(),
                 fs.getPath("test3/aliases/bad"));
 
-        migrator1 = new ActionAliasMigrator(fs.getPath("test1"), aliasFactory,
-                aliasManager, eventBus);
-        migrator2 = new ActionAliasMigrator(fs.getPath("test2"), aliasFactory,
-                aliasManager, eventBus);
-        migrator3 = new ActionAliasMigrator(fs.getPath("test3"), aliasFactory,
-                aliasManager, eventBus);
+        migrator1 = new ActionAliasMigrator(fs.getPath("test1"), aliasFactory, aliasManager);
+        migrator2 = new ActionAliasMigrator(fs.getPath("test2"), aliasFactory, aliasManager);
+        migrator3 = new ActionAliasMigrator(fs.getPath("test3"), aliasFactory, aliasManager);
     }
 
     @Test
