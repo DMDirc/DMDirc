@@ -216,7 +216,7 @@ public class ParserFactory {
                 }
             }
         } catch (NoSuchProviderException nspe) {
-            LOG.warn(USER_ERROR, "No parser found for " + address.getScheme(), nspe);
+            LOG.warn(USER_ERROR, "No parser found for {}", address.getScheme(), nspe);
         }
 
         return null;
