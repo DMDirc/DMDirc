@@ -55,6 +55,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.spi.ContextAware;
 import dagger.ObjectGraph;
 
 /**
@@ -62,6 +68,7 @@ import dagger.ObjectGraph;
  */
 public class Main {
 
+    private final Logger log = LoggerFactory.getLogger(Main.class);
     /** The UI to use for the client. */
     private final Collection<UIController> CONTROLLERS = new HashSet<>();
     /** The identity manager the client will use. */
@@ -89,6 +96,14 @@ public class Main {
     /** Mode alias reporter to use. */
     private final ModeAliasReporter reporter;
     private final ServiceManager serviceManager;
+
+    static {
+        // TODO: Can this go in a Dagger module?
+        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final ContextAware configurator = new JoranConfigurator();
+        configurator.setContext(context);
+        context.reset();
+    }
 
     /**
      * Creates a new instance of {@link Main}.
@@ -160,6 +175,7 @@ public class Main {
      */
     public void init() {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler(eventBus));
+        setupLogback();
         migrators.stream().filter(Migrator::needsMigration).forEach(Migrator::migrate);
         commands.forEach(c -> commandManager.registerCommand(c.getCommand(), c.getInfo()));
 
@@ -254,6 +270,18 @@ public class Main {
                     .setNameFormat("feedback-nag-%d").build()).schedule(
                     () -> eventBus.publishAsync(new FeedbackNagEvent()), 5, TimeUnit.MINUTES);
         }
+    }
+
+    private void setupLogback() {
+        // TODO: Add a normal logging thing, with or without runtime switching.
+        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final ProgramErrorAppender appender = new ProgramErrorAppender();
+        appender.setEventBus(eventBus);
+        appender.setContext(context);
+        appender.setName("Error Logger");
+        appender.start();
+        final ch.qos.logback.classic.Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+        rootLogger.addAppender(appender);
     }
 
 }
