@@ -22,10 +22,6 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
-import com.dmdirc.logger.ErrorLevel;
-
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.concurrent.CancellationException;
@@ -34,11 +30,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.function.BiConsumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+
 /**
  * An scheduled executor service that takes logs failed executions either via eventbus errors or a
  * custom error function.
  */
 public class LoggingScheduledExecutorService extends ScheduledThreadPoolExecutor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LoggingScheduledExecutorService.class);
 
     private final BiConsumer<Runnable, Throwable> afterExecute;
 
@@ -47,13 +50,10 @@ public class LoggingScheduledExecutorService extends ScheduledThreadPoolExecutor
      *
      * @param coreSize The number of threads to keep in the pool, even if they are idle, unless
      *                 {@code allowCoreThreadTimeOut} is set
-     * @param eventBus The event bus to raise errors on
      * @param poolName The naming format to use when naming threads
      */
-    public LoggingScheduledExecutorService(final int coreSize,
-            final DMDircMBassador eventBus, final String poolName) {
-        this(coreSize, (r, t) -> eventBus
-                .publishAsync(new AppErrorEvent(ErrorLevel.HIGH, t, t.getMessage(), "")), poolName);
+    public LoggingScheduledExecutorService(final int coreSize, final String poolName) {
+        this(coreSize, (r, t) -> LOG.error(APP_ERROR, t.getMessage(), t), poolName);
     }
 
     /**

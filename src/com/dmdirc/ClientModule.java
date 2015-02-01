@@ -107,8 +107,8 @@ public class ClientModule {
 
     @Provides
     @Named("errors")
-    public ExecutorService getExecutorService(final DMDircMBassador eventBus) {
-        return new LoggingExecutorService(1, 1, eventBus, "Error Logging");
+    public ExecutorService getExecutorService() {
+        return new LoggingExecutorService(1, 1, "Error Logging");
     }
 
     @Provides
