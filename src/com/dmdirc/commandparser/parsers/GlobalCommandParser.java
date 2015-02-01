@@ -30,15 +30,18 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.events.CommandErrorEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.logger.ErrorLevel;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 
 /**
  * The command parser used for global commands.
@@ -46,9 +49,9 @@ import javax.inject.Singleton;
 @Singleton
 public class GlobalCommandParser extends CommandParser {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalCommandParser.class);
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new command parser for global commands.
@@ -63,7 +66,6 @@ public class GlobalCommandParser extends CommandParser {
             final CommandController commandManager,
             final DMDircMBassador eventBus) {
         super(configManager, commandManager, eventBus);
-        this.eventBus = eventBus;
     }
 
     /** Loads the relevant commands into the parser. */
@@ -101,9 +103,8 @@ public class GlobalCommandParser extends CommandParser {
     @Override
     protected void handleNonCommand(final WindowModel origin, final String line) {
         if (origin == null) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM,
-                    new IllegalArgumentException("Invalid Global Command: " + line),
-                    "Invalid Global Command: " + line, ""));
+            LOG.warn(USER_ERROR, "Invalid Global Command: {}", line,
+                    new IllegalArgumentException("Invalid Global Command: " + line));
         } else {
             origin.getEventBus().publishAsync(
                     new CommandErrorEvent(origin, "Invalid global command: " + line));

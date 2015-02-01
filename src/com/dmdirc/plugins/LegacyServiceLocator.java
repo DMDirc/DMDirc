@@ -22,10 +22,6 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
-import com.dmdirc.logger.ErrorLevel;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,6 +30,10 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -42,15 +42,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Singleton
 public class LegacyServiceLocator implements ServiceLocator {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LegacyServiceLocator.class);
     /** The plugin manager to use to find services. */
     private final PluginManager pluginManager;
-    /** The event bus to post errors . */
-    private final DMDircMBassador eventBus;
 
     @Inject
-    public LegacyServiceLocator(final PluginManager pluginManager, final DMDircMBassador eventBus) {
+    public LegacyServiceLocator(final PluginManager pluginManager) {
         this.pluginManager = checkNotNull(pluginManager);
-        this.eventBus = checkNotNull(eventBus);
     }
 
     @Override
@@ -84,10 +82,9 @@ public class LegacyServiceLocator implements ServiceLocator {
                                     services.add((T) object);
                                 }
                             } catch (ReflectiveOperationException ex) {
-                                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
-                                        "Unable to execute exported method " + method.getName() +
-                                                " in plugin " + pluginInfo.getMetaData().getName(),
-                                        ""));
+                                LOG.info(USER_ERROR,
+                                        "Unable to execute exported method {} in plugin {}",
+                                        method.getName(), pluginInfo.getMetaData().getName(), ex);
                             }
                         }
                     }

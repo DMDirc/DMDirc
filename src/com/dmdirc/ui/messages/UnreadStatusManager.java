@@ -56,7 +56,7 @@ public class UnreadStatusManager {
     public UnreadStatusManager(final WindowModel container) {
         this.container = container;
         this.eventBus = container.getEventBus();
-        this.colourManager = new ColourManager(container.getConfigManager(), eventBus);
+        this.colourManager = new ColourManager(container.getConfigManager());
     }
 
     @Handler

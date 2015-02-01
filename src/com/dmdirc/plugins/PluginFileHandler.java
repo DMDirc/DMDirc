@@ -22,11 +22,8 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
-import com.dmdirc.events.UserErrorEvent;
-import com.dmdirc.logger.ErrorLevel;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -46,23 +43,26 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 /**
  * Locates and tracks plugin files on disk.
  */
 @Singleton
 public class PluginFileHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PluginFileHandler.class);
     private final Path directory;
-    private final DMDircMBassador eventBus;
 
     private final Collection<PluginMetaData> knownPlugins = new CopyOnWriteArrayList<>();
 
     @Inject
     public PluginFileHandler(
-            @Directory(DirectoryType.PLUGINS) final Path directory,
-            final DMDircMBassador eventBus) {
+            @Directory(DirectoryType.PLUGINS) final Path directory) {
         this.directory = directory;
-        this.eventBus = eventBus;
     }
 
     /**
@@ -109,8 +109,7 @@ public class PluginFileHandler {
                     .map(path -> getMetaData(path, manager))
                     .collect(Collectors.toList());
         } catch (IOException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, ex,
-                    "Unable to read plugin directory", ""));
+            LOG.error(USER_ERROR, "Unable to read plugin directory.", ex);
             return Collections.emptyList();
         }
     }
@@ -134,9 +133,8 @@ public class PluginFileHandler {
      * @param pluginMetaData The metadata to read errors from.
      */
     private void reportErrors(final PluginMetaData pluginMetaData) {
-        eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                "Error reading plugin metadata for plugin " + pluginMetaData.getPluginPath() + ": "
-                        + pluginMetaData.getErrors(), ""));
+        LOG.warn(USER_ERROR, "Error reading plugin metadata for plugin {}: {}",
+                pluginMetaData.getPluginPath(), pluginMetaData.getErrors());
     }
 
     /**
@@ -191,9 +189,8 @@ public class PluginFileHandler {
             if (results.isEmpty()) {
                 res.add(target);
             } else {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                        "Plugin validation failed for " + target.getPluginPath() + ": " + results,
-                        ""));
+                LOG.warn(USER_ERROR, "Plugin validation failed for {}: {}",
+                        target.getPluginPath(), results);
             }
         }
 

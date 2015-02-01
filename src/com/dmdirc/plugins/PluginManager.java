@@ -24,9 +24,7 @@ package com.dmdirc.plugins;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.PluginRefreshEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 
@@ -42,13 +40,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dagger.ObjectGraph;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 
 /**
  * Searches for and manages plugins and services.
  */
 public class PluginManager {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PluginManager.class);
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
     private final Map<String, PluginInfo> knownPlugins = new HashMap<>();
     /** Set of known plugins' metadata. */
@@ -135,8 +139,7 @@ public class PluginManager {
         }
 
         if (!new File(directory, filename).exists()) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Error loading plugin " + filename + ": File does not exist", ""));
+            LOG.warn(USER_ERROR, "Error loading plugin {}: File does not exist", filename);
             return false;
         }
 
@@ -148,9 +151,8 @@ public class PluginManager {
                     eventBus, identityController, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                        "Duplicate Plugin detected, Ignoring. (" + filename
-                        + " is the same as " + existing.getFilename() + ")", ""));
+                LOG.warn(USER_ERROR, "Duplicate plugin detected, ignoring. ({} is the same as {})",
+                        filename, existing.getFilename());
                 return false;
             }
 
@@ -166,8 +168,7 @@ public class PluginManager {
             eventBus.publishAsync(new PluginRefreshEvent());
             return true;
         } catch (PluginException e) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, e,
-                    "Error loading plugin " + filename + ": " + e.getMessage(), ""));
+            LOG.warn(USER_ERROR, "Error loading plugin {}: {}", filename, e.getMessage(), e);
         }
 
         return false;

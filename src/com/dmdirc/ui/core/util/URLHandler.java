@@ -25,10 +25,8 @@ package com.dmdirc.ui.core.util;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.events.UnknownURLEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.CommandUtils;
 
@@ -41,9 +39,15 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 /** Handles URLs. */
 public class URLHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(URLHandler.class);
     /** The time a browser was last launched. */
     private static Date lastLaunch;
     /** Event bus to fire unknown protocol errors on. */
@@ -88,8 +92,7 @@ public class URLHandler {
                 uri = new URI("http://" + sanitisedString);
             }
         } catch (URISyntaxException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
-                    "Invalid URL: " + ex.getMessage(), ""));
+            LOG.info(USER_ERROR, "Unavlid URL: {}", ex.getMessage(), ex);
             return;
         }
 
@@ -134,8 +137,7 @@ public class URLHandler {
                 uri = new URI("http://" + url);
             }
         } catch (URISyntaxException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
-                    "Invalid URL: " + ex.getMessage(), ""));
+            LOG.info(USER_ERROR, "Invalid URL: {}", ex.getMessage(), ex);
             return;
         }
 
@@ -263,8 +265,7 @@ public class URLHandler {
         try {
             Runtime.getRuntime().exec(CommandUtils.parseArguments(command));
         } catch (IOException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
-                    "Unable to run application: " + ex.getMessage(), ""));
+            LOG.info(USER_ERROR, "Unable to run application: {}", ex.getMessage(), ex);
         }
     }
 
@@ -278,15 +279,12 @@ public class URLHandler {
             try {
                 desktop.browse(url);
             } catch (IOException ex) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
-                        "Unable to open URL: " + ex.getMessage(), ""));
+                LOG.info(USER_ERROR, "Unable to open URL: {}", ex.getMessage(), ex);
             }
         } else {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null,
-                    "Unable to open your browser: Your desktop enviroment is "
-                    + "not supported, please go to the URL Handlers section of "
-                    + "the preferences dialog and set the path to your browser "
-                    + "manually", ""));
+            LOG.info(USER_ERROR, "Unable to open your browser: Your desktop enviroment is " +
+                    "not supported, please go to the URL Handlers section of " +
+                    "the preferences dialog and set the path to your browser manually");
         }
     }
 
@@ -300,15 +298,12 @@ public class URLHandler {
             try {
                 desktop.mail(url);
             } catch (IOException ex) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
-                        "Unable to open URL: " + ex.getMessage(), ""));
+                LOG.info(USER_ERROR, "Unable to open URL: {}", ex.getMessage(), ex);
             }
         } else {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null,
-                    "Unable to open your mail client: Your desktop enviroment is "
-                    + "not supported, please go to the URL Handlers section of "
-                    + "the preferences dialog and set the path to your browser "
-                    + "manually", ""));
+            LOG.info(USER_ERROR, "Unable to open your mail client: Your desktop enviroment is " +
+                    "not supported, please go to the URL Handlers section of " +
+                    "the preferences dialog and set the path to your browser manually");
         }
     }
 

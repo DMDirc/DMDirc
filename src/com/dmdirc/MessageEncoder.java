@@ -22,15 +22,17 @@
 
 package com.dmdirc;
 
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.interfaces.Encoder;
 import com.dmdirc.parser.interfaces.Parser;
+import com.dmdirc.util.LogUtils;
 
 import java.io.UnsupportedEncodingException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An {@link Encoder} implementation that reads the desired encoding from the relevant target's
@@ -38,25 +40,21 @@ import java.io.UnsupportedEncodingException;
  */
 public class MessageEncoder implements Encoder {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MessageEncoder.class);
     /** The connection that owns this encoder. */
     private final Connection connection;
     /** The parser that this encoder will work for. */
     private final Parser parser;
-    /** The event bus to post errors to. */
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link MessageEncoder}.
      *
      * @param connection   The connection that owns this encoder
      * @param parser   The parser that this encoder will work for
-     * @param eventBus The event bus to post errors to.
      */
-    public MessageEncoder(final Connection connection, final Parser parser,
-            final DMDircMBassador eventBus) {
+    public MessageEncoder(final Connection connection, final Parser parser) {
         this.connection = connection;
         this.parser = parser;
-        this.eventBus = eventBus;
     }
 
     @Override
@@ -76,8 +74,7 @@ public class MessageEncoder implements Encoder {
         try {
             return new String(message, offset, length, encoding);
         } catch (UnsupportedEncodingException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unsupported character encoding: " + encoding, ""));
+            LOG.warn(LogUtils.USER_ERROR, "Unsupported encoding: {}", encoding, ex);
             return new String(message, offset, length);
         }
     }

@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.inject.Inject;
@@ -34,15 +33,12 @@ import javax.inject.Singleton;
 @Singleton
 public class ColourManagerFactory {
 
-    private final DMDircMBassador eventBus;
-
     @Inject
-    public ColourManagerFactory(final DMDircMBassador eventBus) {
-        this.eventBus = eventBus;
+    public ColourManagerFactory() {
     }
 
     public ColourManager getColourManager(final AggregateConfigProvider configManager) {
-        return new ColourManager(configManager, eventBus);
+        return new ColourManager(configManager);
     }
 
 }

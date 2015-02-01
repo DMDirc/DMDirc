@@ -22,44 +22,42 @@
 
 package com.dmdirc.ui.themes;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.IdentityController;
-import com.dmdirc.logger.ErrorLevel;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 /**
  * Manages available themes.
  */
 public class ThemeManager {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ThemeManager.class);
     /** The identity controller to read settings from. */
     private final IdentityController identityController;
     /** The directory to look for themes in. */
     private final String themeDirectory;
     /** Available themes. */
     private final Map<String, Theme> themes = new HashMap<>();
-    /** The event bus to post errors to. */
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of the {@link ThemeManager}.
      *
-     * @param eventBus           The event bus to post errors to
      * @param identityController The identity controller to read settings from.
      * @param themesDirectory    The directory to load themes from.
      */
     public ThemeManager(
-            final DMDircMBassador eventBus,
             final IdentityController identityController,
             final String themesDirectory) {
         this.identityController = identityController;
         this.themeDirectory = themesDirectory;
-        this.eventBus = eventBus;
         identityController.getGlobalConfiguration().addChangeListener("themes", "enabled",
                 (domain, key) -> refreshAndLoadThemes());
     }
@@ -71,13 +69,11 @@ public class ThemeManager {
         final File dir = new File(themeDirectory);
 
         if (!dir.exists() && !dir.mkdirs()) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, null,
-                    "Could not create themes directory", ""));
+            LOG.error(USER_ERROR, "Could not create themes directory");
         }
 
         if (dir.listFiles() == null) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, null,
-                    "Unable to load themes", ""));
+            LOG.error(USER_ERROR, "Unable to load themes");
             return;
         }
 
@@ -109,7 +105,7 @@ public class ThemeManager {
         if (themes.containsKey(file.getName())) {
             theme = themes.get(file.getName());
         } else {
-            theme = new Theme(eventBus, identityController, file);
+            theme = new Theme(identityController, file);
 
             if (theme.isValidTheme()) {
                 themes.put(file.getName(), theme);

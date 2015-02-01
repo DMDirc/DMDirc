@@ -107,7 +107,7 @@ public class UpdaterModule {
             final DMDircUpdateManager updateManager,
             final IdentityController identityController,
             final DMDircMBassador eventBus) {
-        UpdateChecker.init(updateManager, identityController, eventBus);
+        UpdateChecker.init(updateManager, identityController);
 
         commandLineParser.getLauncherVersion().ifPresent(version ->
                 LauncherComponent.setLauncherInfo(updateManager, version));

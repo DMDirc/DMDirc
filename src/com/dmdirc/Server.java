@@ -228,7 +228,7 @@ public class Server extends FrameContainer implements Connection {
 
         initBackBuffer();
         this.highlightManager = new HighlightManager(getConfigManager(),
-                new ColourManager(getConfigManager(), getEventBus()));
+                new ColourManager(getConfigManager()));
         highlightManager.init();
         getEventBus().subscribe(highlightManager);
     }

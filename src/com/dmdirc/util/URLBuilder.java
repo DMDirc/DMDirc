@@ -22,9 +22,6 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.themes.ThemeManager;
 
@@ -35,34 +32,35 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 /**
  * Provides methods for building URLs to reference DMDirc resources.
  */
 @Singleton
 public class URLBuilder {
 
+    private static final Logger LOG = LoggerFactory.getLogger(URLBuilder.class);
     /** Provider to retrieve a plugin manager instance when needed. */
     private final Provider<PluginManager> pluginManagerProvider;
     /** Provider to retrieve a theme manager instance when needed. */
     private final Provider<ThemeManager> themeManagerProvider;
-    /** The event bus to post errors on. */
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of URLBuilder.
      *
      * @param pluginManagerProvider Provider to retrieve a plugin manager instance when needed.
      * @param themeManagerProvider  Provider to retrieve a theme manager instance when needed.
-     * @param eventBus              The event bus to post errors on.
      */
     @Inject
     public URLBuilder(
             final Provider<PluginManager> pluginManagerProvider,
-            final Provider<ThemeManager> themeManagerProvider,
-            final DMDircMBassador eventBus) {
+            final Provider<ThemeManager> themeManagerProvider) {
         this.pluginManagerProvider = pluginManagerProvider;
         this.themeManagerProvider = themeManagerProvider;
-        this.eventBus = eventBus;
     }
 
     /**
@@ -78,7 +76,7 @@ public class URLBuilder {
         try {
             return new URL(prefix + path);
         } catch (MalformedURLException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, ex, "Unable to build file URL", ""));
+            LOG.error(USER_ERROR, "Unable to build file URL", ex);
             return null;
         }
     }
@@ -99,7 +97,7 @@ public class URLBuilder {
             }
             return new URL(url);
         } catch (MalformedURLException ex) {
-            eventBus.publish(new UserErrorEvent(ErrorLevel.HIGH, ex, "Unable to build jar URL", ""));
+            LOG.error(USER_ERROR, "Unable to build jar URL", ex);
             return null;
         }
     }
@@ -168,8 +166,7 @@ public class URLBuilder {
             final int offset = spec.indexOf(':', 6);
 
             if (offset < 0) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null,
-                        "Invalid URL, must contain ':': " + spec, ""));
+                LOG.info(USER_ERROR, "Invalid URL, must contain ':': {}", spec);
                 return null;
             } else {
                 return getUrlForJarFile(spec.substring(6, offset), spec.substring(offset + 1));
@@ -178,8 +175,7 @@ public class URLBuilder {
             final int offset = spec.indexOf(':', 8);
 
             if (offset < 0) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null,
-                        "Invalid URL, must contain ':': " + spec, ""));
+                LOG.info(USER_ERROR, "Invalid URL, must contain ':': {}", spec);
                 return null;
             } else {
                 return getUrlForPluginResource(spec.substring(9, offset), spec.substring(offset + 1));
@@ -188,8 +184,7 @@ public class URLBuilder {
             final int offset = spec.indexOf(':', 8);
 
             if (offset < 0) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, null,
-                        "Invalid URL, must contain ':': " + spec, ""));
+                LOG.info(USER_ERROR, "Invalid URL, must contain ':': {}", spec);
                 return null;
             } else {
                 return getUrlForThemeResource(spec.substring(8, offset), spec.substring(offset + 1));
@@ -198,8 +193,7 @@ public class URLBuilder {
             try {
                 return new URL(spec);
             } catch (MalformedURLException ex) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.LOW, ex,
-                        "Unable to load resource", ""));
+                LOG.info(USER_ERROR, "Unable to load resource", ex);
                 return null;
             }
         } else {

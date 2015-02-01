@@ -58,7 +58,7 @@ public class PluginModule {
                 identityController, updateManager, objectGraph, fileHandler, directory);
         manager.refreshPlugins();
 
-        final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory, eventBus);
+        final CorePluginExtractor extractor = new CorePluginExtractor(manager, directory);
         pluginHelper.checkBundledPlugins(extractor, manager,
                 identityController.getGlobalConfiguration());
 

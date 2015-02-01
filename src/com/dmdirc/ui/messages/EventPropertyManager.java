@@ -22,10 +22,6 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
-import com.dmdirc.logger.ErrorLevel;
-
 import com.google.common.base.Strings;
 
 import java.lang.reflect.Method;
@@ -37,16 +33,19 @@ import java.util.function.Function;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 @Singleton
 public class EventPropertyManager {
 
-    private final DMDircMBassador eventBus;
+    private static final Logger LOG = LoggerFactory.getLogger(EventPropertyManager.class);
     private final Map<String, Function<String, String>> functions = new HashMap<>();
 
     @Inject
-    public EventPropertyManager(final DMDircMBassador eventBus) {
-        this.eventBus = eventBus;
-
+    public EventPropertyManager() {
         functions.put("uppercase", String::toUpperCase);
         functions.put("lowercase", String::toLowerCase);
         functions.put("trim", String::trim);
@@ -69,9 +68,8 @@ public class EventPropertyManager {
 
             return Optional.ofNullable(result);
         } catch (ReflectiveOperationException ex) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                    "Unable to format event: could not retrieve property " + property,
-                    ex.getMessage()));
+            LOG.warn(USER_ERROR, "Unable to format event: could not retrieve property {}",
+                    ex.getMessage(), ex);
         }
         return Optional.empty();
     }
@@ -80,8 +78,7 @@ public class EventPropertyManager {
         if (functions.containsKey(function)) {
             return functions.get(function).apply(input);
         }
-        eventBus.publishAsync(new UserErrorEvent(ErrorLevel.LOW, null,
-                "Unable to format event: no such function " + function, null));
+        LOG.info(USER_ERROR, "unable to format event: no such function {}", function);
         return input;
     }
 
