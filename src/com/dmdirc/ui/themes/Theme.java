@@ -110,7 +110,7 @@ public class Theme implements Comparable<Theme> {
 
         if (stream != null) {
             try {
-                identity = new ThemeIdentity(eventBus, stream, this);
+                identity = new ThemeIdentity(stream, this);
                 identityController.addConfigProvider(identity);
             } catch (InvalidIdentityFileException | IOException ex) {
                 eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM,

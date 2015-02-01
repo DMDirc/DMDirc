@@ -267,7 +267,7 @@ public class PluginInfo implements ServiceProvider {
         try (final InputStream stream = Files.newInputStream(path)) {
             synchronized (configProviders) {
                 final ConfigProvider configProvider =
-                        new ConfigFileBackedConfigProvider(eventBus, stream, false);
+                        new ConfigFileBackedConfigProvider(stream, false);
                 identityController.addConfigProvider(configProvider);
                 configProviders.add(configProvider);
             }

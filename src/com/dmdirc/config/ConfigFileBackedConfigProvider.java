@@ -22,11 +22,8 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.validators.Validator;
@@ -50,6 +47,8 @@ import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.dmdirc.util.LogUtils.USER_ERROR;
+
 /**
  * Provides configuration settings from a {@link ConfigFile}.
  */
@@ -72,8 +71,6 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
     /** The config change listeners for this source. */
     protected final List<WeakReference<ConfigChangeListener>> listeners =
             new CopyOnWriteArrayList<>();
-    /** The event bus to post error events to. */
-    private final DMDircMBassador eventBus;
     /** Whether this identity needs to be saved. */
     protected boolean needSave;
 
@@ -87,13 +84,12 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException                  Input/output exception
      */
-    public ConfigFileBackedConfigProvider(@Nullable final IdentityManager identityManager,
-            final DMDircMBassador eventBus, final Path file, final boolean forceDefault)
-            throws IOException, InvalidIdentityFileException {
+    public ConfigFileBackedConfigProvider(
+            @Nullable final IdentityManager identityManager, final Path file,
+            final boolean forceDefault) throws IOException, InvalidIdentityFileException {
         this.identityManager = identityManager;
         this.file = new ConfigFile(file);
         this.file.setAutomake(true);
-        this.eventBus = eventBus;
         initFile(forceDefault);
         myTarget = getTarget(forceDefault);
     }
@@ -107,12 +103,11 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException                  Input/output exception
      */
-    public ConfigFileBackedConfigProvider(final DMDircMBassador eventBus, final InputStream stream,
+    public ConfigFileBackedConfigProvider(final InputStream stream,
             final boolean forceDefault) throws IOException, InvalidIdentityFileException {
         this.identityManager = null;
         this.file = new ConfigFile(stream);
         this.file.setAutomake(true);
-        this.eventBus = eventBus;
         initFile(forceDefault);
         myTarget = getTarget(forceDefault);
     }
@@ -125,11 +120,9 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
      * @param target          The target of this identity
      */
     public ConfigFileBackedConfigProvider(@Nullable final IdentityManager identityManager,
-            final DMDircMBassador eventBus, final ConfigFile configFile,
-            final ConfigTarget target) {
+            final ConfigFile configFile, final ConfigTarget target) {
         this.identityManager = identityManager;
         this.file = configFile;
-        this.eventBus = eventBus;
         this.file.setAutomake(true);
         this.myTarget = target;
     }
@@ -470,8 +463,7 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
 
                 needSave = false;
             } catch (IOException ex) {
-                eventBus.publish(new UserErrorEvent(ErrorLevel.MEDIUM, ex,
-                        "Unable to save identity file: " + ex.getMessage(), ""));
+                LOG.warn(USER_ERROR, "Unable to save identity file", ex);
             }
         }
     }

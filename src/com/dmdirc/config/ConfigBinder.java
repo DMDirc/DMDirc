@@ -22,12 +22,9 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
-import com.dmdirc.logger.ErrorLevel;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -43,11 +40,18 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+
 /**
  * Facilitates automatically binding fields or methods annotated with a {@link ConfigBinding}
  * element to a configuration value.
  */
 public class ConfigBinder {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigBinder.class);
 
     /** A map of instances to created listeners. */
     private final Multimap<Object, ConfigChangeListener> listeners = ArrayListMultimap.create();
@@ -55,19 +59,14 @@ public class ConfigBinder {
     private final Optional<String> defaultDomain;
     /** The configuration manager to use to retrieve settings. */
     private final AggregateConfigProvider manager;
-    /** The event but used to raise error events. */
-    private final DMDircMBassador eventBus;
 
-    ConfigBinder(final AggregateConfigProvider manager, final DMDircMBassador eventBus) {
+    ConfigBinder(final AggregateConfigProvider manager) {
         this.manager = manager;
-        this.eventBus = eventBus;
         this.defaultDomain = Optional.empty();
     }
 
-    ConfigBinder(final AggregateConfigProvider manager, final DMDircMBassador eventBus,
-            @Nonnull final String domain) {
+    ConfigBinder(final AggregateConfigProvider manager, @Nonnull final String domain) {
         this.manager = manager;
-        this.eventBus = eventBus;
         this.defaultDomain = Optional.of(domain);
     }
 
@@ -148,8 +147,7 @@ public class ConfigBinder {
         try {
             binding.invocation().newInstance().invoke(element, instance, value);
         } catch (ReflectiveOperationException ex) {
-            eventBus.publish(new AppErrorEvent(ErrorLevel.HIGH, ex,
-                    "Exception when updating bound setting", ""));
+            LOG.error(APP_ERROR, "Exception when updating bound setting", ex);
         }
     }
 
@@ -219,7 +217,7 @@ public class ConfigBinder {
      * @param newListeners The listeners to be added
      */
     private void addListeners(final Object instance,
-            final Collection<ConfigChangeListener> newListeners) {
+            final Iterable<ConfigChangeListener> newListeners) {
         synchronized (listeners) {
             listeners.putAll(instance, newListeners);
         }
@@ -244,7 +242,7 @@ public class ConfigBinder {
      * @return A config binder with the specified default domain.
      */
     public ConfigBinder withDefaultDomain(@Nonnull final String domain) {
-        return new ConfigBinder(manager, eventBus, domain);
+        return new ConfigBinder(manager, domain);
     }
 
 }

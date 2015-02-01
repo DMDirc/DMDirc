@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.themes;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigFileBackedConfigProvider;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.util.validators.Validator;
@@ -47,9 +46,9 @@ public class ThemeIdentity extends ConfigFileBackedConfigProvider {
      * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException                  Input/output exception
      */
-    public ThemeIdentity(final DMDircMBassador eventBus, final InputStream stream,
-            final Theme theme) throws IOException, InvalidIdentityFileException {
-        super(eventBus, stream, true);
+    public ThemeIdentity(final InputStream stream, final Theme theme)
+            throws IOException, InvalidIdentityFileException {
+        super(stream, true);
 
         myTarget.setTheme();
         this.theme = theme;

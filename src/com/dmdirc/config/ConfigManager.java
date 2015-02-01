@@ -127,7 +127,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
         this.server = server;
         this.channel = chanName;
 
-        binder = new ConfigBinder(this, eventBus);
+        binder = new ConfigBinder(this);
     }
 
     @Override
