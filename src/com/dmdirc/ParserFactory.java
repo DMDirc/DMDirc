@@ -23,10 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.profiles.Profile;
-import com.dmdirc.events.AppErrorEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
@@ -42,6 +39,11 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -52,6 +54,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ParserFactory {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ParserFactory.class);
+
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general";
     /** The name of the server domain. */
@@ -59,18 +63,13 @@ public class ParserFactory {
 
     /** ServiceManager used by this ParserFactory */
     private final ServiceManager serviceManager;
-    /** The event bus to post events to. */
-    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link ParserFactory}.
      */
     @Inject
-    public ParserFactory(
-            final ServiceManager serviceManager,
-            final DMDircMBassador eventBus) {
+    public ParserFactory(final ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
-        this.eventBus = eventBus;
     }
 
     /**
@@ -160,8 +159,7 @@ public class ParserFactory {
             try {
                 return new URI(type, userInfo, host, port, "", "", "");
             } catch (URISyntaxException ex) {
-                eventBus.publish(
-                        new AppErrorEvent(ErrorLevel.MEDIUM, ex, "Unable to create proxy URI", ""));
+                LOG.warn(APP_ERROR, "Unable to create proxy URI", ex);
             }
         }
 
@@ -218,8 +216,7 @@ public class ParserFactory {
                 }
             }
         } catch (NoSuchProviderException nspe) {
-            eventBus.publishAsync(new UserErrorEvent(ErrorLevel.MEDIUM, nspe,
-                    "No parser found for: " + address.getScheme(), ""));
+            LOG.warn(USER_ERROR, "No parser found for {}", address.getScheme(), nspe);
         }
 
         return null;
