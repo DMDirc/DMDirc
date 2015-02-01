@@ -22,10 +22,6 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
-import com.dmdirc.logger.ErrorLevel;
-
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -36,11 +32,18 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.dmdirc.util.LogUtils.APP_ERROR;
+
 /**
  * An executor service that takes logs failed executions either via eventbus errors or a custom
  * error function.
  */
 public class LoggingExecutorService extends ThreadPoolExecutor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LoggingExecutorService.class);
 
     private final BiConsumer<Runnable, Throwable> afterExecute;
 
@@ -50,13 +53,10 @@ public class LoggingExecutorService extends ThreadPoolExecutor {
      * @param coreSize The number of threads to keep in the pool, even if they are idle, unless
      *                 {@code allowCoreThreadTimeOut} is set
      * @param maxSize  The maximum number of threads to allow in the pool
-     * @param eventBus The event bus to raise errors on
      * @param poolName The naming format to use when naming threads
      */
-    public LoggingExecutorService(final int coreSize, final int maxSize,
-            final DMDircMBassador eventBus, final String poolName) {
-        this(coreSize, maxSize, (r, t) -> eventBus.publishAsync(
-                new AppErrorEvent(ErrorLevel.HIGH, t, t.getMessage(), "")), poolName);
+    public LoggingExecutorService(final int coreSize, final int maxSize, final String poolName) {
+        this(coreSize, maxSize, (r, t) -> LOG.error(APP_ERROR, t.getMessage(), t), poolName);
     }
 
     /**

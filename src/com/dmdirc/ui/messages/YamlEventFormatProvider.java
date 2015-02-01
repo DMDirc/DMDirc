@@ -22,10 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.DisplayableEvent;
-import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.util.colours.Colour;
 
 import java.io.IOException;
@@ -37,8 +34,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.esotericsoftware.yamlbeans.YamlReader;
 
+import static com.dmdirc.util.LogUtils.FATAL_APP_ERROR;
+import static com.dmdirc.util.LogUtils.USER_ERROR;
 import static com.dmdirc.util.YamlReaderUtils.asMap;
 
 /**
@@ -46,18 +48,17 @@ import static com.dmdirc.util.YamlReaderUtils.asMap;
  */
 public class YamlEventFormatProvider implements EventFormatProvider {
 
+    private static final Logger LOG = LoggerFactory.getLogger(YamlEventFormatProvider.class);
+
     /** The charset to use when reading and writing files. */
     private static final String CHARSET = "UTF-8";
 
     private final Path path;
-    private final DMDircMBassador eventBus;
     private final ColourManager colourManager;
     private final Map<String, EventFormat> formats = new HashMap<>();
 
-    public YamlEventFormatProvider(final Path path, final DMDircMBassador eventBus,
-            final ColourManager colourManager) {
+    public YamlEventFormatProvider(final Path path, final ColourManager colourManager) {
         this.path = path;
-        this.eventBus = eventBus;
         this.colourManager = colourManager;
     }
 
@@ -67,16 +68,14 @@ public class YamlEventFormatProvider implements EventFormatProvider {
         try (final InputStream stream = getClass().getResourceAsStream("format.yml")) {
             load(stream);
         } catch (IOException e) {
-            eventBus.publishAsync(new AppErrorEvent(ErrorLevel.FATAL, e,
-                    "Unable to load default event templates", ""));
+            LOG.error(FATAL_APP_ERROR, "Unable to load default event templates", e);
         }
 
         if (Files.exists(path)) {
             try (final InputStream stream = Files.newInputStream(path)) {
                 load(stream);
             } catch (IOException e) {
-                eventBus.publishAsync(new AppErrorEvent(ErrorLevel.LOW, e,
-                        "Unable to load event templates", ""));
+                LOG.info(USER_ERROR, "Unable to load event templates from {}", path, e);
             }
         }
     }

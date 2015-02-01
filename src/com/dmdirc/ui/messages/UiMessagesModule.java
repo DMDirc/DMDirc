@@ -23,7 +23,6 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.ClientModule.GlobalConfig;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 
 import java.nio.file.Path;
@@ -45,11 +44,9 @@ public class UiMessagesModule {
     @Singleton
     public EventFormatProvider getTemplateProvider(
             @Directory(BASE) final Path directory,
-            @GlobalConfig final ColourManager colourManager,
-            final DMDircMBassador eventBus) {
+            @GlobalConfig final ColourManager colourManager) {
         final YamlEventFormatProvider provider =
-                new YamlEventFormatProvider(directory.resolve("format.yml"), eventBus,
-                        colourManager);
+                new YamlEventFormatProvider(directory.resolve("format.yml"), colourManager);
         provider.load();
         return provider;
     }
