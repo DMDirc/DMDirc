@@ -26,19 +26,17 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
+import com.dmdirc.tests.JimFsRule;
 import com.dmdirc.ui.themes.ThemeManager;
-
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.FileSystem;
 
 import javax.inject.Provider;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -50,6 +48,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class URLBuilderTest {
 
+    @Rule public final JimFsRule jimFsRule = new JimFsRule();
+
     @Mock private Provider<PluginManager> pluginManagerProvider;
     @Mock private Provider<ThemeManager> themeManagerProvider;
     @Mock private PluginManager pluginManager;
@@ -59,14 +59,15 @@ public class URLBuilderTest {
     @Mock private DMDircMBassador eventBus;
 
     @Before
+    @SuppressWarnings("resource")
     public void setup() throws MalformedURLException {
-        final FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
         when(pluginManagerProvider.get()).thenReturn(pluginManager);
         when(themeManagerProvider.get()).thenReturn(themeManager);
         when(pluginManager.getPluginInfoByName(Matchers.anyString())).thenReturn(pluginInfo);
         when(themeManager.getDirectory()).thenReturn("/themes/");
         when(pluginInfo.getMetaData()).thenReturn(pluginMetaData);
-        when(pluginMetaData.getPluginPath()).thenReturn(fs.getPath("file://testPlugin"));
+        when(pluginMetaData.getPluginPath()).thenReturn(
+                jimFsRule.getFileSystem().getPath("file://testPlugin"));
     }
 
     @Test
@@ -94,7 +95,8 @@ public class URLBuilderTest {
     public void testGetUrlForJarFile() throws MalformedURLException {
         final URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider);
-        Assert.assertEquals(new URL("jar:file:/jarFile!/test"), urlBuilder.getUrlForJarFile("jarFile", "test"));
+        Assert.assertEquals(new URL("jar:file:/jarFile!/test"),
+                urlBuilder.getUrlForJarFile("jarFile", "test"));
     }
 
     @Test
@@ -124,14 +126,16 @@ public class URLBuilderTest {
     public void testGetUrlForThemeResource() throws MalformedURLException {
         final URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider);
-        Assert.assertEquals(new URL("jar:file:/themes/testTheme.zip!/testFile"), urlBuilder.getUrlForThemeResource("testTheme", "testFile"));
+        Assert.assertEquals(new URL("jar:file:/themes/testTheme.zip!/testFile"),
+                urlBuilder.getUrlForThemeResource("testTheme", "testFile"));
     }
 
     @Test
     public void testGetUrlForPluginResource() throws MalformedURLException {
         final URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider);
-        Assert.assertEquals(new URL("jar:file:/testPlugin!/testFile"), urlBuilder.getUrlForPluginResource("testPlugin", "testFile"));
+        Assert.assertEquals(new URL("jar:file:/testPlugin!/testFile"),
+                urlBuilder.getUrlForPluginResource("testPlugin", "testFile"));
     }
 
     @Test
@@ -147,7 +151,8 @@ public class URLBuilderTest {
     public void testGetUrlJar() throws MalformedURLException {
         final URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider);
-        Assert.assertEquals(new URL("jar:file:/jarFile!/testFile"), urlBuilder.getUrl("jar://jarFile:testFile"));
+        Assert.assertEquals(new URL("jar:file:/jarFile!/testFile"),
+                urlBuilder.getUrl("jar://jarFile:testFile"));
     }
 
     @Test
@@ -161,7 +166,8 @@ public class URLBuilderTest {
     public void testGetUrlZip() throws MalformedURLException {
         final URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider);
-        Assert.assertEquals(new URL("jar:file:/zipFile!/testFile"), urlBuilder.getUrl("zip://zipFile:testFile"));
+        Assert.assertEquals(new URL("jar:file:/zipFile!/testFile"),
+                urlBuilder.getUrl("zip://zipFile:testFile"));
     }
 
     @Test
@@ -175,7 +181,8 @@ public class URLBuilderTest {
     public void testGetUrlPlugin() throws MalformedURLException {
         final URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider);
-        Assert.assertEquals(new URL("jar:file:/testPlugin!/testFile"), urlBuilder.getUrl("plugin://pluginFile:testFile"));
+        Assert.assertEquals(new URL("jar:file:/testPlugin!/testFile"),
+                urlBuilder.getUrl("plugin://pluginFile:testFile"));
     }
 
     @Test
@@ -189,7 +196,8 @@ public class URLBuilderTest {
     public void testGetUrlTheme() throws MalformedURLException {
         final URLBuilder urlBuilder
                 = new URLBuilder(pluginManagerProvider, themeManagerProvider);
-        Assert.assertEquals(new URL("jar:file:/themes/themeFile.zip!/testFile"), urlBuilder.getUrl("theme://themeFile:testFile"));
+        Assert.assertEquals(new URL("jar:file:/themes/themeFile.zip!/testFile"),
+                urlBuilder.getUrl("theme://themeFile:testFile"));
     }
 
     @Test
