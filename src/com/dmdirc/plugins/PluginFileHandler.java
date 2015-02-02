@@ -72,6 +72,8 @@ public class PluginFileHandler {
      * @return Collection of valid plugins.
      */
     public Collection<PluginMetaData> refresh(final PluginManager manager) {
+        applyUpdates();
+
         final Collection<PluginMetaData> metadata = findAllPlugins(manager);
 
         // Deal with plugins that had errors
@@ -93,6 +95,36 @@ public class PluginFileHandler {
      */
     public Collection<PluginMetaData> getKnownPlugins() {
         return Collections.unmodifiableCollection(knownPlugins);
+    }
+
+    /**
+     * Recursively scans the plugin directory and attempts to apply any available updates.
+     */
+    private void applyUpdates() {
+        try {
+            Files.walk(directory, FileVisitOption.FOLLOW_LINKS)
+                    .filter(p -> p.getFileName().toString().endsWith(".jar.update"))
+                    .forEach(this::applyUpdate);
+        } catch (IOException ex) {
+            LOG.warn(USER_ERROR, "Unable to apply plugin updates", ex);
+        }
+    }
+
+    /**
+     * Attempts to apply an update located at the specified path. Pending updates named
+     * '*.jar.update' will be renamed to '*.jar' (unless the original couldn't be deleted).
+     *
+     * @param path The path of the pending update to apply.
+     */
+    private void applyUpdate(final Path path) {
+        final Path target = path.getParent()
+                .resolve(path.getFileName().toString().replaceAll("\\.update$", ""));
+        try {
+            Files.deleteIfExists(target);
+            Files.move(path, target);
+        } catch (IOException ex) {
+            LOG.warn(USER_ERROR, "Unable to apply update to {}", path, ex);
+        }
     }
 
     /**
