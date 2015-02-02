@@ -24,7 +24,7 @@ package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinder;
-import com.dmdirc.events.UserErrorEvent;
+import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.jimfs.Configuration;
@@ -33,6 +33,7 @@ import com.google.common.jimfs.Jimfs;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,12 +52,17 @@ public class DiskLoggingErrorManagerTest {
     @Mock private DMDircMBassador eventBus;
     @Mock private AggregateConfigProvider config;
     @Mock private ConfigBinder configBinder;
+    @Mock private ProgramErrorEvent error;
+    @Mock private ProgramError programError;
 
     private FileSystem fileSystem;
     private DiskLoggingErrorManager instance;
 
     @Before
     public void setUp() throws Exception {
+        when(error.getTimestamp()).thenReturn(new Date().getTime());
+        when(error.getError()).thenReturn(programError);
+        when(programError.getLevel()).thenReturn(ErrorLevel.MEDIUM);
         when(config.getBinder()).thenReturn(configBinder);
         fileSystem = Jimfs.newFileSystem(Configuration.unix());
         instance = new DiskLoggingErrorManager(fileSystem.getPath("/errors"), eventBus);
@@ -78,11 +84,9 @@ public class DiskLoggingErrorManagerTest {
 
     @Test
     public void testHandleErrorEvent() throws Exception {
-        final UserErrorEvent error = new UserErrorEvent(ErrorLevel.MEDIUM,
-                new IllegalStateException(""), "", "");
         instance.initialise(config);
         instance.handleLoggingSetting(true);
-        final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
+        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";;
         assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
         instance.handleErrorEvent(error);
         final Path errorPath = fileSystem.getPath("/errors", logName);
@@ -92,12 +96,9 @@ public class DiskLoggingErrorManagerTest {
 
     @Test
     public void testHandleErrorEventNotLogging() throws Exception {
-        final UserErrorEvent error = new UserErrorEvent(ErrorLevel.MEDIUM,
-                new IllegalStateException(""),
-                "", "");
         instance.initialise(config);
         instance.handleLoggingSetting(false);
-        final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
+        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";;
         assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
         instance.handleErrorEvent(error);
         assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));

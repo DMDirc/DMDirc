@@ -28,6 +28,7 @@ import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ErrorEvent;
+import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.base.Throwables;
@@ -96,19 +97,22 @@ public class DiskLoggingErrorManager {
     }
 
     @Handler
-    void handleErrorEvent(final ErrorEvent error) {
+    void handleErrorEvent(final ProgramErrorEvent error) {
         if (directoryError || !logging) {
             return;
         }
-        final String logName = error.getTimestamp() + "-" + error.getLevel();
+        final String logName = error.getTimestamp() + "-" + error.getError().getLevel();
         final Path errorFile = errorsDirectory.resolve(logName + ".log");
         final List<String> data = Lists
                 .newArrayList("Date: " + new Date(error.getTimestamp()),
-                        "Level: " + error.getLevel(),
-                        "Description: " + error.getMessage(),
+                        "Level: " + error.getError().getLevel(),
+                        "Description: " + error.getError().getMessage(),
                         "Details: ");
-        Arrays.stream(Throwables.getStackTraceAsString(error.getThrowable()).split("\n"))
-                .forEach(data::add);
+        //noinspection ThrowableResultOfMethodCallIgnored
+        if (error.getError().getThrowable() != null) {
+            Arrays.stream(Throwables.getStackTraceAsString(error.getError().getThrowable())
+                    .split("\n")).forEach(data::add);
+        }
         try {
             Files.write(errorFile, data, Charset.forName("UTF-8"));
         } catch (IOException ex) {
