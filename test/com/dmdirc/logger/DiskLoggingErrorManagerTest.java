@@ -26,15 +26,13 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.tests.JimFsRule;
 
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
-
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -45,29 +43,31 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings("resource")
 @RunWith(MockitoJUnitRunner.class)
 public class DiskLoggingErrorManagerTest {
+
+    @Rule public final JimFsRule jimFsRule = new JimFsRule();
 
     @Mock private DMDircMBassador eventBus;
     @Mock private AggregateConfigProvider config;
     @Mock private ConfigBinder configBinder;
 
-    private FileSystem fileSystem;
     private DiskLoggingErrorManager instance;
 
     @Before
     public void setUp() throws Exception {
         when(config.getBinder()).thenReturn(configBinder);
-        fileSystem = Jimfs.newFileSystem(Configuration.unix());
-        instance = new DiskLoggingErrorManager(fileSystem.getPath("/errors"), eventBus);
+        instance = new DiskLoggingErrorManager(jimFsRule.getFileSystem().getPath("/errors"),
+                eventBus);
     }
 
     @Test
     public void testInitialise() throws Exception {
-        assertFalse(Files.exists(fileSystem.getPath("/errors")));
+        assertFalse(Files.exists(jimFsRule.getFileSystem().getPath("/errors")));
         instance.initialise(config);
         verify(configBinder).bind(instance, DiskLoggingErrorManager.class);
-        assertTrue(Files.exists(fileSystem.getPath("/errors")));
+        assertTrue(Files.exists(jimFsRule.getFileSystem().getPath("/errors")));
         assertFalse(instance.isDirectoryError());
     }
 
@@ -83,9 +83,9 @@ public class DiskLoggingErrorManagerTest {
         instance.initialise(config);
         instance.handleLoggingSetting(true);
         final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
-        assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
+        assertFalse(Files.exists(jimFsRule.getFileSystem().getPath("/errors", logName)));
         instance.handleErrorEvent(error);
-        final Path errorPath = fileSystem.getPath("/errors", logName);
+        final Path errorPath = jimFsRule.getFileSystem().getPath("/errors", logName);
         assertTrue(Files.exists(errorPath));
         assertTrue(Files.readAllLines(errorPath).contains("Level: Medium"));
     }
@@ -98,9 +98,9 @@ public class DiskLoggingErrorManagerTest {
         instance.initialise(config);
         instance.handleLoggingSetting(false);
         final String logName = error.getTimestamp() + "-" + error.getLevel() + ".log";;
-        assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
+        assertFalse(Files.exists(jimFsRule.getFileSystem().getPath("/errors", logName)));
         instance.handleErrorEvent(error);
-        assertFalse(Files.exists(fileSystem.getPath("/errors", logName)));
+        assertFalse(Files.exists(jimFsRule.getFileSystem().getPath("/errors", logName)));
     }
 
     @Test

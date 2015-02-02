@@ -24,18 +24,16 @@ package com.dmdirc.config;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.tests.JimFsRule;
 import com.dmdirc.util.ClientInfo;
 
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
-
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -47,6 +45,8 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(MockitoJUnitRunner.class)
 public class IdentityManagerTest {
 
+    @Rule public final JimFsRule jimFsRule = new JimFsRule();
+
     @Mock private DMDircMBassador eventBus;
     @Mock private ClientInfo clientInfo;
 
@@ -56,8 +56,7 @@ public class IdentityManagerTest {
     @Before
     @SuppressWarnings("resource")
     public void setUp() throws Exception {
-        final FileSystem fs = Jimfs.newFileSystem(Configuration.unix());
-        baseDirectory = fs.getPath("config");
+        baseDirectory = jimFsRule.getFileSystem().getPath("config");
         identitiesDirectory = baseDirectory.resolve("identities");
     }
 

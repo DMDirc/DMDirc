@@ -22,16 +22,14 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
+import com.dmdirc.tests.JimFsRule;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -39,26 +37,20 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("resource")
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultAliasInstallerTest {
 
-    private FileSystem fs;
+    @Rule public final JimFsRule jimFsRule = new JimFsRule();
+
     private Path path;
 
     private DefaultAliasInstaller installer;
 
     @Before
     public void setup() {
-        fs = Jimfs.newFileSystem(Configuration.unix().toBuilder()
-                .setAttributeViews("posix").build());
-        path = fs.getPath("aliases.yml");
-
+        path = jimFsRule.getFileSystem().getPath("aliases.yml");
         installer = new DefaultAliasInstaller(path);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        fs.close();
     }
 
     @Test

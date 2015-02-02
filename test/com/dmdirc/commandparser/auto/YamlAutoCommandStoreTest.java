@@ -22,26 +22,28 @@
 
 package com.dmdirc.commandparser.auto;
 
+import com.dmdirc.tests.JimFsRule;
+
 import com.google.common.collect.Sets;
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("resource")
 public class YamlAutoCommandStoreTest {
 
-    private FileSystem fs;
+    @Rule public final JimFsRule jimFsRule = new JimFsRule();
+
     private YamlAutoCommandStore ycs;
     private AutoCommand command;
     private AutoCommand command1;
@@ -51,9 +53,8 @@ public class YamlAutoCommandStoreTest {
 
     @Before
     public void setup() throws IOException {
-        fs = Jimfs.newFileSystem(Configuration.unix());
         Files.copy(getClass().getResource("readtest.yml").openStream(),
-                fs.getPath("readtest.yml"));
+                jimFsRule.getFileSystem().getPath("readtest.yml"));
         command = AutoCommand.create(Optional.ofNullable("server"),
                 Optional.ofNullable("network"),
                 Optional.ofNullable("profile"),
@@ -76,7 +77,7 @@ public class YamlAutoCommandStoreTest {
 
     @Test
     public void testReadAutoCommands() {
-        ycs = new YamlAutoCommandStore(fs.getPath("readtest.yml"));
+        ycs = new YamlAutoCommandStore(jimFsRule.getFileSystem().getPath("readtest.yml"));
         final Set<AutoCommand> commands = ycs.readAutoCommands();
         assertTrue("Command 1 not present", commands.contains(command1));
         assertTrue("Command 2 not present", commands.contains(command2));
@@ -86,13 +87,13 @@ public class YamlAutoCommandStoreTest {
 
     @Test
     public void testWriteAutoCommands() throws IOException {
-        ycs = new YamlAutoCommandStore(fs.getPath("store.yml"));
+        ycs = new YamlAutoCommandStore(jimFsRule.getFileSystem().getPath("store.yml"));
         assertEquals(0, ycs.readAutoCommands().size());
-        assertFalse(Files.exists(fs.getPath("store.yml")));
+        assertFalse(Files.exists(jimFsRule.getFileSystem().getPath("store.yml")));
         ycs.writeAutoCommands(Sets.newHashSet(command));
         final Set<AutoCommand> commands = ycs.readAutoCommands();
         assertTrue("Command not present", commands.contains(command));
-        assertTrue(Files.exists(fs.getPath("store.yml")));
+        assertTrue(Files.exists(jimFsRule.getFileSystem().getPath("store.yml")));
     }
 
 }
