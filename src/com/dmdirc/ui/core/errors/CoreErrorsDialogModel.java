@@ -171,11 +171,10 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     private DisplayableError getDisplayableError(final ProgramError error) {
         final String details;
-        if (error.getThrowableAsString().isEmpty()) {
-            details = error.getMessage();
+        if (error.getThrowableAsString().isPresent()) {
+            details = error.getMessage() + '\n' + error.getThrowableAsString().get();
         } else {
-            details = error.getMessage()
-                    + '\n' + error.getThrowableAsString();
+            details = error.getMessage();
         }
         return new DisplayableError(error.getDate(), error.getMessage(), details,
                 error.getLevel(), error.getReportStatus(), error);

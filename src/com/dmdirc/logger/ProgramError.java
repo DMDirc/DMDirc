@@ -54,7 +54,7 @@ public class ProgramError implements Serializable {
     /** Date/time error first occurred. */
     private final Date date;
     /** The eventbus to post status changes to. */
-    private final DMDircMBassador eventBus;
+    private final Optional<DMDircMBassador> eventBus;
     /** Is this an application error? */
     private final boolean appError;
     /** Error report Status. */
@@ -88,7 +88,7 @@ public class ProgramError implements Serializable {
         this.exception = Optional.ofNullable(exception);
         this.date = (Date) date.clone();
         this.reportStatus = ErrorReportStatus.WAITING;
-        this.eventBus = eventBus;
+        this.eventBus = Optional.ofNullable(eventBus);
         this.appError = appError;
     }
 
@@ -114,8 +114,8 @@ public class ProgramError implements Serializable {
         return exception;
     }
 
-    public String getThrowableAsString() {
-        return exception.map(Throwables::getStackTraceAsString).orElse("");
+    public Optional<String> getThrowableAsString() {
+        return exception.map(Throwables::getStackTraceAsString);
     }
 
     /**
@@ -144,7 +144,7 @@ public class ProgramError implements Serializable {
     public void setReportStatus(final ErrorReportStatus newStatus) {
         if (newStatus != null && reportStatus != newStatus) {
             reportStatus = newStatus;
-            eventBus.publishAsync(new ProgramErrorStatusEvent(this));
+            eventBus.ifPresent(e -> e.publishAsync(new ProgramErrorStatusEvent(this)));
         }
     }
 

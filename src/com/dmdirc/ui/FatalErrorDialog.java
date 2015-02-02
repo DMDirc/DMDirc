@@ -156,7 +156,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         icon = new ImageIcon(FatalErrorDialog.class.getResource("/com/dmdirc/res/error.png"));
 
         stacktraceField.setEditable(false);
-        stacktraceField.append(error.getThrowableAsString());
+        error.getThrowableAsString().ifPresent(stacktraceField::append);
         stacktraceField.setCaretPosition(0);
 
         scrollPane.setViewportView(stacktraceField);

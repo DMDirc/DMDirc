@@ -83,7 +83,7 @@ public class ProgramErrorManager {
 
     void handle(final ILoggingEvent event) {
         final ProgramError error = addError(LogUtils.getErrorLevel(event.getLevel()),
-                event.getFormattedMessage(), LogUtils.getThrowable(event), "",
+                event.getFormattedMessage(), LogUtils.getThrowable(event),
                 isAppError(event.getMarker()));
         handleErrorEvent(error);
     }
@@ -106,9 +106,7 @@ public class ProgramErrorManager {
     void handleProgramError(final NonFatalProgramErrorEvent event) {
         if (!event.isHandled()) {
             System.err.println(event.getError().getMessage());
-            if (!event.getError().getThrowableAsString().isEmpty()) {
-                System.err.println(event.getError().getThrowableAsString());
-            }
+            event.getError().getThrowableAsString().ifPresent(System.err::println);
         }
     }
 
@@ -118,13 +116,12 @@ public class ProgramErrorManager {
      * @param level     The severity of the error
      * @param message   The error message
      * @param throwable The exception that caused the error, if any.
-     * @param details   The details of the exception, if any.
      * @param appError  Whether or not this is an application error
      *
      * @since 0.6.3m1
      */
     private ProgramError addError(final ErrorLevel level, final String message,
-            final Throwable throwable, final String details, final boolean appError) {
+            final Throwable throwable, final boolean appError) {
 
         final ProgramError error = programErrorFactory.create(level, message, throwable,
                 new Date(), appError);

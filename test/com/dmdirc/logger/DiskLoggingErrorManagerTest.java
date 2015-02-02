@@ -64,7 +64,7 @@ public class DiskLoggingErrorManagerTest {
         when(error.getTimestamp()).thenReturn(new Date().getTime());
         when(error.getError()).thenReturn(programError);
         when(programError.getThrowable()).thenReturn(Optional.of(new IllegalArgumentException()));
-        when(programError.getThrowableAsString()).thenReturn("");
+        when(programError.getThrowableAsString()).thenReturn(Optional.of("test"));
         when(programError.getLevel()).thenReturn(ErrorLevel.MEDIUM);
         when(config.getBinder()).thenReturn(configBinder);
         fileSystem = Jimfs.newFileSystem(Configuration.unix());
