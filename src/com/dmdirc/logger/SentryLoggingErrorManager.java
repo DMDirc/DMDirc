@@ -124,7 +124,6 @@ public class SentryLoggingErrorManager {
      */
     private boolean isValidSource(final Optional<Throwable> throwable) {
         if (throwable.isPresent()) {
-
             final String line = getSourceLine(Arrays.asList(
                     Throwables.getStackTraceAsString(throwable.get()).split("\n")))
                     .orElse("").trim();

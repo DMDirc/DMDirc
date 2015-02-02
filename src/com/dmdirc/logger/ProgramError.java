@@ -76,7 +76,7 @@ public class ProgramError implements Serializable {
             @Nonnull final String message,
             @Nullable final Throwable exception,
             @Nonnull final Date date,
-            final DMDircMBassador eventBus,
+            @Nullable final DMDircMBassador eventBus,
             final boolean appError) {
         checkNotNull(level);
         checkNotNull(message);

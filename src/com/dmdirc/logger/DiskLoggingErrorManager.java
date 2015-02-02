@@ -107,8 +107,8 @@ public class DiskLoggingErrorManager {
                         "Level: " + error.getError().getLevel(),
                         "Description: " + error.getError().getMessage(),
                         "Details: ");
-        error.getError().getThrowableAsString().ifPresent(s ->
-                Arrays.stream(s.split("\n")).filter(String::isEmpty).forEach(data::add));
+        error.getError().getThrowableAsString()
+                .ifPresent(s -> Arrays.stream(s.split("\n")).forEach(data::add));
         try {
             Files.write(errorFile, data, Charset.forName("UTF-8"));
         } catch (IOException ex) {

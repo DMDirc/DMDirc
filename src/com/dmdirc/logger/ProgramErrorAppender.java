@@ -35,7 +35,7 @@ public class ProgramErrorAppender extends AppenderBase<ILoggingEvent> {
     @Override
     public void start() {
         if (errorManager == null) {
-            addError("No eventBus set for the appender named ["+ name +"].");
+            addError("No error manager set for the appender named ["+ name +"].");
             return;
         }
         super.start();
