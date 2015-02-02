@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -51,7 +52,7 @@ public class ProgramError implements Serializable {
     /** Underlying exception. */
     private final Optional<Throwable> exception;
     /** Date/time error first occurred. */
-    private final Date firstDate;
+    private final Date date;
     /** The eventbus to post status changes to. */
     private final DMDircMBassador eventBus;
     /** Is this an application error? */
@@ -70,18 +71,22 @@ public class ProgramError implements Serializable {
      * @param date      Error time and date
      * @param eventBus  The event bus to post status changes to
      */
-    public ProgramError(final ErrorLevel level, final String message,
+    public ProgramError(
+            @Nonnull final ErrorLevel level,
+            @Nonnull final String message,
             @Nullable final Throwable exception,
-            final Date date,
+            @Nonnull final Date date,
             final DMDircMBassador eventBus,
             final boolean appError) {
+        checkNotNull(level);
+        checkNotNull(message);
         checkNotNull(level);
         checkNotNull(date);
 
         this.level = level;
         this.message = message;
         this.exception = Optional.ofNullable(exception);
-        this.firstDate = (Date) date.clone();
+        this.date = (Date) date.clone();
         this.reportStatus = ErrorReportStatus.WAITING;
         this.eventBus = eventBus;
         this.appError = appError;
@@ -119,7 +124,7 @@ public class ProgramError implements Serializable {
      * @return Error time
      */
     public Date getDate() {
-        return (Date) firstDate.clone();
+        return (Date) date.clone();
     }
 
     /**
