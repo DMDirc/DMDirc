@@ -31,12 +31,9 @@ import com.dmdirc.updater.manager.UpdateManager;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -294,8 +291,6 @@ public class PluginManager {
      * Refreshes the list of known plugins.
      */
     public void refreshPlugins() {
-        applyUpdates();
-
         final Collection<PluginMetaData> newPlugins = fileHandler.refresh(this);
 
         for (PluginMetaData plugin : newPlugins) {
@@ -315,28 +310,6 @@ public class PluginManager {
         }
 
         eventBus.publishAsync(new PluginRefreshEvent());
-    }
-
-    /**
-     * Recursively scans the plugin directory and attempts to apply any available updates.
-     */
-    public void applyUpdates() {
-        final Deque<File> dirs = new LinkedList<>();
-
-        dirs.add(new File(directory));
-
-        while (!dirs.isEmpty()) {
-            final File dir = dirs.pop();
-            if (dir.isDirectory()) {
-                dirs.addAll(Arrays.asList(dir.listFiles()));
-            } else if (dir.isFile() && dir.getName().endsWith(".jar")) {
-                final File update = new File(dir.getAbsolutePath() + ".update");
-
-                if (update.exists() && dir.delete()) {
-                    update.renameTo(dir);
-                }
-            }
-        }
     }
 
     /**

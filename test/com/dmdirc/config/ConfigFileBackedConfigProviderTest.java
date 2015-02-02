@@ -24,20 +24,19 @@ package com.dmdirc.config;
 
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.tests.JimFsRule;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.validators.NumericalValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 
 import com.google.common.collect.Lists;
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -51,6 +50,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+@SuppressWarnings("resource")
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigFileBackedConfigProviderTest {
 
@@ -62,33 +62,35 @@ public class ConfigFileBackedConfigProviderTest {
     public static final PermissiveValidator<String> PERMISSIVE_VALIDATOR =
             new PermissiveValidator<>();
 
+    @Rule public final JimFsRule jimFsRule = new JimFsRule();
+
     @Mock private IdentityManager identityManager;
     @Mock private ConfigChangeListener changeListener;
 
-    private FileSystem fs;
-
     @Before
     public void setUp() throws Exception {
-        fs = Jimfs.newFileSystem(Configuration.unix());
-
         for (String file: FILES) {
-            Files.copy(getClass().getResourceAsStream(file), fs.getPath(file));
+            Files.copy(getClass().getResourceAsStream(file),
+                    jimFsRule.getFileSystem().getPath(file));
         }
     }
 
     @Test(expected = InvalidIdentityFileException.class)
     public void testNoName() throws IOException, InvalidIdentityFileException {
-        new ConfigFileBackedConfigProvider(identityManager, fs.getPath("no-name"), false);
+        new ConfigFileBackedConfigProvider(identityManager,
+                jimFsRule.getFileSystem().getPath("no-name"), false);
     }
 
     @Test(expected = InvalidIdentityFileException.class)
     public void testNoTarget() throws IOException, InvalidIdentityFileException {
-        new ConfigFileBackedConfigProvider(identityManager, fs.getPath("no-target"), false);
+        new ConfigFileBackedConfigProvider(identityManager,
+                jimFsRule.getFileSystem().getPath("no-target"), false);
     }
 
     @Test(expected = InvalidIdentityFileException.class)
     public void testInvalidConfigFile() throws IOException, InvalidIdentityFileException {
-        new ConfigFileBackedConfigProvider(identityManager, fs.getPath("invalid-config-file"), false);
+        new ConfigFileBackedConfigProvider(identityManager,
+                jimFsRule.getFileSystem().getPath("invalid-config-file"), false);
     }
 
     @Test
@@ -311,14 +313,16 @@ public class ConfigFileBackedConfigProviderTest {
 
     private void copyFileAndReload(final ConfigProvider provider)
             throws IOException, InvalidConfigFileException {
-        Files.copy(fs.getPath("simple-ircd-extra"), fs.getPath("simple-ircd"),
+        Files.copy(jimFsRule.getFileSystem().getPath("simple-ircd-extra"),
+                jimFsRule.getFileSystem().getPath("simple-ircd"),
                 StandardCopyOption.REPLACE_EXISTING);
         provider.reload();
     }
 
     private ConfigFileBackedConfigProvider getProvider(final String file)
             throws IOException, InvalidIdentityFileException {
-        return new ConfigFileBackedConfigProvider(identityManager, fs.getPath(file), false);
+        return new ConfigFileBackedConfigProvider(identityManager,
+                jimFsRule.getFileSystem().getPath(file), false);
     }
 
 }
