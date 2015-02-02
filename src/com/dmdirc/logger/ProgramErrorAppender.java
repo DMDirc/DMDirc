@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.logger;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.logger.ErrorLevel;

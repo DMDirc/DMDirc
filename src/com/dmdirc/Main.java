@@ -36,6 +36,7 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ModeAliasReporter;
+import com.dmdirc.logger.ProgramErrorAppender;
 import com.dmdirc.plugins.CorePluginExtractor;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
