@@ -30,6 +30,9 @@ import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorStatusEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
+import com.google.common.base.Throwables;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -87,7 +90,7 @@ public class SentryLoggingErrorManager {
     void handleErrorEvent(final ProgramErrorAddedEvent error) {
         final boolean appError = error.getError().isAppError();
         if (!isValidError(error.getError().getThrowable())
-                || !isValidSource(error.getError().getTrace())
+                || !isValidSource(error.getError().getThrowable())
                 || !appError) {
             error.getError().setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
             eventBus.publish(new ProgramErrorStatusEvent(error.getError()));
@@ -119,10 +122,16 @@ public class SentryLoggingErrorManager {
      *
      * @return True if the source is valid, false otherwise
      */
-    private boolean isValidSource(final Collection<String> trace) {
-        final String line = getSourceLine(trace).orElse("").trim();
-        return line.startsWith("at com.dmdirc")
-                && !line.startsWith("at com.dmdirc.addons.ui_swing.DMDircEventQueue");
+    private boolean isValidSource(final Optional<Throwable> throwable) {
+        if (throwable.isPresent()) {
+
+            final String line = getSourceLine(Arrays.asList(
+                    Throwables.getStackTraceAsString(throwable.get()).split("\n")))
+                    .orElse("").trim();
+            return line.startsWith("at com.dmdirc")
+                    && !line.startsWith("at com.dmdirc.addons.ui_swing.DMDircEventQueue");
+        }
+        return false;
     }
 
     /**
@@ -149,16 +158,20 @@ public class SentryLoggingErrorManager {
      * @since 0.6.3m1
      * @return True if the exception may be reported, false otherwise
      */
-    private boolean isValidError(final Throwable exception) {
-        Throwable target = exception;
-        while (target != null) {
-            for (Class<?> bad : BANNED_EXCEPTIONS) {
-                if (bad.equals(target.getClass())) {
-                    return false;
+    private boolean isValidError(final Optional<Throwable> exception) {
+        if (exception.isPresent()) {
+            @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+            Throwable target = exception.get();
+            while (target != null) {
+                for (Class<?> bad : BANNED_EXCEPTIONS) {
+                    if (bad.equals(target.getClass())) {
+                        return false;
+                    }
                 }
+                target = target.getCause();
             }
-            target = target.getCause();
+            return true;
         }
-        return true;
+        return false;
     }
 }

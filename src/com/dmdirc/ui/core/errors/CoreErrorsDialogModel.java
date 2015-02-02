@@ -33,8 +33,6 @@ import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.util.collections.ListenerList;
 
-import com.google.common.base.Throwables;
-
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -173,23 +171,13 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     private DisplayableError getDisplayableError(final ProgramError error) {
         final String details;
-        if (error.getDetails().isEmpty()) {
-            details = error.getMessage()
-                    + '\n' + getThrowableAsString(error.getThrowable());
+        if (error.getThrowableAsString().isEmpty()) {
+            details = error.getMessage();
         } else {
             details = error.getMessage()
-                    + '\n' + error.getDetails()
-                    + '\n' + getThrowableAsString(error.getThrowable());
+                    + '\n' + error.getThrowableAsString();
         }
         return new DisplayableError(error.getDate(), error.getMessage(), details,
                 error.getLevel(), error.getReportStatus(), error);
-    }
-
-    private String getThrowableAsString(final Throwable throwable) {
-        if (throwable == null) {
-            return "";
-        } else {
-            return Throwables.getStackTraceAsString(throwable);
-        }
     }
 }

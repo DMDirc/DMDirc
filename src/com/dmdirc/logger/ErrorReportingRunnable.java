@@ -45,7 +45,7 @@ public class ErrorReportingRunnable implements Runnable {
     public void run() {
         error.setReportStatus(ErrorReportStatus.SENDING);
         sentryErrorReporter.sendException(error.getMessage(), error.getLevel(), error.getDate(),
-                error.getThrowable(), error.getDetails());
+                error.getThrowable());
         error.setReportStatus(ErrorReportStatus.FINISHED);
     }
 

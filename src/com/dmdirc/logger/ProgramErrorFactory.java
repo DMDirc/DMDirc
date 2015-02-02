@@ -43,10 +43,8 @@ public class ProgramErrorFactory {
 
     public ProgramError create(final ErrorLevel level, final String message,
             @Nullable final Throwable exception,
-            final Iterable<String> trace,
-            @Nullable final String details,
             final Date date,
             final boolean appError) {
-        return new ProgramError(level, message, exception, trace, details, date, eventBus, appError);
+        return new ProgramError(level, message, exception, date, eventBus, appError);
     }
 }

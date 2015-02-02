@@ -34,6 +34,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +63,8 @@ public class DiskLoggingErrorManagerTest {
     public void setUp() throws Exception {
         when(error.getTimestamp()).thenReturn(new Date().getTime());
         when(error.getError()).thenReturn(programError);
+        when(programError.getThrowable()).thenReturn(Optional.of(new IllegalArgumentException()));
+        when(programError.getThrowableAsString()).thenReturn("");
         when(programError.getLevel()).thenReturn(ErrorLevel.MEDIUM);
         when(config.getBinder()).thenReturn(configBinder);
         fileSystem = Jimfs.newFileSystem(Configuration.unix());

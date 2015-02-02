@@ -26,13 +26,12 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProgramErrorStatusEvent;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.Lists;
+import com.google.common.base.Throwables;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -50,11 +49,7 @@ public class ProgramError implements Serializable {
     /** Error message. */
     private final String message;
     /** Underlying exception. */
-    private final Throwable exception;
-    /** The trace for this exception. */
-    private final List<String> trace;
-    /** Underlying details message. */
-    private final String details;
+    private final Optional<Throwable> exception;
     /** Date/time error first occurred. */
     private final Date firstDate;
     /** The eventbus to post status changes to. */
@@ -72,15 +67,11 @@ public class ProgramError implements Serializable {
      * @param level     Error level
      * @param message   Error message
      * @param exception The exception that caused the error, if any.
-     * @param trace     The textual trace for this error
-     * @param details   The detailed cause of the error, if any.
      * @param date      Error time and date
      * @param eventBus  The event bus to post status changes to
      */
     public ProgramError(final ErrorLevel level, final String message,
             @Nullable final Throwable exception,
-            final Iterable<String> trace,
-            @Nullable final String details,
             final Date date,
             final DMDircMBassador eventBus,
             final boolean appError) {
@@ -89,9 +80,7 @@ public class ProgramError implements Serializable {
 
         this.level = level;
         this.message = message;
-        this.exception = exception;
-        this.trace = Lists.newArrayList(trace);
-        this.details = details;
+        this.exception = Optional.ofNullable(exception);
         this.firstDate = (Date) date.clone();
         this.reportStatus = ErrorReportStatus.WAITING;
         this.eventBus = eventBus;
@@ -116,21 +105,12 @@ public class ProgramError implements Serializable {
         return message;
     }
 
-    public String getDetails() {
-        return details;
-    }
-
-    public Throwable getThrowable() {
+    public Optional<Throwable> getThrowable() {
         return exception;
     }
 
-    /**
-     * Returns this errors trace.
-     *
-     * @return Error trace
-     */
-    public List<String> getTrace() {
-        return Collections.unmodifiableList(trace);
+    public String getThrowableAsString() {
+        return exception.map(Throwables::getStackTraceAsString).orElse("");
     }
 
     /**
@@ -199,24 +179,18 @@ public class ProgramError implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
+        if (obj instanceof ProgramError) {
+            final ProgramError other = (ProgramError) obj;
+            return Objects.equals(getLevel(), other.getLevel()) &&
+                    Objects.equals(getMessage(), other.getMessage()) &&
+                    Objects.equals(getThrowable(), other.getThrowable());
         }
-
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final ProgramError other = (ProgramError) obj;
-        return Objects.equals(getLevel(), other.getLevel())
-                && Objects.equals(getMessage(), other.getMessage())
-                && Objects.equals(getThrowable(), other.getThrowable())
-                && Objects.equals(getDetails(), other.getDetails());
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(level, message, exception, details);
+        return Objects.hash(level, message, exception);
     }
 
 }

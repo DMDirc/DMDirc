@@ -32,7 +32,6 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.BorderFactory;
@@ -157,14 +156,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         icon = new ImageIcon(FatalErrorDialog.class.getResource("/com/dmdirc/res/error.png"));
 
         stacktraceField.setEditable(false);
-
-        final List<String> trace = error.getTrace();
-        if (!trace.isEmpty()) {
-            for (String line : trace) {
-                stacktraceField.append(line + '\n');
-            }
-            stacktraceField.setCaretPosition(0);
-        }
+        stacktraceField.append(error.getThrowableAsString());
+        stacktraceField.setCaretPosition(0);
 
         scrollPane.setViewportView(stacktraceField);
 

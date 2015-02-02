@@ -106,9 +106,8 @@ public class ProgramErrorManager {
     void handleProgramError(final NonFatalProgramErrorEvent event) {
         if (!event.isHandled()) {
             System.err.println(event.getError().getMessage());
-            System.err.println(event.getError().getDetails());
-            if (event.getError().getThrowable() != null) {
-                System.err.println(Throwables.getStackTraceAsString(event.getError().getThrowable()));
+            if (!event.getError().getThrowableAsString().isEmpty()) {
+                System.err.println(event.getError().getThrowableAsString());
             }
         }
     }
@@ -128,7 +127,7 @@ public class ProgramErrorManager {
             final Throwable throwable, final String details, final boolean appError) {
 
         final ProgramError error = programErrorFactory.create(level, message, throwable,
-                getTrace(message, throwable), details, new Date(), appError);
+                new Date(), appError);
         errors.add(error);
         return error;
     }

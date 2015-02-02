@@ -25,6 +25,7 @@ package com.dmdirc.logger;
 import com.dmdirc.util.ClientInfo;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -57,6 +58,7 @@ public class SentryErrorReporterTest {
     @Mock private Raven raven;
     @Mock private ClientInfo clientInfo;
     @Captor private ArgumentCaptor<Event> eventCaptor;
+    private Optional<Throwable> throwable;
     private SentryErrorReporter sentryErrorReporter;
 
     @BeforeClass
@@ -69,12 +71,13 @@ public class SentryErrorReporterTest {
     @Before
     public void setUp() {
         when(ravenFactory.createRavenInstance(Matchers.<Dsn>anyObject())).thenReturn(raven);
+        throwable = Optional.of(new IllegalArgumentException());
         sentryErrorReporter = new SentryErrorReporter(clientInfo);
     }
 
     @Test
     public void testSendsMessage() {
-        sentryErrorReporter.sendException("message 123", ErrorLevel.MEDIUM, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.MEDIUM, new Date(), throwable);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals("message 123", eventCaptor.getValue().getMessage());
     }
@@ -82,58 +85,51 @@ public class SentryErrorReporterTest {
     @Test
     public void testSendsTimestamp() {
         final Date date = new Date(561859200000l);
-        sentryErrorReporter.sendException("message 123", ErrorLevel.MEDIUM, date, null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.MEDIUM, date, throwable);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(date, eventCaptor.getValue().getTimestamp());
     }
 
     @Test
     public void testSendsLowLevelAsInfo() {
-        sentryErrorReporter.sendException("message 123", ErrorLevel.LOW, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.LOW, new Date(), throwable);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.INFO, eventCaptor.getValue().getLevel());
     }
 
     @Test
     public void testSendsMediumLevelAsWarning() {
-        sentryErrorReporter.sendException("message 123", ErrorLevel.MEDIUM, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.MEDIUM, new Date(), throwable);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.WARNING, eventCaptor.getValue().getLevel());
     }
 
     @Test
     public void testSendsHighLevelAsError() {
-        sentryErrorReporter.sendException("message 123", ErrorLevel.HIGH, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.HIGH, new Date(), throwable);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.ERROR, eventCaptor.getValue().getLevel());
     }
 
     @Test
     public void testSendsFatalLevelAsFatal() {
-        sentryErrorReporter.sendException("message 123", ErrorLevel.FATAL, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.FATAL, new Date(), throwable);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.FATAL, eventCaptor.getValue().getLevel());
     }
 
     @Test
     public void testSendsUnknownLevelAsInfo() {
-        sentryErrorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), null, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), throwable);
         verify(raven).sendEvent(eventCaptor.capture());
         assertEquals(Event.Level.INFO, eventCaptor.getValue().getLevel());
     }
 
     @Test
-    public void testAddsDetailsAsExtra() {
-        sentryErrorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), null,
-                "details 456");
-        verify(raven).sendEvent(eventCaptor.capture());
-        assertEquals("details 456", eventCaptor.getValue().getExtra().get("details"));
-    }
-
-    @Test
     public void testAddsExceptionInterface() {
         final Exception exception = new IndexOutOfBoundsException("Message blah");
-        sentryErrorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(), exception, null);
+        sentryErrorReporter.sendException("message 123", ErrorLevel.UNKNOWN, new Date(),
+                Optional.of(exception));
         verify(raven).sendEvent(eventCaptor.capture());
         final SentryInterface iface = eventCaptor.getValue().getSentryInterfaces()
                 .get(ExceptionInterface.EXCEPTION_INTERFACE);

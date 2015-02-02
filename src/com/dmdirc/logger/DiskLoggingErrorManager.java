@@ -31,7 +31,6 @@ import com.dmdirc.events.ErrorEvent;
 import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
@@ -108,11 +107,10 @@ public class DiskLoggingErrorManager {
                         "Level: " + error.getError().getLevel(),
                         "Description: " + error.getError().getMessage(),
                         "Details: ");
-        //noinspection ThrowableResultOfMethodCallIgnored
-        if (error.getError().getThrowable() != null) {
-            Arrays.stream(Throwables.getStackTraceAsString(error.getError().getThrowable())
-                    .split("\n")).forEach(data::add);
-        }
+        Arrays.stream(error.getError().getThrowableAsString()
+                .split("\n"))
+                .filter(String::isEmpty)
+                .forEach(data::add);
         try {
             Files.write(errorFile, data, Charset.forName("UTF-8"));
         } catch (IOException ex) {
