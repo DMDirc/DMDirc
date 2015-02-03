@@ -32,10 +32,11 @@ import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -71,16 +72,16 @@ public class PluginFileHandler {
      * @param manager The plugin manager to pass to new metadata instances.
      * @return Collection of valid plugins.
      */
-    public Collection<PluginMetaData> refresh(final PluginManager manager) {
+    public Set<PluginMetaData> refresh(final PluginManager manager) {
         applyUpdates();
 
-        final Collection<PluginMetaData> metadata = findAllPlugins(manager);
+        final Set<PluginMetaData> metadata = findAllPlugins(manager);
 
         // Deal with plugins that had errors
         metadata.stream().filter(PluginMetaData::hasErrors).forEach(this::reportErrors);
         metadata.removeIf(PluginMetaData::hasErrors);
 
-        final Collection<PluginMetaData> newPlugins = getValidPlugins(metadata);
+        final Set<PluginMetaData> newPlugins = getValidPlugins(metadata);
 
         knownPlugins.clear();
         knownPlugins.addAll(newPlugins);
@@ -133,16 +134,16 @@ public class PluginFileHandler {
      * @param manager The plugin manager to pass to new metadata instances.
      * @return Collection of all plugins with loadable metadata.
      */
-    private Collection<PluginMetaData> findAllPlugins(final PluginManager manager) {
+    private Set<PluginMetaData> findAllPlugins(final PluginManager manager) {
         try {
             return Files.walk(directory, FileVisitOption.FOLLOW_LINKS)
                     .filter(p -> p.getFileName().toString().endsWith(".jar"))
                     .map(Path::toAbsolutePath)
                     .map(path -> getMetaData(path, manager))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
         } catch (IOException ex) {
             LOG.error(USER_ERROR, "Unable to read plugin directory.", ex);
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
     }
 
@@ -203,8 +204,7 @@ public class PluginFileHandler {
      * @param metadata The collection of metadata to validate.
      * @return The collection of metadata that passed validation.
      */
-    private Collection<PluginMetaData> getValidPlugins(
-            final Collection<PluginMetaData> metadata) {
+    private Set<PluginMetaData> getValidPlugins(final Collection<PluginMetaData> metadata) {
         // Collect a map by name
         final Map<String, PluginMetaData> metaDataByName = metadata.stream()
                 .collect(Collectors.toMap(PluginMetaData::getName, Function.identity()));
@@ -213,7 +213,7 @@ public class PluginFileHandler {
         final Multimap<String, String> services = getServices(metadata);
 
         // Validate each in turn
-        final Collection<PluginMetaData> res = new ArrayList<>();
+        final Set<PluginMetaData> res = new HashSet<>();
         for (PluginMetaData target : metadata) {
             final PluginMetaDataValidator validator = new PluginMetaDataValidator(target);
             final Collection<String> results = validator.validate(metaDataByName, services);

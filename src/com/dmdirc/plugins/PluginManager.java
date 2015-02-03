@@ -28,6 +28,8 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;
 
+import com.google.common.collect.Sets;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +53,12 @@ import static com.dmdirc.util.LogUtils.USER_ERROR;
 public class PluginManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(PluginManager.class);
+
     /** List of known plugins' file names to their corresponding {@link PluginInfo} objects. */
     private final Map<String, PluginInfo> knownPlugins = new HashMap<>();
     /** Set of known plugins' metadata. */
-    private final Collection<PluginMetaData> plugins = new HashSet<>();
+    private final Set<PluginMetaData> plugins = new HashSet<>();
+    /** File handler to use for disk-based functions. */
     private final PluginFileHandler fileHandler;
     /** Directory where plugins are stored. */
     private final String directory;
@@ -291,25 +296,32 @@ public class PluginManager {
      * Refreshes the list of known plugins.
      */
     public void refreshPlugins() {
-        final Collection<PluginMetaData> newPlugins = fileHandler.refresh(this);
+        final Set<PluginMetaData> newPlugins = fileHandler.refresh(this);
 
-        for (PluginMetaData plugin : newPlugins) {
-            addPlugin(plugin.getRelativeFilename());
-        }
-
-        // Update our list of plugins
-        synchronized (plugins) {
-            plugins.removeAll(newPlugins);
-
-            for (PluginMetaData oldPlugin : new HashSet<>(plugins)) {
-                delPlugin(oldPlugin.getRelativeFilename());
-            }
-
-            plugins.clear();
-            plugins.addAll(newPlugins);
-        }
+        Sets.difference(plugins, newPlugins).forEach(this::handlePluginDeleted);
+        Sets.difference(newPlugins, plugins).forEach(this::handleNewPluginFound);
 
         eventBus.publishAsync(new PluginRefreshEvent());
+    }
+
+    /**
+     * Called when a new plugin has been located on disk.
+     *
+     * @param metaData The metadata of the new plugin.
+     */
+    private void handleNewPluginFound(final PluginMetaData metaData) {
+        plugins.add(metaData);
+        addPlugin(metaData.getRelativeFilename());
+    }
+
+    /**
+     * Called when an existing plugin has gone missing from disk.
+     *
+     * @param metaData The metadata of the deleted plugin.
+     */
+    private void handlePluginDeleted(final PluginMetaData metaData) {
+        plugins.remove(metaData);
+        delPlugin(metaData.getRelativeFilename());
     }
 
     /**
