@@ -27,10 +27,10 @@ import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.events.ProgramErrorAddedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,10 +62,10 @@ public class SentryLoggingErrorManagerTest {
     public void setUp() throws Exception {
         when(appErrorEvent.getError()).thenReturn(appError);
         when(appError.isAppError()).thenReturn(true);
-        when(appError.getThrowable()).thenReturn(new IllegalStateException());
-        when(appError.getTrace()).thenReturn(Lists.newArrayList("at com.dmdirc.Main"));
+        when(appError.getThrowable()).thenReturn(Optional.of(new IllegalStateException()));
         when(userErrorEvent.getError()).thenReturn(userError);
         when(userError.isAppError()).thenReturn(false);
+        when(userError.getThrowable()).thenReturn(Optional.of(new IllegalStateException()));
         when(config.getBinder()).thenReturn(configBinder);
         instance = new SentryLoggingErrorManager(eventBus, sentryErrorReporter,
                 MoreExecutors.newDirectExecutorService());
@@ -78,48 +78,23 @@ public class SentryLoggingErrorManagerTest {
     public void testHandleErrorEvent() throws Exception {
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), any(Throwable.class), anyString());
-    }
-
-    @Test
-    public void testHandleErrorEvent_DMDircEventQueue() throws Exception {
-        when(appError.getTrace()).thenReturn(Lists.newArrayList("at com.dmdirc.addons.ui_swing" +
-                ".DMDircEventQueue", "java.somethingelse"));
-        instance.handleErrorEvent(appErrorEvent);
-        verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), any(Throwable.class), anyString());
-    }
-
-    @Test
-    public void testHandleErrorEvent_No_com_dmdirc() throws Exception {
-        when(appError.getTrace()).thenReturn(Lists.newArrayList("java.util", "java.somethingelse"));
-        instance.handleErrorEvent(appErrorEvent);
-        verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), any(Throwable.class), anyString());
+                any(Date.class), any(Optional.class));
     }
 
     @Test
     public void testHandledErrorEvent_UserError() throws Exception {
         instance.handleErrorEvent(userErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), any(Throwable.class), anyString());
-    }
-
-    @Test
-    public void testHandledErrorEvent_EmptyTrace() throws Exception {
-        when(appError.getTrace()).thenReturn(Lists.newArrayList());
-        instance.handleErrorEvent(appErrorEvent);
-        verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), any(Throwable.class), anyString());
+                any(Date.class), any(Optional.class));
     }
 
     @Test
     public void testHandledErrorEvent_BannedException() throws Exception {
         final Throwable throwable = new OutOfMemoryError();
-        when(appError.getThrowable()).thenReturn(throwable);
+        when(appError.getThrowable()).thenReturn(Optional.of(throwable));
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), eq(throwable), anyString());
+                any(Date.class), eq(Optional.of(throwable)));
     }
 
     @Test
@@ -128,7 +103,7 @@ public class SentryLoggingErrorManagerTest {
         instance.handleNoErrorReporting(false);
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), any(Throwable.class), anyString());
+                any(Date.class), any(Optional.class));
     }
 
     @Test
@@ -137,7 +112,7 @@ public class SentryLoggingErrorManagerTest {
         instance.handleNoErrorReporting(true);
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), any(Throwable.class), anyString());
+                any(Date.class), any(Optional.class));
     }
 
     @Test
@@ -146,7 +121,7 @@ public class SentryLoggingErrorManagerTest {
         instance.handleNoErrorReporting(false);
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), any(Throwable.class), anyString());
+                any(Date.class), any(Optional.class));
     }
 
     @Test
@@ -155,6 +130,6 @@ public class SentryLoggingErrorManagerTest {
         instance.handleNoErrorReporting(true);
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), any(Throwable.class), anyString());
+                any(Date.class), any(Optional.class));
     }
 }

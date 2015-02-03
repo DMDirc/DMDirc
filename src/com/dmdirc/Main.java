@@ -37,6 +37,7 @@ import com.dmdirc.interfaces.ui.UIController;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.logger.ModeAliasReporter;
 import com.dmdirc.logger.ProgramErrorAppender;
+import com.dmdirc.logger.ProgramErrorManager;
 import com.dmdirc.plugins.CorePluginExtractor;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Service;
@@ -98,6 +99,7 @@ public class Main {
     /** Mode alias reporter to use. */
     private final ModeAliasReporter reporter;
     private final ServiceManager serviceManager;
+    private final ProgramErrorManager errorManager;
 
     static {
         // TODO: Can this go in a Dagger module?
@@ -106,6 +108,7 @@ public class Main {
         configurator.setContext(context);
         context.reset();
     }
+
 
     /**
      * Creates a new instance of {@link Main}.
@@ -124,7 +127,8 @@ public class Main {
             final DMDircMBassador eventBus,
             final Set<CommandDetails> commands,
             final ModeAliasReporter reporter,
-            final ServiceManager serviceManager) {
+            final ServiceManager serviceManager,
+            final ProgramErrorManager errorManager) {
         this.identityManager = identityManager;
         this.connectionManager = connectionManager;
         this.commandLineParser = commandLineParser;
@@ -138,6 +142,7 @@ public class Main {
         this.commands = commands;
         this.reporter = reporter;
         this.serviceManager = serviceManager;
+        this.errorManager = errorManager;
     }
 
     /**
@@ -278,7 +283,7 @@ public class Main {
         // TODO: Add a normal logging thing, with or without runtime switching.
         final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         final ProgramErrorAppender appender = new ProgramErrorAppender();
-        appender.setEventBus(eventBus);
+        appender.setProgramErrorManager(errorManager);
         appender.setContext(context);
         appender.setName("Error Logger");
         appender.start();

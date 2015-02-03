@@ -48,8 +48,7 @@ public class ErrorReportingRunnableTest {
         instance.run();
         verify(programError).setReportStatus(ErrorReportStatus.SENDING);
         verify(sentryErrorReporter).sendException(programError.getMessage(), programError
-                .getLevel(), programError.getDate(), programError.getThrowable(),
-                programError.getDetails());
+                .getLevel(), programError.getDate(), programError.getThrowable());
         verify(programError).setReportStatus(ErrorReportStatus.FINISHED);
     }
 }

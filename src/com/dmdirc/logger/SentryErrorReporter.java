@@ -26,8 +26,8 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.util.ClientInfo;
 
 import java.util.Date;
+import java.util.Optional;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -64,26 +64,18 @@ public class SentryErrorReporter {
      * @param level     The severity level of the error.
      * @param timestamp The timestamp that the error first occurred at.
      * @param exception The actual exception, if available.
-     * @param details   The details of the exception, if any.
      */
     public void sendException(
             final String message,
             final ErrorLevel level,
             final Date timestamp,
-            @Nullable final Throwable exception,
-            @Nullable final String details) {
+            final Optional<Throwable> exception) {
         final EventBuilder eventBuilder = newEventBuilder()
                 .withMessage(message)
                 .withLevel(getSentryLevel(level))
                 .withTimestamp(timestamp);
 
-        if (exception != null) {
-            eventBuilder.withSentryInterface(new ExceptionInterface(exception));
-        }
-
-        if (details != null) {
-            eventBuilder.withExtra("details", details);
-        }
+        exception.ifPresent(e -> eventBuilder.withSentryInterface(new ExceptionInterface(e)));
 
         send(eventBuilder.build());
     }

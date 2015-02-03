@@ -23,14 +23,15 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.AppErrorEvent;
 import com.dmdirc.events.ErrorEvent;
 import com.dmdirc.events.FatalProgramErrorEvent;
 import com.dmdirc.events.NonFatalProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorDeletedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
-import com.dmdirc.events.UserErrorEvent;
 import com.dmdirc.util.EventUtils;
+import com.dmdirc.util.LogUtils;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 import com.google.common.base.Throwables;
 
@@ -43,8 +44,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.slf4j.Marker;
 
 import net.engio.mbassy.listener.Handler;
 
@@ -77,19 +81,19 @@ public class ProgramErrorManager {
         eventBus.subscribe(this);
     }
 
-    @Handler
-    void handleAppError(final AppErrorEvent event) {
-        handleErrorEvent(event, true);
+    void handle(final ILoggingEvent event) {
+        final ProgramError error = addError(LogUtils.getErrorLevel(event.getLevel()),
+                event.getFormattedMessage(), LogUtils.getThrowable(event),
+                isAppError(event.getMarker()));
+        handleErrorEvent(error);
     }
 
-    @Handler
-    void handleUserError(final UserErrorEvent event) {
-        handleErrorEvent(event, false);
+    private boolean isAppError(@Nullable final Marker marker) {
+        return marker != null
+                && (marker == LogUtils.APP_ERROR || marker == LogUtils.FATAL_APP_ERROR);
     }
 
-    private void handleErrorEvent(final ErrorEvent event, final boolean appError) {
-        final ProgramError error = addError(event.getLevel(), event.getMessage(),
-                event.getThrowable(), event.getDetails(), appError);
+    void handleErrorEvent(final ProgramError error) {
         if (error.getLevel() == ErrorLevel.FATAL) {
             eventBus.publish(new FatalProgramErrorEvent(error));
         } else {
@@ -102,10 +106,7 @@ public class ProgramErrorManager {
     void handleProgramError(final NonFatalProgramErrorEvent event) {
         if (!event.isHandled()) {
             System.err.println(event.getError().getMessage());
-            System.err.println(event.getError().getDetails());
-            if (event.getError().getThrowable() != null) {
-                System.err.println(Throwables.getStackTraceAsString(event.getError().getThrowable()));
-            }
+            event.getError().getThrowableAsString().ifPresent(System.err::println);
         }
     }
 
@@ -115,16 +116,15 @@ public class ProgramErrorManager {
      * @param level     The severity of the error
      * @param message   The error message
      * @param throwable The exception that caused the error, if any.
-     * @param details   The details of the exception, if any.
      * @param appError  Whether or not this is an application error
      *
      * @since 0.6.3m1
      */
     private ProgramError addError(final ErrorLevel level, final String message,
-            final Throwable throwable, final String details, final boolean appError) {
+            final Throwable throwable, final boolean appError) {
 
         final ProgramError error = programErrorFactory.create(level, message, throwable,
-                getTrace(message, throwable), details, new Date(), appError);
+                new Date(), appError);
         errors.add(error);
         return error;
     }
