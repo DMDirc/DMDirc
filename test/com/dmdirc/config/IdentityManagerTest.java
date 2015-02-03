@@ -54,9 +54,8 @@ public class IdentityManagerTest {
     private Path identitiesDirectory;
 
     @Before
-    @SuppressWarnings("resource")
     public void setUp() throws Exception {
-        baseDirectory = jimFsRule.getFileSystem().getPath("config");
+        baseDirectory = jimFsRule.getPath("config");
         identitiesDirectory = baseDirectory.resolve("identities");
     }
 

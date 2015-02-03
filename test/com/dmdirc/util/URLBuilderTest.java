@@ -59,15 +59,13 @@ public class URLBuilderTest {
     @Mock private DMDircMBassador eventBus;
 
     @Before
-    @SuppressWarnings("resource")
     public void setup() throws MalformedURLException {
         when(pluginManagerProvider.get()).thenReturn(pluginManager);
         when(themeManagerProvider.get()).thenReturn(themeManager);
         when(pluginManager.getPluginInfoByName(Matchers.anyString())).thenReturn(pluginInfo);
         when(themeManager.getDirectory()).thenReturn("/themes/");
         when(pluginInfo.getMetaData()).thenReturn(pluginMetaData);
-        when(pluginMetaData.getPluginPath()).thenReturn(
-                jimFsRule.getFileSystem().getPath("file://testPlugin"));
+        when(pluginMetaData.getPluginPath()).thenReturn(jimFsRule.getPath("file://testPlugin"));
     }
 
     @Test

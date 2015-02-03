@@ -50,7 +50,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-@SuppressWarnings("resource")
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigFileBackedConfigProviderTest {
 
@@ -70,27 +69,26 @@ public class ConfigFileBackedConfigProviderTest {
     @Before
     public void setUp() throws Exception {
         for (String file: FILES) {
-            Files.copy(getClass().getResourceAsStream(file),
-                    jimFsRule.getFileSystem().getPath(file));
+            Files.copy(getClass().getResourceAsStream(file), jimFsRule.getPath(file));
         }
     }
 
     @Test(expected = InvalidIdentityFileException.class)
     public void testNoName() throws IOException, InvalidIdentityFileException {
         new ConfigFileBackedConfigProvider(identityManager,
-                jimFsRule.getFileSystem().getPath("no-name"), false);
+                jimFsRule.getPath("no-name"), false);
     }
 
     @Test(expected = InvalidIdentityFileException.class)
     public void testNoTarget() throws IOException, InvalidIdentityFileException {
         new ConfigFileBackedConfigProvider(identityManager,
-                jimFsRule.getFileSystem().getPath("no-target"), false);
+                jimFsRule.getPath("no-target"), false);
     }
 
     @Test(expected = InvalidIdentityFileException.class)
     public void testInvalidConfigFile() throws IOException, InvalidIdentityFileException {
         new ConfigFileBackedConfigProvider(identityManager,
-                jimFsRule.getFileSystem().getPath("invalid-config-file"), false);
+                jimFsRule.getPath("invalid-config-file"), false);
     }
 
     @Test
@@ -313,16 +311,14 @@ public class ConfigFileBackedConfigProviderTest {
 
     private void copyFileAndReload(final ConfigProvider provider)
             throws IOException, InvalidConfigFileException {
-        Files.copy(jimFsRule.getFileSystem().getPath("simple-ircd-extra"),
-                jimFsRule.getFileSystem().getPath("simple-ircd"),
+        Files.copy(jimFsRule.getPath("simple-ircd-extra"), jimFsRule.getPath("simple-ircd"),
                 StandardCopyOption.REPLACE_EXISTING);
         provider.reload();
     }
 
     private ConfigFileBackedConfigProvider getProvider(final String file)
             throws IOException, InvalidIdentityFileException {
-        return new ConfigFileBackedConfigProvider(identityManager,
-                jimFsRule.getFileSystem().getPath(file), false);
+        return new ConfigFileBackedConfigProvider(identityManager, jimFsRule.getPath(file), false);
     }
 
 }

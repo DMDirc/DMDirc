@@ -26,8 +26,7 @@ import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
 import java.nio.file.FileSystem;
-
-import javax.annotation.WillCloseWhenClosed;
+import java.nio.file.Path;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -55,9 +54,24 @@ public class JimFsRule implements TestRule {
         };
     }
 
-    @WillCloseWhenClosed
+    /**
+     * Gets the file system for use in the test.
+     *
+     * @return The JimFS filesystem.
+     */
     public FileSystem getFileSystem() {
         return fileSystem;
+    }
+
+    /**
+     * Utility method to get a path from the file system.
+     *
+     * @param first The first component of the path
+     * @param more Any additional path components
+     * @return A corresponding {@link Path} object from the JimFS file system.
+     */
+    public Path getPath(final String first, final String ... more) {
+        return fileSystem.getPath(first, more);
     }
 
 }
