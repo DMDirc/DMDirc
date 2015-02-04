@@ -26,7 +26,6 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
-import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.input.TabCompleter;
@@ -35,8 +34,6 @@ import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import java.util.Collections;
 import java.util.Optional;
-
-import static org.mockito.Mockito.mock;
 
 public class TestWritableFrameContainer extends FrameContainer {
 
@@ -48,7 +45,7 @@ public class TestWritableFrameContainer extends FrameContainer {
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory) {
         super(null, "raw", "Raw", "(Raw)", cm, backBufferFactory,
-                new TabCompleter(mock(CommandController.class), cm),
+                new TabCompleter(cm),
                 messageSinkManager,
                 eventBus,
                 Collections.<String>emptySet());
