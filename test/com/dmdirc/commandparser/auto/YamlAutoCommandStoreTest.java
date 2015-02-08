@@ -39,7 +39,6 @@ import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@SuppressWarnings("resource")
 public class YamlAutoCommandStoreTest {
 
     @Rule public final JimFsRule jimFsRule = new JimFsRule();
@@ -54,7 +53,7 @@ public class YamlAutoCommandStoreTest {
     @Before
     public void setup() throws IOException {
         Files.copy(getClass().getResource("readtest.yml").openStream(),
-                jimFsRule.getFileSystem().getPath("readtest.yml"));
+                jimFsRule.getPath("readtest.yml"));
         command = AutoCommand.create(Optional.ofNullable("server"),
                 Optional.ofNullable("network"),
                 Optional.ofNullable("profile"),
@@ -77,7 +76,7 @@ public class YamlAutoCommandStoreTest {
 
     @Test
     public void testReadAutoCommands() {
-        ycs = new YamlAutoCommandStore(jimFsRule.getFileSystem().getPath("readtest.yml"));
+        ycs = new YamlAutoCommandStore(jimFsRule.getPath("readtest.yml"));
         final Set<AutoCommand> commands = ycs.readAutoCommands();
         assertTrue("Command 1 not present", commands.contains(command1));
         assertTrue("Command 2 not present", commands.contains(command2));
@@ -87,13 +86,13 @@ public class YamlAutoCommandStoreTest {
 
     @Test
     public void testWriteAutoCommands() throws IOException {
-        ycs = new YamlAutoCommandStore(jimFsRule.getFileSystem().getPath("store.yml"));
+        ycs = new YamlAutoCommandStore(jimFsRule.getPath("store.yml"));
         assertEquals(0, ycs.readAutoCommands().size());
-        assertFalse(Files.exists(jimFsRule.getFileSystem().getPath("store.yml")));
+        assertFalse(Files.exists(jimFsRule.getPath("store.yml")));
         ycs.writeAutoCommands(Sets.newHashSet(command));
         final Set<AutoCommand> commands = ycs.readAutoCommands();
         assertTrue("Command not present", commands.contains(command));
-        assertTrue(Files.exists(jimFsRule.getFileSystem().getPath("store.yml")));
+        assertTrue(Files.exists(jimFsRule.getPath("store.yml")));
     }
 
 }

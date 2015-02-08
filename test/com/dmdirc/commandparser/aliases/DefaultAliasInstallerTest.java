@@ -37,7 +37,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@SuppressWarnings("resource")
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultAliasInstallerTest {
 
@@ -49,7 +48,7 @@ public class DefaultAliasInstallerTest {
 
     @Before
     public void setup() {
-        path = jimFsRule.getFileSystem().getPath("aliases.yml");
+        path = jimFsRule.getPath("aliases.yml");
         installer = new DefaultAliasInstaller(path);
     }
 

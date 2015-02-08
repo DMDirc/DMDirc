@@ -38,7 +38,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-@SuppressWarnings("resource")
 @RunWith(MockitoJUnitRunner.class)
 public class ActionAliasMigratorTest {
 
@@ -53,23 +52,20 @@ public class ActionAliasMigratorTest {
 
     @Before
     public void setup() throws IOException {
-        Files.createDirectories(jimFsRule.getFileSystem().getPath("test1/aliases"));
-        Files.createDirectories(jimFsRule.getFileSystem().getPath("test2/other-stuff/aliases"));
-        Files.createDirectories(jimFsRule.getFileSystem().getPath("test3/aliases"));
+        Files.createDirectories(jimFsRule.getPath("test1/aliases"));
+        Files.createDirectories(jimFsRule.getPath("test2/other-stuff/aliases"));
+        Files.createDirectories(jimFsRule.getPath("test3/aliases"));
 
         Files.copy(getClass().getResource("op-greater-0").openStream(),
-                jimFsRule.getFileSystem().getPath("test1/aliases/op"));
+                jimFsRule.getPath("test1/aliases/op"));
         Files.copy(getClass().getResource("unset-equals-2").openStream(),
-                jimFsRule.getFileSystem().getPath("test1/aliases/unset"));
+                jimFsRule.getPath("test1/aliases/unset"));
         Files.copy(getClass().getResource("no-trigger").openStream(),
-                jimFsRule.getFileSystem().getPath("test3/aliases/bad"));
+                jimFsRule.getPath("test3/aliases/bad"));
 
-        migrator1 = new ActionAliasMigrator(jimFsRule.getFileSystem().getPath("test1"),
-                aliasFactory, aliasManager);
-        migrator2 = new ActionAliasMigrator(jimFsRule.getFileSystem().getPath("test2"),
-                aliasFactory, aliasManager);
-        migrator3 = new ActionAliasMigrator(jimFsRule.getFileSystem().getPath("test3"),
-                aliasFactory, aliasManager);
+        migrator1 = new ActionAliasMigrator(jimFsRule.getPath("test1"), aliasFactory, aliasManager);
+        migrator2 = new ActionAliasMigrator(jimFsRule.getPath("test2"), aliasFactory, aliasManager);
+        migrator3 = new ActionAliasMigrator(jimFsRule.getPath("test3"), aliasFactory, aliasManager);
     }
 
     @Test
@@ -81,16 +77,16 @@ public class ActionAliasMigratorTest {
     @Test
     public void testDeletesFilesAfterMigration() {
         migrator1.migrate();
-        assertFalse(Files.exists(jimFsRule.getFileSystem().getPath("test1/aliases/unset")));
-        assertFalse(Files.exists(jimFsRule.getFileSystem().getPath("test1/aliases/op")));
-        assertFalse(Files.exists(jimFsRule.getFileSystem().getPath("test1/aliases")));
-        assertTrue(Files.exists(jimFsRule.getFileSystem().getPath("test1")));
+        assertFalse(Files.exists(jimFsRule.getPath("test1/aliases/unset")));
+        assertFalse(Files.exists(jimFsRule.getPath("test1/aliases/op")));
+        assertFalse(Files.exists(jimFsRule.getPath("test1/aliases")));
+        assertTrue(Files.exists(jimFsRule.getPath("test1")));
     }
 
     @Test
     public void testLeavesOtherFilesDuringMigration() {
         migrator2.migrate();
-        assertTrue(Files.exists(jimFsRule.getFileSystem().getPath("test2/other-stuff/aliases")));
+        assertTrue(Files.exists(jimFsRule.getPath("test2/other-stuff/aliases")));
     }
 
     @Test
@@ -103,7 +99,7 @@ public class ActionAliasMigratorTest {
     @Test
     public void testBadActionsLeftOnDisk() {
         migrator3.migrate();
-        assertTrue(Files.exists(jimFsRule.getFileSystem().getPath("test3/aliases/bad")));
+        assertTrue(Files.exists(jimFsRule.getPath("test3/aliases/bad")));
     }
 
 }
