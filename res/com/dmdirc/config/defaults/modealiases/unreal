@@ -29,6 +29,8 @@ server:
   modeu=Auditorium
   modeU=Strip all formatting
   modeV=Disable /invite
+  modeZ=All clients are using SSL
+  enablemodeZ=false
 
   umodeA=Server Admin
   umodea=Services Admin
@@ -40,6 +42,7 @@ server:
   umodeg=Send/receive globops/locops
   umodeH=Hide IRCop status
   umodeh=Help Operator
+  umodeI=Hide IRCop idle time
   umodeN=Network Administrator
   umodep=Hide channel list
   umodeq=Unkickable
