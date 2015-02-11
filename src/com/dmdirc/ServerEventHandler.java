@@ -218,7 +218,7 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onPrivateNotice(final PrivateNoticeEvent event) {
-        eventBus.publishAsync(new ServerNoticeEvent(owner, owner.getLocalUser().get(),
+        eventBus.publishAsync(new ServerNoticeEvent(owner, owner.getUser(event.getHost()),
                 event.getMessage()));
     }
 
