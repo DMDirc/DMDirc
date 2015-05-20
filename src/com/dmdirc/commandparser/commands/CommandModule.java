@@ -80,325 +80,136 @@ import dagger.Provides;
 @Module(library = true, complete = false)
 public class CommandModule {
 
-    /**
-     * Provides the /me command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Me command) {
+    public CommandDetails getMeCommand(final Me command) {
         return new SimpleCommandDetails(command, Me.INFO);
     }
 
-    /**
-     * Provides the /ban command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Ban command) {
+    public CommandDetails getBanCommand(final Ban command) {
         return new SimpleCommandDetails(command, Ban.INFO);
     }
 
-    /**
-     * Provides the /cycle command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Cycle command) {
+    public CommandDetails getCycleCommand(final Cycle command) {
         return new SimpleCommandDetails(command, Cycle.INFO);
     }
 
-    /**
-     * Provides the /invite command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Invite command) {
+    public CommandDetails getInviteCommand(final Invite command) {
         return new SimpleCommandDetails(command, Invite.INFO);
     }
 
-    /**
-     * Provides the /kick command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final KickReason command) {
+    public CommandDetails getKickCommand(final KickReason command) {
         return new SimpleCommandDetails(command, KickReason.INFO);
     }
 
-    /**
-     * Provides the /mode command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Mode command) {
+    public CommandDetails getModeCommand(final Mode command) {
         return new SimpleCommandDetails(command, Mode.INFO);
     }
 
-    /**
-     * Provides the /names command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Names command) {
+    public CommandDetails getNamesCommand(final Names command) {
         return new SimpleCommandDetails(command, Names.INFO);
     }
 
-    /**
-     * Provides the /part command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Part command) {
+    public CommandDetails getPartCommand(final Part command) {
         return new SimpleCommandDetails(command, Part.INFO);
     }
 
-    /**
-     * Provides the /setnickcolour command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final SetNickColour command) {
+    public CommandDetails getNickColourCommand(final SetNickColour command) {
         return new SimpleCommandDetails(command, SetNickColour.INFO);
     }
 
-    /**
-     * Provides the /topic command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final ShowTopic command) {
+    public CommandDetails getShowTopicCommand(final ShowTopic command) {
         return new SimpleCommandDetails(command, ShowTopic.INFO);
     }
 
-    /**
-     * Provides the /allchannels command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final AllChannels command) {
+    public CommandDetails getAllChannelsCommand(final AllChannels command) {
         return new SimpleCommandDetails(command, AllChannels.INFO);
     }
 
-    /**
-     * Provides the /away command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Away command) {
+    public CommandDetails getAwayCommand(final Away command) {
         return new SimpleCommandDetails(command, Away.INFO);
     }
 
-    /**
-     * Provides the /back command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Back command) {
+    public CommandDetails getBackCommand(final Back command) {
         return new SimpleCommandDetails(command, Back.INFO);
     }
 
-    /**
-     * Provides the /server command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final ChangeServer command) {
+    public CommandDetails getServerCommand(final ChangeServer command) {
         return new SimpleCommandDetails(command, ChangeServer.INFO);
     }
 
-    /**
-     * Provides the /ctcp command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Ctcp command) {
+    public CommandDetails getCtcpCommand(final Ctcp command) {
         return new SimpleCommandDetails(command, Ctcp.INFO);
     }
 
-    /**
-     * Provides the /disconnect command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Disconnect command) {
+    public CommandDetails getDisconnectCommand(final Disconnect command) {
         return new SimpleCommandDetails(command, Disconnect.INFO);
     }
 
-    /**
-     * Provides the /ignore command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Ignore command) {
+    public CommandDetails getIgnoreCommand(final Ignore command) {
         return new SimpleCommandDetails(command, Ignore.INFO);
     }
 
-    /**
-     * Provides the /join command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final JoinChannelCommand command) {
+    public CommandDetails getJoinCommand(final JoinChannelCommand command) {
         return new SimpleCommandDetails(command, JoinChannelCommand.INFO);
     }
 
-    /**
-     * Provides the /msg command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Message command) {
+    public CommandDetails getMessageCommand(final Message command) {
         return new SimpleCommandDetails(command, Message.INFO);
     }
 
-    /**
-     * Provides the /nick command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Nick command) {
+    public CommandDetails getNickCommand(final Nick command) {
         return new SimpleCommandDetails(command, Nick.INFO);
     }
 
-    /**
-     * Provides the /notice command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Notice command) {
+    public CommandDetails getNoticeCommand(final Notice command) {
         return new SimpleCommandDetails(command, Notice.INFO);
     }
 
-    /**
-     * Provides the /query command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final OpenQuery command) {
+    public CommandDetails getQueryCommand(final OpenQuery command) {
         return new SimpleCommandDetails(command, OpenQuery.INFO);
     }
 
-    /**
-     * Provides the /raw command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Raw command) {
+    public CommandDetails getRawCommand(final Raw command) {
         return new SimpleCommandDetails(command, Raw.INFO);
     }
 
-    /**
-     * Provides the /reconnect command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Reconnect command) {
+    public CommandDetails getReconnectCommand(final Reconnect command) {
         return new SimpleCommandDetails(command, Reconnect.INFO);
     }
 
-    /**
-     * Provides the /umode command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Umode command) {
+    public CommandDetails getUmodeCommand(final Umode command) {
         return new SimpleCommandDetails(command, Umode.INFO);
     }
 
-    /**
-     * Provides the /whois command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Whois command) {
+    public CommandDetails getWhoisCommand(final Whois command) {
         return new SimpleCommandDetails(command, Whois.INFO);
     }
 
-    /**
-     * Provides a set of raw commands.
-     *
-     * @param controller The controller to use for command info.
-     *
-     * @return A set of the commands' details.
-     */
     @Provides(type = Provides.Type.SET_VALUES)
     public Set<CommandDetails> getRawCommands(final CommandController controller) {
         final Set<CommandDetails> results = new HashSet<>();
@@ -409,183 +220,78 @@ public class CommandModule {
         return results;
     }
 
-    /**
-     * Provides the /alias command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final AliasCommand command) {
+    public CommandDetails getAliasCommand(final AliasCommand command) {
         return new SimpleCommandDetails(command, AliasCommand.INFO);
     }
 
-    /**
-     * Provides the /allservers command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final AllServers command) {
+    public CommandDetails getAllServersCommand(final AllServers command) {
         return new SimpleCommandDetails(command, AllServers.INFO);
     }
 
-    /**
-     * Provides the /clear command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Clear command) {
+    public CommandDetails getClearCommand(final Clear command) {
         return new SimpleCommandDetails(command, Clear.INFO);
     }
 
-    /**
-     * Provides the /echo command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Echo command) {
+    public CommandDetails getEchoCommand(final Echo command) {
         return new SimpleCommandDetails(command, Echo.INFO);
     }
 
-    /**
-     * Provides the /exit command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Exit command) {
+    public CommandDetails getExitCommand(final Exit command) {
         return new SimpleCommandDetails(command, Exit.INFO);
     }
 
-    /**
-     * Provides the /Help command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Help command) {
+    public CommandDetails getHelpCommand(final Help command) {
         return new SimpleCommandDetails(command, Help.INFO);
     }
 
-    /**
-     * Provides the /ifplugin command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final Ifplugin command) {
+    public CommandDetails getIfpluginCommand(final Ifplugin command) {
         return new SimpleCommandDetails(command, Ifplugin.INFO);
     }
 
-    /**
-     * Provides the /newserver command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final NewServer command) {
+    public CommandDetails getNewServerCommand(final NewServer command) {
         return new SimpleCommandDetails(command, NewServer.INFO);
     }
 
-    /**
-     * Provides the /loadplugin command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final LoadPlugin command) {
+    public CommandDetails getLoadPluginCommand(final LoadPlugin command) {
         return new SimpleCommandDetails(command, LoadPlugin.INFO);
     }
 
-    /**
-     * Provides the /unloadplugin command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final UnloadPlugin command) {
+    public CommandDetails getUnloadPluginCommand(final UnloadPlugin command) {
         return new SimpleCommandDetails(command, UnloadPlugin.INFO);
     }
 
-    /**
-     * Provides the /openwindow command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final OpenWindow command) {
+    public CommandDetails getOpenWindowCommand(final OpenWindow command) {
         return new SimpleCommandDetails(command, OpenWindow.INFO);
     }
 
-    /**
-     * Provides the /reloadidentities command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final ReloadIdentities command) {
+    public CommandDetails getReloadIdentitiesCommand(final ReloadIdentities command) {
         return new SimpleCommandDetails(command, ReloadIdentities.INFO);
     }
 
-    /**
-     * Provides the /reloadplugin command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final ReloadPlugin command) {
+    public CommandDetails getReloadPluginCommand(final ReloadPlugin command) {
         return new SimpleCommandDetails(command, ReloadPlugin.INFO);
     }
 
-    /**
-     * Provides the /saveconfig command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final SaveConfig command) {
+    public CommandDetails getSaveConfigCommand(final SaveConfig command) {
         return new SimpleCommandDetails(command, SaveConfig.INFO);
     }
 
-    /**
-     * Provides the /set command.
-     *
-     * @param command The instantiated command.
-     *
-     * @return The command's details.
-     */
     @Provides(type = Provides.Type.SET)
-    public CommandDetails getCommand(final SetCommand command) {
+    public CommandDetails getSetCommand(final SetCommand command) {
         return new SimpleCommandDetails(command, SetCommand.INFO);
     }
 
