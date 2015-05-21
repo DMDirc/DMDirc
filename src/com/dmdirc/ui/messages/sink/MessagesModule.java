@@ -47,62 +47,62 @@ public class MessagesModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final AllMessageSink sink) {
+    public MessageSink getAllMessageSink(final AllMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final ChannelMessageSink sink) {
+    public MessageSink getChannelMessageSink(final ChannelMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final CommonChannelsMessageSink sink) {
+    public MessageSink getCommonChannelsMessageSink(final CommonChannelsMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final CustomWindowMessageSink sink) {
+    public MessageSink getCustomWindowMessageSink(final CustomWindowMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final ForkMessageSink sink) {
+    public MessageSink getForkMessageSink(final ForkMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final FormatMessageSink sink) {
+    public MessageSink getFormatMessageSink(final FormatMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final GroupMessageSink sink) {
+    public MessageSink getGroupMessageSink(final GroupMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final LastCommandMessageSink sink) {
+    public MessageSink getLastCommandMessageSink(final LastCommandMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final NullMessageSink sink) {
+    public MessageSink getNullMessageSink(final NullMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final SelfMessageSink sink) {
+    public MessageSink getSelfMessageSink(final SelfMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final ServerMessageSink sink) {
+    public MessageSink getServerMessageSink(final ServerMessageSink sink) {
         return sink;
     }
 
     @Provides(type = Provides.Type.SET)
-    public MessageSink getMessageSink(final StatusBarMessageSink sink) {
+    public MessageSink getStatusBarMessageSink(final StatusBarMessageSink sink) {
         return sink;
     }
 

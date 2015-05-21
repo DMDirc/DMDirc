@@ -196,7 +196,7 @@ public class CommandLineOptionsModule {
     @Provides
     @Singleton
     @Directory(DirectoryType.TEMPORARY)
-    public Path getTempDirectory(@Directory(DirectoryType.BASE) final Path baseDirectory) {
+    public Path getTempPath(@Directory(DirectoryType.BASE) final Path baseDirectory) {
         return baseDirectory;
     }
 
