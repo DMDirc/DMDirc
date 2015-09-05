@@ -24,7 +24,6 @@ package com.dmdirc.config;
 
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -35,7 +34,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -59,14 +57,18 @@ public class ConfigBinder {
     private final Optional<String> defaultDomain;
     /** The configuration manager to use to retrieve settings. */
     private final AggregateConfigProvider manager;
+    /** Retriever to use to get typed config values. */
+    private final ConfigValueRetriever valueRetriever;
 
     ConfigBinder(final AggregateConfigProvider manager) {
         this.manager = manager;
+        this.valueRetriever = new ConfigValueRetriever(manager);
         this.defaultDomain = Optional.empty();
     }
 
     ConfigBinder(final AggregateConfigProvider manager, @Nonnull final String domain) {
         this.manager = manager;
+        this.valueRetriever = new ConfigValueRetriever(manager);
         this.defaultDomain = Optional.of(domain);
     }
 
@@ -142,52 +144,18 @@ public class ConfigBinder {
             element.setAccessible(true);
         }
 
-        final Object value = getValue(binding, getTargetClass(element));
+        final Object value = valueRetriever.getValue(
+                getTargetClass(element),
+                getDomain(binding.domain()),
+                binding.key(),
+                binding.required(),
+                binding.fallbacks());
 
         try {
             binding.invocation().newInstance().invoke(element, instance, value);
         } catch (ReflectiveOperationException ex) {
             LOG.error(APP_ERROR, "Exception when updating bound setting", ex);
         }
-    }
-
-    /**
-     * Gets a value from the configuration manager for use with the given binding, and attempts to
-     * coerce it into the given class.
-     *
-     * @param binding     The binding defining configuration parameters
-     * @param targetClass The desired class
-     *
-     * @return An object representing the current value of the configuration key(s) associated with
-     *         the binding, of the desired target class, or null if the type conversion couldn't be
-     *         performed.
-     */
-    private Object getValue(final ConfigBinding binding,
-            final Class<?> targetClass) {
-        if (targetClass.equals(String.class)) {
-            return manager.getOptionString(getDomain(binding.domain()), binding.key(),
-                    binding.required(), ReadOnlyConfigProvider.PERMISSIVE_VALIDATOR,
-                    binding.fallbacks());
-        }
-
-        if (targetClass.equals(Boolean.class) || targetClass.equals(Boolean.TYPE)) {
-            return manager.getOptionBool(getDomain(binding.domain()), binding.key());
-        }
-
-        if (targetClass.equals(Character.class) || targetClass.equals(Character.TYPE)) {
-            return manager.getOptionChar(getDomain(binding.domain()), binding.key());
-        }
-
-        if (targetClass.equals(Integer.class) || targetClass.equals(Integer.TYPE)) {
-            return manager.getOptionInt(getDomain(binding.domain()), binding.key(),
-                    binding.fallbacks());
-        }
-
-        if (targetClass.equals(List.class)) {
-            return manager.getOptionList(getDomain(binding.domain()), binding.key());
-        }
-
-        return null;
     }
 
     /**
