@@ -39,7 +39,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -111,7 +110,6 @@ public class PluginInfo implements ServiceProvider {
     public PluginInfo(
             final PluginManager pluginManager,
             final ServiceManager serviceManager,
-            final String pluginDirectory,
             final PluginMetaData metadata,
             final DMDircMBassador eventBus,
             final IdentityController identityController,
@@ -125,7 +123,7 @@ public class PluginInfo implements ServiceProvider {
         this.metaData = metadata;
 
         try {
-            pluginFilesystem = FileSystems.newFileSystem(Paths.get(pluginDirectory, filename), null);
+            pluginFilesystem = FileSystems.newFileSystem(metadata.getPluginPath(), null);
         } catch (IOException ex) {
             lastError = "Error loading filesystem: " + ex.getMessage();
             throw new PluginException("Plugin " + filename + " failed to load. " + lastError, ex);
