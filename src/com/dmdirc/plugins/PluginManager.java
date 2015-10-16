@@ -149,7 +149,7 @@ public class PluginManager {
             final PluginMetaData metadata = new PluginMetaData(this,
                     Paths.get(directory, filename));
             metadata.load();
-            final PluginInfo pluginInfo = new PluginInfo(this, serviceManager, directory, metadata,
+            final PluginInfo pluginInfo = new PluginInfo(this, serviceManager, metadata,
                     eventBus, identityController, objectGraph);
             final PluginInfo existing = getPluginInfoByName(metadata.getName());
             if (existing != null) {

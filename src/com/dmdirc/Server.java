@@ -620,11 +620,9 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public void sendMessage(final String target, final String message) {
-        parser.ifPresent(p -> {
-            if (!message.isEmpty()) {
-                p.sendMessage(target, message);
-            }
-        });
+        if (!message.isEmpty()) {
+            parser.ifPresent(p -> p.sendMessage(target, message));
+        }
     }
 
     @Override
@@ -656,8 +654,7 @@ public class Server extends FrameContainer implements Connection {
             return parser.map(p -> p.getNetworkName().isEmpty()
                             ? getNetworkFromServerName(p.getServerName()) : p.getNetworkName())
                     .orElseThrow(() -> new IllegalStateException(
-                            "getNetwork called when " + "parser is null (state: " + getState() +
-                                    ')'));
+                            "getNetwork called when parser is null (state: " + getState() + ')'));
         } finally {
             parserLock.readLock().unlock();
         }
@@ -882,8 +879,7 @@ public class Server extends FrameContainer implements Connection {
             inviteManager.removeInvites();
             updateAwayState(Optional.empty());
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL,
-                    "reconnectondisconnect")
+            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect")
                     && myState.getState() == ServerState.TRANSIENTLY_DISCONNECTED) {
                 doDelayedReconnect();
             }
@@ -923,35 +919,44 @@ public class Server extends FrameContainer implements Connection {
 
             updateIcon();
 
-            final String description;
-
-            if (errorInfo.getException() == null) {
-                description = errorInfo.getData();
-            } else {
-                final Exception exception = errorInfo.getException();
-
-                if (exception instanceof UnknownHostException) {
-                    description = "Unknown host (unable to resolve)";
-                } else if (exception instanceof NoRouteToHostException) {
-                    description = "No route to host";
-                } else if (exception instanceof SocketTimeoutException) {
-                    description = "Connection attempt timed out";
-                } else if (exception instanceof SocketException
-                        || exception instanceof SSLException) {
-                    description = exception.getMessage();
-                } else {
-                    LOG.info(APP_ERROR, "Unknown socket error: {}",
-                            exception.getClass().getCanonicalName(), exception);
-                    description = "Unknown error: " + exception.getMessage();
-                }
-            }
-
-            getEventBus().publish(new ServerConnectErrorEvent(this, description));
+            getEventBus().publish(new ServerConnectErrorEvent(this, getErrorDescription
+                    (errorInfo)));
 
             if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure")) {
                 doDelayedReconnect();
             }
         }
+    }
+
+    /**
+     * Gets a user-readable description of the specified error.
+     *
+     * @param errorInfo The parser error to get a description for.
+     * @return A user-readable error description.
+     */
+    private static String getErrorDescription(final ParserError errorInfo) {
+        final String description;
+        if (errorInfo.getException() == null) {
+            description = errorInfo.getData();
+        } else {
+            final Exception exception = errorInfo.getException();
+
+            if (exception instanceof UnknownHostException) {
+                description = "Unknown host (unable to resolve)";
+            } else if (exception instanceof NoRouteToHostException) {
+                description = "No route to host";
+            } else if (exception instanceof SocketTimeoutException) {
+                description = "Connection attempt timed out";
+            } else if (exception instanceof SocketException
+                    || exception instanceof SSLException) {
+                description = exception.getMessage();
+            } else {
+                LOG.info(APP_ERROR, "Unknown socket error: {}",
+                        exception.getClass().getCanonicalName(), exception);
+                description = "Unknown error: " + exception.getMessage();
+            }
+        }
+        return description;
     }
 
     /**
