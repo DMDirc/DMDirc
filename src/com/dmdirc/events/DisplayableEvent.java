@@ -64,6 +64,20 @@ public interface DisplayableEvent {
     <T> Optional<T> getDisplayProperty(DisplayProperty<T> property);
 
     /**
+     * Determines whether this event has a display property.
+     *
+     * <p>Only use this method if the value of the property does not matter; otherwise use
+     * {@link #getDisplayProperty(DisplayProperty)} and use the appropriate {@link Optional}
+     * accessors.
+     *
+     * @param property The property to be checked.
+     * @return True if the property is present, false otherwise.
+     */
+    default boolean hasDisplayProperty(final DisplayProperty<?> property) {
+        return getDisplayProperty(property).isPresent();
+    }
+
+    /**
      * Gets the map of all display properties.
      *
      * @return The map of display properties.

@@ -28,6 +28,8 @@ import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.EventUtils;
 
+import java.util.Arrays;
+
 import net.engio.mbassy.listener.Handler;
 
 /**
@@ -77,13 +79,9 @@ public class BackBuffer {
     @Handler(priority = EventUtils.PRIORITY_DISPLAYABLE_EVENT_HANDLER)
     private void handleDisplayableEvent(final DisplayableEvent event) {
         if (shouldDisplay(event)) {
-            formatter.format(event).map(s -> s.split("\n")).ifPresent(
-                    t -> {
-                        for (String line : t) {
-                            document.addText(event.getTimestamp(), event
-                                    .getDisplayProperties(), line);
-                        }
-                    });
+            formatter.format(event).map(s -> s.split("\n")).map(Arrays::stream).ifPresent(
+                    t -> t.forEach(line -> document.addText(
+                            event.getTimestamp(), event.getDisplayProperties(), line)));
         }
     }
 
@@ -95,7 +93,7 @@ public class BackBuffer {
      */
     private boolean shouldDisplay(final DisplayableEvent event) {
         return event.getSource().equals(owner)
-                && !event.getDisplayProperty(DisplayProperty.DO_NOT_DISPLAY).isPresent();
+                && !event.hasDisplayProperty(DisplayProperty.DO_NOT_DISPLAY);
     }
 
     public IRCDocument getDocument() {
