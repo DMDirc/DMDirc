@@ -38,6 +38,15 @@ import org.slf4j.LoggerFactory;
 
 import static com.dmdirc.util.LogUtils.USER_ERROR;
 
+/**
+ * Provides properties and functions used by an {@link EventFormatter}.
+ *
+ * <p>Properties are dyanamically supplied based on get methods within the class. For example, if
+ * channel objects have a 'getName()' method, then the name can be accessed as {{channel.name}}.
+ *
+ * <p>Functions are implemented as string transformations, and are defined in
+ * {@link #EventPropertyManager()}.
+ */
 @Singleton
 public class EventPropertyManager {
 
