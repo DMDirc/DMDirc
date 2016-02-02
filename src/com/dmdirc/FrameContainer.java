@@ -430,19 +430,6 @@ public abstract class FrameContainer implements WindowModel {
      * @return True if any further behaviour should be executed, false otherwise
      */
     public boolean doNotification(final String messageType, final Object... args) {
-        return doNotification(new Date(), messageType, args);
-    }
-
-    /**
-     * Processes and displays a notification.
-     *
-     * @param date        The date/time at which the event occurred
-     * @param messageType The name of the formatter to be used for the message
-     * @param args        The arguments for the message
-     *
-     * @return True if any further behaviour should be executed, false otherwise
-     */
-    public boolean doNotification(final Date date, final String messageType, final Object... args) {
         final List<Object> messageArgs = new ArrayList<>();
         final List<Object> actionArgs = new ArrayList<>();
 
@@ -458,7 +445,7 @@ public abstract class FrameContainer implements WindowModel {
 
         modifyNotificationArgs(actionArgs, messageArgs);
 
-        handleNotification(date, messageType, messageArgs.toArray());
+        handleNotification(new Date(), messageType, messageArgs.toArray());
 
         return true;
     }
@@ -484,17 +471,6 @@ public abstract class FrameContainer implements WindowModel {
      */
     protected boolean processNotificationArg(final Object arg, final List<Object> args) {
         return false;
-    }
-
-    /**
-     * Handles general server notifications (i.e., ones not tied to a specific window). The user can
-     * select where the notifications should go in their config.
-     *
-     * @param messageType The type of message that is being sent
-     * @param args        The arguments for the message
-     */
-    public void handleNotification(final String messageType, final Object... args) {
-        handleNotification(new Date(), messageType, args);
     }
 
     /**

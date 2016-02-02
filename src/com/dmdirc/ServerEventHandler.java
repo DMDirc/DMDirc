@@ -258,7 +258,7 @@ public class ServerEventHandler extends EventHandler {
         final ServerNumericEvent coreEvent = new ServerNumericEvent(owner, event.getNumeric(),
                 event.getToken());
         final String format = EventUtils.postDisplayable(eventBus, coreEvent, target);
-        owner.handleNotification(format, (Object[]) event.getToken());
+        owner.handleNotification(event.getDate(), format, (Object[]) event.getToken());
     }
 
     @Handler
