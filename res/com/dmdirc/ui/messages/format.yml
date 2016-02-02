@@ -8,6 +8,8 @@ ServerCtcpEvent:
 ServerCtcpReplyEvent:
   format: "-!- CTCP {{type}} reply from {{user.nickname}}: {{content}}."
   colour: 4
+ServerConnectingEvent:
+  format: "Connecting to {{uri.host}}:{{uri.port}}..."
 ServerDisconnectedEvent:
   format: "-!- You have been disconnected from the server."
   colour: 2
@@ -49,6 +51,9 @@ ServerNickChangeEvent:
   colour: 3
 ServerErrorEvent:
   format: "ERROR: {{reason}}"
+  colour: 4
+ServerUnknownProtocolEvent:
+  format: "Unknown protocol '{{protocol}}'. Unable to connect."
   colour: 4
 
 ################## Server messaging events #########################################################
@@ -205,7 +210,6 @@ CommandOutputEvent:
 #  selfCTCP=4->- [%1$s] %2$s
 #  selfNotice=5>%1$s> %2$s
 #  selfMessage=>[%1$s]> %2$s
-#  serverConnecting=Connecting to %1$s:%2$s...
 #  serverDisconnectInProgress=A disconnection attempt is in progress, please wait...
 #  serverConnectInProgress=A connection attempt is in progress, please wait...
 #  rawCommand=10>>> %1$s
@@ -213,7 +217,6 @@ CommandOutputEvent:
 #  commandOutput=%1$s
 #  actionTooLong=Warning: action too long to be sent
 #  tabCompletion=14Multiple possibilities: %1$s
-#  serverUnknownProtocol=4Unknown protocol '%1$s'. Unable to connect.
 #  commandUsage=7Usage: %1$s%2$s %3$s
 #  numeric_006=%4$s
 #  numeric_007=%4$s

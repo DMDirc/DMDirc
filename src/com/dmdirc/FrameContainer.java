@@ -320,24 +320,6 @@ public abstract class FrameContainer implements WindowModel {
     }
 
     @Override
-    public void addLine(final StringBuffer type, final Date timestamp, final Object... args) {
-        if (type != null) {
-            addLine(type.toString(), timestamp, args);
-        }
-    }
-
-    @Override
-    public void addLine(final StringBuffer type, final Object... args) {
-        addLine(type, new Date(), args);
-    }
-
-    @Override
-    @Deprecated
-    public void addLine(final String line, final boolean timestamp) {
-        addLine(line, new Date());
-    }
-
-    @Override
     public void addLine(final String line, final Date timestamp) {
         for (final String myLine : line.split("\n")) {
             getBackBuffer().getDocument().addText(

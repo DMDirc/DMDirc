@@ -24,27 +24,25 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
-import java.net.URI;
-
 /**
- * Fire when a server is connecting.
+ * Raised when a server attempts to connect to an unknown protocol.
  */
-public class ServerConnectingEvent extends ServerDisplayableEvent {
+public class ServerUnknownProtocolEvent extends ServerDisplayableEvent {
 
-    private final URI uri;
+    private final String protocol;
 
-    public ServerConnectingEvent(final Connection connection, final URI uri) {
-        super(connection);
-        this.uri = uri;
-    }
-
-    public ServerConnectingEvent(final long timestamp, final Connection connection, final URI uri) {
+    public ServerUnknownProtocolEvent(final long timestamp, final Connection connection, final String protocol) {
         super(timestamp, connection);
-        this.uri = uri;
+        this.protocol = protocol;
     }
 
-    public URI getUri() {
-        return uri;
+    public ServerUnknownProtocolEvent(final Connection connection, final String protocol) {
+        super(connection);
+        this.protocol = protocol;
+    }
+
+    public String getProtocol() {
+        return protocol;
     }
 
 }
