@@ -347,11 +347,8 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onUnknownNotice(final UnknownNoticeEvent event) {
-        final ServerUnknownNoticeEvent
-                coreEvent = new ServerUnknownNoticeEvent(owner, event.getHost(), event.getTarget(),
-                event.getMessage());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "unknownNotice");
-        owner.doNotification(format, event.getHost(), event.getTarget(), event.getMessage());
+        eventBus.publishAsync(new ServerUnknownNoticeEvent(
+                owner, event.getHost(), event.getTarget(),event.getMessage()));
     }
 
     @Handler
@@ -362,10 +359,8 @@ public class ServerEventHandler extends EventHandler {
                     new QuerySelfMessageEvent(owner.getQuery(event.getTarget()), owner.getLocalUser().get(),
                             event.getMessage()));
         } else {
-            final ServerUnknownMessageEvent coreEvent
-                    = new ServerUnknownMessageEvent(owner, event.getHost(), event.getTarget(), event.getMessage());
-            final String format = EventUtils.postDisplayable(eventBus, coreEvent, "unknownMessage");
-            owner.doNotification(format, event.getHost(), event.getTarget(), event.getMessage());
+            eventBus.publishAsync(new ServerUnknownMessageEvent(
+                    owner, event.getHost(), event.getTarget(), event.getMessage()));
         }
     }
 
@@ -377,28 +372,21 @@ public class ServerEventHandler extends EventHandler {
                     new QuerySelfActionEvent(owner.getQuery(event.getTarget()), owner.getLocalUser().get(),
                             event.getMessage()));
         } else {
-            final ServerUnknownActionEvent coreEvent
-                    = new ServerUnknownActionEvent(owner, event.getHost(), event.getTarget(), event.getMessage());
-            final String format = EventUtils.postDisplayable(eventBus, coreEvent, "unknownAction");
-            owner.doNotification(format, event.getHost(), event.getTarget(), event.getMessage());
+            eventBus.publishAsync(new ServerUnknownActionEvent(
+                    owner, event.getHost(), event.getTarget(), event.getMessage()));
         }
     }
 
     @Handler
     public void onUserModeChanged(final UserModeChangeEvent event) {
-        final ServerUserModesEvent coreEvent = new ServerUserModesEvent(owner,
-                owner.getUser(event.getClient().getHostname()), event.getModes());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "userModeChanged");
-        owner.doNotification(format, owner.getUser(event.getClient().getHostname()), event.getModes());
+        eventBus.publishAsync(new ServerUserModesEvent(
+                owner, owner.getUser(event.getClient().getHostname()), event.getModes()));
     }
 
     @Handler
     public void onUserModeDiscovered(final UserModeDiscoveryEvent event) {
-        final ServerUserModesEvent coreEvent = new ServerUserModesEvent(owner,
-                owner.getUser(event.getClient().getHostname()), event.getModes());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent,
-                event.getModes().isEmpty() || "+".equals(event.getModes()) ? "userNoModes" : "userModeDiscovered");
-        owner.doNotification(format, owner.getUser(event.getClient().getHostname()), event.getModes());
+        eventBus.publishAsync(new ServerUserModesEvent(
+                owner, owner.getUser(event.getClient().getHostname()), event.getModes()));
     }
 
     @Handler
@@ -412,36 +400,27 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onWallop(final WallopEvent event) {
-        final ServerWallopsEvent coreEvent = new ServerWallopsEvent(owner,
-                owner.getUser(event.getHost()), event.getMessage());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "wallop");
-        owner.doNotification(format, owner.getUser(event.getHost()), event.getMessage());
-
+        eventBus.publishAsync(new ServerWallopsEvent(owner,
+                owner.getUser(event.getHost()), event.getMessage()));
     }
 
     @Handler
     public void onWalluser(final WalluserEvent event) {
-        final ServerWallusersEvent coreEvent = new ServerWallusersEvent(owner,
-                owner.getLocalUser().get(), event.getMessage());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "walluser");
-        owner.doNotification(format, owner.getUser(event.getHost()), event.getMessage());
+        eventBus.publishAsync(new ServerWallusersEvent(owner,
+                owner.getLocalUser().get(), event.getMessage()));
     }
 
     @Handler
     public void onWallDesync(final WallDesyncEvent event) {
-        final ServerWalldesyncEvent coreEvent = new ServerWalldesyncEvent(owner,
-                owner.getLocalUser().get(), event.getMessage());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent, "walldesync");
-        owner.doNotification(format, owner.getUser(event.getHost()), event.getMessage());
+        eventBus.publishAsync(new ServerWalldesyncEvent(owner,
+                owner.getLocalUser().get(), event.getMessage()));
     }
 
     @Handler
     public void onNickChanged(final NickChangeEvent event) {
         if (event.getClient().equals(owner.getParser().get().getLocalClient())) {
-            final ServerNickChangeEvent coreEvent = new ServerNickChangeEvent(owner,
-                    event.getOldNick(), event.getClient().getNickname());
-            final String format = EventUtils.postDisplayable(eventBus, coreEvent, "selfNickChange");
-            owner.doNotification(format, event.getOldNick(), event.getClient().getNickname());
+            eventBus.publishAsync(new ServerNickChangeEvent(owner,
+                    event.getOldNick(), event.getClient().getNickname()));
             owner.updateTitle();
         }
     }

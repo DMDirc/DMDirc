@@ -41,6 +41,12 @@ ServerAuthNoticeEvent:
 ServerInviteReceivedEvent:
   format: "* You have been invited to {{channel}} by {{user.nickname}}."
   colour: 2
+ServerUserModesEvent:
+  format: "* User modes are: {{modes}}."
+  colour: 3
+ServerNickChangeEvent:
+  format: "* You are now known as {{newNick}}."
+  colour: 3
 ServerErrorEvent:
   format: "ERROR: {{reason}}"
   colour: 4
@@ -52,6 +58,24 @@ ServerNoticeEvent:
   colour: 5
 ServerServerNoticeEvent:
   format: "-{{user.nickname}}- {{message}}"
+  colour: 5
+ServerUnknownMessageEvent:
+  format: "<[{{sender}}:{{target}}]> {{message}}"
+  colour: 5
+ServerUnknownNoticeEvent:
+  format: "-[{{sender}}:{{target}}]- {{message}}"
+  colour: 5
+ServerUnknownActionEvent:
+  format: "* [{{sender}}:{{target}}] {{message}}"
+  colour: 5
+ServerWallopsEvent:
+  format: "${{user.nickname}}$ {{message}}"
+  colour: 5
+ServerWallusersEvent:
+  format: "!{{user.nickname}}! {{message}}"
+  colour: 5
+ServerWalldesyncEvent:
+  format: "/{{user.nickname}}/ {{message}}"
   colour: 5
 
 ################## Channel join/part/quit events ###################################################
@@ -178,12 +202,6 @@ CommandOutputEvent:
   format: "{{message}}"
 
 ################## TODO ############################################################################
-#  userModeChanged=3* %1$s sets user mode: %4$s.
-#  userNoModes=3* No user modes.
-#  userModeDiscovered=3* User modes are: %4$s.
-#  walluser=5!%1$s! %4$s
-#  wallop=5$%1$s$ %4$s
-#  walldesync=5/%1$s/ %4$s
 #  selfCTCP=4->- [%1$s] %2$s
 #  selfNotice=5>%1$s> %2$s
 #  selfMessage=>[%1$s]> %2$s
@@ -196,10 +214,6 @@ CommandOutputEvent:
 #  actionTooLong=Warning: action too long to be sent
 #  tabCompletion=14Multiple possibilities: %1$s
 #  serverUnknownProtocol=4Unknown protocol '%1$s'. Unable to connect.
-#  selfNickChange=3* You are now known as %2$s.
-#  unknownNotice=5-[%1$s:%2$s]- %3$s
-#  unknownMessage=5<[%1$s:%2$s]> %3$s
-#  unknownNotice=5* [%1$s:%2$s] %3$s
 #  commandUsage=7Usage: %1$s%2$s %3$s
 #  numeric_006=%4$s
 #  numeric_007=%4$s
