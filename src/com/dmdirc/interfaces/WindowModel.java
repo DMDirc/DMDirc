@@ -162,37 +162,6 @@ public interface WindowModel {
     void addLine(String type, Object... args);
 
     /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
-     *
-     * @param type      The message type to use
-     * @param timestamp The timestamp to use for this line
-     * @param args      The message's arguments
-     *
-     * @since 0.6.4
-     */
-    void addLine(StringBuffer type, Date timestamp, Object... args);
-
-    /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
-     *
-     * @param type The message type to use
-     * @param args The message's arguments
-     */
-    void addLine(StringBuffer type, Object... args);
-
-    /**
-     * Adds the specified raw line to the window, without using a formatter.
-     *
-     * @param line      The line to be added
-     * @param timestamp Whether or not to display the timestamp for this line
-     * @deprecated Timestamps are always displayed.
-     */
-    @Deprecated
-    void addLine(String line, boolean timestamp);
-
-    /**
      * Adds the specified raw line to the window, without using a formatter, and using the specified
      * timestamp. If the timestamp is <code>null</code>, no timestamp is added.
      *

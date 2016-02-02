@@ -29,6 +29,7 @@ import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
 import com.dmdirc.events.ServerDisconnectedEvent;
 import com.dmdirc.events.ServerReconnectScheduledEvent;
+import com.dmdirc.events.ServerUnknownProtocolEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.InviteManager;
@@ -69,7 +70,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -322,7 +322,8 @@ public class Server extends FrameContainer implements Connection {
                 parser = Optional.ofNullable(buildParser());
 
                 if (!parser.isPresent()) {
-                    addLine("serverUnknownProtocol", address.getScheme());
+                    getEventBus().publishAsync(
+                            new ServerUnknownProtocolEvent(this, address.getScheme()));
                     return;
                 }
 
@@ -331,8 +332,6 @@ public class Server extends FrameContainer implements Connection {
             } finally {
                 parserLock.writeLock().unlock();
             }
-
-            addLine("serverConnecting", connectAddress.getHost(), connectAddress.getPort());
 
             myState.transition(ServerState.CONNECTING);
 
@@ -348,7 +347,7 @@ public class Server extends FrameContainer implements Connection {
             }
         }
 
-        getEventBus().publish(new ServerConnectingEvent(this));
+        getEventBus().publish(new ServerConnectingEvent(this, address));
     }
 
     @Override
@@ -790,19 +789,6 @@ public class Server extends FrameContainer implements Connection {
     @Override
     public Optional<Connection> getConnection() {
         return Optional.of(this);
-    }
-
-    @Override
-    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
-        if (arg instanceof User) {
-            final User clientInfo = (User) arg;
-            args.add(clientInfo.getNickname());
-            args.add(clientInfo.getUsername());
-            args.add(clientInfo.getHostname());
-            return true;
-        } else {
-            return super.processNotificationArg(arg, args);
-        }
     }
 
     @Override

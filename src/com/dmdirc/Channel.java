@@ -413,45 +413,6 @@ public class Channel extends FrameContainer implements GroupChat {
         return res;
     }
 
-    @Override
-    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
-        if (arg instanceof User) {
-            final User clientInfo = (User) arg;
-            args.add(clientInfo.getNickname());
-            args.add(clientInfo.getUsername());
-            args.add(clientInfo.getHostname());
-
-            return true;
-        } else if (arg instanceof GroupChatUser) {
-            final GroupChatUser clientInfo = (GroupChatUser) arg;
-
-            args.addAll(Arrays.asList(getDetails(clientInfo)));
-
-            return true;
-        } else if (arg instanceof Topic) {
-            // Format topics
-            final Topic topic = (Topic) arg;
-            args.add("");
-            args.add(topic.getClient().map(GroupChatUser::getNickname).orElse("Unknown"));
-            args.add(topic.getClient().flatMap(GroupChatUser::getUsername).orElse(""));
-            args.add(topic.getClient().flatMap(GroupChatUser::getHostname).orElse(""));
-            args.add(topic.getTopic());
-            args.add(topic.getDate().getTime());
-
-            return true;
-        } else {
-            // Everything else - default formatting
-
-            return super.processNotificationArg(arg, args);
-        }
-    }
-
-    @Override
-    protected void modifyNotificationArgs(final List<Object> actionArgs,
-            final List<Object> messageArgs) {
-        messageArgs.add(channelInfo.getName());
-    }
-
     // ---------------------------------------------------- TOPIC HANDLING -----
     /**
      * Adds the specified topic to this channel's topic list.

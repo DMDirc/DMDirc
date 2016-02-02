@@ -320,24 +320,6 @@ public abstract class FrameContainer implements WindowModel {
     }
 
     @Override
-    public void addLine(final StringBuffer type, final Date timestamp, final Object... args) {
-        if (type != null) {
-            addLine(type.toString(), timestamp, args);
-        }
-    }
-
-    @Override
-    public void addLine(final StringBuffer type, final Object... args) {
-        addLine(type, new Date(), args);
-    }
-
-    @Override
-    @Deprecated
-    public void addLine(final String line, final boolean timestamp) {
-        addLine(line, new Date());
-    }
-
-    @Override
     public void addLine(final String line, final Date timestamp) {
         for (final String myLine : line.split("\n")) {
             getBackBuffer().getDocument().addText(
@@ -419,58 +401,6 @@ public abstract class FrameContainer implements WindowModel {
         }
 
         return lines;
-    }
-
-    /**
-     * Processes and displays a notification.
-     *
-     * @param messageType The name of the formatter to be used for the message
-     * @param args        The arguments for the message
-     *
-     * @return True if any further behaviour should be executed, false otherwise
-     */
-    public boolean doNotification(final String messageType, final Object... args) {
-        final List<Object> messageArgs = new ArrayList<>();
-        final List<Object> actionArgs = new ArrayList<>();
-
-        actionArgs.add(this);
-
-        for (Object arg : args) {
-            actionArgs.add(arg);
-
-            if (!processNotificationArg(arg, messageArgs)) {
-                messageArgs.add(arg);
-            }
-        }
-
-        modifyNotificationArgs(actionArgs, messageArgs);
-
-        handleNotification(new Date(), messageType, messageArgs.toArray());
-
-        return true;
-    }
-
-    /**
-     * Allows subclasses to modify the lists of arguments for notifications.
-     *
-     * @param actionArgs  The list of arguments to be passed to the actions system
-     * @param messageArgs The list of arguments to be passed to the formatter
-     */
-    protected void modifyNotificationArgs(final List<Object> actionArgs,
-            final List<Object> messageArgs) {
-        // Do nothing
-    }
-
-    /**
-     * Allows subclasses to process specific types of notification arguments.
-     *
-     * @param arg  The argument to be processed
-     * @param args The list of arguments that any data should be appended to
-     *
-     * @return True if the arg has been processed, false otherwise
-     */
-    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
-        return false;
     }
 
     /**

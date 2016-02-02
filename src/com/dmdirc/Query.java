@@ -51,7 +51,6 @@ import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import java.awt.Toolkit;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import net.engio.mbassy.listener.Handler;
@@ -111,19 +110,6 @@ public class Query extends FrameContainer implements PrivateChat {
             getEventBus().publishAsync(new QuerySelfMessageEvent(this,
                     connection.getLocalUser().get(), part));
         });
-    }
-
-    @Override
-    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
-        if (arg instanceof User) {
-            final User clientInfo = (User) arg;
-            args.add(clientInfo.getNickname());
-            args.add(clientInfo.getUsername());
-            args.add(clientInfo.getHostname());
-            return true;
-        } else {
-            return super.processNotificationArg(arg, args);
-        }
     }
 
     @Override

@@ -24,17 +24,27 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.net.URI;
+
 /**
  * Fire when a server is connecting.
  */
-public class ServerConnectingEvent extends ServerEvent {
+public class ServerConnectingEvent extends ServerDisplayableEvent {
 
-    public ServerConnectingEvent(final Connection connection) {
+    private final URI uri;
+
+    public ServerConnectingEvent(final Connection connection, final URI uri) {
         super(connection);
+        this.uri = uri;
     }
 
-    public ServerConnectingEvent(final long timestamp, final Connection connection) {
+    public ServerConnectingEvent(final long timestamp, final Connection connection, final URI uri) {
         super(timestamp, connection);
+        this.uri = uri;
+    }
+
+    public URI getUri() {
+        return uri;
     }
 
 }

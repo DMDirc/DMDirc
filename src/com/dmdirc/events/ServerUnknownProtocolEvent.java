@@ -23,35 +23,26 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.User;
 
 /**
- * Fired in on receipt of user modes.
+ * Raised when a server attempts to connect to an unknown protocol.
  */
-public class ServerUserModesEvent extends ServerDisplayableEvent {
+public class ServerUnknownProtocolEvent extends ServerDisplayableEvent {
 
-    private final User user;
-    private final String modes;
+    private final String protocol;
 
-    public ServerUserModesEvent(final long timestamp, final Connection connection, final User user,
-            final String modes) {
+    public ServerUnknownProtocolEvent(final long timestamp, final Connection connection, final String protocol) {
         super(timestamp, connection);
-        this.user = user;
-        this.modes = modes;
+        this.protocol = protocol;
     }
 
-    public ServerUserModesEvent(final Connection connection, final User user, final String modes) {
+    public ServerUnknownProtocolEvent(final Connection connection, final String protocol) {
         super(connection);
-        this.user = user;
-        this.modes = modes;
+        this.protocol = protocol;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public String getModes() {
-        return modes;
+    public String getProtocol() {
+        return protocol;
     }
 
 }
