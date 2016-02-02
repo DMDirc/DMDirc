@@ -136,7 +136,7 @@ public class ChannelEventHandler extends EventHandler {
 
         final Topic topic = Topic.create(channel.getTopic(),
                 owner.getUser(getConnection().getUser(channel.getTopicSetter())).orElse(null),
-                channel.getTopicTime());
+                new Date(1000 * channel.getTopicTime()));
 
         if (event.isJoinTopic()) {
             if (Strings.isNullOrEmpty(channel.getTopic())) {

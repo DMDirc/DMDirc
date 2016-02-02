@@ -106,7 +106,7 @@ ChannelCtcpEvent:
 ChannelGotTopicEvent:
   format: |
             * The topic for {{channel.name}} is '{{topic.topic}}'.
-            * Topic was set by {{user.nickname}} at {{topic.time}}.
+            * Topic was set by {{user.nickname}} at {{topic.date}}.
   colour: 3
 ChannelTopicChangeEvent:
   format: "* {{user.nickname}} has changed the topic to {{topic.topic}}."

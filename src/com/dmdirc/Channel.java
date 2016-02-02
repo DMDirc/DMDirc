@@ -436,7 +436,7 @@ public class Channel extends FrameContainer implements GroupChat {
             args.add(topic.getClient().flatMap(GroupChatUser::getUsername).orElse(""));
             args.add(topic.getClient().flatMap(GroupChatUser::getHostname).orElse(""));
             args.add(topic.getTopic());
-            args.add(topic.getTime() * 1000);
+            args.add(topic.getDate().getTime());
 
             return true;
         } else {

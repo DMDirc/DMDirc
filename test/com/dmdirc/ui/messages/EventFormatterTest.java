@@ -55,7 +55,7 @@ public class EventFormatterTest {
         messageEvent = new ChannelMessageEvent(channel, null, null);
 
         when(templateProvider.getFormat(ChannelMessageEvent.class))
-                .thenReturn(Optional.ofNullable(
+                .thenReturn(Optional.of(
                         EventFormat.create("Template {{channel}} meep", Optional.empty())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn(Optional.of("MONKEY"));
@@ -68,7 +68,7 @@ public class EventFormatterTest {
         messageEvent = new ChannelMessageEvent(channel, null, null);
 
         when(templateProvider.getFormat(ChannelMessageEvent.class))
-                .thenReturn(Optional.ofNullable(
+                .thenReturn(Optional.of(
                         EventFormat.create("Template {{channel|lowercase}} meep",
                                 Optional.empty())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
@@ -83,7 +83,7 @@ public class EventFormatterTest {
         messageEvent = new ChannelMessageEvent(channel, null, "{{channel}}");
 
         when(templateProvider.getFormat(ChannelMessageEvent.class))
-                .thenReturn(Optional.ofNullable(
+                .thenReturn(Optional.of(
                         EventFormat.create("Template {{message}} meep", Optional.empty())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "message"))
                 .thenReturn(Optional.of("{{channel}}"));
