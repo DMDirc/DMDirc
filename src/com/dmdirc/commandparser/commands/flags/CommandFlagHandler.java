@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.commands.flags;
 
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.WindowModel;
 
 import java.util.ArrayList;
@@ -131,13 +132,13 @@ public class CommandFlagHandler {
                     }
                 } else if (disabledBy.containsKey(name)) {
                     // Disabled by another flag
-                    sendLine(origin, arguments.isSilent(), "commandError",
+                    sendError(origin, arguments.isSilent(),
                             "Cannot use flag --" + name
                             + " in conjunction with --" + disabledBy.get(name).getName());
                     return null;
                 } else {
                     // Disabled because not yet enabled
-                    sendLine(origin, arguments.isSilent(), "commandError",
+                    sendError(origin, arguments.isSilent(),
                             "Cannot use flag --" + name
                             + " without " + getEnablers(flag));
                     return null;
@@ -181,8 +182,8 @@ public class CommandFlagHandler {
         final int lastArg = argCount + offset - 1;
 
         if (arguments.getArguments().length <= lastArg) {
-            sendLine(origin, arguments.isSilent(),
-                    "commandError", "Flag --" + flag.getName() + " expects "
+            sendError(origin, arguments.isSilent(),
+                    "Flag --" + flag.getName() + " expects "
                     + argCount + " argument"
                     + (argCount == 1 ? "" : "s"));
             return -1;
@@ -244,17 +245,16 @@ public class CommandFlagHandler {
     }
 
     /**
-     * Convenience method to send a line to the specified frame container.
+     * Convenience method to send a command error event.
      *
-     * @param origin      The container to send the line to
+     * @param origin      The container to send the event to
      * @param isSilent    Whether the command is silenced or not
-     * @param messageType The type of the line to be sent
-     * @param args        The arguments for the specified messageType
+     * @param message     The error message
      */
-    protected static void sendLine(final WindowModel origin, final boolean isSilent,
-            final String messageType, final Object... args) {
+    private static void sendError(final WindowModel origin, final boolean isSilent,
+            final String message) {
         if (origin != null && !isSilent) {
-            origin.addLine(messageType, args);
+            origin.getEventBus().publishAsync(new CommandErrorEvent(origin, message));
         }
     }
 

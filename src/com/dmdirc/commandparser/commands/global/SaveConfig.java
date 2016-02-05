@@ -66,8 +66,7 @@ public final class SaveConfig extends Command implements IntelligentCommand {
     public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         identityController.saveAll();
-
-        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Configuration file saved.");
+        showOutput(origin, args.isSilent(), "Configuration file saved.");
     }
 
     @Override

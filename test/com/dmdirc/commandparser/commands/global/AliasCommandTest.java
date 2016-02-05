@@ -21,10 +21,12 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.aliases.AliasFactory;
 import com.dmdirc.commandparser.aliases.AliasManager;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.TabCompleterUtils;
@@ -35,9 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.anyChar;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,6 +49,7 @@ public class AliasCommandTest {
     @Mock private CommandController controller;
     @Mock private TabCompleterUtils tabCompleterUtils;
     @Mock private WindowModel tiw;
+    @Mock private DMDircMBassador eventbus;
     private AliasCommand command;
 
     @Before
@@ -56,6 +57,7 @@ public class AliasCommandTest {
         command = new AliasCommand(controller, aliasFactory, aliasManager, tabCompleterUtils);
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
+        when(tiw.getEventBus()).thenReturn(eventbus);
     }
 
     @Test
@@ -63,7 +65,7 @@ public class AliasCommandTest {
         command.execute(tiw, new CommandArguments(controller, "/foo"),
                 new CommandContext(null, AliasCommand.INFO));
 
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(eventbus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test
@@ -71,7 +73,7 @@ public class AliasCommandTest {
         command.execute(tiw, new CommandArguments(controller, "/foo --remove"),
                 new CommandContext(null, AliasCommand.INFO));
 
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(eventbus).publishAsync(isA(CommandErrorEvent.class));
     }
 
 }

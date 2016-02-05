@@ -82,8 +82,7 @@ public class KickReason extends Command implements IntelligentCommand {
                     ? Optional.of(args.getArgumentsAsString(1))
                     : Optional.empty());
         } else {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                    "User not found: " + args.getArguments()[0]);
+            showError(origin, args.isSilent(), "User not found: " + args.getArguments()[0]);
         }
     }
 

@@ -22,8 +22,10 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
@@ -39,12 +41,14 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyChar;
-import static org.mockito.Mockito.anyString;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -62,6 +66,8 @@ public class SetNickColourTest {
     @Mock private ColourManager colourManager;
     @Mock private CommandController controller;
     @Mock private WindowModel tiw;
+    @Mock private DMDircMBassador eventbus;
+    @Captor private ArgumentCaptor<CommandErrorEvent> errorEventCaptor;
     private SetNickColour command;
 
     @Before
@@ -76,14 +82,14 @@ public class SetNickColourTest {
         when(channel.getUser(user2)).thenReturn(Optional.empty());
         when(colourManagerFactory.getColourManager(any())).thenReturn(colourManager);
         when(colourManager.getColourFromString(eq("4"), any())).thenReturn(Colour.RED);
+        when(tiw.getEventBus()).thenReturn(eventbus);
     }
 
     @Test
     public void testUsageNoArgs() {
         command.execute(tiw, new CommandArguments(controller, "/foo"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
-
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(eventbus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test
@@ -100,15 +106,16 @@ public class SetNickColourTest {
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
         verify(channel, never()).refreshClients();
         verify(groupChatUser, never()).removeDisplayProperty(DisplayProperty.FOREGROUND_COLOUR);
-        verify(tiw).addLine(eq("commandError"), eq("No such nickname (foo)!"));
+        verify(eventbus).publishAsync(errorEventCaptor.capture());
+        assertEquals("No such nickname (foo)!", errorEventCaptor.getValue().getMessage());
     }
 
     @Test
     public void testUsageInvalidColour() {
         command.execute(tiw, new CommandArguments(controller, "/foo moo omg"),
                 new ChannelCommandContext(null, SetNickColour.INFO, channel));
-
-        verify(tiw).addLine(eq("commandError"), eq("Invalid colour specified (omg)."));
+        verify(eventbus).publishAsync(errorEventCaptor.capture());
+        assertEquals("Invalid colour specified (omg).", errorEventCaptor.getValue().getMessage());
     }
 
     @Test

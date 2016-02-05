@@ -88,11 +88,9 @@ public class AliasCommand extends Command implements IntelligentCommand {
         if ("--remove".equalsIgnoreCase(args.getArguments()[0])) {
             final String name = removeCommandChar(args.getArguments()[1]);
             if (doRemove(name)) {
-                sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '"
-                        + name + "' removed.");
+                showOutput(origin, args.isSilent(), "Alias '" + name + "' removed.");
             } else {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '"
-                        + name + "' not found.");
+                showError(origin, args.isSilent(), "Alias '" + name + "' not found.");
             }
 
             return;
@@ -101,8 +99,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
         final String name = removeCommandChar(args.getArguments()[0]);
 
         if (aliasManager.getAlias(name).isPresent()) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Alias '" + name
-                    + "' already exists.");
+            showError(origin, args.isSilent(), "Alias '" + name + "' already exists.");
             return;
         }
 
@@ -110,7 +107,7 @@ public class AliasCommand extends Command implements IntelligentCommand {
                 removeCommandChar(args.getArgumentsAsString(1)));
         aliasManager.addAlias(myAlias);
 
-        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Alias '" + name + "' created.");
+        showOutput(origin, args.isSilent(), "Alias '" + name + "' created.");
     }
 
     /**

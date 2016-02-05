@@ -21,6 +21,7 @@
  */
 package com.dmdirc.commandparser.commands.flags;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
@@ -72,9 +73,11 @@ public class CommandFlagHandlerTest {
     @Test
     public void testParse() {
         final WindowModel container = mock(WindowModel.class);
+        final DMDircMBassador eventBus = mock(DMDircMBassador.class);
         final CommandController controller = mock(CommandController.class);
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
+        when(container.getEventBus()).thenReturn(eventBus);
 
         final Map<CommandFlag, Integer> results = handler.parse(container,
                 new CommandArguments(controller, input));

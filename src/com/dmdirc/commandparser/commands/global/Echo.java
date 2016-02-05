@@ -97,14 +97,14 @@ public class Echo extends Command implements IntelligentCommand {
             try {
                 time = new Date(Long.parseLong(results.getArgumentsAsString(timeStampFlag)));
             } catch (NumberFormatException ex) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Unable to process timestamp");
+                showError(origin, args.isSilent(), "Unable to process timestamp");
                 return;
             }
         }
 
         if (results.hasFlag(targetFlag)) {
             WindowModel frame = null;
-            Optional<WindowModel> target = Optional.ofNullable(origin);
+            Optional<WindowModel> target = Optional.of(origin);
 
             while (frame == null && target.isPresent()) {
                 frame = windowManager.findCustomWindow(target.get(),
@@ -117,8 +117,7 @@ public class Echo extends Command implements IntelligentCommand {
             }
 
             if (frame == null) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                        "Unable to find target window");
+                showError(origin, args.isSilent(), "Unable to find target window");
             } else if (!args.isSilent()) {
                 frame.getEventBus().publishAsync(new CommandOutputEvent(frame, time.getTime(),
                         results.getArgumentsAsString()));

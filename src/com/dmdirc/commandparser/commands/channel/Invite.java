@@ -66,8 +66,7 @@ public class Invite extends Command implements ExternalCommand {
     public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         if (args.getArguments().length < 1) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                    "Insufficient arguments: must specify user");
+            showError(origin, args.isSilent(), "Insufficient arguments: must specify user");
         } else {
             final GroupChat groupChat = ((ChannelCommandContext) context).getGroupChat();
             groupChat.getConnection().flatMap(Connection::getParser)
@@ -79,8 +78,7 @@ public class Invite extends Command implements ExternalCommand {
     public void execute(final WindowModel origin, final Connection connection,
             final String channel, final boolean isSilent, final CommandArguments args) {
         if (args.getArguments().length < 1) {
-            sendLine(origin, isSilent, FORMAT_ERROR,
-                    "Insufficient arguments: must specify user");
+            showError(origin, isSilent,  "Insufficient arguments: must specify user");
         } else {
             connection.getParser().get().sendInvite(channel, args.getArgumentsAsString());
         }
