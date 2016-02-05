@@ -150,6 +150,7 @@ public interface WindowModel {
      *
      * @since 0.6.4
      */
+    @Deprecated
     void addLine(String type, Date timestamp, Object... args);
 
     /**
@@ -159,6 +160,7 @@ public interface WindowModel {
      * @param type The message type to use
      * @param args The message's arguments
      */
+    @Deprecated
     void addLine(String type, Object... args);
 
     /**
@@ -170,6 +172,7 @@ public interface WindowModel {
      *
      * @since 0.6.4
      */
+    @Deprecated
     void addLine(String line, Date timestamp);
 
     /**

@@ -34,6 +34,7 @@ import dagger.Provides;
 /**
  * Module for dependency injecting the {@link MessageSinkManager} and its default sinks.
  */
+@Deprecated
 @Module(library = true, complete = false)
 public class MessagesModule {
 

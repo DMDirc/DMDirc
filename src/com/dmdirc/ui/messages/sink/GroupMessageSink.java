@@ -33,6 +33,7 @@ import javax.inject.Inject;
  * A message sink which changes the sink to the value of a named configuration setting to allow
  * grouping of sinks.
  */
+@Deprecated
 public class GroupMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

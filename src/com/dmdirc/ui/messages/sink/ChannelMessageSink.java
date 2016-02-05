@@ -37,6 +37,7 @@ import javax.inject.Inject;
  * for use if the channel does not exist. If no fallback is specified and the channel does not
  * exist, the message is dispatched to the source.
  */
+@Deprecated
 public class ChannelMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

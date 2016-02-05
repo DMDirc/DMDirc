@@ -49,6 +49,7 @@ public interface Connection {
      * @param date        The date at which the event occurred
      * @param args        The arguments of the message
      */
+    @Deprecated
     void addLineToAll(final String messageType, final Date date, final Object... args);
 
     /**

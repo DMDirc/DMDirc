@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 /**
  * Represents a possible destination (sink) for a generic DMDirc message.
  */
+@Deprecated
 public interface MessageSink {
 
     /**

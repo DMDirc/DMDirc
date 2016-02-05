@@ -32,6 +32,7 @@ import javax.inject.Inject;
 /**
  * A message sink which does nothing with the message.
  */
+@Deprecated
 public class NullMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

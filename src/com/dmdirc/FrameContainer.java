@@ -308,6 +308,7 @@ public abstract class FrameContainer implements WindowModel {
     }
 
     @Override
+    @Deprecated
     public void addLine(final String type, final Date timestamp, final Object... args) {
         if (type != null && !type.isEmpty()) {
             addLine(Formatter.formatMessage(getConfigManager(), type, args), timestamp);
@@ -315,11 +316,13 @@ public abstract class FrameContainer implements WindowModel {
     }
 
     @Override
+    @Deprecated
     public void addLine(final String type, final Object... args) {
         addLine(type, new Date(), args);
     }
 
     @Override
+    @Deprecated
     public void addLine(final String line, final Date timestamp) {
         for (final String myLine : line.split("\n")) {
             getBackBuffer().getDocument().addText(
@@ -411,6 +414,7 @@ public abstract class FrameContainer implements WindowModel {
      * @param messageType The type of message that is being sent
      * @param args        The arguments for the message
      */
+    @Deprecated
     public void handleNotification(final Date date, final String messageType, final Object... args) {
         checkState(writable);
         messageSinkManager.get().dispatchMessage(this, date, messageType, args);

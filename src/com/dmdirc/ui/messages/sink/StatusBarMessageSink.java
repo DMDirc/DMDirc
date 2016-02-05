@@ -36,6 +36,7 @@ import javax.inject.Inject;
 /**
  * A message sink which adds the message to the status bar.
  */
+@Deprecated
 public class StatusBarMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */
