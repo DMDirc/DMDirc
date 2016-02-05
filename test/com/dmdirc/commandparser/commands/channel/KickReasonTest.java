@@ -23,8 +23,10 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatUser;
@@ -38,13 +40,13 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.anyChar;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.matches;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,8 +60,10 @@ public class KickReasonTest {
     @Mock private Channel channel;
     @Mock private CommandController controller;
     @Mock private WindowModel container;
+    @Mock private DMDircMBassador eventbus;
     @Mock private ChannelInfo channelInfo;
     @Mock private AggregateConfigProvider configProvider;
+    @Captor private ArgumentCaptor<CommandErrorEvent> errorEventCaptor;
     private KickReason command;
 
     @Before
@@ -75,6 +79,7 @@ public class KickReasonTest {
         when(channel.getUser(user2)).thenReturn(Optional.empty());
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
+        when(container.getEventBus()).thenReturn(eventbus);
         command = new KickReason(controller);
     }
 
@@ -82,8 +87,7 @@ public class KickReasonTest {
     public void testUsage() {
         command.execute(container, new CommandArguments(controller, "/kick"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
-
-        verify(container).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(eventbus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test
@@ -91,7 +95,8 @@ public class KickReasonTest {
         command.execute(container, new CommandArguments(controller, "/kick user1"),
                 new ChannelCommandContext(null, KickReason.INFO, channel));
 
-        verify(container).addLine(eq("commandError"), matches(".*user1"));
+        verify(eventbus).publishAsync(errorEventCaptor.capture());
+        assertTrue(errorEventCaptor.getValue().getMessage().matches(".*user1"));
     }
 
     @Test

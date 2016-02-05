@@ -23,8 +23,10 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatUser;
@@ -39,9 +41,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.anyChar;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,6 +55,7 @@ public class BanTest {
     @Mock private Channel channel;
     @Mock private CommandController controller;
     @Mock private WindowModel container;
+    @Mock private DMDircMBassador eventbus;
     private Ban command;
 
     @Before
@@ -67,6 +68,7 @@ public class BanTest {
         when(channel.getUser(user2)).thenReturn(Optional.empty());
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');
+        when(container.getEventBus()).thenReturn(eventbus);
         command = new Ban(controller);
     }
 
@@ -75,7 +77,7 @@ public class BanTest {
         command.execute(container, new CommandArguments(controller, "/ban"),
                 new ChannelCommandContext(null, Ban.INFO, channel));
 
-        verify(container).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(eventbus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     /** Tests that the ban command uses the correct hostname if given a user. */

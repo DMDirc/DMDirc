@@ -106,7 +106,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(container).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(eventBus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test

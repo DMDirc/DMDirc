@@ -41,8 +41,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.anyChar;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.same;
@@ -73,7 +71,7 @@ public class ChangeServerTest {
         command.execute(tiw, new CommandArguments(controller, "/server"),
                 new ServerCommandContext(null, ChangeServer.INFO, connection));
 
-        verify(tiw).addLine(eq("commandUsage"), anyChar(), anyString(), anyString());
+        verify(eventBus).publishAsync(isA(CommandErrorEvent.class));
     }
 
     @Test
