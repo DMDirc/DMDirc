@@ -32,6 +32,7 @@ import javax.inject.Inject;
 /**
  * A message sink which adds the message to the container's server.
  */
+@Deprecated
 public class ServerMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

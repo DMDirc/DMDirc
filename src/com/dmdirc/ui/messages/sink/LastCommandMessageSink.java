@@ -35,6 +35,7 @@ import javax.inject.Inject;
  * A message sink which adds the message to the window where a command matching the provided regex
  * was most recently executed. If no such window is found, falls back to the source.
  */
+@Deprecated
 public class LastCommandMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

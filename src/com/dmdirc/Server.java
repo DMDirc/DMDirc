@@ -762,6 +762,7 @@ public class Server extends FrameContainer implements Connection {
     }
 
     @Override
+    @Deprecated
     public void addLineToAll(final String messageType, final Date date,
             final Object... args) {
         groupChatManager.addLineToAll(messageType, date, args);

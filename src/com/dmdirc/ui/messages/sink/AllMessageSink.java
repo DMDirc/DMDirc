@@ -32,6 +32,7 @@ import javax.inject.Inject;
 /**
  * A message sink which adds the message to all of the container's server's children.
  */
+@Deprecated
 public class AllMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

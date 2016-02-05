@@ -32,6 +32,7 @@ import javax.inject.Inject;
 /**
  * A message sink which allows the message to be forked into multiple other sinks.
  */
+@Deprecated
 public class ForkMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

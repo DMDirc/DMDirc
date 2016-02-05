@@ -35,6 +35,7 @@ import javax.inject.Inject;
 /**
  * A message sink which adds the message to a custom window, creating it if necessary.
  */
+@Deprecated
 public class CustomWindowMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

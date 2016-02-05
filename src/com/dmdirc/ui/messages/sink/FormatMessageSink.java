@@ -32,6 +32,7 @@ import javax.inject.Inject;
 /**
  * A message sink which changes the format of the message and then re-dispatches it.
  */
+@Deprecated
 public class FormatMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

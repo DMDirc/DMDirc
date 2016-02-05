@@ -38,6 +38,7 @@ import javax.inject.Inject;
  * channels with the user. If no fallback is specified and there are no common channels, the message
  * is dispatched to the source.
  */
+@Deprecated
 public class CommonChannelsMessageSink implements MessageSink {
 
     /** The pattern to use to match this sink. */

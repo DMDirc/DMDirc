@@ -37,6 +37,7 @@ import static com.dmdirc.util.LogUtils.USER_ERROR;
 /**
  * Manages message sinks and facilitates dispatching of messages to sinks.
  */
+@Deprecated
 public class MessageSinkManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(MessageSinkManager.class);
