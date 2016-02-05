@@ -91,7 +91,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
         if (args.getArguments().length > 0 && "--server".equals(args.getArguments()[0])) {
             final Optional<Connection> connection = origin.getConnection();
             if (!connection.isPresent()) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR,
+                showError(origin, args.isSilent(),
                         "This window doesn't have an associated server.");
                 return;
             }
@@ -130,8 +130,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
                     windowManager.addWindow(parent, newWindow);
                 }
             } else {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                        "A custom window by that name already exists.");
+                showError(origin, args.isSilent(), "A custom window by that name already exists.");
             }
         }
     }

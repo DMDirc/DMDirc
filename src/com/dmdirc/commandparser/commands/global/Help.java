@@ -87,14 +87,14 @@ public class Help extends Command implements IntelligentCommand {
 
         Collections.sort(commands);
 
-        sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+        showOutput(origin, isSilent, Styliser.CODE_FIXED
                 + "----------------------- Available commands -------");
 
         final StringBuilder builder = new StringBuilder();
 
         for (String command : commands) {
             if (builder.length() + command.length() + 1 > 50) {
-                sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED + builder.toString());
+                showOutput(origin, isSilent, Styliser.CODE_FIXED + builder.toString());
                 builder.delete(0, builder.length());
             } else if (builder.length() > 0) {
                 builder.append(' ');
@@ -104,10 +104,10 @@ public class Help extends Command implements IntelligentCommand {
         }
 
         if (builder.length() > 0) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED + builder.toString());
+            showOutput(origin, isSilent, Styliser.CODE_FIXED + builder.toString());
         }
 
-        sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+        showOutput(origin, isSilent, Styliser.CODE_FIXED
                 + "--------------------------------------------------");
     }
 
@@ -129,17 +129,17 @@ public class Help extends Command implements IntelligentCommand {
         }
 
         if (command == null) {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Command '" + name + "' not found.");
+            showError(origin, isSilent, "Command '" + name + "' not found.");
         } else {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, Styliser.CODE_FIXED
                     + "---------------------- Command information -------");
-            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, Styliser.CODE_FIXED
                     + " Name: " + name);
-            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, Styliser.CODE_FIXED
                     + " Type: " + command.getKey().getType());
-            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, Styliser.CODE_FIXED
                     + "Usage: " + command.getKey().getHelp());
-            sendLine(origin, isSilent, FORMAT_OUTPUT, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, Styliser.CODE_FIXED
                     + "--------------------------------------------------");
         }
     }

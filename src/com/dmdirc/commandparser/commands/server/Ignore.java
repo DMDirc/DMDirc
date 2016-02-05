@@ -71,23 +71,22 @@ public class Ignore extends Command implements IntelligentCommand {
         final Connection connection = ((ServerCommandContext) context).getConnection();
 
         if (args.getArguments().length == 0) {
-            executeView(origin, connection, args.isSilent(), args, false);
+            executeView(origin, connection, args, false);
         } else if ("--remove".equalsIgnoreCase(args.getArguments()[0])) {
-            executeRemove(origin, connection, args.isSilent(), args);
+            executeRemove(origin, connection, args);
         } else if ("--regex".equalsIgnoreCase(args.getArguments()[0])) {
-            executeRegex(origin, connection, args.isSilent(), args);
+            executeRegex(origin, connection, args);
         } else {
-            executeAdd(origin, connection, args.isSilent(), args);
+            executeAdd(origin, connection, args);
         }
     }
 
     protected void executeView(final WindowModel origin, final Connection connection,
-            final boolean isSilent, final CommandArguments args, final boolean forceRegex) {
+            final CommandArguments args, final boolean forceRegex) {
         final IgnoreList ignoreList = connection.getIgnoreList();
 
         if (ignoreList.count() == 0) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                    "No ignore list entries for this network.");
+            showError(origin, args.isSilent(), "No ignore list entries for this network.");
             return;
         }
 
@@ -96,7 +95,7 @@ public class Ignore extends Command implements IntelligentCommand {
             entries = ignoreList.getSimpleList();
         } else {
             if (!forceRegex) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR,
+                showError(origin, args.isSilent(),
                         "Unable to convert ignore list to simple format");
             }
             entries = ignoreList.getRegexList();
@@ -105,24 +104,24 @@ public class Ignore extends Command implements IntelligentCommand {
         int i = 0;
         for (String line : entries) {
             i++;
-            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, i + ". " + line);
+            showOutput(origin, args.isSilent(), i + ". " + line);
         }
     }
 
     protected void executeAdd(final WindowModel origin, final Connection connection,
-            final boolean isSilent, final CommandArguments args) {
+            final CommandArguments args) {
         final IgnoreList ignoreList = connection.getIgnoreList();
         final String target = args.getArgumentsAsString();
 
         ignoreList.addSimple(target);
         connection.saveIgnoreList();
-        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
+        showOutput(origin, args.isSilent(), "Added " + target + " to the ignore list.");
     }
 
     protected void executeRegex(final WindowModel origin, final Connection connection,
-            final boolean isSilent, final CommandArguments args) {
+            final CommandArguments args) {
         if (args.getArguments().length == 1) {
-            executeView(origin, connection, args.isSilent(), args, true);
+            executeView(origin, connection, args, true);
             return;
         }
 
@@ -133,18 +132,17 @@ public class Ignore extends Command implements IntelligentCommand {
             //noinspection ResultOfMethodCallIgnored
             Pattern.compile(target);
         } catch (PatternSyntaxException ex) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Unable to compile regex: "
-                    + ex.getDescription());
+            showError(origin, args.isSilent(), "Unable to compile regex: " + ex.getDescription());
             return;
         }
 
         ignoreList.add(target);
         connection.saveIgnoreList();
-        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Added " + target + " to the ignore list.");
+        showOutput(origin, args.isSilent(), "Added " + target + " to the ignore list.");
     }
 
     protected void executeRemove(final WindowModel origin, final Connection connection,
-            final boolean isSilent, final CommandArguments args) {
+            final CommandArguments args) {
         if (args.getArguments().length == 1) {
             showUsage(origin, args.isSilent(), "ignore", "--remove <host>");
             return;
@@ -156,7 +154,7 @@ public class Ignore extends Command implements IntelligentCommand {
         if (ignoreList.canConvert() && ignoreList.getSimpleList().contains(host)) {
             ignoreList.remove(ignoreList.getSimpleList().indexOf(host));
             connection.saveIgnoreList();
-            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Removed " + host
+            showOutput(origin, args.isSilent(), "Removed " + host
                     + " from the ignore list.");
             return;
         }
@@ -164,13 +162,12 @@ public class Ignore extends Command implements IntelligentCommand {
         if (ignoreList.getRegexList().contains(host)) {
             ignoreList.remove(ignoreList.getRegexList().indexOf(host));
             connection.saveIgnoreList();
-            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Removed " + host
+            showOutput(origin, args.isSilent(), "Removed " + host
                     + " from the ignore list.");
             return;
         }
 
-        sendLine(origin, args.isSilent(), FORMAT_ERROR, "Ignore list doesn't contain '" + host
-                + "'.");
+        showError(origin, args.isSilent(), "Ignore list doesn't contain '" + host + "'.");
     }
 
     @Override

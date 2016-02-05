@@ -66,8 +66,7 @@ public class ReloadIdentities extends Command implements IntelligentCommand {
     public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         identityController.loadUserIdentities();
-
-        sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Identities reloaded.");
+        showOutput(origin, args.isSilent(), "Identities reloaded.");
     }
 
     @Override

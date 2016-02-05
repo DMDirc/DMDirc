@@ -74,13 +74,13 @@ public class UnloadPlugin extends Command implements IntelligentCommand {
 
         final PluginInfo plugin = pluginManager.getPluginInfoByName(args.getArguments()[0]);
         if (plugin == null) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR,
+            showError(origin, args.isSilent(),
                     "Plugin unloading failed - Plugin not loaded");
         } else if (pluginManager.delPlugin(plugin.getMetaData().getRelativeFilename())) {
-            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Plugin Unloaded.");
+            showOutput(origin, args.isSilent(), "Plugin Unloaded.");
             pluginManager.updateAutoLoad(plugin);
         } else {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin Unloading failed");
+            showError(origin, args.isSilent(), "Plugin Unloading failed");
         }
     }
 

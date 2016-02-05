@@ -118,8 +118,7 @@ public class SetCommand extends Command implements IntelligentCommand {
 
         if (res.hasFlag(serverFlag)) {
             if (!connection.isPresent()) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                        "Cannot use --server in this context");
+                showError(origin, args.isSilent(), "Cannot use --server in this context");
                 return;
             }
 
@@ -129,8 +128,7 @@ public class SetCommand extends Command implements IntelligentCommand {
 
         if (res.hasFlag(channelFlag)) {
             if (!(context instanceof ChannelCommandContext)) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                        "Cannot use --channel in this context");
+                showError(origin, args.isSilent(),"Cannot use --channel in this context");
                 return;
             }
 
@@ -193,7 +191,7 @@ public class SetCommand extends Command implements IntelligentCommand {
             output.append(", ");
         }
 
-        sendLine(origin, isSilent, FORMAT_OUTPUT, output.substring(0, output.length() - 2));
+        showOutput(origin, isSilent, output.substring(0, output.length() - 2));
     }
 
     /**
@@ -221,10 +219,9 @@ public class SetCommand extends Command implements IntelligentCommand {
         }
 
         if (found) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, output.substring(0, output.length() - 2));
+            showOutput(origin, isSilent, output.substring(0, output.length() - 2));
         } else {
-            sendLine(origin, isSilent, FORMAT_ERROR,
-                    "There are no options in the domain '" + domain + "'.");
+            showError(origin, isSilent, "There are no options in the domain '" + domain + "'.");
         }
     }
 
@@ -241,10 +238,10 @@ public class SetCommand extends Command implements IntelligentCommand {
             final boolean isSilent, final ReadOnlyConfigProvider manager,
             final String domain, final String option) {
         if (manager.hasOptionString(domain, option)) {
-            sendLine(origin, isSilent, FORMAT_OUTPUT, "The current value of "
+            showOutput(origin, isSilent, "The current value of "
                     + domain + '.' + option + " is: " + manager.getOption(domain, option));
         } else {
-            sendLine(origin, isSilent, FORMAT_ERROR, "Option not found: " + domain + '.' + option);
+            showError(origin, isSilent, "Option not found: " + domain + '.' + option);
         }
     }
 
@@ -263,8 +260,7 @@ public class SetCommand extends Command implements IntelligentCommand {
             final String domain, final String option, final String newvalue) {
         identity.setOption(domain, option, newvalue);
 
-        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + '.' + option
-                + " has been set to: " + newvalue);
+        showOutput(origin, isSilent, domain + '.' + option + " has been set to: " + newvalue);
     }
 
     /**
@@ -301,7 +297,7 @@ public class SetCommand extends Command implements IntelligentCommand {
             final String option) {
         identity.unsetOption(domain, option);
 
-        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + '.' + option + " has been unset.");
+        showOutput(origin, isSilent, domain + '.' + option + " has been unset.");
     }
 
     @Override

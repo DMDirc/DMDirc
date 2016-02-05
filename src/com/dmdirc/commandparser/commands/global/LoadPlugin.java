@@ -78,21 +78,17 @@ public class LoadPlugin extends Command implements IntelligentCommand {
         final PluginInfo plugin = pluginManager.getPluginInfo(args.getArgumentsAsString());
 
         if (plugin == null) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                    "Plugin loading failed");
+            showError(origin, args.isSilent(), "Plugin loading failed");
         } else if (plugin.isLoaded()) {
-            sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
-                    "Plugin already loaded.");
+            showError(origin, args.isSilent(), "Plugin already loaded.");
         } else {
             plugin.loadPlugin();
             if (plugin.isLoaded()) {
-                sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
-                        "Plugin loaded.");
+                showOutput(origin, args.isSilent(), "Plugin loaded.");
                 pluginManager.updateAutoLoad(plugin);
             } else {
-                sendLine(origin, args.isSilent(), FORMAT_OUTPUT,
-                        "Loading plugin failed. ("
-                        + plugin.getLastError() + ")");
+                showOutput(origin, args.isSilent(),
+                        "Loading plugin failed. (" + plugin.getLastError() + ')');
             }
         }
     }

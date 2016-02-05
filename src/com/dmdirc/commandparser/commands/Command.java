@@ -38,12 +38,6 @@ import javax.annotation.Nullable;
  */
 public abstract class Command {
 
-    /** The format name used for command output. */
-    @Deprecated
-    protected static final String FORMAT_OUTPUT = "commandOutput";
-    /** The format name used for command errors. */
-    @Deprecated
-    protected static final String FORMAT_ERROR = "commandError";
     /** The controller this command is associated with. */
     private final CommandController controller;
 
