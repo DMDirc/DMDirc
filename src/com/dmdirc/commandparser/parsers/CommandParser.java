@@ -39,7 +39,6 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
-import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.collections.RollingList;
 
 import java.io.Serializable;
@@ -335,15 +334,8 @@ public abstract class CommandParser implements Serializable {
      */
     protected void handleInvalidCommand(final WindowModel origin,
             final CommandArguments args) {
-        if (origin == null) {
-            eventBus.publish(new UnknownCommandEvent(null, args.getCommandName(), args.getArguments()));
-        } else {
-            final UnknownCommandEvent event = new UnknownCommandEvent(origin,
-                    args.getCommandName(), args.getArguments());
-            final String format = EventUtils.postDisplayable(eventBus, event, "unknownCommand");
-
-            origin.addLine(format, args.getCommandName());
-        }
+        eventBus.publishAsync(new UnknownCommandEvent(origin, args.getCommandName(),
+                args.getArguments()));
     }
 
     /**

@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.events.ChannelModesDiscoveredEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
@@ -70,7 +71,8 @@ public class Mode extends Command implements IntelligentCommand,
         final GroupChat channel = ((ChannelCommandContext) context).getGroupChat();
 
         if (args.getArguments().length == 0) {
-            sendLine(origin, args.isSilent(), "channelModeDiscovered", channel.getModes(), channel);
+            channel.getEventBus().publishAsync(new ChannelModesDiscoveredEvent(
+                    channel, channel.getModes()));
         } else {
             channel.getConnection().get().getParser().get().sendRawMessage("MODE "
                     + channel.getName() + ' ' + args.getArgumentsAsString());

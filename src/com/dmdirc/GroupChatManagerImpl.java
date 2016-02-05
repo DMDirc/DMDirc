@@ -173,6 +173,7 @@ public class GroupChatManagerImpl implements GroupChatManager {
         channels.closeAll();
     }
 
+    @Deprecated
     public void addLineToAll(final String messageType, final Date date, final Object... args) {
         channels.addLineToAll(messageType, date, args);
     }

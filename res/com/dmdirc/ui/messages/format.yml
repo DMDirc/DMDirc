@@ -205,6 +205,9 @@ CommandErrorEvent:
   colour: 7
 CommandOutputEvent:
   format: "{{message}}"
+UnknownCommandEvent:
+  format: "Unknown command {{command}}."
+  colour: 14
 
 ################## TODO ############################################################################
 #  selfCTCP=4->- [%1$s] %2$s
@@ -213,7 +216,6 @@ CommandOutputEvent:
 #  serverDisconnectInProgress=A disconnection attempt is in progress, please wait...
 #  serverConnectInProgress=A connection attempt is in progress, please wait...
 #  rawCommand=10>>> %1$s
-#  unknownCommand=14Unknown command %1$s.
 #  commandOutput=%1$s
 #  actionTooLong=Warning: action too long to be sent
 #  tabCompletion=14Multiple possibilities: %1$s
