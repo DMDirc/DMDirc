@@ -99,11 +99,15 @@ public class YamlEventFormatProvider implements EventFormatProvider {
         final Optional<String> afterTemplate = info.containsKey("after")
                 ? Optional.of(info.get("after").toString())
                 : Optional.empty();
+        final Optional<String> iterateProperty = info.containsKey("iterate")
+                ? Optional.of(info.get("iterate").toString())
+                : Optional.empty();
         final Optional<Colour> foregroundColour = info.containsKey("colour")
                 ? Optional.of(colourManager.getColourFromIrcCode(
                         Integer.parseInt(info.get("colour").toString())))
                 : Optional.empty();
-        return EventFormat.create(template, beforeTemplate, afterTemplate, foregroundColour);
+        return EventFormat.create(
+                template, beforeTemplate, afterTemplate, iterateProperty, foregroundColour);
     }
 
     @Override

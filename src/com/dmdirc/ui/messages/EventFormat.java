@@ -40,6 +40,8 @@ public abstract class EventFormat {
     public abstract Optional<String> getBeforeTemplate();
     /** The template to use after finishing rendering the event. */
     public abstract Optional<String> getAfterTemplate();
+    /** The property that should be iterated over, if the event contains multiple lines. */
+    public abstract Optional<String> getIterateProperty();
 
     // TODO: This should probably be a generic set of properties.
     public abstract Optional<Colour> getDefaultForegroundColour();
@@ -48,8 +50,9 @@ public abstract class EventFormat {
             final String template,
             final Optional<String> beforeTemplate,
             final Optional<String> afterTemplate,
+            final Optional<String> iterateProperty,
             final Optional<Colour> defaultForegroundColour) {
-        return new AutoValue_EventFormat(template, beforeTemplate, afterTemplate,
+        return new AutoValue_EventFormat(template, beforeTemplate, afterTemplate, iterateProperty,
                 defaultForegroundColour);
     }
 
