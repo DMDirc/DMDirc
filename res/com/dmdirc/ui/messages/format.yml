@@ -211,8 +211,8 @@ UnknownCommandEvent:
 UserInfoResponseEvent:
   before: "---------- User info for {{user.nickname}} ----------"
   after: "--------- End of info for {{user.nickname}} ---------"
-  iterate: "entries"
-  format: "{{key}}: {{value}}"
+  iterate: "properties"
+  format: "{{friendlyName}}: {{rawValue}}"
   colour: 10
 
 ################## TODO ############################################################################
@@ -237,12 +237,6 @@ UserInfoResponseEvent:
 #  numeric_290=%4$s
 #  numeric_292=%4$s
 #  numeric_294=%4$s
-#  numeric_301=%4$s is away: %5$s
-#  numeric_311=-\n%4$s is %5$s@%6$s (%8$s).
-#  numeric_312=%4$s is connected to %5$s (%6$s).
-#  numeric_317=%4$s has been idle for %5$u; signed on at %6$TT on %6$TF.
-#  numeric_318=End of WHOIS info for %4$s.\n-
-#  numeric_319=%4$s is on: %5$s
 #  numeric_401=6A7000%4$s: %5$s
 #  numeric_404=6A7000%5$s
 #  numeric_405=6A7000%4$s: %5$s
