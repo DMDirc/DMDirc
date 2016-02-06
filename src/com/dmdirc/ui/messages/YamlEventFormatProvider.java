@@ -93,11 +93,17 @@ public class YamlEventFormatProvider implements EventFormatProvider {
     private EventFormat readFormat(final Object format) {
         final Map<Object, Object> info = asMap(format);
         final String template = info.get("format").toString();
+        final Optional<String> beforeTemplate = info.containsKey("before")
+                ? Optional.of(info.get("before").toString())
+                : Optional.empty();
+        final Optional<String> afterTemplate = info.containsKey("after")
+                ? Optional.of(info.get("after").toString())
+                : Optional.empty();
         final Optional<Colour> foregroundColour = info.containsKey("colour")
                 ? Optional.of(colourManager.getColourFromIrcCode(
                         Integer.parseInt(info.get("colour").toString())))
                 : Optional.empty();
-        return EventFormat.create(template, foregroundColour);
+        return EventFormat.create(template, beforeTemplate, afterTemplate, foregroundColour);
     }
 
     @Override
