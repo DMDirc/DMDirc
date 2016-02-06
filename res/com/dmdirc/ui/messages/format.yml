@@ -208,6 +208,12 @@ CommandOutputEvent:
 UnknownCommandEvent:
   format: "Unknown command {{command}}."
   colour: 14
+UserInfoResponseEvent:
+  before: "---------- User info for {{user.nickname}} ----------"
+  after: "--------- End of info for {{user.nickname}} ---------"
+  iterate: "entries"
+  format: "{{key}}: {{value}}"
+  colour: 10
 
 ################## TODO ############################################################################
 #  selfCTCP=4->- [%1$s] %2$s

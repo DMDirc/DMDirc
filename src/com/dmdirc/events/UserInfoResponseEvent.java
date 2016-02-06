@@ -26,6 +26,7 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.parser.events.UserInfoEvent;
 
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +34,7 @@ import java.util.Optional;
 /**
  * Event raised when detailed user info has been received for a user.
  */
-public class UserInfoResponseEvent extends ServerEvent {
+public class UserInfoResponseEvent extends ServerDisplayableEvent {
 
     private final User user;
     private final Map<UserInfoEvent.UserInfoType, String> info;
@@ -64,4 +65,14 @@ public class UserInfoResponseEvent extends ServerEvent {
     public Optional<String> getInfo(final UserInfoEvent.UserInfoType type) {
         return Optional.ofNullable(info.get(type));
     }
+
+    /**
+     * Gets a collection of all info entries in the response.
+     *
+     * @return A collection of all user info entries.
+     */
+    public Collection<Map.Entry<UserInfoEvent.UserInfoType, String>> getEntries() {
+        return info.entrySet();
+    }
+
 }
