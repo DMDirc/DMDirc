@@ -66,7 +66,7 @@ public class EventFormatter {
         }
 
         return format.map(f -> {
-            final StringBuilder builder = new StringBuilder(f.getTemplate());
+            final StringBuilder builder = getTemplate(f, event);
             int tagStart = builder.indexOf("{{");
             while (tagStart > -1) {
                 final int tagEnd = builder.indexOf("}}", tagStart);
@@ -78,6 +78,14 @@ public class EventFormatter {
 
             return builder.toString();
         });
+    }
+
+    private StringBuilder getTemplate(final EventFormat format, final DisplayableEvent event) {
+        final StringBuilder builder = new StringBuilder();
+        format.getBeforeTemplate().ifPresent(before -> builder.append(before).append('\n'));
+        builder.append(format.getTemplate());
+        format.getAfterTemplate().ifPresent(after -> builder.append('\n').append(after));
+        return builder;
     }
 
     private String getReplacement(final DisplayableEvent event, final String tag) {
