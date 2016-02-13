@@ -40,7 +40,7 @@ dependencies {
     bundle group: 'org.slf4j', name: 'slf4j-api', version:'1.7.10'
     bundle group: 'com.squareup.dagger', name: 'dagger', version: '1.2.1'
     bundle group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.08'
-    bundle group: 'net.kencochrane.raven', name: 'raven', version: '6.0.0'
+    bundle group: 'net.kencochrane.raven', name: 'raven', version: '6.0.1-SNAPSHOT'
     bundle group: 'com.google.guava', name:'guava', version: '18.0'
     bundle group: 'net.engio', name: 'mbassador', version: '1.2.4'
     bundle group: 'com.dmdirc', name: 'util', version: '+', changing: true
@@ -67,9 +67,8 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    maven {
-        url 'http://artifactory.dmdirc.com/artifactory/repo'
-    }
+    maven { url 'http://artifactory.dmdirc.com/artifactory/repo' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 apply from: 'gradle/analysis.gradle'
