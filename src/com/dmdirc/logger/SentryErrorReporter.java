@@ -142,6 +142,7 @@ public class SentryErrorReporter {
     private EventBuilder newEventBuilder() {
         return new EventBuilder()
                 .withServerName("")
+                .withRelease(clientInfo.getVersion())
                 .withTag("version", clientInfo.getVersion())
                 .withTag("version.major", clientInfo.getMajorVersion())
                 .withTag("os.name", clientInfo.getOperatingSystemName())
