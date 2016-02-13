@@ -87,7 +87,7 @@ public final class LogUtils {
         try {
             return getThrowable(eventObject.getThrowableProxy());
         } catch (ReflectiveOperationException ex) {
-            return new IllegalStateException("Error converting exception");
+            return new IllegalStateException("Error converting exception", ex);
         }
     }
 
