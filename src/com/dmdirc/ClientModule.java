@@ -42,7 +42,6 @@ import com.dmdirc.plugins.PluginModule;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.UiMessagesModule;
-import com.dmdirc.ui.messages.sink.MessagesModule;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.util.LoggingExecutorService;
@@ -71,7 +70,6 @@ import dagger.Provides;
                 CommandLineOptionsModule.class,
                 CommandModule.class,
                 ConfigModule.class,
-                MessagesModule.class,
                 PluginModule.class,
                 ProfilesModule.class,
                 UiMessagesModule.class,

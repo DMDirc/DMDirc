@@ -47,7 +47,6 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import java.awt.Toolkit;
 import java.util.Arrays;
@@ -71,7 +70,6 @@ public class Query extends FrameContainer implements PrivateChat {
             final Connection connection,
             final User user,
             final TabCompleterFactory tabCompleterFactory,
-            final MessageSinkManager messageSinkManager,
             final BackBufferFactory backBufferFactory) {
         super(connection.getWindowModel(), "query",
                 user.getNickname(),
@@ -81,7 +79,6 @@ public class Query extends FrameContainer implements PrivateChat {
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         connection.getWindowModel().getConfigManager(),
                         CommandType.TYPE_QUERY, CommandType.TYPE_CHAT),
-                messageSinkManager,
                 connection.getWindowModel().getEventBus(),
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),

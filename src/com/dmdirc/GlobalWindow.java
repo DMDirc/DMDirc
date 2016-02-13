@@ -33,7 +33,6 @@ import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -54,11 +53,9 @@ public class GlobalWindow extends FrameContainer {
     @Inject
     public GlobalWindow(@GlobalConfig final AggregateConfigProvider config,
             final GlobalCommandParser parser, final TabCompleterFactory tabCompleterFactory,
-            final MessageSinkManager messageSinkManager,
             final DMDircMBassador eventBus, final BackBufferFactory backBufferFactory) {
         super(null, "icon", "Global", "(Global)", config, backBufferFactory,
-                tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
-                messageSinkManager, eventBus,
+                tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL), eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
         initBackBuffer();

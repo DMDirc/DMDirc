@@ -86,9 +86,6 @@ import com.dmdirc.parser.events.WallDesyncEvent;
 import com.dmdirc.parser.events.WallopEvent;
 import com.dmdirc.parser.events.WalluserEvent;
 import com.dmdirc.ui.StatusMessage;
-import com.dmdirc.util.EventUtils;
-
-import com.google.common.base.Strings;
 
 import java.util.List;
 import java.util.Optional;
@@ -245,20 +242,7 @@ public class ServerEventHandler extends EventHandler {
 
     @Handler
     public void onNumeric(final NumericEvent event) {
-        final String sansIrcd = "numeric_" + Strings
-                .padStart(String.valueOf(event.getNumeric()), 3, '0');
-        String target = "";
-
-        if (owner.getConfigManager().hasOptionString("formatter", sansIrcd)) {
-            target = sansIrcd;
-        } else if (owner.getConfigManager().hasOptionString("formatter", "numeric_unknown")) {
-            target = "numeric_unknown";
-        }
-
-        final ServerNumericEvent coreEvent = new ServerNumericEvent(owner, event.getNumeric(),
-                event.getToken());
-        final String format = EventUtils.postDisplayable(eventBus, coreEvent, target);
-        owner.handleNotification(event.getDate(), format, (Object[]) event.getToken());
+        eventBus.publishAsync(new ServerNumericEvent(owner, event.getNumeric(), event.getToken()));
     }
 
     @Handler

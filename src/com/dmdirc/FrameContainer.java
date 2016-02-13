@@ -40,7 +40,6 @@ import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.UnreadStatusManager;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.collections.ListenerList;
 
@@ -96,12 +95,6 @@ public abstract class FrameContainer implements WindowModel {
     private BackBuffer backBuffer;
 
     /**
-     * The manager to use to dispatch messages to sinks.
-     * <p>
-     * Only defined if this container is {@link #writable}.
-     */
-    private final Optional<MessageSinkManager> messageSinkManager;
-    /**
      * The tab completer to use.
      * <p>
      * Only defined if this container is {@link #writable}.
@@ -134,7 +127,6 @@ public abstract class FrameContainer implements WindowModel {
         this.components = new HashSet<>(components);
         this.writable = false;
         this.tabCompleter = Optional.empty();
-        this.messageSinkManager = Optional.empty();
         this.backBufferFactory = backBufferFactory;
 
         eventBusManager = new ChildEventBusManager(eventBus);
@@ -158,7 +150,6 @@ public abstract class FrameContainer implements WindowModel {
             final AggregateConfigProvider config,
             final BackBufferFactory backBufferFactory,
             final TabCompleter tabCompleter,
-            final MessageSinkManager messageSinkManager,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
         this.parent = Optional.ofNullable(parent);
@@ -168,7 +159,6 @@ public abstract class FrameContainer implements WindowModel {
         this.components = new HashSet<>(components);
         this.writable = true;
         this.tabCompleter = Optional.of(tabCompleter);
-        this.messageSinkManager = Optional.of(messageSinkManager);
         this.backBufferFactory = backBufferFactory;
 
         eventBusManager = new ChildEventBusManager(eventBus);
@@ -404,20 +394,6 @@ public abstract class FrameContainer implements WindowModel {
         }
 
         return lines;
-    }
-
-    /**
-     * Handles general server notifications (i.e., ones not tied to a specific window). The user can
-     * select where the notifications should go in their config.
-     *
-     * @param date        The date/time at which the event occurred
-     * @param messageType The type of message that is being sent
-     * @param args        The arguments for the message
-     */
-    @Deprecated
-    public void handleNotification(final Date date, final String messageType, final Object... args) {
-        checkState(writable);
-        messageSinkManager.get().dispatchMessage(this, date, messageType, args);
     }
 
     /**
