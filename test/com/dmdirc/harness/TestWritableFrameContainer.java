@@ -30,7 +30,6 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -41,12 +40,10 @@ public class TestWritableFrameContainer extends FrameContainer {
 
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
-            final MessageSinkManager messageSinkManager,
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory) {
         super(null, "raw", "Raw", "(Raw)", cm, backBufferFactory,
                 new TabCompleter(cm),
-                messageSinkManager,
                 eventBus,
                 Collections.<String>emptySet());
 

@@ -57,7 +57,6 @@ import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.HighlightManager;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
@@ -178,7 +177,6 @@ public class Server extends FrameContainer implements Connection {
             final ParserFactory parserFactory,
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
-            final MessageSinkManager messageSinkManager,
             final QueryFactory queryFactory,
             final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
@@ -196,7 +194,6 @@ public class Server extends FrameContainer implements Connection {
                 backBufferFactory,
                 tabCompleterFactory.getTabCompleter(configMigrator.getConfigProvider(),
                         CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL),
-                messageSinkManager,
                 eventBus,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
