@@ -37,17 +37,24 @@ import static com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType.BASE
 /**
  * Dagger module for message related objects.
  */
+@SuppressWarnings("TypeMayBeWeakened")
 @Module(library = true, complete = false)
 public class UiMessagesModule {
 
     @Provides
     @Singleton
-    public EventFormatProvider getTemplateProvider(
+    public MultiEventFormatProvider getTemplateProvider(
             @Directory(BASE) final Path directory,
             @GlobalConfig final ColourManager colourManager) {
-        final YamlEventFormatProvider provider =
+        final YamlEventFormatProvider yamlProvider =
                 new YamlEventFormatProvider(directory.resolve("format.yml"), colourManager);
-        provider.load();
+        yamlProvider.load();
+        return new MultiEventFormatProvider(yamlProvider);
+    }
+
+    @Provides
+    @Singleton
+    public EventFormatProvider getTemplateProvider(final MultiEventFormatProvider provider) {
         return provider;
     }
 
