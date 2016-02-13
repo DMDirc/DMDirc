@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
+import net.engio.mbassy.bus.config.IBusConfiguration;
 
 import static com.dmdirc.util.LogUtils.APP_ERROR;
 
@@ -41,21 +42,18 @@ public class DMDircMBassador extends MBassador<DMDircEvent> {
     private static final Logger LOG = LoggerFactory.getLogger(DMDircMBassador.class);
 
     public DMDircMBassador() {
-        super(new BusConfiguration().addFeature(Feature.SyncPubSub.Default())
-                .addFeature(Feature.AsynchronousHandlerInvocation.Default(1, 1)).addFeature(
+        this(new BusConfiguration()
+                .addFeature(Feature.SyncPubSub.Default())
+                .addFeature(Feature.AsynchronousHandlerInvocation.Default(1, 1))
+                .addFeature(
                         Feature.AsynchronousMessageDispatch.Default()
                                 .setNumberOfMessageDispatchers(1)));
-        setupErrorHandler();
     }
 
     @SuppressWarnings("TypeMayBeWeakened")
-    public DMDircMBassador(final BusConfiguration configuration) {
-        super(configuration);
-        setupErrorHandler();
+    public DMDircMBassador(final IBusConfiguration configuration) {
+        super(configuration.addPublicationErrorHandler(
+                e -> LOG.error(APP_ERROR, "Error caused by event bus handler", e.getCause())));
     }
 
-    private void setupErrorHandler() {
-        addErrorHandler(e ->
-                LOG.error(APP_ERROR, "Error caused by event bus handler", e.getCause()));
-    }
 }

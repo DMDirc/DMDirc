@@ -30,7 +30,6 @@ import com.dmdirc.interfaces.User;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -43,24 +42,23 @@ public class QueryFactory {
 
     private final TabCompleterFactory tabCompleterFactory;
     private final CommandController commandController;
-    private final MessageSinkManager messageSinkManager;
     private final BackBufferFactory backBufferFactory;
     private final WindowManager windowManager;
 
     @Inject
-    public QueryFactory(final TabCompleterFactory tabCompleterFactory,
-            final CommandController commandController, final MessageSinkManager messageSinkManager,
-            final BackBufferFactory backBufferFactory, final WindowManager windowManager) {
+    public QueryFactory(
+            final TabCompleterFactory tabCompleterFactory,
+            final CommandController commandController,
+            final BackBufferFactory backBufferFactory,
+            final WindowManager windowManager) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;
-        this.messageSinkManager = messageSinkManager;
         this.backBufferFactory = backBufferFactory;
         this.windowManager = windowManager;
     }
 
     public Query getQuery(final Connection connection, final User user) {
-        final Query query = new Query(connection, user, tabCompleterFactory,
-                messageSinkManager, backBufferFactory);
+        final Query query = new Query(connection, user, tabCompleterFactory, backBufferFactory);
         query.setCommandParser(new QueryCommandParser(connection.getWindowModel(),
                 commandController, connection.getWindowModel().getEventBus(), query));
         windowManager.addWindow(connection.getWindowModel(), query);

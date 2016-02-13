@@ -36,15 +36,12 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.LifecycleController;
-import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.plugins.PluginModule;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.ColourManagerFactory;
 import com.dmdirc.ui.messages.UiMessagesModule;
-import com.dmdirc.ui.messages.WhoisNumericFormatter;
-import com.dmdirc.ui.messages.sink.MessagesModule;
 import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.util.LoggingExecutorService;
@@ -73,7 +70,6 @@ import dagger.Provides;
                 CommandLineOptionsModule.class,
                 CommandModule.class,
                 ConfigModule.class,
-                MessagesModule.class,
                 PluginModule.class,
                 ProfilesModule.class,
                 UiMessagesModule.class,
@@ -180,12 +176,6 @@ public class ClientModule {
     @Singleton
     public ObjectGraph getObjectGraph() {
         return objectGraph;
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public SystemLifecycleComponent getWhoisNumericFormatter(
-            final WhoisNumericFormatter formatter) {
-        return formatter;
     }
 
 }

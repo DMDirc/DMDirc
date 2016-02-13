@@ -60,31 +60,64 @@ public class EventFormatter {
     public Optional<String> format(final DisplayableEvent event) {
         final Optional<EventFormat> format = formatProvider.getFormat(event.getClass());
 
-        if (!event.getDisplayProperty(DisplayProperty.FOREGROUND_COLOUR).isPresent()) {
+        if (!event.hasDisplayProperty(DisplayProperty.FOREGROUND_COLOUR)) {
             format.flatMap(EventFormat::getDefaultForegroundColour)
                     .ifPresent(c -> event.setDisplayProperty(DisplayProperty.FOREGROUND_COLOUR, c));
         }
 
-        return format.map(f -> {
-            final StringBuilder builder = new StringBuilder(f.getTemplate());
-            int tagStart = builder.indexOf("{{");
-            while (tagStart > -1) {
-                final int tagEnd = builder.indexOf("}}", tagStart);
-                final String tag = builder.substring(tagStart + 2, tagEnd);
-                final String replacement = getReplacement(event, tag);
-                builder.replace(tagStart, tagEnd + 2, replacement);
-                tagStart = builder.indexOf("{{", tagStart + replacement.length());
-            }
-
-            return builder.toString();
-        });
+        return format.map(f -> format(f, event));
     }
 
-    private String getReplacement(final DisplayableEvent event, final String tag) {
+    private String format(final EventFormat format, final DisplayableEvent event) {
+        final StringBuilder builder = new StringBuilder();
+        format.getBeforeTemplate().ifPresent(
+                before -> builder.append(doSubstitutions(event, before)).append('\n'));
+        builder.append(
+                format.getIterateProperty()
+                        .map(iterate -> formatIterable(event, iterate, format.getTemplate()))
+                        .orElseGet(() -> doSubstitutions(event, format.getTemplate())));
+        format.getAfterTemplate().ifPresent(
+                after -> builder.append('\n').append(doSubstitutions(event, after)));
+        return builder.toString();
+    }
+
+    private String doSubstitutions(final Object dataSource, final String line) {
+        final StringBuilder builder = new StringBuilder(line);
+        int tagStart = builder.indexOf("{{");
+        while (tagStart > -1) {
+            final int tagEnd = builder.indexOf("}}", tagStart);
+            final String tag = builder.substring(tagStart + 2, tagEnd);
+            final String replacement = getReplacement(dataSource, tag);
+            builder.replace(tagStart, tagEnd + 2, replacement);
+            tagStart = builder.indexOf("{{", tagStart + replacement.length());
+        }
+        return builder.toString();
+    }
+
+    private String formatIterable(final DisplayableEvent event, final String property,
+            final String template) {
+        final Optional<Object> value
+                = propertyManager.getProperty(event, event.getClass(), property);
+        if (!value.isPresent() || !(value.get() instanceof Iterable<?>)) {
+            return ERROR_STRING;
+        }
+        @SuppressWarnings("unchecked")
+        final Iterable<Object> collection = (Iterable<Object>) value.get();
+        final StringBuilder res = new StringBuilder();
+        for (Object line : collection) {
+            if (res.length() > 0) {
+                res.append('\n');
+            }
+            res.append(doSubstitutions(line, template));
+        }
+        return res.toString();
+    }
+
+    private String getReplacement(final Object dataSource, final String tag) {
         final String[] functionParts = tag.split("\\|");
         final String[] dataParts = functionParts[0].split("\\.");
 
-        Object target = event;
+        Object target = dataSource;
         for (String part : dataParts) {
             final Optional<Object> result =
                     propertyManager.getProperty(target, target.getClass(), part);

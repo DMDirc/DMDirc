@@ -38,6 +38,7 @@ import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.WindowModel;
 
+import java.util.Date;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -77,7 +78,7 @@ public class ShowTopic extends Command implements ExternalCommand {
                         user.flatMap(GroupChatUser::getUsername).orElse(""),
                         user.flatMap(GroupChatUser::getHostname).orElse(""),
                         topic.map(Topic::getTopic).orElse(""),
-                        1000 * topic.map(Topic::getTime).get(),
+                        topic.map(Topic::getDate).map(Date::getTime).get(),
                         channel.getName());
             } else {
                 sendLine(origin, args.isSilent(), "channelNoTopic", channel.getName());

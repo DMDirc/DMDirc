@@ -34,15 +34,26 @@ import java.util.Optional;
 @AutoValue
 public abstract class EventFormat {
 
+    /** The template to use when rendering the event. */
     public abstract String getTemplate();
+    /** The template to use before starting to render the event. */
+    public abstract Optional<String> getBeforeTemplate();
+    /** The template to use after finishing rendering the event. */
+    public abstract Optional<String> getAfterTemplate();
+    /** The property that should be iterated over, if the event contains multiple lines. */
+    public abstract Optional<String> getIterateProperty();
 
     // TODO: This should probably be a generic set of properties.
     public abstract Optional<Colour> getDefaultForegroundColour();
 
     public static EventFormat create(
             final String template,
+            final Optional<String> beforeTemplate,
+            final Optional<String> afterTemplate,
+            final Optional<String> iterateProperty,
             final Optional<Colour> defaultForegroundColour) {
-        return new AutoValue_EventFormat(template, defaultForegroundColour);
+        return new AutoValue_EventFormat(template, beforeTemplate, afterTemplate, iterateProperty,
+                defaultForegroundColour);
     }
 
 }

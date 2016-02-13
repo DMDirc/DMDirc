@@ -30,7 +30,6 @@ import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import java.net.URI;
 import java.util.concurrent.ScheduledExecutorService;
@@ -48,7 +47,6 @@ public class ServerFactoryImpl {
     private final ParserFactory parserFactory;
     private final TabCompleterFactory tabCompleterFactory;
     private final IdentityFactory identityFactory;
-    private final MessageSinkManager messageSinkManager;
     private final Provider<QueryFactory> queryFactory;
     private final Provider<CommandController> commandController;
     private final DMDircMBassador eventBus;
@@ -63,7 +61,6 @@ public class ServerFactoryImpl {
             final ParserFactory parserFactory,
             final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
-            final MessageSinkManager messageSinkManager,
             final Provider<QueryFactory> queryFactory,
             final Provider<CommandController> commandController,
             final DMDircMBassador eventBus,
@@ -75,7 +72,6 @@ public class ServerFactoryImpl {
         this.parserFactory = parserFactory;
         this.tabCompleterFactory = tabCompleterFactory;
         this.identityFactory = identityFactory;
-        this.messageSinkManager = messageSinkManager;
         this.queryFactory = queryFactory;
         this.commandController = commandController;
         this.eventBus = eventBus;
@@ -92,10 +88,9 @@ public class ServerFactoryImpl {
             final URI uri,
             final Profile profile) {
         final Server server = new Server(configMigrator, parserFactory,
-                tabCompleterFactory, identityFactory, messageSinkManager,
-                queryFactory.get(), eventBus, messageEncoderFactory, userSettings,
-                groupChatManagerFactory, executorService, uri, profile, backBufferFactory,
-                userManager);
+                tabCompleterFactory, identityFactory, queryFactory.get(), eventBus,
+                messageEncoderFactory, userSettings, groupChatManagerFactory, executorService,
+                uri, profile, backBufferFactory, userManager);
         server.setCommandParser(new ServerCommandParser(server.getConfigManager(),
                 commandController.get(), eventBus, server));
         return server;

@@ -116,6 +116,7 @@ public class ChannelMap {
      * @param date        The time of origin of the message.
      * @param args        The arguments for the message.
      */
+    @Deprecated
     public void addLineToAll(final String messageType, final Date date, final Object... args) {
         channels.values().forEach(c -> c.addLine(messageType, date, args));
     }

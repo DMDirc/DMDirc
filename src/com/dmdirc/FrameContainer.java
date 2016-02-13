@@ -40,7 +40,6 @@ import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.UnreadStatusManager;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.collections.ListenerList;
 
@@ -96,12 +95,6 @@ public abstract class FrameContainer implements WindowModel {
     private BackBuffer backBuffer;
 
     /**
-     * The manager to use to dispatch messages to sinks.
-     * <p>
-     * Only defined if this container is {@link #writable}.
-     */
-    private final Optional<MessageSinkManager> messageSinkManager;
-    /**
      * The tab completer to use.
      * <p>
      * Only defined if this container is {@link #writable}.
@@ -134,7 +127,6 @@ public abstract class FrameContainer implements WindowModel {
         this.components = new HashSet<>(components);
         this.writable = false;
         this.tabCompleter = Optional.empty();
-        this.messageSinkManager = Optional.empty();
         this.backBufferFactory = backBufferFactory;
 
         eventBusManager = new ChildEventBusManager(eventBus);
@@ -158,7 +150,6 @@ public abstract class FrameContainer implements WindowModel {
             final AggregateConfigProvider config,
             final BackBufferFactory backBufferFactory,
             final TabCompleter tabCompleter,
-            final MessageSinkManager messageSinkManager,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
         this.parent = Optional.ofNullable(parent);
@@ -168,7 +159,6 @@ public abstract class FrameContainer implements WindowModel {
         this.components = new HashSet<>(components);
         this.writable = true;
         this.tabCompleter = Optional.of(tabCompleter);
-        this.messageSinkManager = Optional.of(messageSinkManager);
         this.backBufferFactory = backBufferFactory;
 
         eventBusManager = new ChildEventBusManager(eventBus);
@@ -308,6 +298,7 @@ public abstract class FrameContainer implements WindowModel {
     }
 
     @Override
+    @Deprecated
     public void addLine(final String type, final Date timestamp, final Object... args) {
         if (type != null && !type.isEmpty()) {
             addLine(Formatter.formatMessage(getConfigManager(), type, args), timestamp);
@@ -315,29 +306,13 @@ public abstract class FrameContainer implements WindowModel {
     }
 
     @Override
+    @Deprecated
     public void addLine(final String type, final Object... args) {
         addLine(type, new Date(), args);
     }
 
     @Override
-    public void addLine(final StringBuffer type, final Date timestamp, final Object... args) {
-        if (type != null) {
-            addLine(type.toString(), timestamp, args);
-        }
-    }
-
-    @Override
-    public void addLine(final StringBuffer type, final Object... args) {
-        addLine(type, new Date(), args);
-    }
-
-    @Override
     @Deprecated
-    public void addLine(final String line, final boolean timestamp) {
-        addLine(line, new Date());
-    }
-
-    @Override
     public void addLine(final String line, final Date timestamp) {
         for (final String myLine : line.split("\n")) {
             getBackBuffer().getDocument().addText(
@@ -419,95 +394,6 @@ public abstract class FrameContainer implements WindowModel {
         }
 
         return lines;
-    }
-
-    /**
-     * Processes and displays a notification.
-     *
-     * @param messageType The name of the formatter to be used for the message
-     * @param args        The arguments for the message
-     *
-     * @return True if any further behaviour should be executed, false otherwise
-     */
-    public boolean doNotification(final String messageType, final Object... args) {
-        return doNotification(new Date(), messageType, args);
-    }
-
-    /**
-     * Processes and displays a notification.
-     *
-     * @param date        The date/time at which the event occurred
-     * @param messageType The name of the formatter to be used for the message
-     * @param args        The arguments for the message
-     *
-     * @return True if any further behaviour should be executed, false otherwise
-     */
-    public boolean doNotification(final Date date, final String messageType, final Object... args) {
-        final List<Object> messageArgs = new ArrayList<>();
-        final List<Object> actionArgs = new ArrayList<>();
-
-        actionArgs.add(this);
-
-        for (Object arg : args) {
-            actionArgs.add(arg);
-
-            if (!processNotificationArg(arg, messageArgs)) {
-                messageArgs.add(arg);
-            }
-        }
-
-        modifyNotificationArgs(actionArgs, messageArgs);
-
-        handleNotification(date, messageType, messageArgs.toArray());
-
-        return true;
-    }
-
-    /**
-     * Allows subclasses to modify the lists of arguments for notifications.
-     *
-     * @param actionArgs  The list of arguments to be passed to the actions system
-     * @param messageArgs The list of arguments to be passed to the formatter
-     */
-    protected void modifyNotificationArgs(final List<Object> actionArgs,
-            final List<Object> messageArgs) {
-        // Do nothing
-    }
-
-    /**
-     * Allows subclasses to process specific types of notification arguments.
-     *
-     * @param arg  The argument to be processed
-     * @param args The list of arguments that any data should be appended to
-     *
-     * @return True if the arg has been processed, false otherwise
-     */
-    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
-        return false;
-    }
-
-    /**
-     * Handles general server notifications (i.e., ones not tied to a specific window). The user can
-     * select where the notifications should go in their config.
-     *
-     * @param messageType The type of message that is being sent
-     * @param args        The arguments for the message
-     */
-    public void handleNotification(final String messageType, final Object... args) {
-        handleNotification(new Date(), messageType, args);
-    }
-
-    /**
-     * Handles general server notifications (i.e., ones not tied to a specific window). The user can
-     * select where the notifications should go in their config.
-     *
-     * @param date        The date/time at which the event occurred
-     * @param messageType The type of message that is being sent
-     * @param args        The arguments for the message
-     */
-    public void handleNotification(final Date date, final String messageType, final Object... args) {
-        checkState(writable);
-        messageSinkManager.get().dispatchMessage(this, date, messageType, args);
     }
 
     /**

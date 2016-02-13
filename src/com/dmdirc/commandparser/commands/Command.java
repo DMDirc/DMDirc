@@ -24,6 +24,8 @@ package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.events.CommandErrorEvent;
+import com.dmdirc.events.CommandOutputEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.messages.Styliser;
@@ -36,10 +38,6 @@ import javax.annotation.Nullable;
  */
 public abstract class Command {
 
-    /** The format name used for command output. */
-    protected static final String FORMAT_OUTPUT = "commandOutput";
-    /** The format name used for command errors. */
-    protected static final String FORMAT_ERROR = "commandError";
     /** The controller this command is associated with. */
     private final CommandController controller;
 
@@ -59,10 +57,39 @@ public abstract class Command {
      * @param type     The type of message to send
      * @param args     The arguments of the message
      */
+    @Deprecated
     protected final void sendLine(@Nullable final WindowModel target,
             final boolean isSilent, final String type, final Object... args) {
         if (!isSilent && target != null) {
             target.addLine(type, args);
+        }
+    }
+
+    /**
+     * Sends an output line, if appropriate, to the specified target.
+     *
+     * @param target   The command window to send the line to
+     * @param isSilent Whether this command is being silenced or not
+     * @param message  The output to send
+     */
+    protected final void showOutput(@Nullable final WindowModel target,
+            final boolean isSilent, final String message) {
+        if (!isSilent && target != null) {
+            target.getEventBus().publishAsync(new CommandOutputEvent(target, message));
+        }
+    }
+
+    /**
+     * Sends an error line, if appropriate, to the specified target.
+     *
+     * @param target   The command window to send the line to
+     * @param isSilent Whether this command is being silenced or not
+     * @param message  The error message to send
+     */
+    protected final void showError(@Nullable final WindowModel target,
+            final boolean isSilent, final String message) {
+        if (!isSilent && target != null) {
+            target.getEventBus().publishAsync(new CommandErrorEvent(target, message));
         }
     }
 
@@ -76,9 +103,10 @@ public abstract class Command {
      */
     protected final void showUsage(@Nullable final WindowModel target,
             final boolean isSilent, final String name, final String args) {
-        sendLine(target, isSilent, "commandUsage",
-                controller.getCommandChar(),
-                name, args);
+        if (!isSilent && target != null) {
+            target.getEventBus().publishAsync(new CommandErrorEvent(target,
+                    "Usage: " + controller.getCommandChar() + name + ' ' + args));
+        }
     }
 
     /**

@@ -49,7 +49,6 @@ import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.colours.ColourUtils;
 
@@ -101,14 +100,12 @@ public class Channel extends FrameContainer implements GroupChat {
      * @param newChannelInfo      The parser's channel object that corresponds to this channel
      * @param configMigrator      The config migrator which provides the config for this channel.
      * @param tabCompleterFactory The factory to use to create tab completers.
-     * @param messageSinkManager  The sink manager to use to despatch messages.
      */
     public Channel(
             final Connection connection,
             final ChannelInfo newChannelInfo,
             final ConfigProviderMigrator configMigrator,
             final TabCompleterFactory tabCompleterFactory,
-            final MessageSinkManager messageSinkManager,
             final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager) {
         super(connection.getWindowModel(), "channel-inactive",
@@ -119,7 +116,6 @@ public class Channel extends FrameContainer implements GroupChat {
                 tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
                         configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,
                         CommandType.TYPE_CHAT),
-                messageSinkManager,
                 connection.getWindowModel().getEventBus(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier(),
@@ -411,45 +407,6 @@ public class Channel extends FrameContainer implements GroupChat {
         }
 
         return res;
-    }
-
-    @Override
-    protected boolean processNotificationArg(final Object arg, final List<Object> args) {
-        if (arg instanceof User) {
-            final User clientInfo = (User) arg;
-            args.add(clientInfo.getNickname());
-            args.add(clientInfo.getUsername());
-            args.add(clientInfo.getHostname());
-
-            return true;
-        } else if (arg instanceof GroupChatUser) {
-            final GroupChatUser clientInfo = (GroupChatUser) arg;
-
-            args.addAll(Arrays.asList(getDetails(clientInfo)));
-
-            return true;
-        } else if (arg instanceof Topic) {
-            // Format topics
-            final Topic topic = (Topic) arg;
-            args.add("");
-            args.add(topic.getClient().map(GroupChatUser::getNickname).orElse("Unknown"));
-            args.add(topic.getClient().flatMap(GroupChatUser::getUsername).orElse(""));
-            args.add(topic.getClient().flatMap(GroupChatUser::getHostname).orElse(""));
-            args.add(topic.getTopic());
-            args.add(topic.getTime() * 1000);
-
-            return true;
-        } else {
-            // Everything else - default formatting
-
-            return super.processNotificationArg(arg, args);
-        }
-    }
-
-    @Override
-    protected void modifyNotificationArgs(final List<Object> actionArgs,
-            final List<Object> messageArgs) {
-        messageArgs.add(channelInfo.getName());
     }
 
     // ---------------------------------------------------- TOPIC HANDLING -----

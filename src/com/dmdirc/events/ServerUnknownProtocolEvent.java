@@ -20,38 +20,29 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.messages.sink;
+package com.dmdirc.events;
 
-import com.dmdirc.interfaces.WindowModel;
-
-import java.util.Date;
-import java.util.regex.Pattern;
-
-import javax.inject.Inject;
+import com.dmdirc.interfaces.Connection;
 
 /**
- * A message sink which adds the message to the container's server.
+ * Raised when a server attempts to connect to an unknown protocol.
  */
-public class ServerMessageSink implements MessageSink {
+public class ServerUnknownProtocolEvent extends ServerDisplayableEvent {
 
-    /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("server");
+    private final String protocol;
 
-    @Inject
-    public ServerMessageSink() {
+    public ServerUnknownProtocolEvent(final long timestamp, final Connection connection, final String protocol) {
+        super(timestamp, connection);
+        this.protocol = protocol;
     }
 
-    @Override
-    public Pattern getPattern() {
-        return PATTERN;
+    public ServerUnknownProtocolEvent(final Connection connection, final String protocol) {
+        super(connection);
+        this.protocol = protocol;
     }
 
-    @Override
-    public void handleMessage(final MessageSinkManager dispatcher,
-            final WindowModel source,
-            final String[] patternMatches, final Date date,
-            final String messageType, final Object... args) {
-        source.getConnection().get().getWindowModel().addLine(messageType, date, args);
+    public String getProtocol() {
+        return protocol;
     }
 
 }

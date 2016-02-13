@@ -50,9 +50,9 @@ public class AliasCommandHandler extends Command {
                 origin.getCommandParser().parseCommand(origin, getSubstituteCommand(line, args));
             }
         } else {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, alias.getName() + " requires at least "
+            showError(origin, args.isSilent(), alias.getName() + " requires at least "
                     + alias.getMinArguments() + " argument"
-                    + (alias.getMinArguments() == 1 ? "" : "s") + ".");
+                    + (alias.getMinArguments() == 1 ? "" : "s") + '.');
         }
     }
 
@@ -72,7 +72,7 @@ public class AliasCommandHandler extends Command {
 
         final String[] arguments = args.getArguments();
         for (int i = 0; i < arguments.length; i++) {
-            replaceAll(builder, "$" + (i + 1) + "-", args.getArgumentsAsString(i));
+            replaceAll(builder, "$" + (i + 1) + '-', args.getArgumentsAsString(i));
             replaceAll(builder, "$" + (i + 1), arguments[i]);
         }
 

@@ -74,12 +74,12 @@ public class ReloadPlugin extends Command implements IntelligentCommand {
 
         final PluginInfo plugin = pluginManager.getPluginInfoByName(args.getArguments()[0]);
         if (plugin == null) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR,
+            showError(origin, args.isSilent(),
                     "Plugin Reloading failed - Plugin not loaded");
         } else if (pluginManager.reloadPlugin(plugin.getMetaData().getRelativeFilename())) {
-            sendLine(origin, args.isSilent(), FORMAT_OUTPUT, "Plugin Reloaded.");
+            showOutput(origin, args.isSilent(), "Plugin Reloaded.");
         } else {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Plugin Reloading failed");
+            showError(origin, args.isSilent(), "Plugin Reloading failed");
         }
     }
 

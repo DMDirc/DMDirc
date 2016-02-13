@@ -23,9 +23,11 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.events.ChannelModesDiscoveredEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.WindowModel;
@@ -36,9 +38,12 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,10 +51,12 @@ import static org.mockito.Mockito.when;
 public class ModeTest {
 
     @Mock private WindowModel origin;
+    @Mock private DMDircMBassador eventbus;
     @Mock private CommandController controller;
     @Mock private Channel channel;
     @Mock private Connection connection;
     @Mock private Parser parser;
+    @Captor private ArgumentCaptor<ChannelModesDiscoveredEvent> modeDiscoveredCaptor;
     private Mode command;
 
     @Before
@@ -58,6 +65,7 @@ public class ModeTest {
         when(connection.getParser()).thenReturn(Optional.of(parser));
         when(channel.getModes()).thenReturn("my mode string!");
         when(channel.getName()).thenReturn("#chan");
+        when(channel.getEventBus()).thenReturn(eventbus);
 
         command = new Mode(controller);
     }
@@ -66,8 +74,8 @@ public class ModeTest {
     public void testWithoutArgs() {
         command.execute(origin, new CommandArguments(controller, "/mode"),
                 new ChannelCommandContext(null, Mode.INFO, channel));
-
-        verify(origin).addLine("channelModeDiscovered", "my mode string!", channel);
+        verify(eventbus).publishAsync(modeDiscoveredCaptor.capture());
+        assertEquals("my mode string!", modeDiscoveredCaptor.getValue().getModes());
     }
 
     @Test

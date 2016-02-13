@@ -63,7 +63,7 @@ public class Whois extends Command {
             final CommandArguments args, final CommandContext context) {
         final Connection connection = ((ServerCommandContext) context).getConnection();
         if (connection.getState() != ServerState.CONNECTED) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "Not connected");
+            showError(origin, args.isSilent(), "Not connected");
             return;
         }
 

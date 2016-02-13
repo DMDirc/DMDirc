@@ -26,6 +26,7 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.parser.events.UserInfoEvent;
 
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,16 +34,17 @@ import java.util.Optional;
 /**
  * Event raised when detailed user info has been received for a user.
  */
-public class UserInfoResponseEvent extends ServerEvent {
+public class UserInfoResponseEvent extends ServerDisplayableEvent {
 
     private final User user;
-    private final Map<UserInfoEvent.UserInfoType, String> info;
+    private final Map<UserInfoEvent.UserInfoType, UserInfoProperty> info;
 
     public UserInfoResponseEvent(final Connection connection, final long date,
             final User user, final Map<UserInfoEvent.UserInfoType, String> info) {
         super(date, connection);
         this.user = user;
-        this.info = new EnumMap<>(info);
+        this.info = new EnumMap<>(UserInfoEvent.UserInfoType.class);
+        info.forEach((key, value) -> this.info.put(key, new UserInfoProperty(key, value)));
     }
 
     /**
@@ -62,6 +64,40 @@ public class UserInfoResponseEvent extends ServerEvent {
      * @return An optional containing the information, if it was provided.
      */
     public Optional<String> getInfo(final UserInfoEvent.UserInfoType type) {
-        return Optional.ofNullable(info.get(type));
+        return Optional.ofNullable(info.get(type)).map(UserInfoProperty::getRawValue);
     }
+
+    /**
+     * Gets a collection of all info properties in the response.
+     *
+     * @return A collection of all user info properties.
+     */
+    public Collection<UserInfoProperty> getProperties() {
+        return info.values();
+    }
+
+    public static class UserInfoProperty {
+
+        private final UserInfoEvent.UserInfoType type;
+        private final String rawValue;
+
+        public UserInfoProperty(final UserInfoEvent.UserInfoType type, final String rawValue) {
+            this.type = type;
+            this.rawValue = rawValue;
+        }
+
+        public UserInfoEvent.UserInfoType getType() {
+            return type;
+        }
+
+        public String getRawValue() {
+            return rawValue;
+        }
+
+        public String getFriendlyName() {
+            return type.name().charAt(0) + type.name().substring(1).toLowerCase().replace('_', ' ');
+        }
+
+    }
+
 }

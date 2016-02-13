@@ -84,8 +84,8 @@ public class SetNickColour extends Command implements IntelligentCommand {
                 .getUser(args.getArguments()[0]));
 
         if (!target.isPresent()) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "No such nickname ("
-                    + args.getArguments()[0] + ")!");
+            showError(origin, args.isSilent(),
+                    "No such nickname (" + args.getArguments()[0] + ")!");
         } else if (args.getArguments().length == 1) {
             // We're removing the colour
             target.get().removeDisplayProperty(DisplayProperty.FOREGROUND_COLOUR);
@@ -95,8 +95,8 @@ public class SetNickColour extends Command implements IntelligentCommand {
             final Colour newColour = colourManagerFactory.getColourManager(origin.getConfigManager())
                     .getColourFromString(args.getArguments()[1], null);
             if (newColour == null) {
-                sendLine(origin, args.isSilent(), FORMAT_ERROR, "Invalid colour specified ("
-                        + args.getArguments()[1] + ").");
+                showError(origin, args.isSilent(),
+                        "Invalid colour specified (" + args.getArguments()[1] + ").");
                 return;
             }
 

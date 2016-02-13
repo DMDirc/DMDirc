@@ -28,7 +28,6 @@ import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.messages.sink.MessageSinkManager;
 
 import java.util.Arrays;
 
@@ -48,7 +47,6 @@ public class WritableFrameContainerTest {
     @Mock private AggregateConfigProvider acp;
     @Mock private ConfigBinder configBinder;
     @Mock private ConnectionManager connectionManager;
-    @Mock private MessageSinkManager messageSinkManager;
     @Mock private DMDircMBassador eventBus;
     @Mock private BackBufferFactory backBufferFactory;
     @Mock private Provider<GlobalWindow> globalWindowProvider;
@@ -66,7 +64,7 @@ public class WritableFrameContainerTest {
     @Test
     public void testGetNumLines() {
         final FrameContainer container10 = new TestWritableFrameContainer(10, acp, commands,
-                messageSinkManager, eventBus, backBufferFactory);
+                eventBus, backBufferFactory);
 
         final int res0a = container10.getNumLines("");
         final int res0b = container10.getNumLines("\r");
@@ -96,7 +94,7 @@ public class WritableFrameContainerTest {
     @Test
     public void testSplitLine() {
         final FrameContainer container10 = new TestWritableFrameContainer(10, acp, commands,
-                messageSinkManager, eventBus, backBufferFactory);
+                eventBus, backBufferFactory);
         final String[][][] tests = new String[][][]{
             {{""}, {""}},
             {{"0123456789"}, {"0123456789"}},

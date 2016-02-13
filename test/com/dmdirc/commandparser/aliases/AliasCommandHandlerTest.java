@@ -22,20 +22,25 @@
 
 package com.dmdirc.commandparser.aliases;
 
+import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +52,8 @@ public class AliasCommandHandlerTest {
     @Mock private CommandParser commandParser;
     @Mock private CommandContext context;
     @Mock private CommandInfo commandInfo;
+    @Mock private DMDircMBassador eventbus;
+    @Captor private ArgumentCaptor<CommandErrorEvent> errorEventCaptor;
 
     @Before
     public void setup() {
@@ -55,6 +62,7 @@ public class AliasCommandHandlerTest {
         when(commandController.getSilenceChar()).thenReturn('/');
         when(context.getSource()).thenReturn(container);
         when(context.getCommandInfo()).thenReturn(commandInfo);
+        when(container.getEventBus()).thenReturn(eventbus);
     }
 
     @Test
@@ -82,7 +90,9 @@ public class AliasCommandHandlerTest {
         final AliasCommandHandler handler = new AliasCommandHandler(commandController, alias);
         final CommandArguments arguments = new CommandArguments(commandController, "#test");
         handler.execute(container, arguments, context);
-        verify(container).addLine("commandError", "test requires at least 1 argument.");
+        verify(eventbus).publishAsync(errorEventCaptor.capture());
+        assertEquals("test requires at least 1 argument.",
+                errorEventCaptor.getValue().getMessage());
     }
 
     @Test
@@ -91,7 +101,9 @@ public class AliasCommandHandlerTest {
         final AliasCommandHandler handler = new AliasCommandHandler(commandController, alias);
         final CommandArguments arguments = new CommandArguments(commandController, "#test agadoo");
         handler.execute(container, arguments, context);
-        verify(container).addLine("commandError", "test requires at least 2 arguments.");
+        verify(eventbus).publishAsync(errorEventCaptor.capture());
+        assertEquals("test requires at least 2 arguments.",
+                errorEventCaptor.getValue().getMessage());
     }
 
     @Test

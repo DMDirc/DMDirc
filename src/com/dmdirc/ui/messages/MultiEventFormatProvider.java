@@ -20,40 +20,42 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.messages.sink;
+package com.dmdirc.ui.messages;
 
-import com.dmdirc.interfaces.WindowModel;
+import com.dmdirc.events.DisplayableEvent;
 
-import java.util.Date;
-import java.util.regex.Pattern;
-
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * A message sink which allows the message to be forked into multiple other sinks.
+ * Provides formats from multiple other {@link EventFormatProvider}.
  */
-public class ForkMessageSink implements MessageSink {
+public class MultiEventFormatProvider implements EventFormatProvider {
 
-    /** The pattern to use to match this sink. */
-    private static final Pattern PATTERN = Pattern.compile("fork:(.*)");
+    /** Providers to test for formats, in order. */
+    private final List<EventFormatProvider> providers = new ArrayList<>();
 
-    @Inject
-    public ForkMessageSink() {
+    public MultiEventFormatProvider(final EventFormatProvider ... providers) {
+        this.providers.addAll(Arrays.asList(providers));
+    }
+
+    public void addProvider(final EventFormatProvider provider) {
+        providers.add(provider);
+    }
+
+    public void removeProvider(final EventFormatProvider provider) {
+        providers.remove(provider);
     }
 
     @Override
-    public Pattern getPattern() {
-        return PATTERN;
-    }
-
-    @Override
-    public void handleMessage(final MessageSinkManager dispatcher,
-            final WindowModel source,
-            final String[] patternMatches, final Date date,
-            final String messageType, final Object... args) {
-        for (String target : patternMatches[0].split("\\|")) {
-            dispatcher.dispatchMessage(source, date, target, args);
-        }
+    public Optional<EventFormat> getFormat(final Class<? extends DisplayableEvent> eventType) {
+        return providers.stream()
+                .map(provider -> provider.getFormat(eventType))
+                .filter(Optional::isPresent)
+                .findFirst()
+                .map(Optional::get);
     }
 
 }

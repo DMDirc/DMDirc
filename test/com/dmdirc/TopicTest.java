@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -41,19 +42,20 @@ public class TopicTest {
 
     @Test
     public void testGetClient() {
-        final Topic test = Topic.create("abc", user, 1);
+        final Topic test = Topic.create("abc", user, new Date());
         assertEquals(Optional.of(user), test.getClient());
     }
 
     @Test
     public void testGetTime() {
-        final Topic test = Topic.create("abc", user, 1);
-        assertEquals(1L, test.getTime());
+        final Date date = new Date(123394432);
+        final Topic test = Topic.create("abc", user, date);
+        assertEquals(date, test.getDate());
     }
 
     @Test
     public void testGetTopic() {
-        final Topic test = Topic.create("abc", user, 1);
+        final Topic test = Topic.create("abc", user, new Date());
         assertEquals("abc", test.getTopic());
     }
 

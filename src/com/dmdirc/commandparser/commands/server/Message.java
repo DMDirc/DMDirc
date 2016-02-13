@@ -94,8 +94,7 @@ public class Message extends Command implements IntelligentCommand,
                     // This can happen if the server gets disconnected after
                     // the command manager has checked the @CommandOptions
                     // annotation. Yay for concurrency.
-                    sendLine(origin, args.isSilent(), FORMAT_ERROR,
-                            "You must be connected to use this command");
+                    showError(origin, args.isSilent(), "You must be connected to use this command");
                 }
             }
         }

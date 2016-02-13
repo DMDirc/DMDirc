@@ -55,8 +55,13 @@ public class EventFormatterTest {
         messageEvent = new ChannelMessageEvent(channel, null, null);
 
         when(templateProvider.getFormat(ChannelMessageEvent.class))
-                .thenReturn(Optional.ofNullable(
-                        EventFormat.create("Template {{channel}} meep", Optional.empty())));
+                .thenReturn(Optional.of(
+                        EventFormat.create(
+                                "Template {{channel}} meep",
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.empty())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn(Optional.of("MONKEY"));
 
@@ -64,12 +69,36 @@ public class EventFormatterTest {
     }
 
     @Test
+    public void testBeforeAndAfterFormat() {
+        messageEvent = new ChannelMessageEvent(channel, null, null);
+
+        when(templateProvider.getFormat(ChannelMessageEvent.class))
+                .thenReturn(Optional.of(
+                        EventFormat.create(
+                                "Template {{channel}} meep",
+                                Optional.of("Before!"),
+                                Optional.of("After!"),
+                                Optional.empty(),
+                                Optional.empty())));
+        when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
+                .thenReturn(Optional.of("MONKEY"));
+
+        assertEquals(
+                "Before!\nTemplate MONKEY meep\nAfter!",
+                formatter.format(messageEvent).orElse(null));
+    }
+
+    @Test
     public void testFormatWithFunction() {
         messageEvent = new ChannelMessageEvent(channel, null, null);
 
         when(templateProvider.getFormat(ChannelMessageEvent.class))
-                .thenReturn(Optional.ofNullable(
-                        EventFormat.create("Template {{channel|lowercase}} meep",
+                .thenReturn(Optional.of(
+                        EventFormat.create(
+                                "Template {{channel|lowercase}} meep",
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.empty(),
                                 Optional.empty())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn(Optional.of("MONKEY"));
@@ -83,8 +112,13 @@ public class EventFormatterTest {
         messageEvent = new ChannelMessageEvent(channel, null, "{{channel}}");
 
         when(templateProvider.getFormat(ChannelMessageEvent.class))
-                .thenReturn(Optional.ofNullable(
-                        EventFormat.create("Template {{message}} meep", Optional.empty())));
+                .thenReturn(Optional.of(
+                        EventFormat.create(
+                                "Template {{message}} meep",
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.empty())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "message"))
                 .thenReturn(Optional.of("{{channel}}"));
 

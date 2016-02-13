@@ -75,7 +75,7 @@ public class OpenQuery extends Command implements IntelligentCommand,
 
         final Connection connection = ((ServerCommandContext) context).getConnection();
         if (connection.getParser().get().isValidChannelName(args.getArguments()[0])) {
-            sendLine(origin, args.isSilent(), FORMAT_ERROR, "You can't open a query "
+            showError(origin, args.isSilent(), "You can't open a query "
                     + "with a channel; maybe you meant " + Styliser.CODE_FIXED
                     + Styliser.CODE_BOLD
                     + getController().getCommandChar()

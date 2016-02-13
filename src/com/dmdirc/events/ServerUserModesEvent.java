@@ -31,28 +31,27 @@ import com.dmdirc.interfaces.User;
 public class ServerUserModesEvent extends ServerDisplayableEvent {
 
     private final User user;
-    private final String message;
+    private final String modes;
 
     public ServerUserModesEvent(final long timestamp, final Connection connection, final User user,
-            final String message) {
+            final String modes) {
         super(timestamp, connection);
         this.user = user;
-        this.message = message;
+        this.modes = modes;
     }
 
-    public ServerUserModesEvent(final Connection connection, final User user, final String
-            message) {
+    public ServerUserModesEvent(final Connection connection, final User user, final String modes) {
         super(connection);
         this.user = user;
-        this.message = message;
+        this.modes = modes;
     }
 
     public User getUser() {
         return user;
     }
 
-    public String getMessage() {
-        return message;
+    public String getModes() {
+        return modes;
     }
 
 }

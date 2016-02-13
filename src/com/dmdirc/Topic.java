@@ -26,6 +26,7 @@ import com.dmdirc.interfaces.GroupChatUser;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -41,11 +42,11 @@ public abstract class Topic {
     /** Topic client. */
     public abstract Optional<GroupChatUser> getClient();
     /** Topic time. */
-    public abstract long getTime();
+    public abstract Date getDate();
 
     public static Topic create(final String topic,
             final GroupChatUser groupChatUser,
-            final long time) {
-        return new AutoValue_Topic(topic, Optional.ofNullable(groupChatUser), time);
+            final Date date) {
+        return new AutoValue_Topic(topic, Optional.ofNullable(groupChatUser), date);
     }
 }

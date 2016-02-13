@@ -8,6 +8,8 @@ ServerCtcpEvent:
 ServerCtcpReplyEvent:
   format: "-!- CTCP {{type}} reply from {{user.nickname}}: {{content}}."
   colour: 4
+ServerConnectingEvent:
+  format: "Connecting to {{uri.host}}:{{uri.port}}..."
 ServerDisconnectedEvent:
   format: "-!- You have been disconnected from the server."
   colour: 2
@@ -41,8 +43,17 @@ ServerAuthNoticeEvent:
 ServerInviteReceivedEvent:
   format: "* You have been invited to {{channel}} by {{user.nickname}}."
   colour: 2
+ServerUserModesEvent:
+  format: "* User modes are: {{modes}}."
+  colour: 3
+ServerNickChangeEvent:
+  format: "* You are now known as {{newNick}}."
+  colour: 3
 ServerErrorEvent:
   format: "ERROR: {{reason}}"
+  colour: 4
+ServerUnknownProtocolEvent:
+  format: "Unknown protocol '{{protocol}}'. Unable to connect."
   colour: 4
 
 ################## Server messaging events #########################################################
@@ -52,6 +63,24 @@ ServerNoticeEvent:
   colour: 5
 ServerServerNoticeEvent:
   format: "-{{user.nickname}}- {{message}}"
+  colour: 5
+ServerUnknownMessageEvent:
+  format: "<[{{sender}}:{{target}}]> {{message}}"
+  colour: 5
+ServerUnknownNoticeEvent:
+  format: "-[{{sender}}:{{target}}]- {{message}}"
+  colour: 5
+ServerUnknownActionEvent:
+  format: "* [{{sender}}:{{target}}] {{message}}"
+  colour: 5
+ServerWallopsEvent:
+  format: "${{user.nickname}}$ {{message}}"
+  colour: 5
+ServerWallusersEvent:
+  format: "!{{user.nickname}}! {{message}}"
+  colour: 5
+ServerWalldesyncEvent:
+  format: "/{{user.nickname}}/ {{message}}"
   colour: 5
 
 ################## Channel join/part/quit events ###################################################
@@ -106,7 +135,7 @@ ChannelCtcpEvent:
 ChannelGotTopicEvent:
   format: |
             * The topic for {{channel.name}} is '{{topic.topic}}'.
-            * Topic was set by {{user.nickname}} at {{topic.time}}.
+            * Topic was set by {{user.nickname}} at {{topic.date}}.
   colour: 3
 ChannelTopicChangeEvent:
   format: "* {{user.nickname}} has changed the topic to {{topic.topic}}."
@@ -176,31 +205,26 @@ CommandErrorEvent:
   colour: 7
 CommandOutputEvent:
   format: "{{message}}"
+UnknownCommandEvent:
+  format: "Unknown command {{command}}."
+  colour: 14
+UserInfoResponseEvent:
+  before: "---------- User info for {{user.nickname}} ----------"
+  after: "--------- End of info for {{user.nickname}} ---------"
+  iterate: "properties"
+  format: "{{friendlyName}}: {{rawValue}}"
+  colour: 10
 
 ################## TODO ############################################################################
-#  userModeChanged=3* %1$s sets user mode: %4$s.
-#  userNoModes=3* No user modes.
-#  userModeDiscovered=3* User modes are: %4$s.
-#  walluser=5!%1$s! %4$s
-#  wallop=5$%1$s$ %4$s
-#  walldesync=5/%1$s/ %4$s
 #  selfCTCP=4->- [%1$s] %2$s
 #  selfNotice=5>%1$s> %2$s
 #  selfMessage=>[%1$s]> %2$s
-#  serverConnecting=Connecting to %1$s:%2$s...
 #  serverDisconnectInProgress=A disconnection attempt is in progress, please wait...
 #  serverConnectInProgress=A connection attempt is in progress, please wait...
 #  rawCommand=10>>> %1$s
-#  unknownCommand=14Unknown command %1$s.
 #  commandOutput=%1$s
 #  actionTooLong=Warning: action too long to be sent
 #  tabCompletion=14Multiple possibilities: %1$s
-#  serverUnknownProtocol=4Unknown protocol '%1$s'. Unable to connect.
-#  selfNickChange=3* You are now known as %2$s.
-#  unknownNotice=5-[%1$s:%2$s]- %3$s
-#  unknownMessage=5<[%1$s:%2$s]> %3$s
-#  unknownNotice=5* [%1$s:%2$s] %3$s
-#  commandUsage=7Usage: %1$s%2$s %3$s
 #  numeric_006=%4$s
 #  numeric_007=%4$s
 #  numeric_015=%4$s
@@ -213,12 +237,6 @@ CommandOutputEvent:
 #  numeric_290=%4$s
 #  numeric_292=%4$s
 #  numeric_294=%4$s
-#  numeric_301=%4$s is away: %5$s
-#  numeric_311=-\n%4$s is %5$s@%6$s (%8$s).
-#  numeric_312=%4$s is connected to %5$s (%6$s).
-#  numeric_317=%4$s has been idle for %5$u; signed on at %6$TT on %6$TF.
-#  numeric_318=End of WHOIS info for %4$s.\n-
-#  numeric_319=%4$s is on: %5$s
 #  numeric_401=6A7000%4$s: %5$s
 #  numeric_404=6A7000%5$s
 #  numeric_405=6A7000%4$s: %5$s
