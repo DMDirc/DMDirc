@@ -43,16 +43,6 @@ import javax.annotation.Nonnull;
 public interface Connection {
 
     /**
-     * Passes the arguments to all frames for this server.
-     *
-     * @param messageType The type of message to send
-     * @param date        The date at which the event occurred
-     * @param args        The arguments of the message
-     */
-    @Deprecated
-    void addLineToAll(final String messageType, final Date date, final Object... args);
-
-    /**
      * Compare the given URI to the URI we are currently using to see if they would both result in
      * the server connecting to the same place, even if the URIs do not match exactly.
      *

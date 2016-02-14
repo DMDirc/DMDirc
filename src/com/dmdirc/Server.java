@@ -68,7 +68,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -756,19 +755,6 @@ public class Server extends FrameContainer implements Connection {
     @Override
     public WindowModel getWindowModel() {
         return this;
-    }
-
-    @Override
-    @Deprecated
-    public void addLineToAll(final String messageType, final Date date,
-            final Object... args) {
-        groupChatManager.addLineToAll(messageType, date, args);
-
-        for (Query query : queries.values()) {
-            query.addLine(messageType, date, args);
-        }
-
-        addLine(messageType, date, args);
     }
 
     @Override

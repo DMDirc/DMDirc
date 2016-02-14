@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 
 import java.util.Optional;
@@ -59,12 +58,8 @@ public class EventFormatter {
 
     public Optional<String> format(final DisplayableEvent event) {
         final Optional<EventFormat> format = formatProvider.getFormat(event.getClass());
-
-        if (!event.hasDisplayProperty(DisplayProperty.FOREGROUND_COLOUR)) {
-            format.flatMap(EventFormat::getDefaultForegroundColour)
-                    .ifPresent(c -> event.setDisplayProperty(DisplayProperty.FOREGROUND_COLOUR, c));
-        }
-
+        format.map(EventFormat::getDisplayProperties)
+                .ifPresent(event.getDisplayProperties()::putAll);
         return format.map(f -> format(f, event));
     }
 

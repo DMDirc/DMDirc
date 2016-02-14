@@ -30,6 +30,7 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -103,15 +104,38 @@ public final class LogUtils {
     @Nonnull
     public static Throwable getThrowable(@Nonnull final IThrowableProxy proxy)
             throws ReflectiveOperationException {
-        final Class<Throwable> clazz = getThrowableClass(proxy.getClassName());
-        final Throwable throwable;
+        final Class<? extends Throwable> clazz = getThrowableClass(proxy.getClassName());
+        Throwable throwable = null;
         if (proxy.getCause() == null) {
-            final Constructor<Throwable> ctor = clazz.getDeclaredConstructor(String.class);
+            // Just find a constructor that takes a string.
+            final Constructor<? extends Throwable> ctor =
+                    clazz.getDeclaredConstructor(String.class);
             throwable = ctor.newInstance(proxy.getMessage());
+        } else if (clazz == InvocationTargetException.class) {
+            // We don't care about the InvocationTargetException, unwrap it.
+            return getThrowable(proxy.getCause());
         } else {
-            final Constructor<Throwable> ctor = clazz.getDeclaredConstructor(String.class,
-                    Throwable.class);
-            throwable = ctor.newInstance(proxy.getMessage(), getThrowable(proxy.getCause()));
+            // Try and find a constructor that takes a string and a throwable.
+            for (Constructor<?> ctor : clazz.getDeclaredConstructors()) {
+                if (ctor.getParameterCount() == 2) {
+                    final Class<?>[] parameterTypes = ctor.getParameterTypes();
+                    if (parameterTypes[0] == String.class && parameterTypes[1] == Throwable.class) {
+                        throwable = (Throwable) ctor.newInstance(
+                                proxy.getMessage(), getThrowable(proxy.getCause()));
+                        break;
+                    } else if (parameterTypes[1] == String.class
+                            && parameterTypes[0] == Throwable.class) {
+                        throwable = (Throwable) ctor.newInstance(
+                                getThrowable(proxy.getCause()), proxy.getMessage());
+                        break;
+                    }
+                }
+            }
+
+            if (throwable == null) {
+                throw new ReflectiveOperationException("Unable to find ctor of "
+                        + clazz.getClass());
+            }
         }
         throwable.setStackTrace(getStackTraceElements(proxy.getStackTraceElementProxyArray()));
         return throwable;

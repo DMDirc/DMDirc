@@ -23,6 +23,7 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.manager.UpdateManager;
 
@@ -41,7 +42,6 @@ import static com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 @SuppressWarnings("TypeMayBeWeakened")
 @Module(library = true, complete = false)
 public class PluginModule {
-
 
     @Provides
     @Singleton
@@ -82,6 +82,12 @@ public class PluginModule {
     @Provides
     public ServiceLocator getServiceLocator(final LegacyServiceLocator locator) {
         return locator;
+    }
+
+    @Provides(type = Provides.Type.SET)
+    @Singleton
+    public SystemLifecycleComponent getEventFormatManager(final PluginEventFormatManager manager) {
+        return manager;
     }
 
 }

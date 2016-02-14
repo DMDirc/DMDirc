@@ -28,7 +28,6 @@ import com.dmdirc.parser.interfaces.StringConverter;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -107,18 +106,6 @@ public class ChannelMap {
      */
     public void resetAll() {
         channels.values().forEach(Channel::resetWindow);
-    }
-
-    /**
-     * Adds a line to all channels in the map.
-     *
-     * @param messageType The type of message to be added.
-     * @param date        The time of origin of the message.
-     * @param args        The arguments for the message.
-     */
-    @Deprecated
-    public void addLineToAll(final String messageType, final Date date, final Object... args) {
-        channels.values().forEach(c -> c.addLine(messageType, date, args));
     }
 
     /**
