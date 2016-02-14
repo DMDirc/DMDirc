@@ -214,10 +214,6 @@ UserInfoResponseEvent:
   iterate: "properties"
   format: "{{friendlyName}}: {{rawValue}}"
   colour: 10
-RawDataInEvent:
-  format: "<< {{line}}"
-RawDataOutEvent:
-  format: ">> {{line}}"
 
 ################## TODO ############################################################################
 #  selfCTCP=4->- [%1$s] %2$s
