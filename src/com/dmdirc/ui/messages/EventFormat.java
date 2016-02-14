@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.util.colours.Colour;
+import com.dmdirc.events.DisplayPropertyMap;
 
 import com.google.auto.value.AutoValue;
 
@@ -42,18 +42,17 @@ public abstract class EventFormat {
     public abstract Optional<String> getAfterTemplate();
     /** The property that should be iterated over, if the event contains multiple lines. */
     public abstract Optional<String> getIterateProperty();
-
-    // TODO: This should probably be a generic set of properties.
-    public abstract Optional<Colour> getDefaultForegroundColour();
+    /** Display properties to use. */
+    public abstract DisplayPropertyMap getDisplayProperties();
 
     public static EventFormat create(
             final String template,
             final Optional<String> beforeTemplate,
             final Optional<String> afterTemplate,
             final Optional<String> iterateProperty,
-            final Optional<Colour> defaultForegroundColour) {
+            final DisplayPropertyMap displayProperties) {
         return new AutoValue_EventFormat(template, beforeTemplate, afterTemplate, iterateProperty,
-                defaultForegroundColour);
+                displayProperties);
     }
 
 }

@@ -36,6 +36,8 @@ public interface DisplayProperty<T> {
     DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayPropertyImpl<>();
     /** Whether to suppress display of the event. */
     DisplayProperty<Boolean> DO_NOT_DISPLAY = new DisplayPropertyImpl<>();
+    /** Whether to suppress timestamps for the event. */
+    DisplayProperty<Boolean> NO_TIMESTAMPS = new DisplayPropertyImpl<>();
 
     final class DisplayPropertyImpl<T> implements DisplayProperty<T> {}
 

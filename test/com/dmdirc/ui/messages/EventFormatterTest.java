@@ -24,6 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.Channel;
 import com.dmdirc.events.ChannelMessageEvent;
+import com.dmdirc.events.DisplayPropertyMap;
 
 import java.util.Optional;
 
@@ -61,7 +62,7 @@ public class EventFormatterTest {
                                 Optional.empty(),
                                 Optional.empty(),
                                 Optional.empty(),
-                                Optional.empty())));
+                                new DisplayPropertyMap())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn(Optional.of("MONKEY"));
 
@@ -79,7 +80,7 @@ public class EventFormatterTest {
                                 Optional.of("Before!"),
                                 Optional.of("After!"),
                                 Optional.empty(),
-                                Optional.empty())));
+                                new DisplayPropertyMap())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn(Optional.of("MONKEY"));
 
@@ -99,7 +100,7 @@ public class EventFormatterTest {
                                 Optional.empty(),
                                 Optional.empty(),
                                 Optional.empty(),
-                                Optional.empty())));
+                                new DisplayPropertyMap())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "channel"))
                 .thenReturn(Optional.of("MONKEY"));
         when(propertyManager.applyFunction("MONKEY", "lowercase")).thenReturn("monkey");
@@ -118,7 +119,7 @@ public class EventFormatterTest {
                                 Optional.empty(),
                                 Optional.empty(),
                                 Optional.empty(),
-                                Optional.empty())));
+                                new DisplayPropertyMap())));
         when(propertyManager.getProperty(messageEvent, ChannelMessageEvent.class, "message"))
                 .thenReturn(Optional.of("{{channel}}"));
 

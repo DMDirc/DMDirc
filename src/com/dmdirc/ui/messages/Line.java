@@ -66,7 +66,11 @@ public class Line {
      * @return Lines parts
      */
     public String[] getLineParts() {
-        return new String[] { timestamp, text };
+        if (displayProperties.get(DisplayProperty.NO_TIMESTAMPS).orElse(false)) {
+            return new String[] { text };
+        } else {
+            return new String[] { timestamp, text };
+        }
     }
 
     /**
