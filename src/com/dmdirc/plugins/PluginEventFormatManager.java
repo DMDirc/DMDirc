@@ -32,8 +32,6 @@ import com.dmdirc.ui.messages.EventFormatProvider;
 import com.dmdirc.ui.messages.MultiEventFormatProvider;
 import com.dmdirc.ui.messages.YamlEventFormatProvider;
 
-import com.google.common.eventbus.Subscribe;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -41,6 +39,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import net.engio.mbassy.listener.Handler;
 
 /**
  * Loads default event formats from plugins.
@@ -76,7 +76,7 @@ public class PluginEventFormatManager implements SystemLifecycleComponent {
         eventbus.unsubscribe(this);
     }
 
-    @Subscribe
+    @Handler
     public void handlePluginLoaded(final PluginLoadedEvent event) {
         final Path path = event.getPlugin().getPath("/META-INF/format.yml");
         if (Files.exists(path)) {
@@ -88,7 +88,7 @@ public class PluginEventFormatManager implements SystemLifecycleComponent {
         }
     }
 
-    @Subscribe
+    @Handler
     public void handlePluginUnloaded(final PluginUnloadedEvent event) {
         if (providers.containsKey(event.getPlugin())) {
             multiEventFormatProvider.removeProvider(providers.remove(event.getPlugin()));
