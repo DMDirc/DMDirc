@@ -299,16 +299,10 @@ public abstract class FrameContainer implements WindowModel {
 
     @Override
     @Deprecated
-    public void addLine(final String type, final Date timestamp, final Object... args) {
-        if (type != null && !type.isEmpty()) {
-            addLine(Formatter.formatMessage(getConfigManager(), type, args), timestamp);
-        }
-    }
-
-    @Override
-    @Deprecated
     public void addLine(final String type, final Object... args) {
-        addLine(type, new Date(), args);
+        if (type != null && !type.isEmpty()) {
+            addLine(Formatter.formatMessage(getConfigManager(), type, args), new Date());
+        }
     }
 
     @Override

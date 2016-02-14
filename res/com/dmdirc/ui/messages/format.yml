@@ -224,7 +224,6 @@ UserInfoResponseEvent:
 #  rawCommand=10>>> %1$s
 #  commandOutput=%1$s
 #  actionTooLong=Warning: action too long to be sent
-#  tabCompletion=14Multiple possibilities: %1$s
 #  numeric_006=%4$s
 #  numeric_007=%4$s
 #  numeric_015=%4$s

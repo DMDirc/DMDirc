@@ -144,19 +144,6 @@ public interface WindowModel {
      * Adds a line to this container's window. If the window is null for some reason, the line is
      * silently discarded.
      *
-     * @param type      The message type to use
-     * @param timestamp The timestamp to use for this line
-     * @param args      The message's arguments
-     *
-     * @since 0.6.4
-     */
-    @Deprecated
-    void addLine(String type, Date timestamp, Object... args);
-
-    /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
-     *
      * @param type The message type to use
      * @param args The message's arguments
      */
