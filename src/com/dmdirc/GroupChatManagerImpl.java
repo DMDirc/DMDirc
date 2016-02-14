@@ -35,7 +35,6 @@ import com.dmdirc.ui.input.TabCompletionType;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -171,11 +170,6 @@ public class GroupChatManagerImpl implements GroupChatManager {
 
     public void closeAll() {
         channels.closeAll();
-    }
-
-    @Deprecated
-    public void addLineToAll(final String messageType, final Date date, final Object... args) {
-        channels.addLineToAll(messageType, date, args);
     }
 
     public void handleSocketClosed() {
