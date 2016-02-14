@@ -53,7 +53,7 @@ public class DMDircMBassador extends MBassador<DMDircEvent> {
     @SuppressWarnings("TypeMayBeWeakened")
     public DMDircMBassador(final IBusConfiguration configuration) {
         super(configuration.addPublicationErrorHandler(
-                e -> LOG.error(APP_ERROR, "Error caused by event bus handler", e.getCause())));
+                e -> LOG.error(APP_ERROR, e.getMessage(), e.getCause())));
     }
 
 }
