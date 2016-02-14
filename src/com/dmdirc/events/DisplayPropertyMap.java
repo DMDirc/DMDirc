@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,6 +60,15 @@ public class DisplayPropertyMap {
     }
 
     /**
+     * Adds all properties from the other map to this one.
+     *
+     * @param other The map to add properties from.
+     */
+    public void putAll(final DisplayPropertyMap other) {
+        properties.putAll(other.getProperties());
+    }
+
+    /**
      * Removes a value for the specified property.
      *
      * @param property The property to be removed
@@ -66,6 +76,15 @@ public class DisplayPropertyMap {
      */
     public <T> void remove(final DisplayProperty<T> property) {
         properties.remove(property);
+    }
+
+    /**
+     * Returns a readonly copy of this map's properties
+     *
+     * @return This map's properties.
+     */
+    Map<DisplayProperty<?>, Object> getProperties() {
+        return Collections.unmodifiableMap(properties);
     }
 
     private static class ReadOnlyDisplayPropertyMap extends DisplayPropertyMap {
