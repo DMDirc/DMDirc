@@ -301,17 +301,12 @@ public abstract class FrameContainer implements WindowModel {
     @Deprecated
     public void addLine(final String type, final Object... args) {
         if (type != null && !type.isEmpty()) {
-            addLine(Formatter.formatMessage(getConfigManager(), type, args), new Date());
-        }
-    }
-
-    @Override
-    @Deprecated
-    public void addLine(final String line, final Date timestamp) {
-        for (final String myLine : line.split("\n")) {
-            getBackBuffer().getDocument().addText(
-                    timestamp.getTime(), DisplayPropertyMap.EMPTY, myLine);
-            eventBus.publishAsync(new ClientLineAddedEvent(this, myLine));
+            final String line = Formatter.formatMessage(getConfigManager(), type, args);
+            final long time = new Date().getTime();
+            for (final String myLine : line.split("\n")) {
+                getBackBuffer().getDocument().addText(time, DisplayPropertyMap.EMPTY, myLine);
+                eventBus.publishAsync(new ClientLineAddedEvent(this, myLine));
+            }
         }
     }
 

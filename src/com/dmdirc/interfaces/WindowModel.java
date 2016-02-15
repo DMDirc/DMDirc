@@ -151,18 +151,6 @@ public interface WindowModel {
     void addLine(String type, Object... args);
 
     /**
-     * Adds the specified raw line to the window, without using a formatter, and using the specified
-     * timestamp. If the timestamp is <code>null</code>, no timestamp is added.
-     *
-     * @param line      The line to be added
-     * @param timestamp The timestamp to use for the line
-     *
-     * @since 0.6.4
-     */
-    @Deprecated
-    void addLine(String line, Date timestamp);
-
-    /**
      * Sends a line of text to this container's source.
      *
      * @param line The line to be sent
