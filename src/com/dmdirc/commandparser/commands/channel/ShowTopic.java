@@ -32,13 +32,15 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.events.ChannelGotTopicEvent;
+import com.dmdirc.events.ChannelNoTopicEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
+import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
 
-import java.util.Date;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -72,16 +74,15 @@ public class ShowTopic extends Command implements ExternalCommand {
         if (args.getArguments().length == 0) {
             final Optional<Topic> topic = channel.getCurrentTopic();
             if (topic.isPresent()) {
-                final Optional<GroupChatUser> user = topic.map(Topic::getClient).get();
-                sendLine(origin, args.isSilent(), "channelTopicDiscovered", "",
-                        user.map(GroupChatUser::getNickname).orElse(""),
-                        user.flatMap(GroupChatUser::getUsername).orElse(""),
-                        user.flatMap(GroupChatUser::getHostname).orElse(""),
-                        topic.map(Topic::getTopic).orElse(""),
-                        topic.map(Topic::getDate).map(Date::getTime).get(),
-                        channel.getName());
+                final User user = topic
+                        .flatMap(Topic::getClient)
+                        .map(GroupChatUser::getUser)
+                        .orElseGet(null);
+                channel.getEventBus().publishAsync(
+                        new ChannelGotTopicEvent(channel, topic.get(), user));
             } else {
-                sendLine(origin, args.isSilent(), "channelNoTopic", channel.getName());
+                channel.getEventBus().publishAsync(
+                        new ChannelNoTopicEvent(channel));
             }
         } else {
             channel.setTopic(args.getArgumentsAsString());
