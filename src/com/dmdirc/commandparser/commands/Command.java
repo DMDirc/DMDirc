@@ -50,22 +50,6 @@ public abstract class Command {
     }
 
     /**
-     * Sends a line, if appropriate, to the specified target.
-     *
-     * @param target   The command window to send the line to
-     * @param isSilent Whether this command is being silenced or not
-     * @param type     The type of message to send
-     * @param args     The arguments of the message
-     */
-    @Deprecated
-    protected final void sendLine(@Nullable final WindowModel target,
-            final boolean isSilent, final String type, final Object... args) {
-        if (!isSilent && target != null) {
-            target.addLine(type, args);
-        }
-    }
-
-    /**
      * Sends an output line, if appropriate, to the specified target.
      *
      * @param target   The command window to send the line to
