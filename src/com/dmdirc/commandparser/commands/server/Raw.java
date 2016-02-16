@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.events.ServerRawLineSentEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.WindowModel;
@@ -65,7 +66,9 @@ public class Raw extends Command {
         final String line = args.getArgumentsAsString();
 
         connection.getParser().get().sendRawMessage(line);
-        sendLine(origin, args.isSilent(), "rawCommand", line);
+        if (!args.isSilent()) {
+            origin.getEventBus().publishAsync(new ServerRawLineSentEvent(connection, line));
+        }
     }
 
 }
