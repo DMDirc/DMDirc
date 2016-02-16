@@ -141,16 +141,6 @@ public interface WindowModel {
     BackBuffer getBackBuffer();
 
     /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
-     *
-     * @param type The message type to use
-     * @param args The message's arguments
-     */
-    @Deprecated
-    void addLine(String type, Object... args);
-
-    /**
      * Sends a line of text to this container's source.
      *
      * @param line The line to be sent

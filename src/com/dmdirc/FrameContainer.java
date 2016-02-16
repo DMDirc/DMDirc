@@ -23,8 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.events.ClientLineAddedEvent;
-import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.events.FrameComponentAddedEvent;
 import com.dmdirc.events.FrameComponentRemovedEvent;
@@ -38,7 +36,6 @@ import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 import com.dmdirc.util.ChildEventBusManager;
 import com.dmdirc.util.collections.ListenerList;
@@ -46,7 +43,6 @@ import com.dmdirc.util.collections.ListenerList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -295,19 +291,6 @@ public abstract class FrameContainer implements WindowModel {
     @Override
     public BackBuffer getBackBuffer() {
         return backBuffer;
-    }
-
-    @Override
-    @Deprecated
-    public void addLine(final String type, final Object... args) {
-        if (type != null && !type.isEmpty()) {
-            final String line = Formatter.formatMessage(getConfigManager(), type, args);
-            final long time = new Date().getTime();
-            for (final String myLine : line.split("\n")) {
-                getBackBuffer().getDocument().addText(time, DisplayPropertyMap.EMPTY, myLine);
-                eventBus.publishAsync(new ClientLineAddedEvent(this, myLine));
-            }
-        }
     }
 
     @Override
