@@ -32,6 +32,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.events.ServerMessageSentEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
@@ -76,7 +77,10 @@ public class Message extends Command implements IntelligentCommand,
         } else {
             final String target = args.getArguments()[0];
             final String message = args.getArgumentsAsString(1);
-            sendLine(origin, args.isSilent(), "selfMessage", target, message);
+            if (!args.isSilent()) {
+                origin.getEventBus().publishAsync(
+                        new ServerMessageSentEvent(connection, target, message));
+            }
 
             // If this is a known server or channel, and this is not a silent
             // invocation, use sendLine, else send it raw to the parser.

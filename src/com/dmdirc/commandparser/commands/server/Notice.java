@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
+import com.dmdirc.events.ServerNoticeSentEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.WindowModel;
@@ -70,8 +71,10 @@ public class Notice extends Command implements IntelligentCommand {
         } else {
             connection.getParser().get().sendNotice(args.getArguments()[0],
                     args.getArgumentsAsString(1));
-            sendLine(origin, args.isSilent(), "selfNotice", args.getArguments()[0],
-                    args.getArgumentsAsString(1));
+            if (!args.isSilent()) {
+                origin.getEventBus().publishAsync(new ServerNoticeSentEvent(
+                        connection, args.getArguments()[0], args.getArgumentsAsString(1)));
+            }
         }
     }
 
