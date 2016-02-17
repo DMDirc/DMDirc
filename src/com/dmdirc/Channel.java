@@ -108,7 +108,7 @@ public class Channel extends FrameContainer implements GroupChat {
             final TabCompleterFactory tabCompleterFactory,
             final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager) {
-        super(connection.getWindowModel(), "channel-inactive",
+        super("channel-inactive",
                 newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),

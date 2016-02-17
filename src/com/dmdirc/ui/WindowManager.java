@@ -218,7 +218,6 @@ public class WindowManager {
         checkArgument(isInHierarchy(parent));
         checkNotNull(child);
 
-        parent.addChild(child);
         parents.put(child, parent);
         children.put(parent, child);
 
@@ -264,7 +263,6 @@ public class WindowManager {
         } else {
             final WindowModel parent = parents.get(window);
             fireDeleteWindow(parent, window);
-            parent.removeChild(window);
             parents.remove(parent);
         }
     }

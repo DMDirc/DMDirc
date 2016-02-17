@@ -71,7 +71,7 @@ public class Query extends FrameContainer implements PrivateChat {
             final User user,
             final TabCompleterFactory tabCompleterFactory,
             final BackBufferFactory backBufferFactory) {
-        super(connection.getWindowModel(), "query",
+        super("query",
                 user.getNickname(),
                 user.getNickname(),
                 connection.getWindowModel().getConfigManager(),

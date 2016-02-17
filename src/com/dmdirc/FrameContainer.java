@@ -47,9 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -61,10 +58,6 @@ public abstract class FrameContainer implements WindowModel {
 
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
-    /** The children of this frame. */
-    private final Collection<WindowModel> children = new CopyOnWriteArrayList<>();
-    /** The parent of this frame. */
-    private final Optional<WindowModel> parent;
     /** The name of the icon being used for this container's frame. */
     private String icon;
     /** The name of this container. */
@@ -108,7 +101,6 @@ public abstract class FrameContainer implements WindowModel {
      * Instantiate new frame container.
      */
     protected FrameContainer(
-            @Nullable final WindowModel parent,
             final String icon,
             final String name,
             final String title,
@@ -116,7 +108,6 @@ public abstract class FrameContainer implements WindowModel {
             final BackBufferFactory backBufferFactory,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
-        this.parent = Optional.ofNullable(parent);
         this.configManager = config;
         this.name = name;
         this.title = title;
@@ -139,7 +130,6 @@ public abstract class FrameContainer implements WindowModel {
      * Instantiate new frame container that accepts user input.
      */
     protected FrameContainer(
-            @Nullable final WindowModel parent,
             final String icon,
             final String name,
             final String title,
@@ -148,7 +138,6 @@ public abstract class FrameContainer implements WindowModel {
             final TabCompleter tabCompleter,
             final DMDircMBassador eventBus,
             final Collection<String> components) {
-        this.parent = Optional.ofNullable(parent);
         this.configManager = config;
         this.name = name;
         this.title = title;
@@ -174,11 +163,6 @@ public abstract class FrameContainer implements WindowModel {
 
     public void setCommandParser(final CommandParser commandParser) {
         this.commandParser = Optional.ofNullable(commandParser);
-    }
-
-    @Override
-    public Optional<WindowModel> getParent() {
-        return parent;
     }
 
     @Override
@@ -209,21 +193,6 @@ public abstract class FrameContainer implements WindowModel {
     @Override
     public boolean isWritable() {
         return writable;
-    }
-
-    @Override
-    public Collection<WindowModel> getChildren() {
-        return Collections.unmodifiableCollection(children);
-    }
-
-    @Override
-    public void addChild(final WindowModel child) {
-        children.add(child);
-    }
-
-    @Override
-    public void removeChild(final WindowModel child) {
-        children.remove(child);
     }
 
     /**
