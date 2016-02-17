@@ -36,6 +36,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.Styliser;
 
@@ -69,6 +70,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
     private final Multimap<WindowModel, String> mentions = ArrayListMultimap.create();
     /** Lock to synchronise on when accessing mentions. */
     private final Object mentionsLock = new Object();
+    private final WindowManager windowManager;
 
     /**
      * Creates a new instance of the join channel command.
@@ -79,8 +81,10 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
     @Inject
     public JoinChannelCommand(
             final CommandController controller,
+            final WindowManager windowManager,
             final DMDircMBassador eventBus) {
         super(controller);
+        this.windowManager = windowManager;
         eventBus.subscribe(this);
     }
 
@@ -185,14 +189,14 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
         }
 
         // Check the parent window
-        final Optional<WindowModel> parent = source.getParent();
+        final Optional<WindowModel> parent = windowManager.getParent(source);
         if (checkParents && parent.isPresent()) {
             results.addAll(checkSource(parent.get(), true, false));
         }
 
         // Check the children window
         if (checkChildren) {
-            for (WindowModel child : source.getChildren()) {
+            for (WindowModel child : windowManager.getChildren(source)) {
                 results.addAll(checkSource(child, false, true));
             }
         }

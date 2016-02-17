@@ -109,7 +109,7 @@ public class Echo extends Command implements IntelligentCommand {
             while (frame == null && target.isPresent()) {
                 frame = windowManager.findCustomWindow(target.get(),
                         results.getArgumentsAsString(targetFlag));
-                target = target.flatMap(WindowModel::getParent);
+                target = target.flatMap(windowManager::getParent);
             }
 
             if (frame == null) {
@@ -144,12 +144,12 @@ public class Echo extends Command implements IntelligentCommand {
             final Optional<Connection> connection = context.getWindow().getConnection();
 
             //Active window's Children
-            windowList.addAll(context.getWindow().getChildren());
+            windowList.addAll(windowManager.getChildren(context.getWindow()));
 
             //Children of Current Window's server
             connection
                     .map(Connection::getWindowModel)
-                    .map(WindowModel::getChildren)
+                    .map(windowManager::getChildren)
                     .ifPresent(windowList::addAll);
 
             //Global Windows
