@@ -54,7 +54,7 @@ public class GlobalWindow extends FrameContainer {
     public GlobalWindow(@GlobalConfig final AggregateConfigProvider config,
             final GlobalCommandParser parser, final TabCompleterFactory tabCompleterFactory,
             final DMDircMBassador eventBus, final BackBufferFactory backBufferFactory) {
-        super(null, "icon", "Global", "(Global)", config, backBufferFactory,
+        super("icon", "Global", "(Global)", config, backBufferFactory,
                 tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL), eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));

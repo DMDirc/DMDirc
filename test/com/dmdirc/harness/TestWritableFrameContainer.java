@@ -42,7 +42,7 @@ public class TestWritableFrameContainer extends FrameContainer {
             final AggregateConfigProvider cm, final CommandManager commandManager,
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory) {
-        super(null, "raw", "Raw", "(Raw)", cm, backBufferFactory,
+        super("raw", "Raw", "(Raw)", cm, backBufferFactory,
                 new TabCompleter(cm),
                 eventBus,
                 Collections.<String>emptySet());

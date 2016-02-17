@@ -194,7 +194,6 @@ public class WindowManagerTest {
         manager.removeWindow(child);
 
         verify(frameListener).delWindow(container, child);
-        verify(container).removeChild(child);
     }
 
     @Test
@@ -207,7 +206,6 @@ public class WindowManagerTest {
 
         verify(frameListener).delWindow(container, child);
         verify(grandchild).close();
-        verify(container).removeChild(child);
     }
 
     @Test

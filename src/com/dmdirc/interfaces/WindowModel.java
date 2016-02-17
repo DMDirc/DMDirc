@@ -41,8 +41,6 @@ import java.util.Set;
  */
 public interface WindowModel {
 
-    Optional<WindowModel> getParent();
-
     String getIcon();
 
     String getName();
@@ -54,33 +52,6 @@ public interface WindowModel {
     DMDircMBassador getEventBus();
 
     boolean isWritable();
-
-    /**
-     * Returns a collection of direct children of this frame.
-     *
-     * @return This frame's children
-     *
-     * @since 0.6.4
-     */
-    Collection<WindowModel> getChildren();
-
-    /**
-     * Adds a new child window to this frame.
-     *
-     * @param child The window to be added
-     *
-     * @since 0.6.4
-     */
-    void addChild(WindowModel child);
-
-    /**
-     * Removes a child window from this frame.
-     *
-     * @param child The window to be removed
-     *
-     * @since 0.6.4
-     */
-    void removeChild(WindowModel child);
 
     /**
      * Changes the title of this container, and fires a {@link FrameTitleChangedEvent}.

@@ -186,7 +186,7 @@ public class Server extends FrameContainer implements Connection {
             @Nonnull final Profile profile,
             final BackBufferFactory backBufferFactory,
             final UserManager userManager) {
-        super(null, "server-disconnected",
+        super("server-disconnected",
                 getHost(uri),
                 getHost(uri),
                 configMigrator.getConfigProvider(),
