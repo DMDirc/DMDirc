@@ -87,6 +87,30 @@ public class WindowManagerTest {
     }
 
     @Test
+    public void testGetParent() {
+        manager.addWindow(container);
+        manager.addListener(frameListener);
+        manager.addWindow(container, child);
+
+        assertEquals(Optional.of(container), manager.getParent(child));
+        assertEquals(Optional.empty(), manager.getParent(container));
+    }
+
+    @Test
+    public void testGetChildren() {
+        manager.addWindow(container);
+        manager.addListener(frameListener);
+        manager.addWindow(container, child);
+        manager.addWindow(container, grandchild);
+
+        assertEquals(2, manager.getChildren(container).size());
+        assertTrue(manager.getChildren(container).contains(child));
+        assertTrue(manager.getChildren(container).contains(grandchild));
+        assertEquals(0, manager.getChildren(child).size());
+        assertEquals(0, manager.getChildren(grandchild).size());
+    }
+
+    @Test
     public void testRemoveRoot() {
         manager.addWindow(container);
         manager.addListener(frameListener);
@@ -101,8 +125,6 @@ public class WindowManagerTest {
         manager.addWindow(container);
         manager.addWindow(container, child);
         manager.addListener(frameListener);
-
-        when(child.getParent()).thenReturn(Optional.of(container));
 
         manager.removeWindow(child);
 
@@ -134,10 +156,9 @@ public class WindowManagerTest {
 
     @Test
     public void testAddListenerAndSync() {
-        when(container.getChildren()).thenReturn(Arrays.asList(child));
-        when(child.getChildren()).thenReturn(Arrays.asList(grandchild));
-
         manager.addWindow(container);
+        manager.addWindow(container, child);
+        manager.addWindow(child, grandchild);
         manager.addListenerAndSync(frameListener);
 
         verify(frameListener).addWindow(container, true);
@@ -156,11 +177,9 @@ public class WindowManagerTest {
 
     @Test
     public void testRemoveWindowRootWindowWithChildren() {
-        when(container.getChildren()).thenReturn(Arrays.asList(child));
-        when(child.getParent()).thenReturn(Optional.of(container));
-
         manager.addListener(frameListener);
         manager.addWindow(container);
+        manager.addWindow(container, child);
         manager.removeWindow(container);
 
         verify(frameListener).delWindow(container);
@@ -169,11 +188,9 @@ public class WindowManagerTest {
 
     @Test
     public void testRemoveChildWindowNoChildren() {
-        when(container.getChildren()).thenReturn(Arrays.asList(child));
-        when(child.getParent()).thenReturn(Optional.of(container));
-
         manager.addListener(frameListener);
         manager.addWindow(container);
+        manager.addWindow(container, child);
         manager.removeWindow(child);
 
         verify(frameListener).delWindow(container, child);
@@ -182,12 +199,10 @@ public class WindowManagerTest {
 
     @Test
     public void testRemoveChildWindowWithChildren() {
-        when(container.getChildren()).thenReturn(Arrays.asList(child));
-        when(child.getChildren()).thenReturn(Arrays.asList(grandchild));
-        when(child.getParent()).thenReturn(Optional.of(container));
-
         manager.addListener(frameListener);
         manager.addWindow(container);
+        manager.addWindow(container, child);
+        manager.addWindow(child, grandchild);
         manager.removeWindow(child);
 
         verify(frameListener).delWindow(container, child);
@@ -236,8 +251,6 @@ public class WindowManagerTest {
 
         when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
-        when(customContainer.getChildren()).thenReturn(Arrays.asList(
-                new WindowModel[]{customChild, }));
 
         manager.addWindow(customContainer);
         manager.addWindow(customContainer, customChild);
@@ -252,8 +265,6 @@ public class WindowManagerTest {
 
         when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
-        when(customContainer.getChildren()).thenReturn(Arrays.asList(
-                new WindowModel[]{customChild, }));
 
         manager.addWindow(customContainer);
         manager.addWindow(customContainer, customChild);
