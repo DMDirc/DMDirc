@@ -113,7 +113,8 @@ public class Channel extends FrameContainer implements GroupChat {
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
+                tabCompleterFactory.getTabCompleter(
+                        connection.getWindowModel().getInputModel().get().getTabCompleter(),
                         configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,
                         CommandType.TYPE_CHAT),
                 connection.getWindowModel().getEventBus(),
@@ -297,7 +298,8 @@ public class Channel extends FrameContainer implements GroupChat {
     public void addClient(final GroupChatUser client) {
         getEventBus().publishAsync(new NickListClientAddedEvent(this, client));
 
-        getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
+        getInputModel().get().getTabCompleter().addEntry(
+                TabCompletionType.CHANNEL_NICK, client.getNickname());
     }
 
     /**
@@ -308,7 +310,8 @@ public class Channel extends FrameContainer implements GroupChat {
     public void removeClient(final GroupChatUser client) {
         getEventBus().publishAsync(new NickListClientRemovedEvent(this, client));
 
-        getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
+        getInputModel().get().getTabCompleter().removeEntry(
+                TabCompletionType.CHANNEL_NICK, client.getNickname());
 
         if (client.getUser().equals(connection.getLocalUser().orElse(null))) {
             resetWindow();
@@ -323,10 +326,11 @@ public class Channel extends FrameContainer implements GroupChat {
     public void setClients(final Collection<GroupChatUser> clients) {
         getEventBus().publishAsync(new NickListClientsChangedEvent(this, clients));
 
-        getTabCompleter().clear(TabCompletionType.CHANNEL_NICK);
+        getInputModel().get().getTabCompleter().clear(TabCompletionType.CHANNEL_NICK);
 
-        getTabCompleter().addEntries(TabCompletionType.CHANNEL_NICK,
-            clients.stream().map(GroupChatUser::getNickname).collect(Collectors.toList()));
+        getInputModel().get().getTabCompleter().addEntries(
+                TabCompletionType.CHANNEL_NICK,
+                clients.stream().map(GroupChatUser::getNickname).collect(Collectors.toList()));
     }
 
     /**
@@ -336,8 +340,10 @@ public class Channel extends FrameContainer implements GroupChat {
      * @param newName The new nickname of the client
      */
     public void renameClient(final String oldName, final String newName) {
-        getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK, oldName);
-        getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK, newName);
+        getInputModel().get().getTabCompleter().removeEntry(
+                TabCompletionType.CHANNEL_NICK, oldName);
+        getInputModel().get().getTabCompleter().addEntry(
+                TabCompletionType.CHANNEL_NICK, newName);
         refreshClients();
     }
 

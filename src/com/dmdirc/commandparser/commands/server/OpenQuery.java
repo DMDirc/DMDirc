@@ -111,8 +111,8 @@ public class OpenQuery extends Command implements IntelligentCommand,
     public int getLineCount(final WindowModel origin, final CommandArguments arguments) {
         if (arguments.getArguments().length >= 2) {
             final String target = arguments.getArguments()[0];
-            return origin.getConnection().get().getWindowModel().getNumLines("PRIVMSG "
-                    + target + " :" + arguments.getArgumentsAsString(1));
+            return origin.getConnection().get().getWindowModel().getInputModel().get()
+                    .getNumLines("PRIVMSG " + target + " :" + arguments.getArgumentsAsString(1));
         } else {
             return 1;
         }

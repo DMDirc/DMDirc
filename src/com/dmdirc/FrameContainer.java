@@ -191,11 +191,6 @@ public abstract class FrameContainer implements WindowModel, InputModel {
         return eventBus;
     }
 
-    @Override
-    public boolean isWritable() {
-        return writable;
-    }
-
     /**
      * Changes the name of this container, and fires a {@link FrameNameChangedEvent}.
      *
@@ -350,7 +345,7 @@ public abstract class FrameContainer implements WindowModel, InputModel {
 
     @Override
     public Optional<InputModel> getInputModel() {
-        if (isWritable()) {
+        if (writable) {
             return Optional.of(this);
         } else {
             return Optional.empty();

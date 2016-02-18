@@ -82,8 +82,8 @@ public class Help extends Command implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      */
     private void showAllCommands(final WindowModel origin, final boolean isSilent) {
-        final List<String> commands = new ArrayList<>(origin.getCommandParser()
-                .getCommands().keySet());
+        final List<String> commands = new ArrayList<>(origin.getInputModel().get()
+                .getCommandParser().getCommands().keySet());
 
         Collections.sort(commands);
 

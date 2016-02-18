@@ -76,7 +76,8 @@ public class Query extends FrameContainer implements PrivateChat {
                 user.getNickname(),
                 connection.getWindowModel().getConfigManager(),
                 backBufferFactory,
-                tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
+                tabCompleterFactory.getTabCompleter(
+                        connection.getWindowModel().getInputModel().get().getTabCompleter(),
                         connection.getWindowModel().getConfigManager(),
                         CommandType.TYPE_QUERY, CommandType.TYPE_CHAT),
                 connection.getWindowModel().getEventBus(),
@@ -125,7 +126,7 @@ public class Query extends FrameContainer implements PrivateChat {
             return;
         }
 
-        final int maxLineLength = getMaxLineLength();
+        final int maxLineLength = getInputModel().get().getMaxLineLength();
 
         if (maxLineLength >= action.length() + 2) {
             connection.getParser().get().sendAction(getNickname(), action);

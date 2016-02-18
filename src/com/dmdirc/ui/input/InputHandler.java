@@ -298,7 +298,7 @@ public abstract class InputHandler implements ConfigChangeListener {
                 fireLineWrap(count);
             }
         } else {
-            final int lines = parentWindow.getNumLines(text);
+            final int lines = parentWindow.getInputModel().get().getNumLines(text);
             fireLineWrap(lines);
         }
     }

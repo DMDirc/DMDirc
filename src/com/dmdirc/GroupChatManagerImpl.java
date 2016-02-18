@@ -151,8 +151,8 @@ public class GroupChatManagerImpl implements GroupChatManager {
                     connection.getAddress(), chan.getName());
             final Channel newChan = channelFactory.getChannel(
                     connection, chan, channelConfig);
-            connection.getWindowModel().getTabCompleter().addEntry(TabCompletionType.CHANNEL,
-                    chan.getName());
+            connection.getWindowModel().getInputModel().get().getTabCompleter()
+                    .addEntry(TabCompletionType.CHANNEL, chan.getName());
             newChan.getWindowModel().getEventBus().subscribe(this);
             channels.add(newChan);
         }
@@ -195,7 +195,7 @@ public class GroupChatManagerImpl implements GroupChatManager {
     @Handler
     void handleChannelClosing(final ChannelClosedEvent event) {
         final GroupChat channel = event.getChannel();
-        connection.getWindowModel().getTabCompleter()
+        connection.getWindowModel().getInputModel().get().getTabCompleter()
                 .removeEntry(TabCompletionType.CHANNEL, channel.getName());
         channels.remove(channel.getName());
         channel.getEventBus().unsubscribe(this);
