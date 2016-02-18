@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
@@ -45,7 +44,6 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Styliser;
@@ -99,13 +97,11 @@ public class Channel extends FrameContainer implements GroupChat {
      * @param connection          The connection object that this channel belongs to
      * @param newChannelInfo      The parser's channel object that corresponds to this channel
      * @param configMigrator      The config migrator which provides the config for this channel.
-     * @param tabCompleterFactory The factory to use to create tab completers.
      */
     public Channel(
             final Connection connection,
             final ChannelInfo newChannelInfo,
             final ConfigProviderMigrator configMigrator,
-            final TabCompleterFactory tabCompleterFactory,
             final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager) {
         super("channel-inactive",
@@ -113,10 +109,6 @@ public class Channel extends FrameContainer implements GroupChat {
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                tabCompleterFactory.getTabCompleter(
-                        connection.getWindowModel().getInputModel().get().getTabCompleter(),
-                        configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,
-                        CommandType.TYPE_CHAT),
                 connection.getWindowModel().getEventBus(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier(),
@@ -168,10 +160,14 @@ public class Channel extends FrameContainer implements GroupChat {
         }
 
         final GroupChatUser me = getUser(connection.getLocalUser().get()).get();
-        splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
-            getEventBus().publishAsync(new ChannelSelfMessageEvent(this, me, part));
-            channelInfo.sendMessage(part);
-        });
+        getInputModel().get()
+                .splitLine(line)
+                .stream()
+                .filter(part -> !part.isEmpty())
+                .forEach(part -> {
+                    getEventBus().publishAsync(new ChannelSelfMessageEvent(this, me, part));
+                    channelInfo.sendMessage(part);
+                });
     }
 
     @Override

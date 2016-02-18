@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.QueryActionEvent;
 import com.dmdirc.events.QueryClosedEvent;
@@ -45,7 +44,6 @@ import com.dmdirc.parser.events.QuitEvent;
 import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
 
 import java.awt.Toolkit;
@@ -69,17 +67,12 @@ public class Query extends FrameContainer implements PrivateChat {
     public Query(
             final Connection connection,
             final User user,
-            final TabCompleterFactory tabCompleterFactory,
             final BackBufferFactory backBufferFactory) {
         super("query",
                 user.getNickname(),
                 user.getNickname(),
                 connection.getWindowModel().getConfigManager(),
                 backBufferFactory,
-                tabCompleterFactory.getTabCompleter(
-                        connection.getWindowModel().getInputModel().get().getTabCompleter(),
-                        connection.getWindowModel().getConfigManager(),
-                        CommandType.TYPE_QUERY, CommandType.TYPE_CHAT),
                 connection.getWindowModel().getEventBus(),
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
@@ -103,11 +96,15 @@ public class Query extends FrameContainer implements PrivateChat {
             return;
         }
 
-        splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
-            connection.getParser().get().sendMessage(target, part);
-            getEventBus().publishAsync(new QuerySelfMessageEvent(this,
-                    connection.getLocalUser().get(), part));
-        });
+        getInputModel().get()
+                .splitLine(line)
+                .stream()
+                .filter(part -> !part.isEmpty())
+                .forEach(part -> {
+                    connection.getParser().get().sendMessage(target, part);
+                    getEventBus().publishAsync(new QuerySelfMessageEvent(this,
+                            connection.getLocalUser().get(), part));
+                });
     }
 
     @Override

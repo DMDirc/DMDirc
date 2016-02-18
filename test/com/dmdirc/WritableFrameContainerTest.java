@@ -61,22 +61,23 @@ public class WritableFrameContainerTest {
         commands = new CommandManager(connectionManager, globalWindowProvider);
     }
 
+    // TODO: Move this test to DefaultInputModel.
     @Test
     public void testGetNumLines() {
         final FrameContainer container10 = new TestWritableFrameContainer(10, acp, commands,
                 eventBus, backBufferFactory);
 
-        final int res0a = container10.getNumLines("");
-        final int res0b = container10.getNumLines("\r");
-        final int res0c = container10.getNumLines("\r\n");
+        final int res0a = container10.getInputModel().get().getNumLines("");
+        final int res0b = container10.getInputModel().get().getNumLines("\r");
+        final int res0c = container10.getInputModel().get().getNumLines("\r\n");
 
-        final int res1a = container10.getNumLines("0123456789");
-        final int res1b = container10.getNumLines("\r\n123456789");
-        final int res1c = container10.getNumLines("qaaa");
+        final int res1a = container10.getInputModel().get().getNumLines("0123456789");
+        final int res1b = container10.getInputModel().get().getNumLines("\r\n123456789");
+        final int res1c = container10.getInputModel().get().getNumLines("qaaa");
 
-        final int res2a = container10.getNumLines("01234567890");
-        final int res2b = container10.getNumLines("012345\r\n\r\n34567890");
-        final int res2c = container10.getNumLines("01234567890\r\n\r\n");
+        final int res2a = container10.getInputModel().get().getNumLines("01234567890");
+        final int res2b = container10.getInputModel().get().getNumLines("012345\r\n\r\n34567890");
+        final int res2c = container10.getInputModel().get().getNumLines("01234567890\r\n\r\n");
 
         assertEquals(0, res0a);
         assertEquals(0, res0b);
@@ -91,6 +92,7 @@ public class WritableFrameContainerTest {
         assertEquals(2, res2c);
     }
 
+    // TODO: Move this test to DefaultInputModel.
     @Test
     public void testSplitLine() {
         final FrameContainer container10 = new TestWritableFrameContainer(10, acp, commands,
@@ -108,7 +110,7 @@ public class WritableFrameContainerTest {
         };
 
         for (String[][] test : tests) {
-            final String[] res = container10.splitLine(test[0][0]).toArray(new String[0]);
+            final String[] res = container10.getInputModel().get().splitLine(test[0][0]).toArray(new String[0]);
             assertTrue('\'' + test[0][0] + "' → "
                     + Arrays.toString(res) + " (expected: " + Arrays.toString(test[1]) + ')',
                     Arrays.equals(res, test[1]));

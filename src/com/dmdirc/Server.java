@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
@@ -51,7 +50,6 @@ import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.ColourManager;
@@ -174,7 +172,6 @@ public class Server extends FrameContainer implements Connection {
     public Server(
             final ConfigProviderMigrator configMigrator,
             final ParserFactory parserFactory,
-            final TabCompleterFactory tabCompleterFactory,
             final IdentityFactory identityFactory,
             final QueryFactory queryFactory,
             final DMDircMBassador eventBus,
@@ -191,8 +188,6 @@ public class Server extends FrameContainer implements Connection {
                 getHost(uri),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                tabCompleterFactory.getTabCompleter(configMigrator.getConfigProvider(),
-                        CommandType.TYPE_SERVER, CommandType.TYPE_GLOBAL),
                 eventBus,
                 Arrays.asList(
                         WindowComponent.TEXTAREA.getIdentifier(),
@@ -621,7 +616,6 @@ public class Server extends FrameContainer implements Connection {
         }
     }
 
-    @Override
     public int getMaxLineLength() {
         return withParserReadLock(Parser::getMaxLength, -1);
     }

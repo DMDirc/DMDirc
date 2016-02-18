@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.events.QueryOpenedEvent;
 import com.dmdirc.interfaces.CommandController;
@@ -58,9 +59,20 @@ public class QueryFactory {
     }
 
     public Query getQuery(final Connection connection, final User user) {
-        final Query query = new Query(connection, user, tabCompleterFactory, backBufferFactory);
-        query.setCommandParser(new QueryCommandParser(connection.getWindowModel(),
-                commandController, connection.getWindowModel().getEventBus(), query));
+        final Query query = new Query(connection, user, backBufferFactory);
+        query.setInputModel(new DefaultInputModel(
+                query::sendLine,
+                new QueryCommandParser(
+                        connection.getWindowModel(),
+                        commandController,
+                        connection.getWindowModel().getEventBus(),
+                        query),
+                tabCompleterFactory.getTabCompleter(
+                        connection.getWindowModel().getInputModel().get().getTabCompleter(),
+                        connection.getWindowModel().getConfigManager(),
+                        CommandType.TYPE_QUERY,
+                        CommandType.TYPE_CHAT),
+                query::getMaxLineLength));
         windowManager.addWindow(connection.getWindowModel(), query);
         connection.getWindowModel().getEventBus().publish(new QueryOpenedEvent(query));
         return query;

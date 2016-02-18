@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.CommandController;
@@ -88,11 +89,21 @@ public class ServerFactoryImpl {
             final URI uri,
             final Profile profile) {
         final Server server = new Server(configMigrator, parserFactory,
-                tabCompleterFactory, identityFactory, queryFactory.get(), eventBus,
+                identityFactory, queryFactory.get(), eventBus,
                 messageEncoderFactory, userSettings, groupChatManagerFactory, executorService,
                 uri, profile, backBufferFactory, userManager);
-        server.setCommandParser(new ServerCommandParser(server.getConfigManager(),
-                commandController.get(), eventBus, server));
+        server.setInputModel(new DefaultInputModel(
+                server::sendLine,
+                new ServerCommandParser(
+                        server.getConfigManager(),
+                        commandController.get(),
+                        eventBus,
+                        server),
+                tabCompleterFactory.getTabCompleter(
+                        configMigrator.getConfigProvider(),
+                        CommandType.TYPE_SERVER,
+                        CommandType.TYPE_GLOBAL),
+                server::getMaxLineLength));
         return server;
     }
 }
