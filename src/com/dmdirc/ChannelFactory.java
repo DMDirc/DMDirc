@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.events.ChannelOpenedEvent;
 import com.dmdirc.interfaces.CommandController;
@@ -65,9 +66,20 @@ public class ChannelFactory {
             final ChannelInfo channelInfo,
             final ConfigProviderMigrator configMigrator) {
         final Channel channel = new Channel(connection, channelInfo, configMigrator,
-                tabCompleterFactory, backBufferFactory, groupChatUserManager);
-        channel.setCommandParser(new ChannelCommandParser(connection.getWindowModel(),
-                commandController, eventBus, channel));
+                backBufferFactory, groupChatUserManager);
+        channel.setInputModel(new DefaultInputModel(
+                channel::sendLine,
+                new ChannelCommandParser(
+                        connection.getWindowModel(),
+                        commandController,
+                        eventBus,
+                        channel),
+                tabCompleterFactory.getTabCompleter(
+                        connection.getWindowModel().getInputModel().get().getTabCompleter(),
+                        configMigrator.getConfigProvider(),
+                        CommandType.TYPE_CHANNEL,
+                        CommandType.TYPE_CHAT),
+                channel::getMaxLineLength));
         windowManager.addWindow(connection.getWindowModel(), channel);
         connection.getWindowModel().getEventBus().publish(new ChannelOpenedEvent(channel));
         return channel;

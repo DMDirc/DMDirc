@@ -25,6 +25,8 @@ package com.dmdirc.interfaces;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.input.TabCompleter;
 
+import java.util.List;
+
 /**
  * Models the input functionality of a {@link WindowModel}.
  */
@@ -58,6 +60,16 @@ public interface InputModel {
      * @return The maximum line length for this model
      */
     int getMaxLineLength();
+
+    /**
+     * Splits the specified line into chunks that contain a number of bytes less than or equal to
+     * the value returned by {@link #getMaxLineLength()}.
+     *
+     * @param line The line to be split
+     *
+     * @return An ordered list of chunks of the desired length
+     */
+    List<String> splitLine(String line);
 
     /**
      * Returns the number of lines that the specified string would be sent as, if it were passed
