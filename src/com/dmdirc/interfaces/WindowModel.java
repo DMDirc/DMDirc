@@ -31,8 +31,6 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 
-import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
@@ -148,6 +146,13 @@ public interface WindowModel {
      * @return The number of lines required to send the specified string
      */
     int getNumLines(String line);
+
+    /**
+     * Returns the model used to define input parameters for this window.
+     *
+     * @return If this window accepts input, the input model to use, otherwise an empty optional.
+     */
+    Optional<InputModel> getInputModel();
 
     UnreadStatusManager getUnreadStatusManager();
 }
