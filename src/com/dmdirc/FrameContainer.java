@@ -29,6 +29,7 @@ import com.dmdirc.events.FrameComponentRemovedEvent;
 import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameNameChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
+import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -54,7 +55,7 @@ import static com.google.common.base.Preconditions.checkState;
  * The frame container implements basic methods that should be present in all objects that handle a
  * frame.
  */
-public abstract class FrameContainer implements WindowModel {
+public abstract class FrameContainer implements WindowModel, InputModel {
 
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
@@ -345,6 +346,15 @@ public abstract class FrameContainer implements WindowModel {
     public void setCompositionState(final CompositionState state) {
         // Default implementation does nothing. Subclasses that support
         // composition should override this.
+    }
+
+    @Override
+    public Optional<InputModel> getInputModel() {
+        if (isWritable()) {
+            return Optional.of(this);
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
