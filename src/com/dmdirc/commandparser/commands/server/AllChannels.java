@@ -33,6 +33,7 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleterUtils;
@@ -71,8 +72,8 @@ public class AllChannels extends Command implements IntelligentCommand {
         final String command = args.getArgumentsAsString();
 
         for (GroupChat channel : server.getGroupChatManager().getChannels()) {
-            channel.getWindowModel().getCommandParser().parseCommand(channel.getWindowModel(),
-                    command);
+            channel.getWindowModel().getInputModel().map(InputModel::getCommandParser)
+                    .ifPresent(cp -> cp.parseCommand(channel.getWindowModel(), command));
         }
     }
 

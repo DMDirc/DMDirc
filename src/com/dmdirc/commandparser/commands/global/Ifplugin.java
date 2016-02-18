@@ -30,13 +30,17 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleterUtils;
+
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -105,8 +109,10 @@ public class Ifplugin extends Command implements IntelligentCommand {
         }
 
         if (result != negative) {
-            if (origin.isWritable()) {
-                origin.getCommandParser().parseCommand(origin, args.getArgumentsAsString(1));
+            final Optional<CommandParser> parser = origin.getInputModel()
+                    .map(InputModel::getCommandParser);
+            if (parser.isPresent()) {
+                parser.get().parseCommand(origin, args.getArgumentsAsString(1));
             } else {
                 globalCommandParserProvider.get()
                         .parseCommand(globalWindowProvider.get(), args.getArgumentsAsString(1));

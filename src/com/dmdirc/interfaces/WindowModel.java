@@ -23,11 +23,9 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 
@@ -48,8 +46,6 @@ public interface WindowModel {
     AggregateConfigProvider getConfigManager();
 
     DMDircMBassador getEventBus();
-
-    boolean isWritable();
 
     /**
      * Changes the title of this container, and fires a {@link FrameTitleChangedEvent}.
@@ -108,44 +104,6 @@ public interface WindowModel {
      * @return This container's back buffer.
      */
     BackBuffer getBackBuffer();
-
-    /**
-     * Sends a line of text to this container's source.
-     *
-     * @param line The line to be sent
-     */
-    void sendLine(String line);
-
-    /**
-     * Retrieves the command parser to be used for this container.
-     *
-     * @return This container's command parser
-     */
-    CommandParser getCommandParser();
-
-    /**
-     * Retrieves the tab completer which should be used for this container.
-     *
-     * @return This container's tab completer
-     */
-    TabCompleter getTabCompleter();
-
-    /**
-     * Returns the maximum length that a line passed to sendLine() should be, in order to prevent it
-     * being truncated or causing protocol violations.
-     *
-     * @return The maximum line length for this container
-     */
-    int getMaxLineLength();
-
-    /**
-     * Returns the number of lines that the specified string would be sent as.
-     *
-     * @param line The string to be split and sent
-     *
-     * @return The number of lines required to send the specified string
-     */
-    int getNumLines(String line);
 
     /**
      * Returns the model used to define input parameters for this window.

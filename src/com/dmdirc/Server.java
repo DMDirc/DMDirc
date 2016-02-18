@@ -488,7 +488,7 @@ public class Server extends FrameContainer implements Connection {
             if (!getState().isDisconnected()) {
                 newQuery.reregister();
             }
-            getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, nick);
+            getInputModel().get().getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
         }
 
@@ -497,8 +497,8 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public void updateQuery(final Query query, final String oldNick, final String newNick) {
-        getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, oldNick);
-        getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, newNick);
+        getInputModel().get().getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, oldNick);
+        getInputModel().get().getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, newNick);
 
         queries.put(converter.toLowerCase(newNick), query);
         queries.remove(converter.toLowerCase(oldNick));
@@ -511,7 +511,8 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public void delQuery(final Query query) {
-        getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, query.getNickname());
+        getInputModel().get().getTabCompleter().removeEntry(
+                TabCompletionType.QUERY_NICK, query.getNickname());
         queries.remove(converter.toLowerCase(query.getNickname()));
     }
 

@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.events.ClientOpenedEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
@@ -77,7 +78,8 @@ public class AutoCommandHandler {
         if (appliesToServer(event.getConnection().getNetwork(),
                 event.getConnection().getAddress(), event.getConnection().getProfile().getName())) {
             final WindowModel container = event.getConnection().getWindowModel();
-            final CommandParser parser = container.getCommandParser();
+            final CommandParser parser = container.getInputModel()
+                    .map(InputModel::getCommandParser).get();
             execute(container, parser);
         }
     }

@@ -30,7 +30,10 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
+
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +51,7 @@ import static org.mockito.Mockito.when;
 public class AliasCommandHandlerTest {
 
     @Mock private WindowModel container;
+    @Mock private InputModel inputModel;
     @Mock private CommandController commandController;
     @Mock private CommandParser commandParser;
     @Mock private CommandContext context;
@@ -57,7 +61,8 @@ public class AliasCommandHandlerTest {
 
     @Before
     public void setup() {
-        when(container.getCommandParser()).thenReturn(commandParser);
+        when(container.getInputModel()).thenReturn(Optional.of(inputModel));
+        when(inputModel.getCommandParser()).thenReturn(commandParser);
         when(commandController.getCommandChar()).thenReturn('#');
         when(commandController.getSilenceChar()).thenReturn('/');
         when(context.getSource()).thenReturn(container);

@@ -167,9 +167,9 @@ public class CommandManager implements CommandController {
         final String silencedCommandName = getCommandChar() + getSilenceChar() + command.getName();
 
         if (command.getType() == CommandType.TYPE_GLOBAL) {
-            registerCommandName(globalWindowProvider.get().getTabCompleter(),
+            registerCommandName(globalWindowProvider.get().getInputModel().get().getTabCompleter(),
                     plainCommandName, register);
-            registerCommandName(globalWindowProvider.get().getTabCompleter(),
+            registerCommandName(globalWindowProvider.get().getInputModel().get().getTabCompleter(),
                     silencedCommandName, register);
         }
 
@@ -177,18 +177,20 @@ public class CommandManager implements CommandController {
         for (Connection server : connectionManager.getConnections()) {
             if (command.getType() == CommandType.TYPE_SERVER
                     || command.getType() == CommandType.TYPE_GLOBAL) {
-                registerCommandName(server.getWindowModel().getTabCompleter(),
+                registerCommandName(server.getWindowModel().getInputModel().get().getTabCompleter(),
                         plainCommandName, register);
-                registerCommandName(server.getWindowModel().getTabCompleter(),
+                registerCommandName(server.getWindowModel().getInputModel().get().getTabCompleter(),
                         silencedCommandName, register);
             }
 
             if (command.getType() == CommandType.TYPE_CHANNEL
                     || command.getType() == CommandType.TYPE_CHAT) {
                 for (GroupChat channel : server.getGroupChatManager().getChannels()) {
-                    registerCommandName(channel.getWindowModel().getTabCompleter(),
+                    registerCommandName(
+                            channel.getWindowModel().getInputModel().get().getTabCompleter(),
                             plainCommandName, register);
-                    registerCommandName(channel.getWindowModel().getTabCompleter(),
+                    registerCommandName(
+                            channel.getWindowModel().getInputModel().get().getTabCompleter(),
                             silencedCommandName, register);
                 }
             }
@@ -196,9 +198,9 @@ public class CommandManager implements CommandController {
             if (command.getType() == CommandType.TYPE_QUERY
                     || command.getType() == CommandType.TYPE_CHAT) {
                 for (Query query : server.getQueries()) {
-                    registerCommandName(query.getTabCompleter(),
+                    registerCommandName(query.getInputModel().get().getTabCompleter(),
                             plainCommandName, register);
-                    registerCommandName(query.getTabCompleter(),
+                    registerCommandName(query.getInputModel().get().getTabCompleter(),
                             silencedCommandName, register);
                 }
             }
