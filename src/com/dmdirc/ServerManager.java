@@ -113,7 +113,7 @@ public class ServerManager implements ConnectionManager {
                 uri,
                 profile);
         registerServer(server);
-        windowManager.addWindow(server);
+        windowManager.addWindow(server.getWindowModel());
         return server;
     }
 
@@ -152,7 +152,7 @@ public class ServerManager implements ConnectionManager {
     public void closeAll(final String message) {
         for (Server server : servers) {
             server.disconnect(message);
-            server.close();
+            server.getWindowModel().close();
         }
     }
 

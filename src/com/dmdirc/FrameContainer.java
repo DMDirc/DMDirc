@@ -28,6 +28,7 @@ import com.dmdirc.events.FrameComponentRemovedEvent;
 import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameNameChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
+import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -51,7 +52,7 @@ import javax.annotation.Nullable;
  * The frame container implements basic methods that should be present in all objects that handle a
  * frame.
  */
-public abstract class FrameContainer implements WindowModel {
+public class FrameContainer implements WindowModel {
 
     /** Listeners not yet using ListenerSupport. */
     protected final ListenerList listeners = new ListenerList();
@@ -79,11 +80,13 @@ public abstract class FrameContainer implements WindowModel {
     private BackBuffer backBuffer;
     /** The input model for this container. */
     private Optional<InputModel> inputModel = Optional.empty();
+    /** The connection associated with this model. */
+    private Optional<Connection> connection = Optional.empty();
 
     /**
      * Instantiate new frame container.
      */
-    protected FrameContainer(
+    public FrameContainer(
             final String icon,
             final String name,
             final String title,
@@ -137,12 +140,8 @@ public abstract class FrameContainer implements WindowModel {
         return eventBus;
     }
 
-    /**
-     * Changes the name of this container, and fires a {@link FrameNameChangedEvent}.
-     *
-     * @param name The new name for this frame.
-     */
-    protected void setName(final String name) {
+    @Override
+    public void setName(final String name) {
         this.name = name;
 
         eventBus.publishAsync(new FrameNameChangedEvent(this, name));
@@ -232,6 +231,15 @@ public abstract class FrameContainer implements WindowModel {
     @Override
     public UnreadStatusManager getUnreadStatusManager() {
         return unreadStatusManager;
+    }
+
+    public void setConnection(@Nullable final Connection connection) {
+        this.connection = Optional.ofNullable(connection);
+    }
+
+    @Override
+    public Optional<Connection> getConnection() {
+        return connection;
     }
 
 }
