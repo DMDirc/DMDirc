@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.interfaces.GroupChatManager;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
@@ -63,6 +64,7 @@ public class ServerManagerTest {
     @Mock private WindowManager windowManager;
     @Mock private ServerFactoryImpl serverFactoryImpl;
     @Mock private Server server;
+    @Mock private WindowModel windowModel;
     @Mock private GroupChatManager groupChatManager;
     @Mock private DMDircMBassador eventBus;
     @Mock private Channel channel;
@@ -77,6 +79,7 @@ public class ServerManagerTest {
 
         when(server.getState()).thenReturn(ServerState.DISCONNECTED);
         when(server.getGroupChatManager()).thenReturn(groupChatManager);
+        when(server.getWindowModel()).thenReturn(windowModel);
 
         when(profileManager.getProfiles()).thenReturn(Collections.singletonList(profile));
         when(profileManager.getDefault()).thenReturn(profile);
@@ -138,10 +141,12 @@ public class ServerManagerTest {
     @Test
     public void testCloseAllWithMessage() {
         final Server serverA = mock(Server.class);
+        final WindowModel model = mock(WindowModel.class);
+        when(serverA.getWindowModel()).thenReturn(model);
         serverManager.registerServer(serverA);
         serverManager.closeAll("message here");
         verify(serverA).disconnect("message here");
-        verify(serverA).close();
+        verify(model).close();
     }
 
     @Test
@@ -206,7 +211,7 @@ public class ServerManagerTest {
     @Test
     public void testAddsNewServersToWindowManager() {
         serverManager.connectToAddress(URI.create("irc://fobar"));
-        verify(windowManager).addWindow(server);
+        verify(windowManager).addWindow(windowModel);
     }
 
 }

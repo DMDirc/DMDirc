@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.events.ServerConnectErrorEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerConnectingEvent;
@@ -83,6 +84,8 @@ import javax.net.ssl.SSLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.engio.mbassy.listener.Handler;
+
 import static com.dmdirc.util.LogUtils.APP_ERROR;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -90,7 +93,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The Server class represents the client's view of a server. It maintains a list of all channels,
  * queries, etc, and handles parser callbacks pertaining to the server.
  */
-public class Server extends FrameContainer implements Connection {
+public class Server implements Connection {
 
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
     /** The name of the general domain. */
@@ -163,6 +166,7 @@ public class Server extends FrameContainer implements Connection {
     private final HighlightManager highlightManager;
     /** Listener to use for config changes. */
     private final ConfigChangeListener configListener = (domain, key) -> updateTitle();
+    private final FrameContainer windowModel;
     /** The future used when a reconnect timer is scheduled. */
     private ScheduledFuture<?> reconnectTimerFuture;
 
@@ -183,16 +187,14 @@ public class Server extends FrameContainer implements Connection {
             @Nonnull final Profile profile,
             final BackBufferFactory backBufferFactory,
             final UserManager userManager) {
-        super("server-disconnected",
-                getHost(uri),
-                getHost(uri),
-                configMigrator.getConfigProvider(),
-                backBufferFactory,
-                eventBus,
-                Arrays.asList(
-                        WindowComponent.TEXTAREA.getIdentifier(),
-                        WindowComponent.INPUTFIELD.getIdentifier(),
-                        WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
+        // TODO: Pass this in
+        windowModel =
+                new FrameContainer("server-disconnected", getHost(uri), getHost(uri),
+                        configMigrator.getConfigProvider(), backBufferFactory, eventBus,
+                        Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
+                                WindowComponent.INPUTFIELD.getIdentifier(),
+                                WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
+        windowModel.setConnection(this);
 
         this.parserFactory = parserFactory;
         this.identityFactory = identityFactory;
@@ -206,7 +208,7 @@ public class Server extends FrameContainer implements Connection {
         this.inviteManager = new InviteManagerImpl(this);
 
         awayMessage = Optional.empty();
-        eventHandler = new ServerEventHandler(this, groupChatManager, getEventBus());
+        eventHandler = new ServerEventHandler(this, groupChatManager, windowModel.getEventBus());
 
         this.address = uri;
         this.profile = profile;
@@ -214,14 +216,15 @@ public class Server extends FrameContainer implements Connection {
 
         updateIcon();
 
-        getConfigManager().addChangeListener("formatter", "serverName", configListener);
-        getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
+        windowModel.getConfigManager().addChangeListener("formatter", "serverName", configListener);
+        windowModel.getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
 
-        initBackBuffer();
-        this.highlightManager = new HighlightManager(getConfigManager(),
-                new ColourManager(getConfigManager()));
+        windowModel.initBackBuffer();
+        this.highlightManager = new HighlightManager(windowModel.getConfigManager(),
+                new ColourManager(windowModel.getConfigManager()));
         highlightManager.init();
-        getEventBus().subscribe(highlightManager);
+        windowModel.getEventBus().subscribe(highlightManager);
+        windowModel.getEventBus().subscribe(this);
     }
 
     /**
@@ -278,7 +281,8 @@ public class Server extends FrameContainer implements Connection {
                     return;
                 case CONNECTED:
                 case CONNECTING:
-                    disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
+                    disconnect(windowModel.getConfigManager()
+                            .getOption(DOMAIN_GENERAL, "quitmessage"));
                 case DISCONNECTING:
                     while (!myState.getState().isDisconnected()) {
                         try {
@@ -313,7 +317,7 @@ public class Server extends FrameContainer implements Connection {
                 parser = Optional.ofNullable(buildParser());
 
                 if (!parser.isPresent()) {
-                    getEventBus().publishAsync(
+                    windowModel.getEventBus().publishAsync(
                             new ServerUnknownProtocolEvent(this, address.getScheme()));
                     return;
                 }
@@ -338,7 +342,7 @@ public class Server extends FrameContainer implements Connection {
             }
         }
 
-        getEventBus().publish(new ServerConnectingEvent(this, address));
+        windowModel.getEventBus().publish(new ServerConnectingEvent(this, address));
     }
 
     @Override
@@ -356,12 +360,12 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public void reconnect() {
-        reconnect(getConfigManager().getOption(DOMAIN_GENERAL, "reconnectmessage"));
+        reconnect(windowModel.getConfigManager().getOption(DOMAIN_GENERAL, "reconnectmessage"));
     }
 
     @Override
     public void disconnect() {
-        disconnect(getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
+        disconnect(windowModel.getConfigManager().getOption(DOMAIN_GENERAL, "quitmessage"));
     }
 
     @Override
@@ -403,7 +407,8 @@ public class Server extends FrameContainer implements Connection {
                 parserLock.readLock().unlock();
             }
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closequeriesonquit")) {
+            if (windowModel.getConfigManager()
+                    .getOptionBool(DOMAIN_GENERAL, "closequeriesonquit")) {
                 closeQueries();
             }
         }
@@ -423,9 +428,10 @@ public class Server extends FrameContainer implements Connection {
             }
 
             final int delay = Math.max(1000,
-                    getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay"));
+                    windowModel.getConfigManager().getOptionInt(DOMAIN_GENERAL, "reconnectdelay"));
 
-            getEventBus().publishAsync(new ServerReconnectScheduledEvent(this, delay / 1000));
+            windowModel.getEventBus().publishAsync(
+                    new ServerReconnectScheduledEvent(this, delay / 1000));
 
             reconnectTimerFuture = executorService.schedule(() -> {
                 synchronized (myStateLock) {
@@ -483,7 +489,8 @@ public class Server extends FrameContainer implements Connection {
             if (!getState().isDisconnected()) {
                 newQuery.reregister();
             }
-            getInputModel().get().getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, nick);
+            windowModel.getInputModel().get().getTabCompleter()
+                    .addEntry(TabCompletionType.QUERY_NICK, nick);
             queries.put(lnick, newQuery);
         }
 
@@ -492,8 +499,10 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public void updateQuery(final Query query, final String oldNick, final String newNick) {
-        getInputModel().get().getTabCompleter().removeEntry(TabCompletionType.QUERY_NICK, oldNick);
-        getInputModel().get().getTabCompleter().addEntry(TabCompletionType.QUERY_NICK, newNick);
+        windowModel.getInputModel().get().getTabCompleter()
+                .removeEntry(TabCompletionType.QUERY_NICK, oldNick);
+        windowModel.getInputModel().get().getTabCompleter()
+                .addEntry(TabCompletionType.QUERY_NICK, newNick);
 
         queries.put(converter.toLowerCase(newNick), query);
         queries.remove(converter.toLowerCase(oldNick));
@@ -506,7 +515,7 @@ public class Server extends FrameContainer implements Connection {
 
     @Override
     public void delQuery(final Query query) {
-        getInputModel().get().getTabCompleter().removeEntry(
+        windowModel.getInputModel().get().getTabCompleter().removeEntry(
                 TabCompletionType.QUERY_NICK, query.getNickname());
         queries.remove(converter.toLowerCase(query.getNickname()));
     }
@@ -545,7 +554,8 @@ public class Server extends FrameContainer implements Connection {
      */
     @Nullable
     private Parser buildParser() {
-        final Parser myParser = parserFactory.getParser(profile, address, getConfigManager())
+        final Parser myParser = parserFactory
+                .getParser(profile, address, windowModel.getConfigManager())
                 .orElse(null);
 
         if (myParser != null) {
@@ -554,8 +564,8 @@ public class Server extends FrameContainer implements Connection {
 
         if (myParser instanceof SecureParser) {
             final CertificateManager certificateManager =
-                    new CertificateManager(this, address.getHost(), getConfigManager(),
-                            userSettings, getEventBus());
+                    new CertificateManager(this, address.getHost(), windowModel.getConfigManager(),
+                            userSettings, windowModel.getEventBus());
             final SecureParser secureParser = (SecureParser) myParser;
             secureParser.setTrustManagers(certificateManager);
             secureParser.setKeyManagers(certificateManager.getKeyManager());
@@ -582,7 +592,7 @@ public class Server extends FrameContainer implements Connection {
         final String icon = myState.getState() == ServerState.CONNECTED
                 ? protocolDescription.get().isSecure(address)
                 ? "secure-server" : "server" : "server-disconnected";
-        setIcon(icon);
+        windowModel.setIcon(icon);
     }
 
     /**
@@ -726,48 +736,44 @@ public class Server extends FrameContainer implements Connection {
         return myState;
     }
 
-    @Override
-    public void close() {
-        synchronized (myStateLock) {
-            eventHandler.unregisterCallbacks();
-            getConfigManager().removeListener(configListener);
-            highlightManager.stop();
-            getEventBus().unsubscribe(highlightManager);
-            executorService.shutdown();
+    @Handler
+    private void handleClose(final FrameClosingEvent event) {
+        if (event.getContainer() == windowModel) {
+            synchronized (myStateLock) {
+                eventHandler.unregisterCallbacks();
+                windowModel.getConfigManager().removeListener(configListener);
+                highlightManager.stop();
+                windowModel.getEventBus().unsubscribe(highlightManager);
+                executorService.shutdown();
 
-            disconnect();
+                disconnect();
 
-            myState.transition(ServerState.CLOSING);
+                myState.transition(ServerState.CLOSING);
+            }
+
+            groupChatManager.closeAll();
+            closeQueries();
+            inviteManager.removeInvites();
+            windowModel.getEventBus().unsubscribe(this);
         }
-
-        groupChatManager.closeAll();
-        closeQueries();
-        inviteManager.removeInvites();
-
-        super.close();
     }
 
     @Override
     public WindowModel getWindowModel() {
-        return this;
+        return windowModel;
     }
 
     @Override
     public void sendCTCPReply(final String source, final String type, final String args) {
         if ("VERSION".equalsIgnoreCase(type)) {
             parser.get().sendCTCPReply(source, "VERSION",
-                    "DMDirc " + getConfigManager().getOption("version", "version") +
+                    "DMDirc " + windowModel.getConfigManager().getOption("version", "version") +
                             " - https://www.dmdirc.com/");
         } else if ("PING".equalsIgnoreCase(type)) {
             parser.get().sendCTCPReply(source, "PING", args);
         } else if ("CLIENTINFO".equalsIgnoreCase(type)) {
             parser.get().sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
-    }
-
-    @Override
-    public Optional<Connection> getConnection() {
-        return Optional.of(this);
     }
 
     @Override
@@ -785,9 +791,9 @@ public class Server extends FrameContainer implements Connection {
                     getLocalUser().map(User::getNickname).orElse("Unknown")
                 };
 
-                setName(Formatter.formatMessage(getConfigManager(),
+                windowModel.setName(Formatter.formatMessage(windowModel.getConfigManager(),
                         "serverName", arguments));
-                setTitle(Formatter.formatMessage(getConfigManager(),
+                windowModel.setTitle(Formatter.formatMessage(windowModel.getConfigManager(),
                         "serverTitle", arguments));
             } finally {
                 parserLock.readLock().unlock();
@@ -808,7 +814,7 @@ public class Server extends FrameContainer implements Connection {
             return;
         }
 
-        getEventBus().publish(new ServerDisconnectedEvent(this));
+        windowModel.getEventBus().publish(new ServerDisconnectedEvent(this));
 
         eventHandler.unregisterCallbacks();
 
@@ -837,14 +843,16 @@ public class Server extends FrameContainer implements Connection {
 
             updateIcon();
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "closequeriesondisconnect")) {
+            if (windowModel.getConfigManager()
+                    .getOptionBool(DOMAIN_GENERAL, "closequeriesondisconnect")) {
                 closeQueries();
             }
 
             inviteManager.removeInvites();
             updateAwayState(Optional.empty());
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect")
+            if (windowModel.getConfigManager()
+                    .getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect")
                     && myState.getState() == ServerState.TRANSIENTLY_DISCONNECTED) {
                 doDelayedReconnect();
             }
@@ -884,10 +892,11 @@ public class Server extends FrameContainer implements Connection {
 
             updateIcon();
 
-            getEventBus().publish(new ServerConnectErrorEvent(this, getErrorDescription
-                    (errorInfo)));
+            windowModel.getEventBus().publish(new ServerConnectErrorEvent(this,
+                    getErrorDescription(errorInfo)));
 
-            if (getConfigManager().getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure")) {
+            if (windowModel.getConfigManager()
+                    .getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure")) {
                 doDelayedReconnect();
             }
         }
@@ -949,7 +958,7 @@ public class Server extends FrameContainer implements Connection {
             groupChatManager.handleConnected();
         }
 
-        getEventBus().publish(new ServerConnectedEvent(this));
+        windowModel.getEventBus().publish(new ServerConnectedEvent(this));
     }
 
     @Override
@@ -960,7 +969,7 @@ public class Server extends FrameContainer implements Connection {
     @Override
     public void updateIgnoreList() {
         ignoreList.clear();
-        ignoreList.addAll(getConfigManager().getOptionList("network", "ignorelist"));
+        ignoreList.addAll(windowModel.getConfigManager().getOptionList("network", "ignorelist"));
     }
 
     @Override

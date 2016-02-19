@@ -92,10 +92,11 @@ public class ServerFactoryImpl {
                 identityFactory, queryFactory.get(), eventBus,
                 messageEncoderFactory, userSettings, groupChatManagerFactory, executorService,
                 uri, profile, backBufferFactory, userManager);
-        server.setInputModel(new DefaultInputModel(
+        // TODO: Yuck!
+        ((FrameContainer) server.getWindowModel()).setInputModel(new DefaultInputModel(
                 server::sendLine,
                 new ServerCommandParser(
-                        server.getConfigManager(),
+                        server.getWindowModel().getConfigManager(),
                         commandController.get(),
                         eventBus,
                         server),

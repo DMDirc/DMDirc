@@ -248,14 +248,14 @@ public class ServerEventHandler extends EventHandler {
     @Handler
     public void onPingFailed(final PingFailureEvent event) {
         eventBus.publishAsync(new StatusBarMessageEvent(new StatusMessage(
-                "No ping reply from " + owner.getName() + " for over " +
+                "No ping reply from " + owner.getWindowModel().getName() + " for over " +
                         (int) Math.floor(event.getParser().getPingTime() / 1000.0) + " seconds.",
-                owner.getConfigManager())));
+                owner.getWindowModel().getConfigManager())));
 
         eventBus.publishAsync(new ServerNoPingEvent(owner, event.getParser().getPingTime()));
 
         if (event.getParser().getPingTime()
-                >= owner.getConfigManager().getOptionInt("server", "pingtimeout")) {
+                >= owner.getWindowModel().getConfigManager().getOptionInt("server", "pingtimeout")) {
             LOG.warn("Server appears to be stoned, reconnecting");
             eventBus.publishAsync(new ServerStonedEvent(owner));
             owner.reconnect();
