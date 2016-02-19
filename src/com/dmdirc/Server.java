@@ -50,9 +50,7 @@ import com.dmdirc.parser.interfaces.ProtocolDescription;
 import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.tls.CertificateManager;
-import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.HighlightManager;
@@ -64,7 +62,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -166,7 +163,7 @@ public class Server implements Connection {
     private final HighlightManager highlightManager;
     /** Listener to use for config changes. */
     private final ConfigChangeListener configListener = (domain, key) -> updateTitle();
-    private final FrameContainer windowModel;
+    private final WindowModel windowModel;
     /** The future used when a reconnect timer is scheduled. */
     private ScheduledFuture<?> reconnectTimerFuture;
 
@@ -174,28 +171,19 @@ public class Server implements Connection {
      * Creates a new server which will connect to the specified URL with the specified profile.
      */
     public Server(
+            final WindowModel windowModel,
             final ConfigProviderMigrator configMigrator,
             final ParserFactory parserFactory,
             final IdentityFactory identityFactory,
             final QueryFactory queryFactory,
-            final DMDircMBassador eventBus,
             final MessageEncoderFactory messageEncoderFactory,
             final ConfigProvider userSettings,
             final GroupChatManagerImplFactory groupChatManagerFactory,
             final ScheduledExecutorService executorService,
             @Nonnull final URI uri,
             @Nonnull final Profile profile,
-            final BackBufferFactory backBufferFactory,
             final UserManager userManager) {
-        // TODO: Pass this in
-        windowModel =
-                new FrameContainer("server-disconnected", getHost(uri), getHost(uri),
-                        configMigrator.getConfigProvider(), backBufferFactory, eventBus,
-                        Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
-                                WindowComponent.INPUTFIELD.getIdentifier(),
-                                WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
-        windowModel.setConnection(this);
-
+        this.windowModel = windowModel;
         this.parserFactory = parserFactory;
         this.identityFactory = identityFactory;
         this.configMigrator = configMigrator;
@@ -219,7 +207,6 @@ public class Server implements Connection {
         windowModel.getConfigManager().addChangeListener("formatter", "serverName", configListener);
         windowModel.getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
 
-        windowModel.initBackBuffer();
         this.highlightManager = new HighlightManager(windowModel.getConfigManager(),
                 new ColourManager(windowModel.getConfigManager()));
         highlightManager.init();
@@ -525,26 +512,6 @@ public class Server implements Connection {
      */
     private void closeQueries() {
         new ArrayList<>(queries.values()).forEach(Query::close);
-    }
-
-    /**
-     * Retrieves the host component of the specified URI, or throws a relevant exception if this is
-     * not possible.
-     *
-     * @param uri The URI to be processed
-     *
-     * @return The URI's host component, as returned by {@link URI#getHost()}.
-     *
-     * @throws NullPointerException     If <code>uri</code> is null
-     * @throws IllegalArgumentException If the specified URI has no host
-     * @since 0.6.4
-     */
-    private static String getHost(final URI uri) {
-        if (uri.getHost() == null) {
-            throw new IllegalArgumentException("URIs must have hosts");
-        }
-
-        return uri.getHost();
     }
 
     /**

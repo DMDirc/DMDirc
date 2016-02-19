@@ -140,12 +140,8 @@ public class FrameContainer implements WindowModel {
         return eventBus;
     }
 
-    /**
-     * Changes the name of this container, and fires a {@link FrameNameChangedEvent}.
-     *
-     * @param name The new name for this frame.
-     */
-    protected void setName(final String name) {
+    @Override
+    public void setName(final String name) {
         this.name = name;
 
         eventBus.publishAsync(new FrameNameChangedEvent(this, name));
