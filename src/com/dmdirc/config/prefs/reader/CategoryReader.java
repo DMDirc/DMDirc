@@ -75,7 +75,7 @@ public class CategoryReader {
         this.data = checkNotNull(data);
     }
 
-    public void read() throws PreferencesReaderException {
+    public void read() {
         title = requiredString(data, TITLE_KEY);
         description = optionalString(data, DESCRIPTION_KEY);
         icon = optionalString(data, ICON_KEY);

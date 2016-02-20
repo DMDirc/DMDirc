@@ -28,7 +28,6 @@ import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfJoinEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
 import com.dmdirc.events.CommandErrorEvent;
-import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.NickListClientAddedEvent;
 import com.dmdirc.events.NickListClientRemovedEvent;
 import com.dmdirc.events.NickListClientsChangedEvent;
@@ -47,8 +46,6 @@ import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.colours.Colour;
-import com.dmdirc.util.colours.ColourUtils;
 
 import com.google.common.collect.EvictingQueue;
 
@@ -366,49 +363,6 @@ public class Channel extends FrameContainer implements GroupChat {
         } else {
             return user.getImportantMode();
         }
-    }
-
-    /**
-     * Returns a string[] containing the nickname/ident/host of a channel client.
-     *
-     *
-     *
-     * @param client The channel client to check
-     *
-     * @return  A string[] containing displayable components
-     *          0 - mode
-     *          1 - nickname
-     *          2 - ident
-     *          3 - hostname
-     */
-    private String[] getDetails(final GroupChatUser client) {
-        if (client == null) {
-            // WTF?
-            throw new UnsupportedOperationException("getDetails called with"
-                    + " null ChannelClientInfo");
-        }
-
-        final String[] res = {
-            getModes(client),
-            Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME,
-            client.getUsername().orElse(""),
-            client.getHostname().orElse(""),};
-
-        if (showColours) {
-            final Optional<Colour> foreground
-                    = client.getDisplayProperty(DisplayProperty.FOREGROUND_COLOUR);
-            final Optional<Colour> background
-                    = client.getDisplayProperty(DisplayProperty.BACKGROUND_COLOUR);
-            if (foreground.isPresent()) {
-                String prefix = Styliser.CODE_HEXCOLOUR + ColourUtils.getHex(foreground.get());
-                if (background.isPresent()) {
-                    prefix += ',' + ColourUtils.getHex(background.get());
-                }
-                res[1] = prefix + res[1] + Styliser.CODE_HEXCOLOUR;
-            }
-        }
-
-        return res;
     }
 
     // ---------------------------------------------------- TOPIC HANDLING -----
