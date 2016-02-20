@@ -22,7 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -64,11 +63,10 @@ public class ConfigModule {
             @Directory(DirectoryType.IDENTITIES) final Path identitiesDirectory,
             @Directory(DirectoryType.ERRORS) final Path errorsDirectory,
             final CommandLineParser commandLineParser,
-            final DMDircMBassador eventBus,
             final ClientInfo clientInfo,
             final ErrorManager errorManager) {
         final IdentityManager identityManager = new IdentityManager(baseDirectory,
-                identitiesDirectory, eventBus, clientInfo);
+                identitiesDirectory, clientInfo);
         errorManager.initialise(identityManager.getGlobalConfiguration());
         identityManager.loadVersionIdentity();
         try {

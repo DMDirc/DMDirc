@@ -38,7 +38,6 @@ import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 import com.dmdirc.util.ChildEventBusManager;
-import com.dmdirc.util.collections.ListenerList;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -54,8 +53,6 @@ import javax.annotation.Nullable;
  */
 public class FrameContainer implements WindowModel {
 
-    /** Listeners not yet using ListenerSupport. */
-    protected final ListenerList listeners = new ListenerList();
     /** The name of the icon being used for this container's frame. */
     private String icon;
     /** The name of this container. */

@@ -22,7 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -79,18 +78,16 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /**
      * The identities that have been loaded into this manager.
      *
-     * Standard identities are inserted with a <code>null</code> key, custom identities use their
+     * Standard identities are inserted with a {@code null} key, custom identities use their
      * custom type as the key.
      */
     private final Multimap<String, ConfigProvider> identities = ArrayListMultimap.create();
     /** Map of paths to corresponding config providers, to facilitate reloading. */
     private final Map<Path, ConfigProvider> configProvidersByPath = new ConcurrentHashMap<>();
-    /** The event bus to post events to. */
-    private final DMDircMBassador eventBus;
     /**
      * The {@link ConfigProviderListener}s that have registered with this manager.
      *
-     * Listeners for standard identities are inserted with a <code>null</code> key, listeners for a
+     * Listeners for standard identities are inserted with a {@code null} key, listeners for a
      * specific custom type use their type as the key.
      */
     private final Multimap<String, WeakReference<ConfigProviderListener>> listeners =
@@ -111,13 +108,11 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @param baseDirectory       The BASE config directory.
      * @param identitiesDirectory The directory to store identities in.
-     * @param eventBus            The event bus to post events to
      */
     public IdentityManager(final Path baseDirectory, final Path identitiesDirectory,
-            final DMDircMBassador eventBus, final ClientInfo clientInfo) {
+            final ClientInfo clientInfo) {
         this.configDirectory = baseDirectory;
         this.identitiesDirectory = identitiesDirectory;
-        this.eventBus = eventBus;
         this.clientInfo = clientInfo;
     }
 
@@ -661,9 +656,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
-                ircd,
-                network, server);
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol,
+                ircd, network, server);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -671,7 +665,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol,
                 ircd, network, server, channel);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
@@ -680,7 +674,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol,
                 ircd, network, server);
         setUpConfigManager(configManager);
         return configManager;
@@ -689,7 +683,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, eventBus, protocol,
+        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol,
                 ircd, network, server, channel);
         setUpConfigManager(configManager);
         return configManager;

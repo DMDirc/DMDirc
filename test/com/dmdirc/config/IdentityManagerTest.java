@@ -22,7 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.tests.JimFsRule;
 import com.dmdirc.util.ClientInfo;
@@ -47,7 +46,6 @@ public class IdentityManagerTest {
 
     @Rule public final JimFsRule jimFsRule = new JimFsRule();
 
-    @Mock private DMDircMBassador eventBus;
     @Mock private ClientInfo clientInfo;
 
     private Path baseDirectory;
@@ -62,7 +60,7 @@ public class IdentityManagerTest {
     @Test
     public void testLoadsVersionIdentity() throws InvalidIdentityFileException {
         final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus, clientInfo);
+                baseDirectory, identitiesDirectory, clientInfo);
         identityManager.initialise();
 
         final ConfigProvider versionSettings = identityManager.getVersionSettings();
@@ -74,7 +72,7 @@ public class IdentityManagerTest {
     @Test
     public void testUsesSystemUsernameForProfileNickname() throws InvalidIdentityFileException {
         final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus, clientInfo);
+                baseDirectory, identitiesDirectory, clientInfo);
         identityManager.initialise();
 
         System.setProperty("user.name", "Awesome User");
@@ -90,7 +88,7 @@ public class IdentityManagerTest {
                 identitiesDirectory.resolve("profile"));
 
         final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, eventBus, clientInfo);
+                baseDirectory, identitiesDirectory, clientInfo);
         identityManager.initialise();
 
         final Collection<ConfigProvider> profiles = identityManager.getProvidersByType("profile");

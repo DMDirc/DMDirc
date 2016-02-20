@@ -71,7 +71,6 @@ import dagger.ObjectGraph;
  */
 public class Main {
 
-    private final Logger log = LoggerFactory.getLogger(Main.class);
     /** The UI to use for the client. */
     private final Collection<UIController> CONTROLLERS = new HashSet<>();
     /** The identity manager the client will use. */
