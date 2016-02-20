@@ -83,7 +83,7 @@ public class FrameContainer implements WindowModel {
     /** The connection associated with this model. */
     private Optional<Connection> connection = Optional.empty();
     /** The ID for this window. */
-    @Nullable private String id = null;
+    @Nullable private String id;
 
     /**
      * Instantiate new frame container.
@@ -119,7 +119,7 @@ public class FrameContainer implements WindowModel {
 
     @Override
     public String getId() {
-        if (this.id == null) {
+        if (id == null) {
             throw new IllegalStateException("ID has not been set");
         }
         return id;

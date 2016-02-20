@@ -32,7 +32,6 @@ import com.dmdirc.parser.interfaces.Parser;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;

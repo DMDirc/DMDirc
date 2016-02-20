@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.Query;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;

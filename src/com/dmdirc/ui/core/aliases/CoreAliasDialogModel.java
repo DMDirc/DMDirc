@@ -148,14 +148,14 @@ public class CoreAliasDialogModel implements AliasDialogModel {
         final Alias alias = aliases.get(name);
         aliases.remove(name);
         if (getSelectedAlias().isPresent() && getSelectedAlias().get().equals(alias)) {
-            setSelectedAlias(Optional.<Alias>empty());
+            setSelectedAlias(Optional.empty());
         }
         listeners.getCallable(AliasDialogModelListener.class).aliasRemoved(alias);
     }
 
     @Override
     public void save() {
-        setSelectedAlias(Optional.<Alias>empty());
+        setSelectedAlias(Optional.empty());
         aliasManager.getAliases().forEach(aliasManager::removeAlias);
         aliases.values().forEach(aliasManager::addAlias);
     }
