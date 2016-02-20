@@ -38,6 +38,21 @@ import java.util.Set;
  */
 public interface WindowModel {
 
+    /**
+     * Gets a unique ID that identifies this window.
+     *
+     * @return This window's unique ID.
+     */
+    String getId();
+
+    /**
+     * Sets the ID for this window. This may only be called once; attempting to overwrite a
+     * previous ID will throw an exception.
+     *
+     * @param id The new ID for this window.
+     */
+    void setId(String id);
+
     String getIcon();
 
     String getName();

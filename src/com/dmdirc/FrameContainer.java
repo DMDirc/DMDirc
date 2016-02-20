@@ -82,6 +82,8 @@ public class FrameContainer implements WindowModel {
     private Optional<InputModel> inputModel = Optional.empty();
     /** The connection associated with this model. */
     private Optional<Connection> connection = Optional.empty();
+    /** The ID for this window. */
+    @Nullable private String id = null;
 
     /**
      * Instantiate new frame container.
@@ -113,6 +115,22 @@ public class FrameContainer implements WindowModel {
     protected void initBackBuffer() {
         backBuffer = backBufferFactory.getBackBuffer(this);
         backBuffer.startAddingEvents();
+    }
+
+    @Override
+    public String getId() {
+        if (this.id == null) {
+            throw new IllegalStateException("ID has not been set");
+        }
+        return id;
+    }
+
+    @Override
+    public void setId(@Nullable final String id) {
+        if (this.id != null) {
+            throw new IllegalStateException("ID already set");
+        }
+        this.id = id;
     }
 
     @Override

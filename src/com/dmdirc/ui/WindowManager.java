@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -60,8 +61,12 @@ public class WindowManager {
     private final Map<WindowModel, WindowModel> parents = new HashMap<>();
     /** Mapping of parents to their children. */
     private final Multimap<WindowModel, WindowModel> children = ArrayListMultimap.create();
+    /** Mapping of IDs to windows. */
+    private final Map<String, WindowModel> windowsById = new HashMap<>();
     /** A list of frame listeners. */
     private final ListenerList listeners = new ListenerList();
+    /** Counter to use for ID assignments. */
+    private final AtomicLong nextId = new AtomicLong(0L);
 
     /**
      * Creates a new instance of {@link WindowManager}.
@@ -182,7 +187,7 @@ public class WindowManager {
         checkArgument(!rootWindows.contains(window));
 
         rootWindows.add(window);
-
+        assignId(window);
         fireAddWindow(window, focus);
     }
 
@@ -220,7 +225,7 @@ public class WindowManager {
 
         parents.put(child, parent);
         children.put(parent, child);
-
+        assignId(child);
         fireAddWindow(parent, child, focus);
     }
 
@@ -256,6 +261,7 @@ public class WindowManager {
 
         children.get(window).forEach(WindowModel::close);
         children.removeAll(window);
+        windowsById.remove(window.getId());
 
         if (rootWindows.contains(window)) {
             fireDeleteWindow(window);
@@ -330,6 +336,27 @@ public class WindowManager {
      */
     public Collection<WindowModel> getRootWindows() {
         return Collections.unmodifiableCollection(rootWindows);
+    }
+
+    /**
+     * Retrieves the window with the specified ID.
+     *
+     * @param id The ID of the window to retrieve
+     * @return The window with the given ID, if it exists.
+     */
+    public Optional<WindowModel> getWindowById(final String id) {
+        return Optional.ofNullable(windowsById.get(id));
+    }
+
+    /**
+     * Assigns a unique ID to the given window.
+     *
+     * @param window The window to assign an ID to.
+     */
+    private void assignId(final WindowModel window) {
+        final String id = "WINDOW/" + nextId.getAndIncrement();
+        window.setId(id);
+        windowsById.put(id, window);
     }
 
     /**
