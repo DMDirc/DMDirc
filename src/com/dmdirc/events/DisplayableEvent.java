@@ -32,20 +32,6 @@ import java.util.Optional;
 public interface DisplayableEvent {
 
     /**
-     * Gets the format name that will be used to display the event.
-     *
-     * @return The format name to use for the event.
-     */
-    String getDisplayFormat();
-
-    /**
-     * Sets the format name that should be used to display the event.
-     *
-     * @param format The format name to use for the event.
-     */
-    void setDisplayFormat(String format);
-
-    /**
      * Sets a property relating to how this event should be displayed.
      *
      * @param property The property to be set

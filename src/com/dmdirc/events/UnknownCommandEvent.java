@@ -25,7 +25,6 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nullable;
 
@@ -34,8 +33,6 @@ import javax.annotation.Nullable;
  */
 public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent {
 
-    /** The display format to use for this event. */
-    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
     @Nullable private final WindowModel source;
@@ -69,16 +66,6 @@ public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent
 
     public String[] getArguments() {
         return arguments;
-    }
-
-    @Override
-    public String getDisplayFormat() {
-        return displayFormatRef.get();
-    }
-
-    @Override
-    public void setDisplayFormat(final String format) {
-        displayFormatRef.set(format);
     }
 
     @Override

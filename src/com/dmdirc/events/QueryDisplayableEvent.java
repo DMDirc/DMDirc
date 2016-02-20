@@ -26,16 +26,12 @@ import com.dmdirc.Query;
 import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Base type for displayable events that occur in queries.
  */
-public abstract class QueryDisplayableEvent extends QueryEvent implements
-        DisplayableEvent {
+public abstract class QueryDisplayableEvent extends QueryEvent implements DisplayableEvent {
 
-    /** The display format to use for this event. */
-    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
@@ -45,16 +41,6 @@ public abstract class QueryDisplayableEvent extends QueryEvent implements
 
     public QueryDisplayableEvent(final Query query) {
         super(query);
-    }
-
-    @Override
-    public String getDisplayFormat() {
-        return displayFormatRef.get();
-    }
-
-    @Override
-    public void setDisplayFormat(final String format) {
-        displayFormatRef.set(format);
     }
 
     @Override
