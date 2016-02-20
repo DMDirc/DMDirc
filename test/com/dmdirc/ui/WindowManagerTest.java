@@ -33,11 +33,15 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyObject;
@@ -56,6 +60,7 @@ public class WindowManagerTest {
     @Mock private WindowModel child;
     @Mock private WindowModel grandchild;
     @Mock private DMDircMBassador eventBus;
+    @Captor private ArgumentCaptor<String> idCaptor;
     private WindowManager manager;
 
     @Before
@@ -269,4 +274,35 @@ public class WindowManagerTest {
 
         assertNull(manager.findCustomWindow(customContainer, "test"));
     }
+
+    @Test
+    public void testAssignId() {
+        manager.addWindow(container);
+        manager.addWindow(container, child);
+
+        verify(container).setId(idCaptor.capture());
+        final String parentId = idCaptor.getValue();
+
+        verify(child).setId(idCaptor.capture());
+        final String childId = idCaptor.getValue();
+
+        assertNotEquals(parentId, childId);
+    }
+
+    @Test
+    public void testGetById() {
+        manager.addWindow(container);
+        manager.addWindow(container, child);
+
+        verify(container).setId(idCaptor.capture());
+        final String parentId = idCaptor.getValue();
+
+        verify(child).setId(idCaptor.capture());
+        final String childId = idCaptor.getValue();
+
+        assertSame(container, manager.getWindowById(parentId).get());
+        assertSame(child, manager.getWindowById(childId).get());
+        assertEquals(Optional.empty(), manager.getWindowById("invalid"));
+    }
+
 }
