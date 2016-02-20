@@ -90,7 +90,7 @@ public abstract class ResourceManager {
         } else if (url.startsWith("jar://") || url.startsWith("zip://")) {
             return new ZipResourceManager(url.substring(6));
         } else {
-            throw new IllegalArgumentException("Unknown resource manager type (" + url + ")");
+            throw new IllegalArgumentException("Unknown resource manager type (" + url + ')');
         }
     }
 
@@ -134,7 +134,7 @@ public abstract class ResourceManager {
 
         if (usePath && resourceName.indexOf('/') > -1) {
             newDir = new File(directory,
-                    resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
+                    resourceName.substring(0, resourceName.lastIndexOf('/')) + '/');
         } else {
             newDir = new File(directory);
         }

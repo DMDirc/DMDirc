@@ -61,7 +61,7 @@ public final class PreviousCommand {
             return false;
         }
         final PreviousCommand other = (PreviousCommand) obj;
-        return Objects.equals(this.line, other.line) && this.time == other.time;
+        return Objects.equals(line, other.line) && time == other.time;
     }
 
 }

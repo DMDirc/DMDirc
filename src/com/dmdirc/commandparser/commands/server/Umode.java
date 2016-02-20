@@ -70,7 +70,7 @@ public class Umode extends Command {
 
         connection.getParser().get().sendRawMessage("MODE "
                 + connection.getParser().get().getLocalClient().getNickname()
-                + " " + args.getArgumentsAsString());
+                + ' ' + args.getArgumentsAsString());
     }
 
 }

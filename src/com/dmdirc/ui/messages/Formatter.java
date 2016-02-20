@@ -66,26 +66,26 @@ public final class Formatter {
 
         final String res = config.hasOptionString("formatter", messageType)
                 ? config.getOption("formatter", messageType).replace("%-1$", "%"
-                        + arguments.length + "$") : null;
+                        + arguments.length + '$') : null;
 
         if (res == null) {
-            return "<No format string for message type " + messageType + ">";
+            return "<No format string for message type " + messageType + '>';
         } else {
             try {
                 final Object[] newArgs = castArguments(res, arguments);
                 return String.format(res.replaceAll("(%[0-9]+\\$)u", "$1s"), newArgs);
             } catch (IllegalFormatConversionException ex) {
                 return "<Invalid format string for message type " + messageType
-                        + "; Error: Illegal format conversion: " + ex.getMessage() + ">";
+                        + "; Error: Illegal format conversion: " + ex.getMessage() + '>';
             } catch (UnknownFormatConversionException ex) {
                 return "<Invalid format string for message type " + messageType
-                        + "; Error: Unknown format conversion: " + ex.getMessage() + ">";
+                        + "; Error: Unknown format conversion: " + ex.getMessage() + '>';
             } catch (MissingFormatArgumentException ex) {
                 return "<Invalid format string for message type " + messageType
-                        + "; Error: Missing format argument: " + ex.getMessage() + ">";
+                        + "; Error: Missing format argument: " + ex.getMessage() + '>';
             } catch (NumberFormatException ex) {
                 return "<Invalid format string for message type " + messageType
-                        + "; Error: Invalid number conversion: " + ex.getMessage() + ">";
+                        + "; Error: Invalid number conversion: " + ex.getMessage() + '>';
             }
         }
     }
@@ -181,7 +181,7 @@ public final class Formatter {
         final Character[] types = new Character[args.length];
 
         for (int i = 0; i < args.length; i++) {
-            final int index = format.indexOf("%" + (i + 1) + "$");
+            final int index = format.indexOf("%" + (i + 1) + '$');
 
             if (index > -1) {
                 types[i] = format.charAt(index + 3);

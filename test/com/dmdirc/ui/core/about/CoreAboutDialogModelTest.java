@@ -24,7 +24,6 @@ package com.dmdirc.ui.core.about;
 
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineParser;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
@@ -51,7 +50,6 @@ import static org.mockito.Mockito.when;
 public class CoreAboutDialogModelTest {
 
     @Mock private ClientInfo clientInfo;
-    @Mock private AggregateConfigProvider globalConfig;
     @Mock private Path path;
     @Mock private DMDircMBassador eventBus;
     @Mock private PluginManager pluginManager;
@@ -69,7 +67,6 @@ public class CoreAboutDialogModelTest {
         when(clientInfo.getVersionInformation()).thenReturn("DMDirc Version");
         when(clientInfo.getOperatingSystemInformation()).thenReturn("OS Version");
         when(clientInfo.getJavaInformation()).thenReturn("Java Version");
-        when(globalConfig.getOption("identity", "modealiasversion")).thenReturn("ModeAlias Version");
         when(pluginManager.getPluginInfos()).thenReturn(Lists.newArrayList(pluginInfo1, pluginInfo2));
         when(pluginInfo1.getPath("/META-INF/licences/")).thenReturn(pluginPath1);
         when(pluginInfo2.getPath("/META-INF/licences/")).thenReturn(pluginPath2);
@@ -78,8 +75,8 @@ public class CoreAboutDialogModelTest {
         when(pluginMetaData1.getFriendlyName()).thenReturn("Plugin1");
         when(pluginMetaData2.getFriendlyName()).thenReturn("Plugin2");
         when(commandLineParser.getLauncherVersion()).thenReturn(Optional.of("Unknown"));
-        instance = new CoreAboutDialogModel(globalConfig, path, clientInfo, eventBus,
-                pluginManager, commandLineParser);
+        instance = new CoreAboutDialogModel(path, clientInfo, eventBus, pluginManager,
+                commandLineParser);
         instance.load();
     }
 

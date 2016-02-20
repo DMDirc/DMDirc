@@ -97,28 +97,28 @@ public class UpdateManagerImpl implements UpdateManager {
     @Override
     public void addCheckStrategy(final UpdateCheckStrategy strategy) {
         LOG.trace("Adding new check strategy: {}", strategy);
-        this.checkers.add(strategy);
+        checkers.add(strategy);
     }
 
     @Override
     public void addRetrievalStrategy(final UpdateRetrievalStrategy strategy) {
         LOG.trace("Adding new retrieval strategy: {}", strategy);
         strategy.addUpdateRetrievalListener(retrievalListener);
-        this.retrievers.add(strategy);
+        retrievers.add(strategy);
     }
 
     @Override
     public void addInstallationStrategy(final UpdateInstallationStrategy strategy) {
         LOG.trace("Adding new installation strategy: {}", strategy);
         strategy.addUpdateInstallationListener(installationListener);
-        this.installers.add(strategy);
+        installers.add(strategy);
     }
 
     @Override
     public void addComponent(final UpdateComponent component) {
         LOG.trace("Adding new component: {}", component);
         synchronized (componentsLock) {
-            this.components.put(component.getName(), component);
+            components.put(component.getName(), component);
         }
     }
 
@@ -126,17 +126,17 @@ public class UpdateManagerImpl implements UpdateManager {
     public void removeComponent(final UpdateComponent component) {
         LOG.trace("Removing component: {}", component);
         synchronized (componentsLock) {
-            this.components.remove(component.getName());
+            components.remove(component.getName());
         }
 
-        this.checkResults.remove(component);
-        this.retrievalResults.remove(component);
+        checkResults.remove(component);
+        retrievalResults.remove(component);
     }
 
     @Override
     public Collection<UpdateComponent> getComponents() {
         synchronized (componentsLock) {
-            return Collections.unmodifiableCollection(this.components.values());
+            return Collections.unmodifiableCollection(components.values());
         }
     }
 

@@ -45,7 +45,7 @@ public final class IRCTextAttribute extends Attribute {
      */
     protected IRCTextAttribute(final String name) {
         super(name);
-        if (this.getClass() == IRCTextAttribute.class) {
+        if (getClass() == IRCTextAttribute.class) {
             INSTANCE_MAP.put(name, this);
         }
     }
@@ -60,7 +60,7 @@ public final class IRCTextAttribute extends Attribute {
      */
     @Override
     protected Object readResolve() throws InvalidObjectException {
-        if (this.getClass() != IRCTextAttribute.class) {
+        if (getClass() != IRCTextAttribute.class) {
             throw new InvalidObjectException("subclass didn't correctly implement readResolve");
         }
 

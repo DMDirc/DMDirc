@@ -98,7 +98,7 @@ public class CommandFlag {
      * @param enabled The flags which will be enabled
      */
     public void addEnabled(final CommandFlag... enabled) {
-        this.enables.addAll(Arrays.asList(enabled));
+        enables.addAll(Arrays.asList(enabled));
     }
 
     /**
@@ -107,7 +107,7 @@ public class CommandFlag {
      * @param disabled The flags which will be disabled
      */
     public void addDisabled(final CommandFlag... disabled) {
-        this.disables.addAll(Arrays.asList(disabled));
+        disables.addAll(Arrays.asList(disabled));
     }
 
     /**

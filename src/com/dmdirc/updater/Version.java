@@ -74,16 +74,16 @@ public class Version implements Comparable<Version> {
 
     @Override
     public int compareTo(@Nonnull final Version o) {
-        if (o.intVersion > Integer.MIN_VALUE && this.intVersion > Integer.MIN_VALUE) {
-            return this.intVersion - o.intVersion;
-        } else if (o.strVersion == null && this.strVersion == null) {
+        if (o.intVersion > Integer.MIN_VALUE && intVersion > Integer.MIN_VALUE) {
+            return intVersion - o.intVersion;
+        } else if (o.strVersion == null && strVersion == null) {
             return 0;
-        } else if (o.strVersion == null && this.strVersion != null) {
+        } else if (o.strVersion == null && strVersion != null) {
             return 1;
-        } else if (o.strVersion != null && this.strVersion == null) {
+        } else if (o.strVersion != null && strVersion == null) {
             return -1;
         } else {
-            final String[] myParts = this.strVersion.split("-");
+            final String[] myParts = strVersion.split("-");
             final String[] thParts = o.strVersion.split("-");
 
             final String[] myFirstParts = myParts[0].split("\\.|(?=a|b|rc|m)");
