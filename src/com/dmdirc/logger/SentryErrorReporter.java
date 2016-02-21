@@ -25,6 +25,8 @@ package com.dmdirc.logger;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.util.ClientInfo;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Optional;
 
@@ -68,12 +70,12 @@ public class SentryErrorReporter {
     public void sendException(
             final String message,
             final ErrorLevel level,
-            final Date timestamp,
+            final LocalDateTime timestamp,
             final Optional<Throwable> exception) {
         final EventBuilder eventBuilder = newEventBuilder()
                 .withMessage(message)
                 .withLevel(getSentryLevel(level))
-                .withTimestamp(timestamp);
+                .withTimestamp(Date.from(timestamp.toInstant(ZoneOffset.UTC)));
 
         exception.ifPresent(e -> eventBuilder.withSentryInterface(new ExceptionInterface(e)));
 

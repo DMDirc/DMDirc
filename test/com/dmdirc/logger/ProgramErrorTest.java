@@ -26,7 +26,7 @@ import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProgramErrorStatusEvent;
 import com.dmdirc.util.ClientInfo;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +51,7 @@ public class ProgramErrorTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorNullErrorLevel() {
-        new ProgramError(null, "moo", null, new Date(),eventBus, true);
+        new ProgramError(null, "moo", null, LocalDateTime.now(), eventBus, true);
     }
 
     @Test(expected = NullPointerException.class)
@@ -62,26 +62,26 @@ public class ProgramErrorTest {
     @Test
     public void testConstructorGood() {
         new ProgramError(ErrorLevel.HIGH, "moo", new UnsupportedOperationException(),
-                new Date(), eventBus, true);
+                LocalDateTime.now(), eventBus, true);
     }
 
     @Test
     public void testGetLevel() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), new Date(), eventBus, true);
+                new UnsupportedOperationException(), LocalDateTime.now(), eventBus, true);
         assertEquals(ErrorLevel.HIGH, pe.getLevel());
     }
 
     @Test
     public void testGetMessage() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), new Date(), eventBus, true);
+                new UnsupportedOperationException(), LocalDateTime.now(), eventBus, true);
         assertEquals("moo", pe.getMessage());
     }
 
     @Test
     public void testGetDate() {
-        final Date date = new Date();
+        final LocalDateTime date = LocalDateTime.now();
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
                 new UnsupportedOperationException(), date, eventBus, true);
         assertEquals(date, pe.getDate());
@@ -90,14 +90,14 @@ public class ProgramErrorTest {
     @Test
     public void testIsAppError() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), new Date(), eventBus, true);
+                new UnsupportedOperationException(), LocalDateTime.now(), eventBus, true);
         assertTrue(pe.isAppError());
     }
 
     @Test
     public void testReportStatus() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), new Date(), eventBus, true);
+                new UnsupportedOperationException(), LocalDateTime.now(), eventBus, true);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
         pe.setReportStatus(null);
         assertEquals(ErrorReportStatus.WAITING, pe.getReportStatus());
@@ -114,7 +114,7 @@ public class ProgramErrorTest {
     @Test
     public void testToString() {
         final ProgramError pe = new ProgramError(ErrorLevel.HIGH, "moo",
-                new UnsupportedOperationException(), new Date(), eventBus, true);
+                new UnsupportedOperationException(), LocalDateTime.now(), eventBus, true);
         assertTrue(pe.toString().contains("moo"));
     }
 
@@ -122,15 +122,15 @@ public class ProgramErrorTest {
     public void testEquals() {
         final Exception ex = new UnsupportedOperationException();
         final ProgramError pe1 = new ProgramError(ErrorLevel.LOW, "moo",
-                ex, new Date(), eventBus, true);
+                ex, LocalDateTime.now(), eventBus, true);
         final ProgramError pe2 = new ProgramError(ErrorLevel.LOW, "moo",
-                ex, new Date(), eventBus, true);
+                ex, LocalDateTime.now(), eventBus, true);
         final ProgramError pe3 = new ProgramError(ErrorLevel.MEDIUM, "moo",
-                ex, new Date(), eventBus, true);
+                ex, LocalDateTime.now(), eventBus, true);
         final ProgramError pe4 = new ProgramError(ErrorLevel.LOW, "bar",
-                ex, new Date(), eventBus, true);
+                ex, LocalDateTime.now(), eventBus, true);
         final ProgramError pe5 = new ProgramError(ErrorLevel.LOW, "moo",
-                null, new Date(), eventBus, true);
+                null, LocalDateTime.now(), eventBus, true);
 
         assertFalse(pe1.equals(null)); // NOPMD
         assertFalse(pe1.equals("moo"));

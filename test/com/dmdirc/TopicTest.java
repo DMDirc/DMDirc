@@ -24,7 +24,8 @@ package com.dmdirc;
 
 import com.dmdirc.interfaces.GroupChatUser;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -37,25 +38,24 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class TopicTest {
 
-    @Mock
-    private GroupChatUser user;
+    @Mock private GroupChatUser user;
 
     @Test
     public void testGetClient() {
-        final Topic test = Topic.create("abc", user, new Date());
+        final Topic test = Topic.create("abc", user, LocalDateTime.now());
         assertEquals(Optional.of(user), test.getClient());
     }
 
     @Test
     public void testGetTime() {
-        final Date date = new Date(123394432);
+        final LocalDateTime date = LocalDateTime.ofEpochSecond(123394432L, 0, ZoneOffset.UTC);
         final Topic test = Topic.create("abc", user, date);
         assertEquals(date, test.getDate());
     }
 
     @Test
     public void testGetTopic() {
-        final Topic test = Topic.create("abc", user, new Date());
+        final Topic test = Topic.create("abc", user, LocalDateTime.now());
         assertEquals("abc", test.getTopic());
     }
 
