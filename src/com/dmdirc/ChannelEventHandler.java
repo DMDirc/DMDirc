@@ -60,7 +60,7 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.google.common.base.Strings;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -139,7 +139,7 @@ public class ChannelEventHandler extends EventHandler {
 
         final Topic topic = Topic.create(channel.getTopic(),
                 owner.getUser(getConnection().getUser(channel.getTopicSetter())).orElse(null),
-                new Date(1000 * channel.getTopicTime()));
+                LocalDateTime.ofEpochSecond(channel.getTopicTime(), 0, ZoneOffset.UTC));
 
         if (event.isJoinTopic()) {
             if (Strings.isNullOrEmpty(channel.getTopic())) {
