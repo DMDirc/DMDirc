@@ -87,8 +87,6 @@ import com.dmdirc.parser.events.WallopEvent;
 import com.dmdirc.parser.events.WalluserEvent;
 import com.dmdirc.ui.StatusMessage;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -158,8 +156,8 @@ public class ServerEventHandler extends EventHandler {
     @Handler
     public void onWhoisEvent(final UserInfoEvent event) {
         eventBus.publishAsync(new UserInfoResponseEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()),
-                owner, owner.getUser(event.getClient().getNickname()), event.getInfo()));
+                event.getDate(), owner, owner.getUser(event.getClient().getNickname()),
+                event.getInfo()));
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
