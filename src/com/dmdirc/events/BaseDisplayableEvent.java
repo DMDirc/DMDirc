@@ -24,38 +24,26 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Base class for miscallenous displayable events.
  */
 public abstract class BaseDisplayableEvent extends DMDircEvent implements DisplayableEvent {
 
-    /** The display format to use for this event. */
-    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
     /** The frame container that caused this event. */
     private final WindowModel source;
 
-    public BaseDisplayableEvent(final long timestamp, final WindowModel source) {
+    public BaseDisplayableEvent(final LocalDateTime timestamp, final WindowModel source) {
         super(timestamp);
         this.source = source;
     }
 
     public BaseDisplayableEvent(final WindowModel source) {
         this.source = source;
-    }
-
-    @Override
-    public String getDisplayFormat() {
-        return displayFormatRef.get();
-    }
-
-    @Override
-    public void setDisplayFormat(final String format) {
-        displayFormatRef.set(format);
     }
 
     @Override

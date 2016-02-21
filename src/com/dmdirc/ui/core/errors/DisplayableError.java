@@ -28,7 +28,7 @@ import com.dmdirc.logger.ProgramError;
 
 import com.google.common.base.MoreObjects;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -36,14 +36,14 @@ import java.util.Objects;
  */
 public class DisplayableError {
 
-    private final Date date;
+    private final LocalDateTime date;
     private final String summary;
     private final String details;
     private final ErrorLevel severity;
     private final ProgramError programError;
     private ErrorReportStatus reportStatus;
 
-    public DisplayableError(final Date date, final String summary, final String details,
+    public DisplayableError(final LocalDateTime date, final String summary, final String details,
             final ErrorLevel severity, final ErrorReportStatus reportStatus,
             final ProgramError programError) {
         this.date = date;
@@ -54,8 +54,8 @@ public class DisplayableError {
         this.reportStatus = reportStatus;
     }
 
-    public Date getDate() {
-        return (Date) date.clone();
+    public LocalDateTime getDate() {
+        return date;
     }
 
     public String getSummary() {

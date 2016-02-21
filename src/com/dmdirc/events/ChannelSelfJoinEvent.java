@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when the local user joins a channel.
  */
@@ -32,7 +34,7 @@ public class ChannelSelfJoinEvent extends ChannelDisplayableEvent {
 
     private final User client;
 
-    public ChannelSelfJoinEvent(final long timestamp, final GroupChat channel,
+    public ChannelSelfJoinEvent(final LocalDateTime timestamp, final GroupChat channel,
             final User client) {
         super(timestamp, channel);
         this.client = client;

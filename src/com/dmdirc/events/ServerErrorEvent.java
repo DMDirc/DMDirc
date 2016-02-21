@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired on receipt of a server error.
  */
@@ -31,7 +33,8 @@ public class ServerErrorEvent extends ServerDisplayableEvent {
 
     private final String reason;
 
-    public ServerErrorEvent(final long timestamp, final Connection connection, final String reason) {
+    public ServerErrorEvent(final LocalDateTime timestamp, final Connection connection,
+            final String reason) {
         super(timestamp, connection);
         this.reason = reason;
     }

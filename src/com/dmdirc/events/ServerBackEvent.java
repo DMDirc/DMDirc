@@ -24,12 +24,14 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when you set back from being away.
  */
 public class ServerBackEvent extends ServerDisplayableEvent {
 
-    public ServerBackEvent(final long timestamp, final Connection connection) {
+    public ServerBackEvent(final LocalDateTime timestamp, final Connection connection) {
         super(timestamp, connection);
     }
 

@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when you set away.
  */
@@ -31,7 +33,8 @@ public class ServerAwayEvent extends ServerDisplayableEvent {
 
     private final String reason;
 
-    public ServerAwayEvent(final long timestamp, final Connection connection, final String reason) {
+    public ServerAwayEvent(final LocalDateTime timestamp, final Connection connection,
+            final String reason) {
         super(timestamp, connection);
         this.reason = reason;
     }

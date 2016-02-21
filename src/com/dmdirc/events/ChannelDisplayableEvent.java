@@ -25,35 +25,23 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Base type for displayable events that occur in channels.
  */
 public abstract class ChannelDisplayableEvent extends ChannelEvent implements DisplayableEvent {
 
-    /** The display format to use for this event. */
-    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
-    public ChannelDisplayableEvent(final long timestamp, final GroupChat channel) {
+    public ChannelDisplayableEvent(final LocalDateTime timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 
     public ChannelDisplayableEvent(final GroupChat channel) {
         super(channel);
-    }
-
-    @Override
-    public String getDisplayFormat() {
-        return displayFormatRef.get();
-    }
-
-    @Override
-    public void setDisplayFormat(final String format) {
-        displayFormatRef.set(format);
     }
 
     @Override

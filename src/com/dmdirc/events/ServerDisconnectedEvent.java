@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fire when a server disconnects.
  */
@@ -33,7 +35,7 @@ public class ServerDisconnectedEvent extends ServerDisplayableEvent {
         super(connection);
     }
 
-    public ServerDisconnectedEvent(final long timestamp, final Connection connection) {
+    public ServerDisconnectedEvent(final LocalDateTime timestamp, final Connection connection) {
         super(timestamp, connection);
     }
 

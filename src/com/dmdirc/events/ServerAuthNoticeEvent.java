@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired on receiving an auth notice.
  */
@@ -31,7 +33,7 @@ public class ServerAuthNoticeEvent extends ServerDisplayableEvent {
 
     private final String notice;
 
-    public ServerAuthNoticeEvent(final long timestamp, final Connection connection,
+    public ServerAuthNoticeEvent(final LocalDateTime timestamp, final Connection connection,
             final String notice) {
         super(timestamp, connection);
         this.notice = notice;

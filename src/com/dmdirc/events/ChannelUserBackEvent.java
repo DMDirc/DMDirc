@@ -25,12 +25,14 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a user sets back.
  */
 public class ChannelUserBackEvent extends ChannelUserEvent {
 
-    public ChannelUserBackEvent(final long timestamp, final GroupChat channel,
+    public ChannelUserBackEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser user) {
         super(timestamp, channel, user);
     }

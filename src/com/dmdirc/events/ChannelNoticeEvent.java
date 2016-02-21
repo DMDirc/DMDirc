@@ -25,12 +25,14 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a channel mode is received.
  */
 public class ChannelNoticeEvent extends BaseChannelTextEvent {
 
-    public ChannelNoticeEvent(final long timestamp, final GroupChat channel,
+    public ChannelNoticeEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client, final String message) {
         super(timestamp, channel, client, message);
     }

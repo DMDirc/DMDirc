@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a user is kicked from a channel.
  */
@@ -34,7 +36,7 @@ public class ChannelKickEvent extends ChannelDisplayableEvent {
     private final GroupChatUser victim;
     private final String reason;
 
-    public ChannelKickEvent(final long timestamp, final GroupChat channel,
+    public ChannelKickEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client, final GroupChatUser victim, final String reason) {
         super(timestamp, channel);
         this.client = client;

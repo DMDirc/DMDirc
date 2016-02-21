@@ -24,12 +24,14 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.GroupChat;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a channel names event is received.
  */
 public class ChannelGotNamesEvent extends ChannelEvent {
 
-    public ChannelGotNamesEvent(final long timestamp, final GroupChat channel) {
+    public ChannelGotNamesEvent(final LocalDateTime timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 

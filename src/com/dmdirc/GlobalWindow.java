@@ -54,12 +54,16 @@ public class GlobalWindow extends FrameContainer {
     public GlobalWindow(@GlobalConfig final AggregateConfigProvider config,
             final GlobalCommandParser parser, final TabCompleterFactory tabCompleterFactory,
             final DMDircMBassador eventBus, final BackBufferFactory backBufferFactory) {
-        super(null, "icon", "Global", "(Global)", config, backBufferFactory,
-                tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL), eventBus,
+        super("icon", "Global", "(Global)", config, backBufferFactory, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));
         initBackBuffer();
-        setCommandParser(parser);
+        setInputModel(new DefaultInputModel(
+                this::sendLine,
+                parser,
+                tabCompleterFactory.getTabCompleter(config, CommandType.TYPE_GLOBAL),
+                this::getMaxLineLength
+        ));
     }
 
     @Override
@@ -67,14 +71,12 @@ public class GlobalWindow extends FrameContainer {
         return Optional.empty();
     }
 
-    @Override
-    public void sendLine(final String line) {
+    private void sendLine(final String line) {
         getEventBus().publishAsync(
                 new CommandErrorEvent(this, "You may only enter commands in the global window."));
     }
 
-    @Override
-    public int getMaxLineLength() {
+    private int getMaxLineLength() {
         return -1;
     }
 

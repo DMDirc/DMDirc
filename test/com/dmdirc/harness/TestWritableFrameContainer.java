@@ -23,6 +23,7 @@
 package com.dmdirc.harness;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.DefaultInputModel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
@@ -36,29 +37,20 @@ import java.util.Optional;
 
 public class TestWritableFrameContainer extends FrameContainer {
 
-    private final int lineLength;
-
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory) {
-        super(null, "raw", "Raw", "(Raw)", cm, backBufferFactory,
-                new TabCompleter(cm),
+        super("raw", "Raw", "(Raw)", cm, backBufferFactory,
                 eventBus,
                 Collections.<String>emptySet());
 
-        setCommandParser(new GlobalCommandParser(cm, commandManager, eventBus));
-        this.lineLength = lineLength;
-    }
-
-    @Override
-    public void sendLine(final String line) {
-        // Do nothing
-    }
-
-    @Override
-    public int getMaxLineLength() {
-        return lineLength;
+        setInputModel(
+                new DefaultInputModel(
+                        line -> {},
+                        new GlobalCommandParser(cm, commandManager, eventBus),
+                        new TabCompleter(cm),
+                        () -> lineLength));
     }
 
     @Override

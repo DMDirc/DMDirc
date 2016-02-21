@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when an unknown message is received.
  */
@@ -33,7 +35,7 @@ public class ServerUnknownMessageEvent extends ServerDisplayableEvent {
     private final String target;
     private final String message;
 
-    public ServerUnknownMessageEvent(final long timestamp, final Connection connection,
+    public ServerUnknownMessageEvent(final LocalDateTime timestamp, final Connection connection,
             final String sender, final String target, final String message) {
         super(timestamp, connection);
         this.sender = sender;

@@ -8,6 +8,9 @@ ServerCtcpEvent:
 ServerCtcpReplyEvent:
   format: "-!- CTCP {{type}} reply from {{user.nickname}}: {{content}}."
   colour: 4
+ServerCtcpSentEvent:
+  format: "->- [{{target}}] {{line}}"
+  colour: 4
 ServerConnectingEvent:
   format: "Connecting to {{uri.host}}:{{uri.port}}..."
 ServerDisconnectedEvent:
@@ -81,6 +84,11 @@ ServerWallusersEvent:
   colour: 5
 ServerWalldesyncEvent:
   format: "/{{user.nickname}}/ {{message}}"
+  colour: 5
+ServerMessageSentEvent:
+  format: ">[{{target}}]> {{message}}"
+ServerNoticeSentEvent:
+  format: ">{{target}}> {{message}}"
   colour: 5
 
 ################## Channel join/part/quit events ###################################################
@@ -214,17 +222,15 @@ UserInfoResponseEvent:
   iterate: "properties"
   format: "{{friendlyName}}: {{rawValue}}"
   colour: 10
+ServerRawLineSentEvent:
+  format: ">>> {{line}}"
+  colour: 10
 
 ################## TODO ############################################################################
-#  selfCTCP=4->- [%1$s] %2$s
-#  selfNotice=5>%1$s> %2$s
-#  selfMessage=>[%1$s]> %2$s
 #  serverDisconnectInProgress=A disconnection attempt is in progress, please wait...
 #  serverConnectInProgress=A connection attempt is in progress, please wait...
-#  rawCommand=10>>> %1$s
 #  commandOutput=%1$s
 #  actionTooLong=Warning: action too long to be sent
-#  tabCompletion=14Multiple possibilities: %1$s
 #  numeric_006=%4$s
 #  numeric_007=%4$s
 #  numeric_015=%4$s

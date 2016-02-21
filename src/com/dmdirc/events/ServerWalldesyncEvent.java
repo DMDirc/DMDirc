@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when receiving a server walldesync.
  */
@@ -33,8 +35,8 @@ public class ServerWalldesyncEvent extends ServerDisplayableEvent {
     private final User user;
     private final String message;
 
-    public ServerWalldesyncEvent(final long timestamp, final Connection connection, final User user,
-            final String message) {
+    public ServerWalldesyncEvent(final LocalDateTime timestamp, final Connection connection,
+            final User user, final String message) {
         super(timestamp, connection);
         this.user = user;
         this.message = message;

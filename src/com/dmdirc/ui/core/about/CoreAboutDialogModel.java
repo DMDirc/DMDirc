@@ -22,13 +22,11 @@
 
 package com.dmdirc.ui.core.about;
 
-import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
+import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.events.ClientInfoRequestEvent;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.AboutDialogModel;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.util.ClientInfo;
@@ -56,24 +54,21 @@ import org.slf4j.LoggerFactory;
 public class CoreAboutDialogModel implements AboutDialogModel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CoreAboutDialogModel.class);
-    private final AggregateConfigProvider globalConfig;
     private final Path baseDirectory;
     private final ClientInfo clientInfo;
     private final DMDircMBassador eventBus;
     private final PluginManager pluginManager;
+    private final CommandLineParser commandLineParser;
     private String about;
     private List<Developer> mainDevelopers;
     private List<Developer> otherDevelopers;
     private List<InfoItem> info;
     private List<LicensedComponent> licences;
-    private CommandLineParser commandLineParser;
 
     @Inject
-    public CoreAboutDialogModel(@GlobalConfig final AggregateConfigProvider globalConfig,
-            @Directory(CommandLineOptionsModule.DirectoryType.BASE) final Path baseDirectory,
+    public CoreAboutDialogModel(@Directory(DirectoryType.BASE) final Path baseDirectory,
             final ClientInfo clientInfo, final DMDircMBassador eventBus,
             final PluginManager pluginManager, final CommandLineParser commandLineParser) {
-        this.globalConfig = globalConfig;
         this.baseDirectory = baseDirectory;
         this.clientInfo = clientInfo;
         this.eventBus = eventBus;

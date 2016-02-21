@@ -24,12 +24,14 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.GroupChat;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when channel mode discovery is complete and there are no modes on the channel.
  */
 public class ChannelNoModesDiscoveredEvent extends ChannelDisplayableEvent {
 
-    public ChannelNoModesDiscoveredEvent(final long timestamp, final GroupChat channel) {
+    public ChannelNoModesDiscoveredEvent(final LocalDateTime timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 

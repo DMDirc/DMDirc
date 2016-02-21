@@ -30,10 +30,16 @@ import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.util.collections.ListenerList;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,7 +48,6 @@ import net.engio.mbassy.listener.Handler;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * The WindowManager maintains a list of all open windows, and their parent/child relations.
@@ -52,8 +57,16 @@ public class WindowManager {
 
     /** A list of root windows. */
     private final Collection<WindowModel> rootWindows = new CopyOnWriteArrayList<>();
+    /** Mapping of windows to their parents. */
+    private final Map<WindowModel, WindowModel> parents = new HashMap<>();
+    /** Mapping of parents to their children. */
+    private final Multimap<WindowModel, WindowModel> children = ArrayListMultimap.create();
+    /** Mapping of IDs to windows. */
+    private final Map<String, WindowModel> windowsById = new HashMap<>();
     /** A list of frame listeners. */
     private final ListenerList listeners = new ListenerList();
+    /** Counter to use for ID assignments. */
+    private final AtomicLong nextId = new AtomicLong(0L);
 
     /**
      * Creates a new instance of {@link WindowManager}.
@@ -90,7 +103,7 @@ public class WindowManager {
         for (WindowModel root : rootWindows) {
             frameListener.addWindow(root, true);
 
-            for (WindowModel child : root.getChildren()) {
+            for (WindowModel child : getChildren(root)) {
                 fireAddWindow(frameListener, root, child);
             }
         }
@@ -108,7 +121,7 @@ public class WindowManager {
             final WindowModel parent, final WindowModel child) {
         listener.addWindow(parent, child, true);
 
-        for (WindowModel grandchild : child.getChildren()) {
+        for (WindowModel grandchild : getChildren(child)) {
             fireAddWindow(listener, child, grandchild);
         }
     }
@@ -120,6 +133,26 @@ public class WindowManager {
      */
     public void removeListener(final FrameListener frameListener) {
         listeners.remove(FrameListener.class, frameListener);
+    }
+
+    /**
+     * Gets the parent of the specified window, if there is one.
+     *
+     * @param window The window to find the parent of.
+     * @return The window's parent, if one exists.
+     */
+    public Optional<WindowModel> getParent(final WindowModel window) {
+        return Optional.ofNullable(parents.get(window));
+    }
+
+    /**
+     * Gets the collection of children belonging to the specified window.
+     *
+     * @param window The window to find the children on.
+     * @return A (possibly empty) collection of children of the given window.
+     */
+    public Collection<WindowModel> getChildren(final WindowModel window) {
+        return Collections.unmodifiableCollection(children.get(window));
     }
 
     /**
@@ -154,7 +187,7 @@ public class WindowManager {
         checkArgument(!rootWindows.contains(window));
 
         rootWindows.add(window);
-
+        assignId(window);
         fireAddWindow(window, focus);
     }
 
@@ -167,8 +200,7 @@ public class WindowManager {
      * @since 0.6.4
      */
     @Precondition("The specified Windows are not null")
-    public void addWindow(final WindowModel parent,
-            final WindowModel child) {
+    public void addWindow(final WindowModel parent, final WindowModel child) {
         addWindow(parent, child, true);
     }
 
@@ -186,14 +218,14 @@ public class WindowManager {
         "The specified parent is in the window hierarchy already",
         "The specified child is NOT in the window hierarchy already"
     })
-    public void addWindow(final WindowModel parent,
-            final WindowModel child, final boolean focus) {
+    public void addWindow(final WindowModel parent, final WindowModel child, final boolean focus) {
         checkNotNull(parent);
         checkArgument(isInHierarchy(parent));
         checkNotNull(child);
 
-        parent.addChild(child);
-
+        parents.put(child, parent);
+        children.put(parent, child);
+        assignId(child);
         fireAddWindow(parent, child, focus);
     }
 
@@ -207,12 +239,7 @@ public class WindowManager {
      * @return True if the target is in the hierarchy, false otherwise
      */
     protected boolean isInHierarchy(final WindowModel target) {
-        if (rootWindows.contains(target)) {
-            return true;
-        }
-
-        final Optional<WindowModel> parent = target.getParent();
-        return parent.isPresent() && isInHierarchy(parent.get());
+        return rootWindows.contains(target) || parents.containsKey(target);
     }
 
     /**
@@ -232,16 +259,17 @@ public class WindowManager {
         checkNotNull(window);
         checkArgument(isInHierarchy(window));
 
-        window.getChildren().forEach(WindowModel::close);
+        children.get(window).forEach(WindowModel::close);
+        children.removeAll(window);
+        windowsById.remove(window.getId());
 
         if (rootWindows.contains(window)) {
             fireDeleteWindow(window);
             rootWindows.remove(window);
         } else {
-            final Optional<WindowModel> parent = window.getParent();
-            checkState(parent.isPresent());
-            fireDeleteWindow(parent.get(), window);
-            parent.get().removeChild(window);
+            final WindowModel parent = parents.get(window);
+            fireDeleteWindow(parent, window);
+            parents.remove(parent);
         }
     }
 
@@ -278,7 +306,7 @@ public class WindowManager {
         checkNotNull(parent);
         checkNotNull(name);
 
-        return findCustomWindow(parent.getChildren(), name);
+        return findCustomWindow(getChildren(parent), name);
     }
 
     /**
@@ -290,11 +318,9 @@ public class WindowManager {
      *
      * @return The custom window if found, or null otherwise
      */
-    private WindowModel findCustomWindow(final Iterable<WindowModel> windows,
-            final String name) {
+    private WindowModel findCustomWindow(final Iterable<WindowModel> windows, final String name) {
         for (WindowModel window : windows) {
-            if (window instanceof CustomWindow
-                    && window.getName().equals(name)) {
+            if (window instanceof CustomWindow && window.getName().equals(name)) {
                 return window;
             }
         }
@@ -310,6 +336,27 @@ public class WindowManager {
      */
     public Collection<WindowModel> getRootWindows() {
         return Collections.unmodifiableCollection(rootWindows);
+    }
+
+    /**
+     * Retrieves the window with the specified ID.
+     *
+     * @param id The ID of the window to retrieve
+     * @return The window with the given ID, if it exists.
+     */
+    public Optional<WindowModel> getWindowById(final String id) {
+        return Optional.ofNullable(windowsById.get(id));
+    }
+
+    /**
+     * Assigns a unique ID to the given window.
+     *
+     * @param window The window to assign an ID to.
+     */
+    private void assignId(final WindowModel window) {
+        final String id = "WINDOW/" + nextId.getAndIncrement();
+        window.setId(id);
+        windowsById.put(id, window);
     }
 
     /**
@@ -356,8 +403,7 @@ public class WindowManager {
      * @param parent The parent window
      * @param child  The child window that was removed
      */
-    private void fireDeleteWindow(final WindowModel parent,
-            final WindowModel child) {
+    private void fireDeleteWindow(final WindowModel parent, final WindowModel child) {
         for (FrameListener listener : listeners.get(FrameListener.class)) {
             listener.delWindow(parent, child);
         }

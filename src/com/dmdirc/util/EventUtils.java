@@ -22,8 +22,6 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.events.DMDircEvent;
 import com.dmdirc.events.DisplayableEvent;
 
 /**
@@ -44,26 +42,6 @@ public final class EventUtils {
     public static final int PRIORITY_DISPLAYABLE_EVENT_HANDLER = -1000;
 
     private EventUtils() {
-    }
-
-    /**
-     * Posts a displayable event to the bus, and returns the updated display format.
-     *
-     * @param <T>             The type of event to be displayed
-     *
-     * @param eventBus      The bus to post events to.
-     * @param event         The event to be posted.
-     * @param displayFormat The initial, default, display format.
-     *
-     * @return The event's display format after it has been posted on the event bus.
-     */
-    public static <T extends DMDircEvent & DisplayableEvent> String postDisplayable(
-            final DMDircMBassador eventBus,
-            final T event,
-            final String displayFormat) {
-        event.setDisplayFormat(displayFormat);
-        eventBus.publish(event);
-        return event.getDisplayFormat();
     }
 
 }

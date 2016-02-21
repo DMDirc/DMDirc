@@ -29,13 +29,12 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.util.concurrent.MoreExecutors;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -79,14 +78,14 @@ public class SentryLoggingErrorManagerTest {
     public void testHandleErrorEvent() throws Exception {
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), Matchers.<Optional<Throwable>>any());
+                any(LocalDateTime.class), any());
     }
 
     @Test
     public void testHandledErrorEvent_UserError() throws Exception {
         instance.handleErrorEvent(userErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), Matchers.<Optional<Throwable>>any());
+                any(LocalDateTime.class), any());
     }
 
     @Test
@@ -95,7 +94,7 @@ public class SentryLoggingErrorManagerTest {
         when(appError.getThrowable()).thenReturn(Optional.of(throwable));
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), eq(Optional.of(throwable)));
+                any(LocalDateTime.class), eq(Optional.of(throwable)));
     }
 
     @Test
@@ -104,7 +103,7 @@ public class SentryLoggingErrorManagerTest {
         instance.handleNoErrorReporting(false);
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), Matchers.<Optional<Throwable>>any());
+                any(LocalDateTime.class), any());
     }
 
     @Test
@@ -113,7 +112,7 @@ public class SentryLoggingErrorManagerTest {
         instance.handleNoErrorReporting(true);
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), Matchers.<Optional<Throwable>>any());
+                any(LocalDateTime.class), any());
     }
 
     @Test
@@ -122,7 +121,7 @@ public class SentryLoggingErrorManagerTest {
         instance.handleNoErrorReporting(false);
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), Matchers.<Optional<Throwable>>any());
+                any(LocalDateTime.class), any());
     }
 
     @Test
@@ -131,6 +130,6 @@ public class SentryLoggingErrorManagerTest {
         instance.handleNoErrorReporting(true);
         instance.handleErrorEvent(appErrorEvent);
         verify(sentryErrorReporter, never()).sendException(anyString(), any(ErrorLevel.class),
-                any(Date.class), Matchers.<Optional<Throwable>>any());
+                any(LocalDateTime.class), any());
     }
 }

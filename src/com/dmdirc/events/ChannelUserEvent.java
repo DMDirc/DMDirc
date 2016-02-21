@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Base type for events that occur in channels against users.
  */
@@ -32,7 +34,7 @@ public abstract class ChannelUserEvent extends ChannelDisplayableEvent {
 
     private final GroupChatUser user;
 
-    public ChannelUserEvent(final long timestamp, final GroupChat channel,
+    public ChannelUserEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser user) {
         super(timestamp, channel);
         this.user = user;

@@ -22,16 +22,19 @@
 
 package com.dmdirc;
 
+import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
+import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.messages.BackBufferFactory;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Inject;
@@ -39,7 +42,7 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /**
- * Factory for {@link Server}s
+ * Factory for {@link Server}s.
  */
 @Singleton
 public class ServerFactoryImpl {
@@ -87,12 +90,51 @@ public class ServerFactoryImpl {
             final ScheduledExecutorService executorService,
             final URI uri,
             final Profile profile) {
-        final Server server = new Server(configMigrator, parserFactory,
-                tabCompleterFactory, identityFactory, queryFactory.get(), eventBus,
+        final FrameContainer windowModel =
+                new FrameContainer("server-disconnected", getHost(uri), getHost(uri),
+                        configMigrator.getConfigProvider(), backBufferFactory, eventBus,
+                        Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
+                                WindowComponent.INPUTFIELD.getIdentifier(),
+                                WindowComponent.CERTIFICATE_VIEWER.getIdentifier()));
+        final Server server = new Server(windowModel, configMigrator, parserFactory,
+                identityFactory, queryFactory.get(),
                 messageEncoderFactory, userSettings, groupChatManagerFactory, executorService,
-                uri, profile, backBufferFactory, userManager);
-        server.setCommandParser(new ServerCommandParser(server.getConfigManager(),
-                commandController.get(), eventBus, server));
+                uri, profile, userManager);
+        windowModel.setConnection(server);
+        windowModel.initBackBuffer();
+        windowModel.setInputModel(new DefaultInputModel(
+                server::sendLine,
+                new ServerCommandParser(
+                        server.getWindowModel().getConfigManager(),
+                        commandController.get(),
+                        eventBus,
+                        server),
+                tabCompleterFactory.getTabCompleter(
+                        configMigrator.getConfigProvider(),
+                        CommandType.TYPE_SERVER,
+                        CommandType.TYPE_GLOBAL),
+                server::getMaxLineLength));
         return server;
     }
+
+    /**
+     * Retrieves the host component of the specified URI, or throws a relevant exception if this is
+     * not possible.
+     *
+     * @param uri The URI to be processed
+     *
+     * @return The URI's host component, as returned by {@link URI#getHost()}.
+     *
+     * @throws NullPointerException     If <code>uri</code> is null
+     * @throws IllegalArgumentException If the specified URI has no host
+     * @since 0.6.4
+     */
+    private static String getHost(final URI uri) {
+        if (uri.getHost() == null) {
+            throw new IllegalArgumentException("URIs must have hosts");
+        }
+
+        return uri.getHost();
+    }
+
 }

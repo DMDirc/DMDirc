@@ -24,26 +24,13 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
  * Describes an event which is rendered in the client to the user.
  */
 public interface DisplayableEvent {
-
-    /**
-     * Gets the format name that will be used to display the event.
-     *
-     * @return The format name to use for the event.
-     */
-    String getDisplayFormat();
-
-    /**
-     * Sets the format name that should be used to display the event.
-     *
-     * @param format The format name to use for the event.
-     */
-    void setDisplayFormat(String format);
 
     /**
      * Sets a property relating to how this event should be displayed.
@@ -85,11 +72,11 @@ public interface DisplayableEvent {
     DisplayPropertyMap getDisplayProperties();
 
     /**
-     * Gets the timestamp at which the event occurred.
+     * Gets the times at which the event occurred.
      *
-     * @return The timestamp the event occurred at.
+     * @return The time the event occurred at.
      */
-    long getTimestamp();
+    LocalDateTime getTimestamp();
 
     /**
      * Gets the source of the displayable event.

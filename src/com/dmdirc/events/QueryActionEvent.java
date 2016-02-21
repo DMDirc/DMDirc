@@ -25,12 +25,14 @@ package com.dmdirc.events;
 import com.dmdirc.Query;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when an action occurs in a query.
  */
 public class QueryActionEvent extends BaseQueryActionEvent {
 
-    public QueryActionEvent(final long timestamp, final Query query, final User user,
+    public QueryActionEvent(final LocalDateTime timestamp, final Query query, final User user,
             final String message) {
         super(timestamp, query, user, message);
     }

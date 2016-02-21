@@ -388,7 +388,7 @@ public class CommandLineParser {
             }
 
             System.out.print("   -" + arg[0] + needsArg);
-            System.out.println(" --" + desc + needsArg + " " + arg[2]);
+            System.out.println(" --" + desc + needsArg + ' ' + arg[2]);
             System.out.println();
         }
 

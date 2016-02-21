@@ -36,6 +36,8 @@ import java.util.Optional;
  */
 public class CustomWindow extends FrameContainer {
 
+    private final Optional<Connection> connection;
+
     /**
      * Creates a new custom window as a child of the specified window.
      */
@@ -44,9 +46,10 @@ public class CustomWindow extends FrameContainer {
             final String title,
             final WindowModel parent,
             final BackBufferFactory backBufferFactory) {
-        super(parent, "custom", name, title, parent.getConfigManager(), backBufferFactory,
+        super("custom", name, title, parent.getConfigManager(), backBufferFactory,
                 parent.getEventBus(),
                 Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
+        connection = parent.getConnection();
         initBackBuffer();
     }
 
@@ -59,14 +62,15 @@ public class CustomWindow extends FrameContainer {
             final AggregateConfigProvider configProvider,
             final DMDircMBassador eventBus,
             final BackBufferFactory backBufferFactory) {
-        super(null, "custom", name, title, configProvider, backBufferFactory,
+        super("custom", name, title, configProvider, backBufferFactory,
                 eventBus, Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));
+        connection = Optional.empty();
         initBackBuffer();
     }
 
     @Override
     public Optional<Connection> getConnection() {
-        return getParent().flatMap(WindowModel::getConnection);
+        return connection;
     }
 
 }

@@ -24,12 +24,14 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when sending a server ping request.
  */
 public class ServerPingSentEvent extends ServerEvent {
 
-    public ServerPingSentEvent(final long timestamp, final Connection connection) {
+    public ServerPingSentEvent(final LocalDateTime timestamp, final Connection connection) {
         super(timestamp, connection);
     }
 

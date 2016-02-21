@@ -25,8 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -34,27 +34,15 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public abstract class ServerDisplayableEvent extends ServerEvent implements DisplayableEvent {
 
-    /** The display format to use for this event. */
-    private final AtomicReference<String> displayFormatRef = new AtomicReference<>("");
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
-    public ServerDisplayableEvent(final long timestamp, final Connection connection) {
+    public ServerDisplayableEvent(final LocalDateTime timestamp, final Connection connection) {
         super(timestamp, connection);
     }
 
     public ServerDisplayableEvent(final Connection connection) {
         super(connection);
-    }
-
-    @Override
-    public String getDisplayFormat() {
-        return displayFormatRef.get();
-    }
-
-    @Override
-    public void setDisplayFormat(final String format) {
-        displayFormatRef.set(format);
     }
 
     @Override

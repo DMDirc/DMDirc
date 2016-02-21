@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when sending a CTCP reply.
  */
@@ -34,8 +36,8 @@ public class ServerCtcpReplyEvent extends ServerDisplayableEvent {
     private final String type;
     private final String content;
 
-    public ServerCtcpReplyEvent(final long timestamp, final Connection connection, final User user,
-            final String type, final String content) {
+    public ServerCtcpReplyEvent(final LocalDateTime timestamp, final Connection connection,
+            final User user, final String type, final String content) {
         super(timestamp, connection);
         this.user = user;
         this.type = type;

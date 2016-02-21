@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fire when a server is connected.
  */
@@ -33,7 +35,7 @@ public class ServerConnectedEvent extends ServerEvent {
         super(connection);
     }
 
-    public ServerConnectedEvent(final long timestamp, final Connection connection) {
+    public ServerConnectedEvent(final LocalDateTime timestamp, final Connection connection) {
         super(timestamp, connection);
     }
 

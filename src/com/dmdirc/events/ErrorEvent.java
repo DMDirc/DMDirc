@@ -37,7 +37,6 @@ public abstract class ErrorEvent extends DMDircEvent {
             final Throwable throwable,
             final String message,
             final String details) {
-        super(System.currentTimeMillis());
         this.level = level;
         this.message = message;
         this.throwable = throwable;

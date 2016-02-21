@@ -37,6 +37,7 @@ import com.dmdirc.events.UnknownCommandEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.util.collections.RollingList;
@@ -204,8 +205,8 @@ public abstract class CommandParser implements Serializable {
                 final Optional<GroupChat> channel = server.getGroupChatManager()
                         .getChannel(channelName);
                 if (channel.isPresent()) {
-                    channel.get().getWindowModel().getCommandParser()
-                            .parseCommand(origin, newCommandString, false);
+                    channel.get().getWindowModel().getInputModel().map(InputModel::getCommandParser)
+                            .ifPresent(cp -> cp.parseCommand(origin, newCommandString, false));
                 } else {
                     final Map.Entry<CommandInfo, Command> actCommand = commandManager.getCommand(
                             CommandType.TYPE_CHANNEL, command);

@@ -23,16 +23,13 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.DMDircMBassador;
-import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.FrameIconChangedEvent;
+import com.dmdirc.events.FrameNameChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 
-import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,7 +38,20 @@ import java.util.Set;
  */
 public interface WindowModel {
 
-    Optional<WindowModel> getParent();
+    /**
+     * Gets a unique ID that identifies this window.
+     *
+     * @return This window's unique ID.
+     */
+    String getId();
+
+    /**
+     * Sets the ID for this window. This may only be called once; attempting to overwrite a
+     * previous ID will throw an exception.
+     *
+     * @param id The new ID for this window.
+     */
+    void setId(String id);
 
     String getIcon();
 
@@ -53,34 +63,12 @@ public interface WindowModel {
 
     DMDircMBassador getEventBus();
 
-    boolean isWritable();
-
     /**
-     * Returns a collection of direct children of this frame.
+     * Changes the name of this container, and fires a {@link FrameNameChangedEvent}.
      *
-     * @return This frame's children
-     *
-     * @since 0.6.4
+     * @param name The new name for this frame.
      */
-    Collection<WindowModel> getChildren();
-
-    /**
-     * Adds a new child window to this frame.
-     *
-     * @param child The window to be added
-     *
-     * @since 0.6.4
-     */
-    void addChild(WindowModel child);
-
-    /**
-     * Removes a child window from this frame.
-     *
-     * @param child The window to be removed
-     *
-     * @since 0.6.4
-     */
-    void removeChild(WindowModel child);
+    void setName(String name);
 
     /**
      * Changes the title of this container, and fires a {@link FrameTitleChangedEvent}.
@@ -141,77 +129,11 @@ public interface WindowModel {
     BackBuffer getBackBuffer();
 
     /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
+     * Returns the model used to define input parameters for this window.
      *
-     * @param type      The message type to use
-     * @param timestamp The timestamp to use for this line
-     * @param args      The message's arguments
-     *
-     * @since 0.6.4
+     * @return If this window accepts input, the input model to use, otherwise an empty optional.
      */
-    @Deprecated
-    void addLine(String type, Date timestamp, Object... args);
-
-    /**
-     * Adds a line to this container's window. If the window is null for some reason, the line is
-     * silently discarded.
-     *
-     * @param type The message type to use
-     * @param args The message's arguments
-     */
-    @Deprecated
-    void addLine(String type, Object... args);
-
-    /**
-     * Adds the specified raw line to the window, without using a formatter, and using the specified
-     * timestamp. If the timestamp is <code>null</code>, no timestamp is added.
-     *
-     * @param line      The line to be added
-     * @param timestamp The timestamp to use for the line
-     *
-     * @since 0.6.4
-     */
-    @Deprecated
-    void addLine(String line, Date timestamp);
-
-    /**
-     * Sends a line of text to this container's source.
-     *
-     * @param line The line to be sent
-     */
-    void sendLine(String line);
-
-    /**
-     * Retrieves the command parser to be used for this container.
-     *
-     * @return This container's command parser
-     */
-    CommandParser getCommandParser();
-
-    /**
-     * Retrieves the tab completer which should be used for this container.
-     *
-     * @return This container's tab completer
-     */
-    TabCompleter getTabCompleter();
-
-    /**
-     * Returns the maximum length that a line passed to sendLine() should be, in order to prevent it
-     * being truncated or causing protocol violations.
-     *
-     * @return The maximum line length for this container
-     */
-    int getMaxLineLength();
-
-    /**
-     * Returns the number of lines that the specified string would be sent as.
-     *
-     * @param line The string to be split and sent
-     *
-     * @return The number of lines required to send the specified string
-     */
-    int getNumLines(String line);
+    Optional<InputModel> getInputModel();
 
     UnreadStatusManager getUnreadStatusManager();
 }

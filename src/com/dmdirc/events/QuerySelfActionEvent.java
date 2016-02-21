@@ -25,12 +25,14 @@ package com.dmdirc.events;
 import com.dmdirc.Query;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a self action is sent in query.
  */
 public class QuerySelfActionEvent extends BaseQueryActionEvent {
 
-    public QuerySelfActionEvent(final long timestamp, final Query query, final User user,
+    public QuerySelfActionEvent(final LocalDateTime timestamp, final Query query, final User user,
             final String message) {
         super(timestamp, query, user, message);
     }

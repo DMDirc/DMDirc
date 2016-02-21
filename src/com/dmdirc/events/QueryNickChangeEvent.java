@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.Query;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a user changes nickname in a query.
  */
@@ -32,8 +34,8 @@ public class QueryNickChangeEvent extends QueryDisplayableEvent {
     private final String oldNick;
     private final String newNick;
 
-    public QueryNickChangeEvent(final long timestamp, final Query query, final String oldNick,
-            final String newNick) {
+    public QueryNickChangeEvent(final LocalDateTime timestamp, final Query query,
+            final String oldNick, final String newNick) {
         super(timestamp, query);
         this.oldNick = oldNick;
         this.newNick = newNick;

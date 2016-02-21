@@ -40,6 +40,8 @@ import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -109,7 +111,7 @@ public class Echo extends Command implements IntelligentCommand {
             while (frame == null && target.isPresent()) {
                 frame = windowManager.findCustomWindow(target.get(),
                         results.getArgumentsAsString(targetFlag));
-                target = target.flatMap(WindowModel::getParent);
+                target = target.flatMap(windowManager::getParent);
             }
 
             if (frame == null) {
@@ -119,12 +121,14 @@ public class Echo extends Command implements IntelligentCommand {
             if (frame == null) {
                 showError(origin, args.isSilent(), "Unable to find target window");
             } else if (!args.isSilent()) {
-                frame.getEventBus().publishAsync(new CommandOutputEvent(frame, time.getTime(),
-                        results.getArgumentsAsString()));
+                frame.getEventBus().publishAsync(new CommandOutputEvent(
+                        LocalDateTime.ofInstant(time.toInstant(), ZoneId.systemDefault()),
+                        frame, results.getArgumentsAsString()));
             }
         } else if (!args.isSilent()) {
-            origin.getEventBus().publishAsync(new CommandOutputEvent(origin,
-                    time.getTime(), results.getArgumentsAsString()));
+            origin.getEventBus().publishAsync(new CommandOutputEvent(
+                    LocalDateTime.ofInstant(time.toInstant(), ZoneId.systemDefault()), origin,
+                    results.getArgumentsAsString()));
         }
     }
 
@@ -144,12 +148,12 @@ public class Echo extends Command implements IntelligentCommand {
             final Optional<Connection> connection = context.getWindow().getConnection();
 
             //Active window's Children
-            windowList.addAll(context.getWindow().getChildren());
+            windowList.addAll(windowManager.getChildren(context.getWindow()));
 
             //Children of Current Window's server
             connection
                     .map(Connection::getWindowModel)
-                    .map(WindowModel::getChildren)
+                    .map(windowManager::getChildren)
                     .ifPresent(windowList::addAll);
 
             //Global Windows

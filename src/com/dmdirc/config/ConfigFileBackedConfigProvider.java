@@ -107,7 +107,7 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
             final boolean forceDefault) throws IOException, InvalidIdentityFileException {
         this.identityManager = null;
         this.file = new ConfigFile(stream);
-        this.file.setAutomake(true);
+        file.setAutomake(true);
         initFile(forceDefault);
         myTarget = getTarget(forceDefault);
     }
@@ -123,7 +123,7 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
             final ConfigFile configFile, final ConfigTarget target) {
         this.identityManager = identityManager;
         this.file = configFile;
-        this.file.setAutomake(true);
+        file.setAutomake(true);
         this.myTarget = target;
     }
 
@@ -181,7 +181,7 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
     private void initFile(final boolean forceDefault)
             throws InvalidIdentityFileException, IOException {
         try {
-            this.file.read();
+            file.read();
         } catch (InvalidConfigFileException ex) {
             throw new InvalidIdentityFileException(ex);
         }

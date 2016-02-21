@@ -30,6 +30,7 @@ import com.dmdirc.harness.TestCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatManager;
+import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -58,6 +59,7 @@ public class CommandParserTest {
     @Mock private Command command;
     @Mock private Command channelCommand;
     @Mock private WindowModel container;
+    @Mock private InputModel inputModel;
     @Mock private Channel channel;
     @Mock private Connection connection;
     @Mock private GroupChatManager groupChatManager;
@@ -90,7 +92,8 @@ public class CommandParserTest {
         channelCommandParser.registerCommand(channelCommand, channelCommandInfo);
 
         when(channel.getWindowModel()).thenReturn(channel);
-        when(channel.getCommandParser()).thenReturn(channelCommandParser);
+        when(channel.getInputModel()).thenReturn(Optional.of(inputModel));
+        when(inputModel.getCommandParser()).thenReturn(channelCommandParser);
     }
 
     @Test

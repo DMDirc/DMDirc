@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired on a change of a nickname.
  */
@@ -32,7 +34,7 @@ public class ServerNickChangeEvent extends ServerDisplayableEvent {
     private final String oldNick;
     private final String newNick;
 
-    public ServerNickChangeEvent(final long timestamp, final Connection connection,
+    public ServerNickChangeEvent(final LocalDateTime timestamp, final Connection connection,
             final String oldNick, final String newNick) {
         super(timestamp, connection);
         this.oldNick = oldNick;

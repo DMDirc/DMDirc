@@ -97,7 +97,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     protected int flags = HANDLE_TABCOMPLETION | HANDLE_BACKBUFFER
             | HANDLE_FORMATTING | HANDLE_RETURN;
     /** The input buffer. */
-    protected RollingList<String> buffer;
+    protected final RollingList<String> buffer;
     /** The textfield that we're handling input for. */
     protected final InputField target;
     /** The TabCompleter to use for tab completion. */
@@ -298,7 +298,7 @@ public abstract class InputHandler implements ConfigChangeListener {
                 fireLineWrap(count);
             }
         } else {
-            final int lines = parentWindow.getNumLines(text);
+            final int lines = parentWindow.getInputModel().get().getNumLines(text);
             fireLineWrap(lines);
         }
     }

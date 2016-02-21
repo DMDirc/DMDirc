@@ -25,6 +25,7 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -34,7 +35,7 @@ public class ChannelUserAwayEvent extends ChannelUserEvent {
 
     private final Optional<String> reason;
 
-    public ChannelUserAwayEvent(final long timestamp, final GroupChat channel,
+    public ChannelUserAwayEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser user) {
         super(timestamp, channel, user);
         reason = Optional.empty();
@@ -45,7 +46,7 @@ public class ChannelUserAwayEvent extends ChannelUserEvent {
         reason = Optional.empty();
     }
 
-    public ChannelUserAwayEvent(final long timestamp, final GroupChat channel,
+    public ChannelUserAwayEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser user, final Optional<String> reason) {
         super(timestamp, channel, user);
         this.reason = reason;

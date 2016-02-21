@@ -33,11 +33,15 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyObject;
@@ -56,6 +60,7 @@ public class WindowManagerTest {
     @Mock private WindowModel child;
     @Mock private WindowModel grandchild;
     @Mock private DMDircMBassador eventBus;
+    @Captor private ArgumentCaptor<String> idCaptor;
     private WindowManager manager;
 
     @Before
@@ -87,6 +92,30 @@ public class WindowManagerTest {
     }
 
     @Test
+    public void testGetParent() {
+        manager.addWindow(container);
+        manager.addListener(frameListener);
+        manager.addWindow(container, child);
+
+        assertEquals(Optional.of(container), manager.getParent(child));
+        assertEquals(Optional.empty(), manager.getParent(container));
+    }
+
+    @Test
+    public void testGetChildren() {
+        manager.addWindow(container);
+        manager.addListener(frameListener);
+        manager.addWindow(container, child);
+        manager.addWindow(container, grandchild);
+
+        assertEquals(2, manager.getChildren(container).size());
+        assertTrue(manager.getChildren(container).contains(child));
+        assertTrue(manager.getChildren(container).contains(grandchild));
+        assertEquals(0, manager.getChildren(child).size());
+        assertEquals(0, manager.getChildren(grandchild).size());
+    }
+
+    @Test
     public void testRemoveRoot() {
         manager.addWindow(container);
         manager.addListener(frameListener);
@@ -101,8 +130,6 @@ public class WindowManagerTest {
         manager.addWindow(container);
         manager.addWindow(container, child);
         manager.addListener(frameListener);
-
-        when(child.getParent()).thenReturn(Optional.of(container));
 
         manager.removeWindow(child);
 
@@ -134,10 +161,9 @@ public class WindowManagerTest {
 
     @Test
     public void testAddListenerAndSync() {
-        when(container.getChildren()).thenReturn(Arrays.asList(child));
-        when(child.getChildren()).thenReturn(Arrays.asList(grandchild));
-
         manager.addWindow(container);
+        manager.addWindow(container, child);
+        manager.addWindow(child, grandchild);
         manager.addListenerAndSync(frameListener);
 
         verify(frameListener).addWindow(container, true);
@@ -156,11 +182,9 @@ public class WindowManagerTest {
 
     @Test
     public void testRemoveWindowRootWindowWithChildren() {
-        when(container.getChildren()).thenReturn(Arrays.asList(child));
-        when(child.getParent()).thenReturn(Optional.of(container));
-
         manager.addListener(frameListener);
         manager.addWindow(container);
+        manager.addWindow(container, child);
         manager.removeWindow(container);
 
         verify(frameListener).delWindow(container);
@@ -169,30 +193,24 @@ public class WindowManagerTest {
 
     @Test
     public void testRemoveChildWindowNoChildren() {
-        when(container.getChildren()).thenReturn(Arrays.asList(child));
-        when(child.getParent()).thenReturn(Optional.of(container));
-
         manager.addListener(frameListener);
         manager.addWindow(container);
+        manager.addWindow(container, child);
         manager.removeWindow(child);
 
         verify(frameListener).delWindow(container, child);
-        verify(container).removeChild(child);
     }
 
     @Test
     public void testRemoveChildWindowWithChildren() {
-        when(container.getChildren()).thenReturn(Arrays.asList(child));
-        when(child.getChildren()).thenReturn(Arrays.asList(grandchild));
-        when(child.getParent()).thenReturn(Optional.of(container));
-
         manager.addListener(frameListener);
         manager.addWindow(container);
+        manager.addWindow(container, child);
+        manager.addWindow(child, grandchild);
         manager.removeWindow(child);
 
         verify(frameListener).delWindow(container, child);
         verify(grandchild).close();
-        verify(container).removeChild(child);
     }
 
     @Test
@@ -236,8 +254,6 @@ public class WindowManagerTest {
 
         when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
-        when(customContainer.getChildren()).thenReturn(Arrays.asList(
-                new WindowModel[]{customChild, }));
 
         manager.addWindow(customContainer);
         manager.addWindow(customContainer, customChild);
@@ -252,12 +268,41 @@ public class WindowManagerTest {
 
         when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
-        when(customContainer.getChildren()).thenReturn(Arrays.asList(
-                new WindowModel[]{customChild, }));
 
         manager.addWindow(customContainer);
         manager.addWindow(customContainer, customChild);
 
         assertNull(manager.findCustomWindow(customContainer, "test"));
     }
+
+    @Test
+    public void testAssignId() {
+        manager.addWindow(container);
+        manager.addWindow(container, child);
+
+        verify(container).setId(idCaptor.capture());
+        final String parentId = idCaptor.getValue();
+
+        verify(child).setId(idCaptor.capture());
+        final String childId = idCaptor.getValue();
+
+        assertNotEquals(parentId, childId);
+    }
+
+    @Test
+    public void testGetById() {
+        manager.addWindow(container);
+        manager.addWindow(container, child);
+
+        verify(container).setId(idCaptor.capture());
+        final String parentId = idCaptor.getValue();
+
+        verify(child).setId(idCaptor.capture());
+        final String childId = idCaptor.getValue();
+
+        assertSame(container, manager.getWindowById(parentId).get());
+        assertSame(child, manager.getWindowById(childId).get());
+        assertEquals(Optional.empty(), manager.getWindowById("invalid"));
+    }
+
 }

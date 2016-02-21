@@ -29,7 +29,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -52,7 +52,7 @@ public class ProgramError implements Serializable {
     /** Underlying exception. */
     private final Optional<Throwable> exception;
     /** Date/time error first occurred. */
-    private final Date date;
+    private final LocalDateTime date;
     /** The eventbus to post status changes to. */
     private final Optional<DMDircMBassador> eventBus;
     /** Is this an application error? */
@@ -75,7 +75,7 @@ public class ProgramError implements Serializable {
             @Nonnull final ErrorLevel level,
             @Nonnull final String message,
             @Nullable final Throwable exception,
-            @Nonnull final Date date,
+            @Nonnull final LocalDateTime date,
             @Nullable final DMDircMBassador eventBus,
             final boolean appError) {
         checkNotNull(level);
@@ -86,7 +86,7 @@ public class ProgramError implements Serializable {
         this.level = level;
         this.message = message;
         this.exception = Optional.ofNullable(exception);
-        this.date = (Date) date.clone();
+        this.date = date;
         this.reportStatus = ErrorReportStatus.WAITING;
         this.eventBus = Optional.ofNullable(eventBus);
         this.appError = appError;
@@ -123,8 +123,8 @@ public class ProgramError implements Serializable {
      *
      * @return Error time
      */
-    public Date getDate() {
-        return (Date) date.clone();
+    public LocalDateTime getDate() {
+        return date;
     }
 
     /**

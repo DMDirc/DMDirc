@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when the MOTD line is received.
  */
@@ -31,7 +33,7 @@ public class ServerMotdLineEvent extends ServerDisplayableEvent {
 
     private final String message;
 
-    public ServerMotdLineEvent(final long timestamp, final Connection connection,
+    public ServerMotdLineEvent(final LocalDateTime timestamp, final Connection connection,
             final String message) {
         super(timestamp, connection);
         this.message = message;

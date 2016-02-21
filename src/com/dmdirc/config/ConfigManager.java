@@ -22,7 +22,6 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
@@ -93,10 +92,9 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     ConfigManager(
             final ClientInfo clientInfo,
             final IdentityManager manager,
-            final DMDircMBassador eventBus,
             final String protocol, final String ircd,
             final String network, final String server) {
-        this(clientInfo, manager, eventBus, protocol, ircd, network, server, "<Unknown>");
+        this(clientInfo, manager, protocol, ircd, network, server, "<Unknown>");
     }
 
     /**
@@ -114,7 +112,6 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     ConfigManager(
             final ClientInfo clientInfo,
             final IdentityManager manager,
-            final DMDircMBassador eventBus,
             final String protocol, final String ircd,
             final String network, final String server, final String channel) {
         final String chanName = channel + '@' + network;

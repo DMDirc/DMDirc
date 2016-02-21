@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a user is added to the list of users.
  */
@@ -32,7 +34,7 @@ public class NickListClientAddedEvent extends NickListEvent {
 
     private final GroupChatUser user;
 
-    public NickListClientAddedEvent(final long timestamp, final GroupChat channel,
+    public NickListClientAddedEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser user) {
         super(timestamp, channel);
         this.user = user;

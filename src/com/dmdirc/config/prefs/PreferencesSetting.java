@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a single setting.
@@ -315,8 +316,7 @@ public class PreferencesSetting {
      * Dismisses changes to this setting.
      */
     public void dismiss() {
-        if (original != null && original.equals(value)
-                || original == null && value == null) {
+        if (Objects.equals(original, value)) {
             return;
         }
 
@@ -333,7 +333,7 @@ public class PreferencesSetting {
      * @return true iif the setting will be changed if saved
      */
     public boolean needsSaving() {
-        return (value == null || !value.equals(original))
+        return (!Objects.equals(value, original))
                 && (value != null || original != null)
                 && (validator == null || !validator.validate(value).isFailure());
     }

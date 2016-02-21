@@ -25,12 +25,14 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a channel self message occurs.
  */
 public class ChannelSelfMessageEvent extends BaseChannelMessageEvent {
 
-    public ChannelSelfMessageEvent(final long timestamp, final GroupChat channel,
+    public ChannelSelfMessageEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client, final String message) {
         super(timestamp, channel, client, message);
     }

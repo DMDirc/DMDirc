@@ -22,14 +22,12 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfJoinEvent;
 import com.dmdirc.events.ChannelSelfMessageEvent;
 import com.dmdirc.events.CommandErrorEvent;
-import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.NickListClientAddedEvent;
 import com.dmdirc.events.NickListClientRemovedEvent;
 import com.dmdirc.events.NickListClientsChangedEvent;
@@ -45,12 +43,9 @@ import com.dmdirc.parser.interfaces.ChannelClientInfo;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.core.components.WindowComponent;
-import com.dmdirc.ui.input.TabCompleterFactory;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.util.colours.Colour;
-import com.dmdirc.util.colours.ColourUtils;
 
 import com.google.common.collect.EvictingQueue;
 
@@ -99,23 +94,18 @@ public class Channel extends FrameContainer implements GroupChat {
      * @param connection          The connection object that this channel belongs to
      * @param newChannelInfo      The parser's channel object that corresponds to this channel
      * @param configMigrator      The config migrator which provides the config for this channel.
-     * @param tabCompleterFactory The factory to use to create tab completers.
      */
     public Channel(
             final Connection connection,
             final ChannelInfo newChannelInfo,
             final ConfigProviderMigrator configMigrator,
-            final TabCompleterFactory tabCompleterFactory,
             final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager) {
-        super(connection.getWindowModel(), "channel-inactive",
+        super("channel-inactive",
                 newChannelInfo.getName(),
                 Styliser.stipControlCodes(newChannelInfo.getName()),
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
-                tabCompleterFactory.getTabCompleter(connection.getWindowModel().getTabCompleter(),
-                        configMigrator.getConfigProvider(), CommandType.TYPE_CHANNEL,
-                        CommandType.TYPE_CHAT),
                 connection.getWindowModel().getEventBus(),
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier(),
@@ -167,10 +157,14 @@ public class Channel extends FrameContainer implements GroupChat {
         }
 
         final GroupChatUser me = getUser(connection.getLocalUser().get()).get();
-        splitLine(line).stream().filter(part -> !part.isEmpty()).forEach(part -> {
-            getEventBus().publishAsync(new ChannelSelfMessageEvent(this, me, part));
-            channelInfo.sendMessage(part);
-        });
+        getInputModel().get()
+                .splitLine(line)
+                .stream()
+                .filter(part -> !part.isEmpty())
+                .forEach(part -> {
+                    getEventBus().publishAsync(new ChannelSelfMessageEvent(this, me, part));
+                    channelInfo.sendMessage(part);
+                });
     }
 
     @Override
@@ -266,7 +260,7 @@ public class Channel extends FrameContainer implements GroupChat {
         // Needs to be published synchronously so that nicklists are cleared before the parser
         // is disconnected (which happens synchronously after this method returns).
         getEventBus().publish(
-                new NickListClientsChangedEvent(this, Collections.<GroupChatUser>emptyList()));
+                new NickListClientsChangedEvent(this, Collections.emptyList()));
     }
 
     @Override
@@ -297,7 +291,8 @@ public class Channel extends FrameContainer implements GroupChat {
     public void addClient(final GroupChatUser client) {
         getEventBus().publishAsync(new NickListClientAddedEvent(this, client));
 
-        getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
+        getInputModel().get().getTabCompleter().addEntry(
+                TabCompletionType.CHANNEL_NICK, client.getNickname());
     }
 
     /**
@@ -308,7 +303,8 @@ public class Channel extends FrameContainer implements GroupChat {
     public void removeClient(final GroupChatUser client) {
         getEventBus().publishAsync(new NickListClientRemovedEvent(this, client));
 
-        getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK, client.getNickname());
+        getInputModel().get().getTabCompleter().removeEntry(
+                TabCompletionType.CHANNEL_NICK, client.getNickname());
 
         if (client.getUser().equals(connection.getLocalUser().orElse(null))) {
             resetWindow();
@@ -323,10 +319,11 @@ public class Channel extends FrameContainer implements GroupChat {
     public void setClients(final Collection<GroupChatUser> clients) {
         getEventBus().publishAsync(new NickListClientsChangedEvent(this, clients));
 
-        getTabCompleter().clear(TabCompletionType.CHANNEL_NICK);
+        getInputModel().get().getTabCompleter().clear(TabCompletionType.CHANNEL_NICK);
 
-        getTabCompleter().addEntries(TabCompletionType.CHANNEL_NICK,
-            clients.stream().map(GroupChatUser::getNickname).collect(Collectors.toList()));
+        getInputModel().get().getTabCompleter().addEntries(
+                TabCompletionType.CHANNEL_NICK,
+                clients.stream().map(GroupChatUser::getNickname).collect(Collectors.toList()));
     }
 
     /**
@@ -336,8 +333,10 @@ public class Channel extends FrameContainer implements GroupChat {
      * @param newName The new nickname of the client
      */
     public void renameClient(final String oldName, final String newName) {
-        getTabCompleter().removeEntry(TabCompletionType.CHANNEL_NICK, oldName);
-        getTabCompleter().addEntry(TabCompletionType.CHANNEL_NICK, newName);
+        getInputModel().get().getTabCompleter().removeEntry(
+                TabCompletionType.CHANNEL_NICK, oldName);
+        getInputModel().get().getTabCompleter().addEntry(
+                TabCompletionType.CHANNEL_NICK, newName);
         refreshClients();
     }
 
@@ -364,49 +363,6 @@ public class Channel extends FrameContainer implements GroupChat {
         } else {
             return user.getImportantMode();
         }
-    }
-
-    /**
-     * Returns a string[] containing the nickname/ident/host of a channel client.
-     *
-     *
-     *
-     * @param client The channel client to check
-     *
-     * @return  A string[] containing displayable components
-     *          0 - mode
-     *          1 - nickname
-     *          2 - ident
-     *          3 - hostname
-     */
-    private String[] getDetails(final GroupChatUser client) {
-        if (client == null) {
-            // WTF?
-            throw new UnsupportedOperationException("getDetails called with"
-                    + " null ChannelClientInfo");
-        }
-
-        final String[] res = {
-            getModes(client),
-            Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME,
-            client.getUsername().orElse(""),
-            client.getHostname().orElse(""),};
-
-        if (showColours) {
-            final Optional<Colour> foreground
-                    = client.getDisplayProperty(DisplayProperty.FOREGROUND_COLOUR);
-            final Optional<Colour> background
-                    = client.getDisplayProperty(DisplayProperty.BACKGROUND_COLOUR);
-            if (foreground.isPresent()) {
-                String prefix = Styliser.CODE_HEXCOLOUR + ColourUtils.getHex(foreground.get());
-                if (background.isPresent()) {
-                    prefix += ',' + ColourUtils.getHex(background.get());
-                }
-                res[1] = prefix + res[1] + Styliser.CODE_HEXCOLOUR;
-            }
-        }
-
-        return res;
     }
 
     // ---------------------------------------------------- TOPIC HANDLING -----

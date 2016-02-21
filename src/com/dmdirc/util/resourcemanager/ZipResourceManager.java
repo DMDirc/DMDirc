@@ -146,8 +146,8 @@ public final class ZipResourceManager extends ResourceManager {
     @Override
     public URL getResourceURL(final String resource) throws MalformedURLException {
         if (resourceExists(resource)) {
-            return new URL("jar:file:/" + zipFile.getName() + "!"
-                    + (resource.charAt(0) == '/' ? resource : "/" + resource));
+            return new URL("jar:file:/" + zipFile.getName() + '!'
+                    + (resource.charAt(0) == '/' ? resource : '/' + resource));
         } else {
             return null;
         }
