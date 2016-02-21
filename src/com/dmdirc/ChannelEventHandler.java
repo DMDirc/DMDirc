@@ -60,7 +60,6 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.google.common.base.Strings;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -112,7 +111,7 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         eventBus.publishAsync(new ChannelMessageEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()),
+                event.getDate(),
                 owner, groupChatUserManager.getUserFromClient(event.getClient(), owner),
                 event.getMessage()));
     }
@@ -126,9 +125,7 @@ public class ChannelEventHandler extends EventHandler {
         owner.setClients(event.getChannel().getChannelClients().stream()
                 .map(client -> groupChatUserManager.getUserFromClient(client, owner))
                 .collect(Collectors.toList()));
-        eventBus.publishAsync(new ChannelGotNamesEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()),
-                owner));
+        eventBus.publishAsync(new ChannelGotNamesEvent(event.getDate(), owner));
     }
 
     @Handler
@@ -138,8 +135,7 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         final ChannelInfo channel = event.getChannel();
-        final LocalDateTime date = LocalDateTime.ofInstant(
-                event.getDate().toInstant(), ZoneId.systemDefault());
+        final LocalDateTime date = event.getDate();
 
         final Topic topic = Topic.create(channel.getTopic(),
                 owner.getUser(getConnection().getUser(channel.getTopicSetter())).orElse(null),
@@ -185,7 +181,7 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         eventBus.publish(new ChannelJoinEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
+                event.getDate(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner)));
         owner.addClient(groupChatUserManager.getUserFromClient(event.getClient(), owner));
     }
@@ -197,8 +193,7 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         final ChannelClientInfo client = event.getClient();
-        final LocalDateTime date =
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault());
+        final LocalDateTime date = event.getDate();
         final String reason = event.getReason();
 
         if (isMyself(client)) {
@@ -219,7 +214,7 @@ public class ChannelEventHandler extends EventHandler {
         final ChannelClientInfo kickedClient = event.getKickedClient();
 
         eventBus.publishAsync(new ChannelKickEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
+                event.getDate(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner),
                 groupChatUserManager.getUserFromClient(kickedClient, owner), event.getReason()));
         owner.removeClient(groupChatUserManager.getUserFromClient(kickedClient, owner));
@@ -232,7 +227,7 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         eventBus.publishAsync(new ChannelQuitEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
+                event.getDate(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner),
                 event.getReason()));
         owner.removeClient(groupChatUserManager.getUserFromClient(event.getClient(), owner));
@@ -245,7 +240,7 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         eventBus.publishAsync(new ChannelActionEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
+                event.getDate(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner),
                 event.getMessage()));
     }
@@ -264,14 +259,12 @@ public class ChannelEventHandler extends EventHandler {
         if (isMyself(client)) {
             eventBus.publishAsync(
                     new ChannelSelfNickChangeEvent(
-                            LocalDateTime.ofInstant(
-                                    event.getDate().toInstant(), ZoneId.systemDefault()),
+                            event.getDate(),
                             owner, groupChatUserManager.getUserFromClient(client, owner), oldNick));
         } else {
             eventBus.publishAsync(
                     new ChannelNickChangeEvent(
-                            LocalDateTime.ofInstant(
-                                    event.getDate().toInstant(), ZoneId.systemDefault()),
+                            event.getDate(),
                             owner, groupChatUserManager.getUserFromClient(client, owner), oldNick));
         }
     }
@@ -285,8 +278,7 @@ public class ChannelEventHandler extends EventHandler {
         final String host = event.getHost();
         final String modes = event.getModes();
         final ChannelClientInfo client = event.getClient();
-        final LocalDateTime date = LocalDateTime.ofInstant(event.getDate().toInstant(),
-                ZoneId.systemDefault());
+        final LocalDateTime date = event.getDate();
 
         if (host.isEmpty()) {
             if (modes.length() <= 1) {
@@ -314,8 +306,7 @@ public class ChannelEventHandler extends EventHandler {
 
         final ChannelClientInfo client = event.getClient();
         final String message = event.getMessage();
-        final LocalDateTime date = LocalDateTime.ofInstant(event.getDate().toInstant(),
-                ZoneId.systemDefault());
+        final LocalDateTime date = event.getDate();
         final String type = event.getType();
 
         final ChannelCtcpEvent coreEvent = new ChannelCtcpEvent(date, owner,
@@ -332,14 +323,10 @@ public class ChannelEventHandler extends EventHandler {
                 .ifPresent(c -> {
                     if (event.getNewState() == AwayState.AWAY) {
                         eventBus.publishAsync(
-                                new ChannelUserAwayEvent(LocalDateTime.ofInstant(
-                                        event.getDate().toInstant(), ZoneId.systemDefault()),
-                                        owner, c));
+                                new ChannelUserAwayEvent(event.getDate(), owner, c));
                     } else {
                         eventBus.publishAsync(
-                                new ChannelUserBackEvent(
-                                        LocalDateTime.ofInstant(event.getDate().toInstant(),
-                                                ZoneId.systemDefault()), owner, c));
+                                new ChannelUserBackEvent(event.getDate(), owner, c));
                     }
                 });
     }
@@ -351,7 +338,7 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         eventBus.publishAsync(new ChannelNoticeEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
+                event.getDate(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner),
                 event.getMessage()));
     }
@@ -363,8 +350,7 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         eventBus.publishAsync(new ChannelModeNoticeEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()),
-                owner,
+                event.getDate(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner), String.valueOf
                 (event.getPrefix()), event.getMessage()));
     }
@@ -376,8 +362,7 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         eventBus.publishAsync(new ChannelListModesRetrievedEvent(
-                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()),
-                owner, event.getMode()));
+                event.getDate(), owner, event.getMode()));
     }
 
     private boolean checkChannel(final ChannelInfo channelInfo) {
