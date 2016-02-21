@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.GroupChat;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when channel modes are discovered.
  */
@@ -31,7 +33,7 @@ public class ChannelModesDiscoveredEvent extends ChannelDisplayableEvent {
 
     private final String modes;
 
-    public ChannelModesDiscoveredEvent(final long timestamp, final GroupChat channel,
+    public ChannelModesDiscoveredEvent(final LocalDateTime timestamp, final GroupChat channel,
             final String modes) {
         super(timestamp, channel);
         this.modes = modes;

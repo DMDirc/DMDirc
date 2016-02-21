@@ -25,6 +25,7 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 /**
  * Fire when a server is connecting.
@@ -38,7 +39,7 @@ public class ServerConnectingEvent extends ServerDisplayableEvent {
         this.uri = uri;
     }
 
-    public ServerConnectingEvent(final long timestamp, final Connection connection, final URI uri) {
+    public ServerConnectingEvent(final LocalDateTime timestamp, final Connection connection, final URI uri) {
         super(timestamp, connection);
         this.uri = uri;
     }

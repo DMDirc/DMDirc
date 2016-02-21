@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a user is removed from the list of users.
  */
@@ -32,7 +34,7 @@ public class NickListClientRemovedEvent extends NickListEvent {
 
     private final GroupChatUser user;
 
-    public NickListClientRemovedEvent(final long timestamp, final GroupChat channel,
+    public NickListClientRemovedEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser user) {
         super(timestamp, channel);
         this.user = user;

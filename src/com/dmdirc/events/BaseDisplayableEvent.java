@@ -24,6 +24,7 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -36,7 +37,7 @@ public abstract class BaseDisplayableEvent extends DMDircEvent implements Displa
     /** The frame container that caused this event. */
     private final WindowModel source;
 
-    public BaseDisplayableEvent(final long timestamp, final WindowModel source) {
+    public BaseDisplayableEvent(final LocalDateTime timestamp, final WindowModel source) {
         super(timestamp);
         this.source = source;
     }

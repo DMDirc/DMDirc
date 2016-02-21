@@ -27,6 +27,7 @@ import com.dmdirc.interfaces.GroupChatUser;
 
 import com.google.common.collect.Lists;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -37,7 +38,7 @@ public class NickListClientsChangedEvent extends NickListEvent {
 
     private final Collection<GroupChatUser> users;
 
-    public NickListClientsChangedEvent(final long timestamp, final GroupChat channel,
+    public NickListClientsChangedEvent(final LocalDateTime timestamp, final GroupChat channel,
             final Iterable<GroupChatUser> users) {
         super(timestamp, channel);
         this.users = Lists.newArrayList(users);

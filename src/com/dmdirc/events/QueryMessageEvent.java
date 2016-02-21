@@ -25,12 +25,14 @@ package com.dmdirc.events;
 import com.dmdirc.Query;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a message occurs in a query.
  */
 public class QueryMessageEvent extends BaseQueryMessageEvent {
 
-    public QueryMessageEvent(final long timestamp, final Query query, final User user,
+    public QueryMessageEvent(final LocalDateTime timestamp, final Query query, final User user,
             final String message) {
         super(timestamp, query, user, message);
     }

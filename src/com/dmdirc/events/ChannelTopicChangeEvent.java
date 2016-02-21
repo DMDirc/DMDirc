@@ -26,6 +26,8 @@ import com.dmdirc.Topic;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a topic is changed.
  */
@@ -34,7 +36,7 @@ public class ChannelTopicChangeEvent extends ChannelDisplayableEvent {
     private final Topic topic;
     private final GroupChatUser user;
 
-    public ChannelTopicChangeEvent(final long timestamp, final GroupChat channel,
+    public ChannelTopicChangeEvent(final LocalDateTime timestamp, final GroupChat channel,
             final Topic topic, final GroupChatUser user) {
         super(timestamp, channel);
         this.topic = topic;

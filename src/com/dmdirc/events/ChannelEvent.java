@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.GroupChat;
 
+import java.time.LocalDateTime;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -34,7 +36,7 @@ public abstract class ChannelEvent extends DMDircEvent {
     /** The group chat that this event occurred on. */
     private final GroupChat groupChat;
 
-    public ChannelEvent(final long timestamp, final GroupChat groupChat) {
+    public ChannelEvent(final LocalDateTime timestamp, final GroupChat groupChat) {
         super(timestamp);
         this.groupChat = checkNotNull(groupChat);
     }

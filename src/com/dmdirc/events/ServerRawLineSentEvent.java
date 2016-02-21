@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a raw line is manually sent from the local client.
  */
@@ -31,7 +33,7 @@ public class ServerRawLineSentEvent extends ServerDisplayableEvent {
 
     private final String line;
 
-    public ServerRawLineSentEvent(final long timestamp, final Connection connection,
+    public ServerRawLineSentEvent(final LocalDateTime timestamp, final Connection connection,
             final String line) {
         super(timestamp, connection);
         this.line = line;

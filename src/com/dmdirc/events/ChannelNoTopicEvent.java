@@ -24,12 +24,14 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.GroupChat;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a topic is unset on a channel.
  */
 public class ChannelNoTopicEvent extends ChannelDisplayableEvent {
 
-    public ChannelNoTopicEvent(final long timestamp, final GroupChat channel) {
+    public ChannelNoTopicEvent(final LocalDateTime timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 

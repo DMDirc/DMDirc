@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when we miss a server ping reply.
  */
@@ -31,7 +33,8 @@ public class ServerNoPingEvent extends ServerEvent {
 
     private final long ping;
 
-    public ServerNoPingEvent(final long timestamp, final Connection connection, final long ping) {
+    public ServerNoPingEvent(final LocalDateTime timestamp, final Connection connection,
+            final long ping) {
         super(timestamp, connection);
         this.ping = ping;
     }

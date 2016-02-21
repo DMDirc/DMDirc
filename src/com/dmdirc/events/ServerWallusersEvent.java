@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when receiving a server wallusers.
  */
@@ -33,7 +35,7 @@ public class ServerWallusersEvent extends ServerDisplayableEvent {
     private final User user;
     private final String message;
 
-    public ServerWallusersEvent(final long timestamp, final Connection connection,
+    public ServerWallusersEvent(final LocalDateTime timestamp, final Connection connection,
             final User user, final String message) {
         super(timestamp, connection);
         this.user = user;

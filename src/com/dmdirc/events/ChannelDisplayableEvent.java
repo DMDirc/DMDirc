@@ -25,6 +25,7 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -35,7 +36,7 @@ public abstract class ChannelDisplayableEvent extends ChannelEvent implements Di
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
-    public ChannelDisplayableEvent(final long timestamp, final GroupChat channel) {
+    public ChannelDisplayableEvent(final LocalDateTime timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 

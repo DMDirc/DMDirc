@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Raised when a server attempts to connect to an unknown protocol.
  */
@@ -31,7 +33,8 @@ public class ServerUnknownProtocolEvent extends ServerDisplayableEvent {
 
     private final String protocol;
 
-    public ServerUnknownProtocolEvent(final long timestamp, final Connection connection, final String protocol) {
+    public ServerUnknownProtocolEvent(final LocalDateTime timestamp, final Connection connection,
+            final String protocol) {
         super(timestamp, connection);
         this.protocol = protocol;
     }

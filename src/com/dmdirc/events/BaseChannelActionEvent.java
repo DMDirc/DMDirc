@@ -25,12 +25,14 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Base class for channel action events.
  */
 public class BaseChannelActionEvent extends BaseChannelTextEvent {
 
-    public BaseChannelActionEvent(final long timestamp, final GroupChat channel,
+    public BaseChannelActionEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client, final String message) {
         super(timestamp, channel, client, message);
     }

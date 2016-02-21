@@ -25,7 +25,9 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.parser.events.UserInfoEvent;
+import com.dmdirc.parser.events.UserInfoEvent.UserInfoType;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
@@ -37,13 +39,13 @@ import java.util.Optional;
 public class UserInfoResponseEvent extends ServerDisplayableEvent {
 
     private final User user;
-    private final Map<UserInfoEvent.UserInfoType, UserInfoProperty> info;
+    private final Map<UserInfoType, UserInfoProperty> info;
 
-    public UserInfoResponseEvent(final Connection connection, final long date,
-            final User user, final Map<UserInfoEvent.UserInfoType, String> info) {
+    public UserInfoResponseEvent(final LocalDateTime date, final Connection connection,
+            final User user, final Map<UserInfoType, String> info) {
         super(date, connection);
         this.user = user;
-        this.info = new EnumMap<>(UserInfoEvent.UserInfoType.class);
+        this.info = new EnumMap<>(UserInfoType.class);
         info.forEach((key, value) -> this.info.put(key, new UserInfoProperty(key, value)));
     }
 

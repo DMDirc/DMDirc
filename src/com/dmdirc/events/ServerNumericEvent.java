@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Event raised when a server numeric occurs.
  */
@@ -32,8 +34,8 @@ public class ServerNumericEvent extends ServerDisplayableEvent {
     private final int numeric;
     private final String[] args;
 
-    public ServerNumericEvent(final long timestamp, final Connection server, final int numeric,
-            final String[] args) {
+    public ServerNumericEvent(final LocalDateTime timestamp, final Connection server,
+            final int numeric, final String[] args) {
         super(timestamp, server);
         this.numeric = numeric;
         this.args = args;

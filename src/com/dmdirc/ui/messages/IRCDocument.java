@@ -29,8 +29,8 @@ import com.dmdirc.util.collections.ListenerList;
 
 import java.awt.Font;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.UIManager;
@@ -104,7 +104,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param displayPropertyMap The display properties to use
      * @param text stylised string to add to the document
      */
-    public void addText(final long timestamp, final DisplayPropertyMap displayPropertyMap,
+    public void addText(final LocalDateTime timestamp, final DisplayPropertyMap displayPropertyMap,
             final String text) {
         final int start;
         synchronized (lines) {
@@ -115,8 +115,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         fireLinesAdded(start, 1);
     }
 
-    private String formatTimestamp(final long timestamp) {
-        return Formatter.formatMessage(configManager, "timestamp", new Date(timestamp));
+    private String formatTimestamp(final LocalDateTime timestamp) {
+        return Formatter.formatMessage(configManager, "timestamp", timestamp);
     }
 
     /**

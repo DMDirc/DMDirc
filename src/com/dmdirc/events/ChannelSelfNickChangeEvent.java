@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when the local user changes nickname in a channel.
  */
@@ -33,7 +35,7 @@ public class ChannelSelfNickChangeEvent extends ChannelDisplayableEvent {
     private final GroupChatUser client;
     private final String oldNick;
 
-    public ChannelSelfNickChangeEvent(final long timestamp, final GroupChat channel,
+    public ChannelSelfNickChangeEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client, final String oldNick) {
         super(timestamp, channel);
         this.client = client;

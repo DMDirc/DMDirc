@@ -22,33 +22,35 @@
 
 package com.dmdirc.events;
 
+import java.time.LocalDateTime;
+
 /**
  * Base class for all DMDirc events.
  */
 public abstract class DMDircEvent {
 
     /**
-     * The timestamp the event was triggered at, in milliseconds.
+     * The time the event was triggered at.
      */
-    private final long timestamp;
+    private final LocalDateTime timestamp;
 
     /**
      * Creates a new event with the specified timestamp.
      *
-     * @param timestamp The timestamp the event was triggered at, in milliseconds.
+     * @param timestamp The stamp the event was triggered at.
      */
-    public DMDircEvent(final long timestamp) {
+    protected DMDircEvent(final LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
     /**
      * Creates a new event with the current system timestamp.
      */
-    public DMDircEvent() {
-        this.timestamp = System.currentTimeMillis();
+    protected DMDircEvent() {
+        this.timestamp = LocalDateTime.now();
     }
 
-    public long getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 

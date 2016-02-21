@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a message is manually sent from the local client.
  */
@@ -32,7 +34,7 @@ public class ServerMessageSentEvent extends ServerDisplayableEvent {
     private final String target;
     private final String message;
 
-    public ServerMessageSentEvent(final long timestamp, final Connection connection,
+    public ServerMessageSentEvent(final LocalDateTime timestamp, final Connection connection,
             final String target, final String message) {
         super(timestamp, connection);
         this.target = target;

@@ -30,7 +30,7 @@ import com.dmdirc.tests.JimFsRule;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -60,7 +60,7 @@ public class DiskLoggingErrorManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        when(error.getTimestamp()).thenReturn(new Date().getTime());
+        when(error.getTimestamp()).thenReturn(LocalDateTime.now());
         when(error.getError()).thenReturn(programError);
         when(programError.getThrowable()).thenReturn(Optional.of(new IllegalArgumentException()));
         when(programError.getThrowableAsString()).thenReturn(Optional.of("test"));

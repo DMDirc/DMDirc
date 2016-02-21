@@ -40,6 +40,8 @@ import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -119,12 +121,14 @@ public class Echo extends Command implements IntelligentCommand {
             if (frame == null) {
                 showError(origin, args.isSilent(), "Unable to find target window");
             } else if (!args.isSilent()) {
-                frame.getEventBus().publishAsync(new CommandOutputEvent(frame, time.getTime(),
-                        results.getArgumentsAsString()));
+                frame.getEventBus().publishAsync(new CommandOutputEvent(
+                        LocalDateTime.ofInstant(time.toInstant(), ZoneId.systemDefault()),
+                        frame, results.getArgumentsAsString()));
             }
         } else if (!args.isSilent()) {
-            origin.getEventBus().publishAsync(new CommandOutputEvent(origin,
-                    time.getTime(), results.getArgumentsAsString()));
+            origin.getEventBus().publishAsync(new CommandOutputEvent(
+                    LocalDateTime.ofInstant(time.toInstant(), ZoneId.systemDefault()), origin,
+                    results.getArgumentsAsString()));
         }
     }
 

@@ -38,7 +38,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -103,7 +102,7 @@ public class DiskLoggingErrorManager {
         final String logName = error.getTimestamp() + "-" + error.getError().getLevel();
         final Path errorFile = errorsDirectory.resolve(logName + ".log");
         final List<String> data = Lists
-                .newArrayList("Date: " + new Date(error.getTimestamp()),
+                .newArrayList("Date: " + error.getTimestamp(),
                         "Level: " + error.getError().getLevel(),
                         "Description: " + error.getError().getMessage(),
                         "Details: ");

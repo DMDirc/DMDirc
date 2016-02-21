@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired in on receipt of user modes.
  */
@@ -33,8 +35,8 @@ public class ServerUserModesEvent extends ServerDisplayableEvent {
     private final User user;
     private final String modes;
 
-    public ServerUserModesEvent(final long timestamp, final Connection connection, final User user,
-            final String modes) {
+    public ServerUserModesEvent(final LocalDateTime timestamp, final Connection connection,
+            final User user, final String modes) {
         super(timestamp, connection);
         this.user = user;
         this.modes = modes;
