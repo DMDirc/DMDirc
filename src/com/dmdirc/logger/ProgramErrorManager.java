@@ -35,11 +35,11 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 import com.google.common.base.Throwables;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -124,7 +124,7 @@ public class ProgramErrorManager {
             final Throwable throwable, final boolean appError) {
 
         final ProgramError error = programErrorFactory.create(level, message, throwable,
-                new Date(), appError);
+                LocalDateTime.now(), appError);
         errors.add(error);
         return error;
     }

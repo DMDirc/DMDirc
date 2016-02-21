@@ -24,7 +24,7 @@ package com.dmdirc.logger;
 
 import com.dmdirc.DMDircMBassador;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -43,7 +43,7 @@ public class ProgramErrorFactory {
 
     public ProgramError create(final ErrorLevel level, final String message,
             @Nullable final Throwable exception,
-            final Date date,
+            final LocalDateTime date,
             final boolean appError) {
         return new ProgramError(level, message, exception, date, eventBus, appError);
     }
