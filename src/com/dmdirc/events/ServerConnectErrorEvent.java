@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fire when a server errored whilst connecting.
  */
@@ -36,7 +38,7 @@ public class ServerConnectErrorEvent extends ServerEvent {
         this.message = message;
     }
 
-    public ServerConnectErrorEvent(final long timestamp, final Connection connection,
+    public ServerConnectErrorEvent(final LocalDateTime timestamp, final Connection connection,
             final String message) {
         super(timestamp, connection);
         this.message = message;

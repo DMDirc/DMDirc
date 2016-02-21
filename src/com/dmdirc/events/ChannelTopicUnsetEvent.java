@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a topic is cleared.
  */
@@ -32,7 +34,7 @@ public class ChannelTopicUnsetEvent extends ChannelDisplayableEvent {
 
     private final GroupChatUser client;
 
-    public ChannelTopicUnsetEvent(final long timestamp, final GroupChat channel,
+    public ChannelTopicUnsetEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client) {
         super(timestamp, channel);
         this.client = client;

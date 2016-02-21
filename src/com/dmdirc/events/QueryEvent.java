@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.Query;
 
+import java.time.LocalDateTime;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -34,7 +36,7 @@ public abstract class QueryEvent extends DMDircEvent {
     /** The query that this event occurred on. */
     private final Query query;
 
-    public QueryEvent(final long timestamp, final Query query) {
+    public QueryEvent(final LocalDateTime timestamp, final Query query) {
         super(timestamp);
         this.query = checkNotNull(query);
     }

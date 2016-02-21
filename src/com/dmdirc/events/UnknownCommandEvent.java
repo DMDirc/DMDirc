@@ -24,6 +24,7 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
@@ -39,7 +40,7 @@ public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent
     private final String command;
     private final String[] arguments;
 
-    public UnknownCommandEvent(final long timestamp, @Nullable final WindowModel source,
+    public UnknownCommandEvent(final LocalDateTime timestamp, @Nullable final WindowModel source,
             final String command, final String[] arguments) {
         super(timestamp);
         this.source = source;

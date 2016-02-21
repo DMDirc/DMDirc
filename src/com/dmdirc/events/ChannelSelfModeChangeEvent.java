@@ -25,12 +25,14 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Event raised when the local client changes a channel mode.
  */
 public class ChannelSelfModeChangeEvent extends ChannelModeChangeEvent {
 
-    public ChannelSelfModeChangeEvent(final long timestamp, final GroupChat channel,
+    public ChannelSelfModeChangeEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client, final String modes) {
         super(timestamp, channel, client, modes);
     }

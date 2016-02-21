@@ -26,6 +26,8 @@ import com.dmdirc.Invite;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when an invite is received.
  */
@@ -35,7 +37,7 @@ public class ServerInviteReceivedEvent extends ServerDisplayableEvent {
     private final String channel;
     private final Invite invite;
 
-    public ServerInviteReceivedEvent(final long timestamp, final Connection connection,
+    public ServerInviteReceivedEvent(final LocalDateTime timestamp, final Connection connection,
             final User user, final String channel, final Invite invite) {
         super(timestamp, connection);
         this.user = user;

@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.Query;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Base class for query message and action events.
  */
@@ -33,7 +35,7 @@ public abstract class BaseQueryTextEvent extends QueryDisplayableEvent {
     private final User user;
     private final String message;
 
-    public BaseQueryTextEvent(final long timestamp, final Query query, final User user,
+    public BaseQueryTextEvent(final LocalDateTime timestamp, final Query query, final User user,
             final String message) {
         super(timestamp, query);
         this.user = user;

@@ -25,12 +25,14 @@ package com.dmdirc.events;
 import com.dmdirc.Query;
 import com.dmdirc.interfaces.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a self message happens in a query.
  */
 public class QuerySelfMessageEvent extends BaseQueryMessageEvent {
 
-    public QuerySelfMessageEvent(final long timestamp, final Query query, final User user,
+    public QuerySelfMessageEvent(final LocalDateTime timestamp, final Query query, final User user,
             final String message) {
         super(timestamp, query, user, message);
     }

@@ -24,12 +24,14 @@ package com.dmdirc.events;
 
 import com.dmdirc.Query;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a query window is closed.
  */
 public class QueryClosedEvent extends QueryEvent {
 
-    public QueryClosedEvent(final long timestamp, final Query query) {
+    public QueryClosedEvent(final LocalDateTime timestamp, final Query query) {
         super(timestamp, query);
     }
 

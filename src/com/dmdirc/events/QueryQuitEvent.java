@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.Query;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a user quits when a query is open.
  */
@@ -31,7 +33,7 @@ public class QueryQuitEvent extends QueryDisplayableEvent {
 
     private final String reason;
 
-    public QueryQuitEvent(final long timestamp, final Query query, final String reason) {
+    public QueryQuitEvent(final LocalDateTime timestamp, final Query query, final String reason) {
         super(timestamp, query);
         this.reason = reason;
     }

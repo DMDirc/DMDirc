@@ -59,6 +59,8 @@ import com.dmdirc.parser.interfaces.Parser;
 
 import com.google.common.base.Strings;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -109,8 +111,10 @@ public class ChannelEventHandler extends EventHandler {
             return;
         }
 
-        eventBus.publishAsync(new ChannelMessageEvent(event.getDate().getTime(), owner,
-                groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getMessage()));
+        eventBus.publishAsync(new ChannelMessageEvent(
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()),
+                owner, groupChatUserManager.getUserFromClient(event.getClient(), owner),
+                event.getMessage()));
     }
 
     @Handler
@@ -122,7 +126,9 @@ public class ChannelEventHandler extends EventHandler {
         owner.setClients(event.getChannel().getChannelClients().stream()
                 .map(client -> groupChatUserManager.getUserFromClient(client, owner))
                 .collect(Collectors.toList()));
-        eventBus.publishAsync(new ChannelGotNamesEvent(event.getDate().getTime(), owner));
+        eventBus.publishAsync(new ChannelGotNamesEvent(
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()),
+                owner));
     }
 
     @Handler
@@ -132,7 +138,8 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         final ChannelInfo channel = event.getChannel();
-        final Date date = event.getDate();
+        final LocalDateTime date = LocalDateTime.ofInstant(
+                event.getDate().toInstant(), ZoneId.systemDefault());
 
         final Topic topic = Topic.create(channel.getTopic(),
                 owner.getUser(getConnection().getUser(channel.getTopicSetter())).orElse(null),
@@ -147,11 +154,11 @@ public class ChannelEventHandler extends EventHandler {
             }
         } else {
             if (Strings.isNullOrEmpty(channel.getTopic())) {
-                eventBus.publishAsync(new ChannelTopicUnsetEvent(date.getTime(), owner,
+                eventBus.publishAsync(new ChannelTopicUnsetEvent(date, owner,
                         owner.getUser(owner.getConnection().get()
                                 .getUser(channel.getTopicSetter())).orElse(null)));
             } else {
-                eventBus.publishAsync(new ChannelTopicChangeEvent(date.getTime(), owner, topic,
+                eventBus.publishAsync(new ChannelTopicChangeEvent(date, owner, topic,
                         topic.getClient().get()));
 
             }
@@ -177,7 +184,8 @@ public class ChannelEventHandler extends EventHandler {
             return;
         }
 
-        eventBus.publish(new ChannelJoinEvent(event.getDate().getTime(), owner,
+        eventBus.publish(new ChannelJoinEvent(
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner)));
         owner.addClient(groupChatUserManager.getUserFromClient(event.getClient(), owner));
     }
@@ -189,14 +197,15 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         final ChannelClientInfo client = event.getClient();
-        final Date date = event.getDate();
+        final LocalDateTime date =
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault());
         final String reason = event.getReason();
 
         if (isMyself(client)) {
-            eventBus.publishAsync(new ChannelSelfPartEvent(date.getTime(), owner,
+            eventBus.publishAsync(new ChannelSelfPartEvent(date, owner,
                     groupChatUserManager.getUserFromClient(client, owner), reason));
         } else {
-            eventBus.publishAsync(new ChannelPartEvent(date.getTime(), owner,
+            eventBus.publishAsync(new ChannelPartEvent(date, owner,
                     groupChatUserManager.getUserFromClient(client, owner), reason));
         }
         owner.removeClient(groupChatUserManager.getUserFromClient(client, owner));
@@ -209,7 +218,8 @@ public class ChannelEventHandler extends EventHandler {
         }
         final ChannelClientInfo kickedClient = event.getKickedClient();
 
-        eventBus.publishAsync(new ChannelKickEvent(event.getDate().getTime(), owner,
+        eventBus.publishAsync(new ChannelKickEvent(
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner),
                 groupChatUserManager.getUserFromClient(kickedClient, owner), event.getReason()));
         owner.removeClient(groupChatUserManager.getUserFromClient(kickedClient, owner));
@@ -221,8 +231,10 @@ public class ChannelEventHandler extends EventHandler {
             return;
         }
 
-        eventBus.publishAsync(new ChannelQuitEvent(event.getDate().getTime(), owner,
-                groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getReason()));
+        eventBus.publishAsync(new ChannelQuitEvent(
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner),
+                event.getReason()));
         owner.removeClient(groupChatUserManager.getUserFromClient(event.getClient(), owner));
     }
 
@@ -232,8 +244,10 @@ public class ChannelEventHandler extends EventHandler {
             return;
         }
 
-        eventBus.publishAsync(new ChannelActionEvent(event.getDate().getTime(), owner,
-                groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getMessage()));
+        eventBus.publishAsync(new ChannelActionEvent(
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner),
+                event.getMessage()));
     }
 
     @Handler
@@ -249,12 +263,16 @@ public class ChannelEventHandler extends EventHandler {
 
         if (isMyself(client)) {
             eventBus.publishAsync(
-                    new ChannelSelfNickChangeEvent(event.getDate().getTime(), owner,
-                            groupChatUserManager.getUserFromClient(client, owner), oldNick));
+                    new ChannelSelfNickChangeEvent(
+                            LocalDateTime.ofInstant(
+                                    event.getDate().toInstant(), ZoneId.systemDefault()),
+                            owner, groupChatUserManager.getUserFromClient(client, owner), oldNick));
         } else {
             eventBus.publishAsync(
-                    new ChannelNickChangeEvent(event.getDate().getTime(), owner,
-                            groupChatUserManager.getUserFromClient(client, owner), oldNick));
+                    new ChannelNickChangeEvent(
+                            LocalDateTime.ofInstant(
+                                    event.getDate().toInstant(), ZoneId.systemDefault()),
+                            owner, groupChatUserManager.getUserFromClient(client, owner), oldNick));
         }
     }
 
@@ -267,20 +285,21 @@ public class ChannelEventHandler extends EventHandler {
         final String host = event.getHost();
         final String modes = event.getModes();
         final ChannelClientInfo client = event.getClient();
-        final Date date = event.getDate();
+        final LocalDateTime date = LocalDateTime.ofInstant(event.getDate().toInstant(),
+                ZoneId.systemDefault());
 
         if (host.isEmpty()) {
             if (modes.length() <= 1) {
-                eventBus.publishAsync(new ChannelNoModesDiscoveredEvent(date.getTime(), owner));
+                eventBus.publishAsync(new ChannelNoModesDiscoveredEvent(date, owner));
             } else {
                 eventBus.publishAsync(
-                        new ChannelModesDiscoveredEvent(date.getTime(), owner,modes));
+                        new ChannelModesDiscoveredEvent(date, owner,modes));
             }
         } else if (isMyself(client)) {
-            eventBus.publishAsync(new ChannelSelfModeChangeEvent(date.getTime(), owner,
+            eventBus.publishAsync(new ChannelSelfModeChangeEvent(date, owner,
                     groupChatUserManager.getUserFromClient(client, owner), modes));
         } else {
-            eventBus.publishAsync(new ChannelModeChangeEvent(date.getTime(), owner,
+            eventBus.publishAsync(new ChannelModeChangeEvent(date, owner,
                     groupChatUserManager.getUserFromClient(client, owner), modes));
         }
 
@@ -295,10 +314,11 @@ public class ChannelEventHandler extends EventHandler {
 
         final ChannelClientInfo client = event.getClient();
         final String message = event.getMessage();
-        final Date date = event.getDate();
+        final LocalDateTime date = LocalDateTime.ofInstant(event.getDate().toInstant(),
+                ZoneId.systemDefault());
         final String type = event.getType();
 
-        final ChannelCtcpEvent coreEvent = new ChannelCtcpEvent(date.getTime(), owner,
+        final ChannelCtcpEvent coreEvent = new ChannelCtcpEvent(date, owner,
                 groupChatUserManager.getUserFromClient(client, owner),type, message);
         eventBus.publish(coreEvent);
         if (!coreEvent.isHandled()) {
@@ -312,10 +332,14 @@ public class ChannelEventHandler extends EventHandler {
                 .ifPresent(c -> {
                     if (event.getNewState() == AwayState.AWAY) {
                         eventBus.publishAsync(
-                                new ChannelUserAwayEvent(event.getDate().getTime(), owner, c));
+                                new ChannelUserAwayEvent(LocalDateTime.ofInstant(
+                                        event.getDate().toInstant(), ZoneId.systemDefault()),
+                                        owner, c));
                     } else {
                         eventBus.publishAsync(
-                                new ChannelUserBackEvent(event.getDate().getTime(), owner, c));
+                                new ChannelUserBackEvent(
+                                        LocalDateTime.ofInstant(event.getDate().toInstant(),
+                                                ZoneId.systemDefault()), owner, c));
                     }
                 });
     }
@@ -326,8 +350,10 @@ public class ChannelEventHandler extends EventHandler {
             return;
         }
 
-        eventBus.publishAsync(new ChannelNoticeEvent(event.getDate().getTime(), owner,
-                groupChatUserManager.getUserFromClient(event.getClient(), owner), event.getMessage()));
+        eventBus.publishAsync(new ChannelNoticeEvent(
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()), owner,
+                groupChatUserManager.getUserFromClient(event.getClient(), owner),
+                event.getMessage()));
     }
 
     @Handler
@@ -336,7 +362,9 @@ public class ChannelEventHandler extends EventHandler {
             return;
         }
 
-        eventBus.publishAsync(new ChannelModeNoticeEvent(event.getDate().getTime(), owner,
+        eventBus.publishAsync(new ChannelModeNoticeEvent(
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()),
+                owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner), String.valueOf
                 (event.getPrefix()), event.getMessage()));
     }
@@ -348,7 +376,8 @@ public class ChannelEventHandler extends EventHandler {
         }
 
         eventBus.publishAsync(new ChannelListModesRetrievedEvent(
-                event.getDate().getTime(), owner, event.getMode()));
+                LocalDateTime.ofInstant(event.getDate().toInstant(), ZoneId.systemDefault()),
+                owner, event.getMode()));
     }
 
     private boolean checkChannel(final ChannelInfo channelInfo) {

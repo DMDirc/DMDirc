@@ -24,12 +24,14 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.GroupChat;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when the properties of the users in a list changes.
  */
 public class NickListUpdatedEvent extends NickListEvent {
 
-    public NickListUpdatedEvent(final long timestamp, final GroupChat channel) {
+    public NickListUpdatedEvent(final LocalDateTime timestamp, final GroupChat channel) {
         super(timestamp, channel);
     }
 

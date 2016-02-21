@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired on receiving a channel CTCP request.
  */
@@ -35,7 +37,7 @@ public class ChannelCtcpEvent extends ChannelDisplayableEvent {
     private final String message;
     private boolean handled;
 
-    public ChannelCtcpEvent(final long timestamp, final GroupChat channel,
+    public ChannelCtcpEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client, final String type, final String message) {
         super(timestamp, channel);
         this.client = client;

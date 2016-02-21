@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a channel mode is received.
  */
@@ -34,7 +36,7 @@ public class ChannelModeNoticeEvent extends ChannelDisplayableEvent {
     private final String prefix;
     private final String message;
 
-    public ChannelModeNoticeEvent(final long timestamp, final GroupChat channel,
+    public ChannelModeNoticeEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client, final String prefix, final String message) {
         super(timestamp, channel);
         this.client = client;

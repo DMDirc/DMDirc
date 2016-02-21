@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -34,7 +36,7 @@ public abstract class ServerEvent extends DMDircEvent {
     /** The connection that this event occurred on. */
     private final Connection connection;
 
-    public ServerEvent(final long timestamp, final Connection connection) {
+    public ServerEvent(final LocalDateTime timestamp, final Connection connection) {
         super(timestamp);
         this.connection = checkNotNull(connection);
     }

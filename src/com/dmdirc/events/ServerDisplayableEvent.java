@@ -25,6 +25,7 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -36,7 +37,7 @@ public abstract class ServerDisplayableEvent extends ServerEvent implements Disp
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
-    public ServerDisplayableEvent(final long timestamp, final Connection connection) {
+    public ServerDisplayableEvent(final LocalDateTime timestamp, final Connection connection) {
         super(timestamp, connection);
     }
 

@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.Invite;
 import com.dmdirc.interfaces.Connection;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when an @link Invite} is expired.
  */
@@ -37,7 +39,7 @@ public class ServerInviteExpiredEvent extends ServerEvent {
         this.invite = invite;
     }
 
-    public ServerInviteExpiredEvent(final long timestamp, final Connection connection,
+    public ServerInviteExpiredEvent(final LocalDateTime timestamp, final Connection connection,
             final Invite invite) {
         super(timestamp, connection);
         this.invite = invite;

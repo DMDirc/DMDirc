@@ -24,6 +24,7 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -71,11 +72,11 @@ public interface DisplayableEvent {
     DisplayPropertyMap getDisplayProperties();
 
     /**
-     * Gets the timestamp at which the event occurred.
+     * Gets the times at which the event occurred.
      *
-     * @return The timestamp the event occurred at.
+     * @return The time the event occurred at.
      */
-    long getTimestamp();
+    LocalDateTime getTimestamp();
 
     /**
      * Gets the source of the displayable event.

@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a user quits in a channel.
  */
@@ -33,7 +35,7 @@ public class ChannelQuitEvent extends ChannelDisplayableEvent {
     private final GroupChatUser client;
     private final String message;
 
-    public ChannelQuitEvent(final long timestamp, final GroupChat channel,
+    public ChannelQuitEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser client, final String message) {
         super(timestamp, channel);
         this.client = client;

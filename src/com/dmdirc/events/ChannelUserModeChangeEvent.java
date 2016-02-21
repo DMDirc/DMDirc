@@ -25,6 +25,8 @@ package com.dmdirc.events;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatUser;
 
+import java.time.LocalDateTime;
+
 /**
  * Fired when a channel user mode change occurs.
  */
@@ -34,7 +36,7 @@ public class ChannelUserModeChangeEvent extends ChannelDisplayableEvent {
     private final GroupChatUser victim;
     private final String modes;
 
-    public ChannelUserModeChangeEvent(final long timestamp, final GroupChat channel,
+    public ChannelUserModeChangeEvent(final LocalDateTime timestamp, final GroupChat channel,
             final GroupChatUser user, final GroupChatUser victim, final String modes) {
         super(timestamp, channel);
         this.user = user;

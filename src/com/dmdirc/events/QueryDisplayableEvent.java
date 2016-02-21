@@ -25,6 +25,7 @@ package com.dmdirc.events;
 import com.dmdirc.Query;
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -35,7 +36,7 @@ public abstract class QueryDisplayableEvent extends QueryEvent implements Displa
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
-    public QueryDisplayableEvent(final long timestamp, final Query query) {
+    public QueryDisplayableEvent(final LocalDateTime timestamp, final Query query) {
         super(timestamp, query);
     }
 

@@ -24,6 +24,8 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
 
+import java.time.LocalDateTime;
+
 /**
  * Event raised when a command outputs some generic text to the user.
  */
@@ -31,7 +33,7 @@ public class CommandOutputEvent extends BaseDisplayableEvent {
 
     private final String message;
 
-    public CommandOutputEvent(final WindowModel source, final long timestamp,
+    public CommandOutputEvent(final LocalDateTime timestamp, final WindowModel source,
             final String message) {
         super(timestamp, source);
         this.message = message;
