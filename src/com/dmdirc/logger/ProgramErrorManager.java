@@ -33,11 +33,7 @@ import com.dmdirc.util.LogUtils;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
-import com.google.common.base.Throwables;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -127,22 +123,6 @@ public class ProgramErrorManager {
                 LocalDateTime.now(), appError);
         errors.add(error);
         return error;
-    }
-
-    /**
-     * Returns this errors trace.
-     *
-     * @return Error trace
-     */
-    private Iterable<String> getTrace(final String message, final Throwable throwable) {
-        final Collection<String> lines = new ArrayList<>();
-        if (message != null) {
-            lines.add(message);
-        }
-        if (throwable != null) {
-            lines.addAll(Arrays.asList(Throwables.getStackTraceAsString(throwable).split("\n")));
-        }
-        return lines;
     }
 
     /**
