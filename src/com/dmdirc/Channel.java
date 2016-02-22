@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.events.ChannelSelfActionEvent;
 import com.dmdirc.events.ChannelSelfJoinEvent;
@@ -81,12 +80,6 @@ public class Channel extends FrameContainer implements GroupChat {
     private final GroupChatUserManager groupChatUserManager;
     /** Whether we're in this channel or not. */
     private boolean isOnChannel;
-    /** Whether we should show mode prefixes in text. */
-    @ConfigBinding(domain = "channel", key = "showmodeprefix")
-    private volatile boolean showModePrefix;
-    /** Whether we should show colours in nicks. */
-    @ConfigBinding(domain = "ui", key = "shownickcoloursintext")
-    private volatile boolean showColours;
 
     /**
      * Creates a new instance of Channel.
@@ -116,8 +109,6 @@ public class Channel extends FrameContainer implements GroupChat {
         this.channelInfo = newChannelInfo;
         this.connection = connection;
         this.groupChatUserManager = groupChatUserManager;
-
-        getConfigManager().getBinder().bind(this, Channel.class);
 
         topics = EvictingQueue.create(
                 getConfigManager().getOptionInt("channel", "topichistorysize"));
@@ -269,7 +260,6 @@ public class Channel extends FrameContainer implements GroupChat {
 
         // Remove any callbacks or listeners
         eventHandler.unregisterCallbacks();
-        getConfigManager().getBinder().unbind(this);
 
         connection.getParser().map(Parser::getCallbackManager)
                 .ifPresent(cm -> cm.unsubscribe(eventHandler));
@@ -347,22 +337,6 @@ public class Channel extends FrameContainer implements GroupChat {
         }
 
         getEventBus().publishAsync(new NickListUpdatedEvent(this));
-    }
-
-    /**
-     * Returns a string containing the most important mode for the specified client.
-     *
-     * @param user The channel client to check.
-     *
-     * @return A string containing the most important mode, or an empty string if there are no
-     *         (known) modes.
-     */
-    private String getModes(final GroupChatUser user) {
-        if (user == null || !showModePrefix) {
-            return "";
-        } else {
-            return user.getImportantMode();
-        }
     }
 
     // ---------------------------------------------------- TOPIC HANDLING -----
