@@ -81,8 +81,7 @@ public class IdentityManagerTest {
     }
 
     @Test
-    public void testDoesNotCreateProfileIfOneExists()
-            throws IOException, InvalidIdentityFileException {
+    public void testDoesNotCreateProfileIfOneExists() throws Exception {
         Files.createDirectories(identitiesDirectory);
         Files.copy(getClass().getResourceAsStream("profile-new"),
                 identitiesDirectory.resolve("profile"));

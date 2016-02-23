@@ -146,35 +146,35 @@ public class ConfigTargetTest {
         t4.setServer("abc");
         t5.setChannel("abc");
 
-        assertTrue(t1.equals(t1));
+        assertEquals(t1, t1);
         assertFalse(t1.equals(t2));
         assertFalse(t1.equals(t3));
         assertFalse(t1.equals(t4));
-        assertTrue(t1.equals(t5));
+        assertEquals(t1, t5);
 
         assertFalse(t2.equals(t1));
-        assertTrue(t2.equals(t2));
+        assertEquals(t2, t2);
         assertFalse(t2.equals(t3));
         assertFalse(t2.equals(t4));
         assertFalse(t2.equals(t5));
 
         assertFalse(t3.equals(t1));
         assertFalse(t3.equals(t2));
-        assertTrue(t3.equals(t3));
+        assertEquals(t3, t3);
         assertFalse(t3.equals(t4));
         assertFalse(t3.equals(t5));
 
         assertFalse(t4.equals(t1));
         assertFalse(t4.equals(t2));
         assertFalse(t4.equals(t3));
-        assertTrue(t4.equals(t4));
+        assertEquals(t4, t4);
         assertFalse(t4.equals(t5));
 
-        assertTrue(t5.equals(t1));
+        assertEquals(t5, t1);
         assertFalse(t5.equals(t2));
         assertFalse(t5.equals(t3));
         assertFalse(t5.equals(t4));
-        assertTrue(t5.equals(t5));
+        assertEquals(t5, t5);
 
         assertEquals(t1.hashCode(), t5.hashCode());
     }

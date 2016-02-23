@@ -74,25 +74,25 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test(expected = InvalidIdentityFileException.class)
-    public void testNoName() throws IOException, InvalidIdentityFileException {
+    public void testNoName() throws Exception {
         new ConfigFileBackedConfigProvider(identityManager,
                 jimFsRule.getPath("no-name"), false);
     }
 
     @Test(expected = InvalidIdentityFileException.class)
-    public void testNoTarget() throws IOException, InvalidIdentityFileException {
+    public void testNoTarget() throws Exception {
         new ConfigFileBackedConfigProvider(identityManager,
                 jimFsRule.getPath("no-target"), false);
     }
 
     @Test(expected = InvalidIdentityFileException.class)
-    public void testInvalidConfigFile() throws IOException, InvalidIdentityFileException {
+    public void testInvalidConfigFile() throws Exception {
         new ConfigFileBackedConfigProvider(identityManager,
                 jimFsRule.getPath("invalid-config-file"), false);
     }
 
     @Test
-    public void testProfileSimple() throws IOException, InvalidIdentityFileException {
+    public void testProfileSimple() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("profile-new");
         assertTrue(provider.isProfile());
         assertEquals("nick1\nnick2\nnick3", provider.getOption("profile", "nicknames"));
@@ -101,34 +101,33 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testProfileNonProfileConfig() throws IOException, InvalidIdentityFileException {
+    public void testProfileNonProfileConfig() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         assertFalse(provider.isProfile());
     }
 
     @Test
-    public void testReadsIrcdTarget() throws IOException, InvalidIdentityFileException {
+    public void testReadsIrcdTarget() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         assertEquals(ConfigTarget.TYPE.IRCD, provider.getTarget().getType());
         assertEquals("DMDircircd!", provider.getTarget().getData());
     }
 
     @Test
-    public void testReadsServerTarget() throws IOException, InvalidIdentityFileException {
+    public void testReadsServerTarget() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-server");
         assertEquals(ConfigTarget.TYPE.SERVER, provider.getTarget().getType());
         assertEquals("test123", provider.getTarget().getData());
     }
 
     @Test
-    public void testSetsOrder() throws IOException, InvalidIdentityFileException {
+    public void testSetsOrder() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         assertEquals(5000, provider.getTarget().getOrder());
     }
 
     @Test
-    public void testHasOptionPermissiveValidator()
-            throws IOException, InvalidIdentityFileException {
+    public void testHasOptionPermissiveValidator() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         assertTrue(provider.hasOption("unit", "test", PERMISSIVE_VALIDATOR));
         assertFalse(provider.hasOption("unit", "untest", PERMISSIVE_VALIDATOR));
@@ -136,62 +135,60 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testHasOptionFailingValidator() throws IOException, InvalidIdentityFileException {
+    public void testHasOptionFailingValidator() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         assertFalse(provider.hasOption("unit", "test", new NumericalValidator(0, 100)));
     }
 
     @Test
-    public void testGetOptionPermissioveValidator()
-            throws IOException, InvalidIdentityFileException {
+    public void testGetOptionPermissioveValidator() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         assertEquals("true", provider.getOption("unit", "test", PERMISSIVE_VALIDATOR));
     }
 
     @Test
-    public void testGetOptionFailingValidator() throws IOException, InvalidIdentityFileException {
+    public void testGetOptionFailingValidator() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         assertNull(provider.getOption("unit", "test", new NumericalValidator(0, 100)));
     }
 
     @Test
-    public void testUnsetOption() throws IOException, InvalidIdentityFileException {
+    public void testUnsetOption() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.unsetOption("unit", "test");
         assertFalse(provider.hasOption("unit", "test", PERMISSIVE_VALIDATOR));
     }
 
     @Test
-    public void testSetOptionBoolean() throws IOException, InvalidIdentityFileException {
+    public void testSetOptionBoolean() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.setOption("new", "option", true);
         assertEquals("true", provider.getOption("new", "option", PERMISSIVE_VALIDATOR));
     }
 
     @Test
-    public void testSetOptionInt() throws IOException, InvalidIdentityFileException {
+    public void testSetOptionInt() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.setOption("new", "option", 1234);
         assertEquals("1234", provider.getOption("new", "option", PERMISSIVE_VALIDATOR));
     }
 
     @Test
-    public void testSetOptionList() throws IOException, InvalidIdentityFileException {
+    public void testSetOptionList() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.setOption("new", "option", Lists.newArrayList("first", "second"));
         assertEquals("first\nsecond", provider.getOption("new", "option", PERMISSIVE_VALIDATOR));
     }
 
     @Test
-    public void testSetOptionListWithSingleEntry()
-            throws IOException, InvalidIdentityFileException {
+    public void testSetOptionListWithSingleEntry() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.setOption("new", "option", Lists.newArrayList("first"));
         assertEquals("first", provider.getOption("new", "option", PERMISSIVE_VALIDATOR));
     }
 
     @Test
-    public void testSaveSimple() throws IOException, InvalidIdentityFileException {
+    public void testSaveSimple() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.setOption("newdomain", "test123", 47);
         provider.save();
@@ -207,7 +204,7 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testFiresSettingChanged() throws IOException, InvalidIdentityFileException {
+    public void testFiresSettingChanged() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.addListener(changeListener);
         provider.setOption("new", "option", "boo");
@@ -215,8 +212,7 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testDoesNotFireSettingChangedIfValueIsSame()
-            throws IOException, InvalidIdentityFileException {
+    public void testDoesNotFireSettingChangedIfValueIsSame() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.setOption("new", "option", "boo");
         provider.addListener(changeListener);
@@ -225,8 +221,7 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testFiresSettingChangedWhenUnset()
-            throws IOException, InvalidIdentityFileException {
+    public void testFiresSettingChangedWhenUnset() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.setOption("new", "option", "boo");
         provider.addListener(changeListener);
@@ -235,8 +230,7 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testDoesNotFireSettingChangedIfNonExistantOptionUnset()
-            throws IOException, InvalidIdentityFileException {
+    public void testDoesNotFireSettingChangedIfNonExistantOptionUnset() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.addListener(changeListener);
         provider.unsetOption("new", "option");
@@ -244,8 +238,7 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testDoesNotFireSettingChangedIfRemoved()
-            throws IOException, InvalidIdentityFileException {
+    public void testDoesNotFireSettingChangedIfRemoved() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.addListener(changeListener);
         provider.removeListener(changeListener);
@@ -254,8 +247,7 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testReloadLoadsExtraSettings()
-            throws IOException, InvalidConfigFileException, InvalidIdentityFileException {
+    public void testReloadLoadsExtraSettings() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         copyFileAndReload(provider);
         assertTrue(provider.hasOption("more", "settings", PERMISSIVE_VALIDATOR));
@@ -263,16 +255,14 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testReloadUnsetsMissingSettings()
-            throws IOException, InvalidConfigFileException, InvalidIdentityFileException {
+    public void testReloadUnsetsMissingSettings() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         copyFileAndReload(provider);
         assertFalse(provider.hasOption("unit", "test", PERMISSIVE_VALIDATOR));
     }
 
     @Test
-    public void testReloadFiresSettingChangedForChangedOptions()
-            throws IOException, InvalidConfigFileException, InvalidIdentityFileException {
+    public void testReloadFiresSettingChangedForChangedOptions() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.addListener(changeListener);
         copyFileAndReload(provider);
@@ -280,8 +270,7 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testReloadFiresSettingChangedForNewOptions()
-            throws IOException, InvalidConfigFileException, InvalidIdentityFileException {
+    public void testReloadFiresSettingChangedForNewOptions() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.addListener(changeListener);
         copyFileAndReload(provider);
@@ -292,8 +281,7 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testReloadFiresSettingChangedForRemovedOptions()
-            throws IOException, InvalidConfigFileException, InvalidIdentityFileException {
+    public void testReloadFiresSettingChangedForRemovedOptions() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.addListener(changeListener);
         copyFileAndReload(provider);
@@ -301,8 +289,7 @@ public class ConfigFileBackedConfigProviderTest {
     }
 
     @Test
-    public void testReloadDoesNotFireSettingChangedForUnchangedOptions()
-            throws IOException, InvalidConfigFileException, InvalidIdentityFileException {
+    public void testReloadDoesNotFireSettingChangedForUnchangedOptions() throws Exception {
         final ConfigFileBackedConfigProvider provider = getProvider("simple-ircd");
         provider.addListener(changeListener);
         copyFileAndReload(provider);

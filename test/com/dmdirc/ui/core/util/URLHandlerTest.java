@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
 public class URLHandlerTest {
 
     @Test
-    public void testSubstituteParams() throws MalformedURLException, URISyntaxException {
+    public void testSubstituteParams() throws Exception {
         final Object[][] tests = new Object[][]{
             {new URI("protocol://host/path"), "$protocol $host $path", "protocol host /path"},
             {new URI("protocol://host"), "$protocol $host $path", "protocol host "},
