@@ -33,6 +33,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -81,16 +83,16 @@ public class CoreFeedbackDialogModelTest {
 
     @Test
     public void testServerInfo() {
-        assertEquals("testServerInfo", false, instance.getIncludeServerInfo());
+        assertFalse("testServerInfo", instance.getIncludeServerInfo());
         instance.setIncludeServerInfo(true);
-        assertEquals("testServerInfo", true, instance.getIncludeServerInfo());
+        assertTrue("testServerInfo", instance.getIncludeServerInfo());
     }
 
     @Test
     public void testDMDircInfo() {
-        assertEquals("testDMDircInfo", false, instance.getIncludeDMDircInfo());
+        assertFalse("testDMDircInfo", instance.getIncludeDMDircInfo());
         instance.setIncludeDMDircInfo(true);
-        assertEquals("testDMDircInfo", true, instance.getIncludeDMDircInfo());
+        assertTrue("testDMDircInfo", instance.getIncludeDMDircInfo());
     }
 
     @Test

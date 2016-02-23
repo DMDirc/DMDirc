@@ -135,9 +135,9 @@ public class ProgramErrorTest {
         assertFalse(pe1.equals(null)); // NOPMD
         assertFalse(pe1.equals("moo"));
 
-        assertTrue(pe1.equals(pe2));
-        assertTrue(pe1.equals(pe1));
-        assertTrue(pe2.equals(pe1));
+        assertEquals(pe1, pe2);
+        assertEquals(pe1, pe1);
+        assertEquals(pe2, pe1);
 
         assertFalse(pe1.equals(pe3));
         assertFalse(pe1.equals(pe4));
