@@ -27,15 +27,17 @@ import com.dmdirc.interfaces.WindowModel;
 /**
  * Base class for window related events in the client.
  */
-public abstract class FrameEvent extends DMDircEvent {
+public abstract class FrameEvent extends DMDircEvent implements SourcedEvent {
 
-    private final WindowModel container;
+    private final WindowModel source;
 
-    public FrameEvent(final WindowModel container) {
-        this.container = container;
+    public FrameEvent(final WindowModel source) {
+        this.source = source;
     }
 
-    public WindowModel getContainer() {
-        return container;
+    @Override
+    public WindowModel getSource() {
+        return source;
     }
+
 }

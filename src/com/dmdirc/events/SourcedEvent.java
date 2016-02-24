@@ -23,44 +23,15 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.ui.messages.UnreadStatusManager;
-import com.dmdirc.util.colours.Colour;
-
-import java.util.Optional;
 
 /**
- * Event raised when the unread status of a window has changed.
+ * An event that is attached to a {@link WindowModel} source.
  */
-public class UnreadStatusChangedEvent extends DMDircEvent implements SourcedEvent {
+public interface SourcedEvent {
 
-    private final WindowModel source;
-    private final UnreadStatusManager manager;
-    private final Optional<Colour> notificationColour;
-    private final int unreadCount;
-
-    public UnreadStatusChangedEvent(final WindowModel source, final UnreadStatusManager manager,
-            final Optional<Colour> notificationColour, final int unreadCount) {
-        this.source = source;
-        this.manager = manager;
-        this.notificationColour = notificationColour;
-        this.unreadCount = unreadCount;
-    }
-
-    @Override
-    public WindowModel getSource() {
-        return source;
-    }
-
-    public UnreadStatusManager getManager() {
-        return manager;
-    }
-
-    public Optional<Colour> getNotificationColour() {
-        return notificationColour;
-    }
-
-    public int getUnreadCount() {
-        return unreadCount;
-    }
+    /**
+     * Gets the source of the event.
+     */
+    WindowModel getSource();
 
 }

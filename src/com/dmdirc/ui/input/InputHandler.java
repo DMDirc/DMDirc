@@ -675,7 +675,7 @@ public abstract class InputHandler implements ConfigChangeListener {
 
     @Handler
     void parentClosing(final FrameClosingEvent event) {
-        if (event.getContainer().equals(parentWindow)) {
+        if (event.getSource().equals(parentWindow)) {
             executorService.shutdown();
             eventBus.unsubscribe(this);
         }
