@@ -22,15 +22,13 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.interfaces.WindowModel;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
  * Describes an event which is rendered in the client to the user.
  */
-public interface DisplayableEvent {
+public interface DisplayableEvent extends SourcedEvent {
 
     /**
      * Sets a property relating to how this event should be displayed.
@@ -77,10 +75,5 @@ public interface DisplayableEvent {
      * @return The time the event occurred at.
      */
     LocalDateTime getTimestamp();
-
-    /**
-     * Gets the source of the displayable event.
-     */
-    WindowModel getSource();
 
 }

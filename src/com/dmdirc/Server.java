@@ -705,7 +705,7 @@ public class Server implements Connection {
 
     @Handler
     private void handleClose(final FrameClosingEvent event) {
-        if (event.getContainer() == windowModel) {
+        if (event.getSource() == windowModel) {
             synchronized (myStateLock) {
                 eventHandler.unregisterCallbacks();
                 windowModel.getConfigManager().removeListener(configListener);

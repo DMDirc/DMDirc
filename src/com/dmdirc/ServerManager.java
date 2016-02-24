@@ -222,8 +222,8 @@ public class ServerManager implements ConnectionManager {
 
     @Handler
     void handleWindowClosing(final FrameClosingEvent event) {
-        if (event.getContainer() instanceof Server) {
-            unregisterServer((Server) event.getContainer());
+        if (event.getSource() instanceof Server) {
+            unregisterServer((Server) event.getSource());
         }
     }
 

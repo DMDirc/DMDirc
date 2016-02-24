@@ -411,7 +411,7 @@ public class WindowManager {
 
     @Handler
     public void frameClosing(final FrameClosingEvent event) {
-        removeWindow(event.getContainer());
+        removeWindow(event.getSource());
     }
 
 }
