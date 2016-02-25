@@ -77,6 +77,7 @@ public class HighlightManagerTest {
         when(connection.getWindowModel()).thenReturn(windowModel);
 
         when(channel.getEventBus()).thenReturn(eventBus);
+        when(channel.getConnection()).thenReturn(Optional.of(connection));
 
         manager = new HighlightManager(windowModel, configProvider, colourManager);
     }
