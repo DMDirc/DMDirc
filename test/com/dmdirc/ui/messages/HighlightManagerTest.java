@@ -32,6 +32,7 @@ import com.dmdirc.events.ServerNickChangeEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.collect.Lists;
@@ -57,6 +58,7 @@ import static org.mockito.Mockito.when;
 public class HighlightManagerTest {
 
     @Mock private Connection connection;
+    @Mock private WindowModel windowModel;
     @Mock private User user;
     @Mock private Profile profile;
 
@@ -72,10 +74,11 @@ public class HighlightManagerTest {
     public void setup() {
         when(connection.getLocalUser()).thenReturn(Optional.of(user));
         when(connection.getProfile()).thenReturn(profile);
+        when(connection.getWindowModel()).thenReturn(windowModel);
 
         when(channel.getEventBus()).thenReturn(eventBus);
 
-        manager = new HighlightManager(configProvider, colourManager);
+        manager = new HighlightManager(windowModel, configProvider, colourManager);
     }
 
     @Test

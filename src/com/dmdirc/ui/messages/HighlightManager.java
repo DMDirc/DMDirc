@@ -32,6 +32,7 @@ import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerNickChangeEvent;
 import com.dmdirc.interfaces.User;
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.colours.Colour;
 
@@ -53,6 +54,7 @@ public class HighlightManager {
             "(\\p{Space}|\\p{Punct}|$).*";
 
     private final Collection<Pattern> patterns = new ArrayList<>();
+    private final WindowModel serverWindow;
     private final AggregateConfigProvider configProvider;
     private final ColourManager colourManager;
 
@@ -62,8 +64,10 @@ public class HighlightManager {
     private Optional<Colour> foregroundColour = Optional.empty();
 
     public HighlightManager(
+            final WindowModel serverWindow,
             final AggregateConfigProvider configProvider,
             final ColourManager colourManager) {
+        this.serverWindow = serverWindow;
         this.configProvider = configProvider;
         this.colourManager = colourManager;
     }
@@ -78,7 +82,8 @@ public class HighlightManager {
 
     @Handler
     void handleChannelMessage(final BaseChannelTextEvent event) {
-        if (patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
+        if (event.getChannel().getConnection().get().getWindowModel().equals(serverWindow)
+                && patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
             setColours(event);
             event.getChannel().getEventBus().publishAsync(new ChannelHighlightEvent(event));
         }
@@ -86,7 +91,8 @@ public class HighlightManager {
 
     @Handler
     void handleQueryMessage(final BaseQueryTextEvent event) {
-        if (patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
+        if (event.getUser().getConnection().getWindowModel().equals(serverWindow)
+                && patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
             setColours(event);
             event.getQuery().getEventBus().publishAsync(new QueryHighlightEvent(event));
         }
@@ -94,21 +100,25 @@ public class HighlightManager {
 
     @Handler
     void handleNickChange(final ServerNickChangeEvent event) {
-        setNickname(event.getNewNick());
+        if (event.getConnection().getWindowModel().equals(serverWindow)) {
+            setNickname(event.getNewNick());
+        }
     }
 
     @Handler
     void handleConnected(final ServerConnectedEvent event) {
-        patterns.clear();
+        if (event.getConnection().getWindowModel().equals(serverWindow)) {
+            patterns.clear();
 
-        event.getConnection().getProfile().getHighlights()
-                .stream()
-                .map(this::compile)
-                .forEach(patterns::add);
+            event.getConnection().getProfile().getHighlights()
+                    .stream()
+                    .map(this::compile)
+                    .forEach(patterns::add);
 
-        event.getConnection().getLocalUser()
-                .map(User::getNickname)
-                .ifPresent(this::setNickname);
+            event.getConnection().getLocalUser()
+                    .map(User::getNickname)
+                    .ifPresent(this::setNickname);
+        }
     }
 
     @ConfigBinding(domain = "ui", key = "highlightLineForegroundColour", required = false)
