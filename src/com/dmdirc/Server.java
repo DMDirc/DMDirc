@@ -207,7 +207,9 @@ public class Server implements Connection {
         windowModel.getConfigManager().addChangeListener("formatter", "serverName", configListener);
         windowModel.getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
 
-        this.highlightManager = new HighlightManager(windowModel.getConfigManager(),
+        this.highlightManager = new HighlightManager(
+                windowModel,
+                windowModel.getConfigManager(),
                 new ColourManager(windowModel.getConfigManager()));
         highlightManager.init();
         windowModel.getEventBus().subscribe(highlightManager);
@@ -705,7 +707,7 @@ public class Server implements Connection {
 
     @Handler
     private void handleClose(final FrameClosingEvent event) {
-        if (event.getSource() == windowModel) {
+        if (event.getSource().equals(windowModel)) {
             synchronized (myStateLock) {
                 eventHandler.unregisterCallbacks();
                 windowModel.getConfigManager().removeListener(configListener);
