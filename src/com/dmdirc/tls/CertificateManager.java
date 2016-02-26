@@ -29,7 +29,6 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,7 +36,6 @@ import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.PKIXParameters;
@@ -101,6 +99,8 @@ public class CertificateManager implements X509TrustManager {
     private X509Certificate[] chain;
     /** The user settings to write to. */
     private final ConfigProvider userSettings;
+    /** Locator to use to find a system keystore. */
+    private final KeyStoreLocator keyStoreLocator;
 
     /**
      * Creates a new certificate manager for a client connecting to the specified server.
@@ -124,6 +124,7 @@ public class CertificateManager implements X509TrustManager {
         this.checkHost = config.getOptionBool("ssl", "checkhost");
         this.userSettings = userSettings;
         this.eventBus = eventBus;
+        this.keyStoreLocator = new KeyStoreLocator();
 
         loadTrustedCAs();
     }
@@ -131,19 +132,16 @@ public class CertificateManager implements X509TrustManager {
     /**
      * Loads the trusted CA certificates from the Java cacerts store.
      */
-    protected void loadTrustedCAs() {
-        final String filename = System.getProperty("java.home")
-                + "/lib/security/cacerts".replace('/', File.separatorChar);
-        try (FileInputStream is = new FileInputStream(filename)) {
-            final KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore.load(is, null);
-
-            final PKIXParameters params = new PKIXParameters(keystore);
-            globalTrustedCAs
-                    .addAll(params.getTrustAnchors().stream().map(TrustAnchor::getTrustedCert)
-                            .collect(Collectors.toList()));
-        } catch (CertificateException | IOException | InvalidAlgorithmParameterException |
-                KeyStoreException | NoSuchAlgorithmException ex) {
+    private void loadTrustedCAs() {
+        try {
+            final KeyStore keyStore = keyStoreLocator.getKeyStore();
+            if (keyStore != null) {
+                final PKIXParameters params = new PKIXParameters(keyStore);
+                globalTrustedCAs.addAll(params.getTrustAnchors().stream()
+                        .map(TrustAnchor::getTrustedCert)
+                        .collect(Collectors.toList()));
+            }
+        } catch (InvalidAlgorithmParameterException | KeyStoreException ex) {
             LOG.warn(USER_ERROR, "Unable to load trusted certificates", ex);
         }
     }
