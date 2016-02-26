@@ -37,7 +37,6 @@ import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.UnreadStatusManager;
-import com.dmdirc.util.ChildEventBusManager;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -65,8 +64,6 @@ public class FrameContainer implements WindowModel {
     private final ConfigChangeListener changer = (d, k) -> iconUpdated();
     /** The UI components that this frame requires. */
     private final Set<String> components;
-    /** The manager to use to manage our event bus. */
-    private final ChildEventBusManager eventBusManager;
     /** Event bus to dispatch events to. */
     private final DMDircMBassador eventBus;
     /** The manager handling this frame's unread status. */
@@ -99,9 +96,7 @@ public class FrameContainer implements WindowModel {
         this.components = new HashSet<>(components);
         this.backBufferFactory = backBufferFactory;
 
-        eventBusManager = new ChildEventBusManager(eventBus);
-        eventBusManager.connect();
-        this.eventBus = eventBusManager.getChildBus();
+        this.eventBus = eventBus;
         this.unreadStatusManager = new UnreadStatusManager(this);
         this.eventBus.subscribe(unreadStatusManager);
         configManager.getBinder().bind(unreadStatusManager, UnreadStatusManager.class);
@@ -192,7 +187,6 @@ public class FrameContainer implements WindowModel {
         eventBus.unsubscribe(unreadStatusManager);
         configManager.getBinder().unbind(unreadStatusManager);
         eventBus.publish(new FrameClosingEvent(this));
-        eventBusManager.disconnect();
         getBackBuffer().stopAddingEvents();
     }
 
