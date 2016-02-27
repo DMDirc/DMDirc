@@ -121,11 +121,11 @@ public interface Connection {
      * Retrieves the name of this server's network. The network name is determined using the
      * following rules:
      *
-     * 1. If the server includes its network name in the 005 information, we use that 2. If the
-     * server's name ends in biz, com, info, net or org, we use the second level domain (e.g.,
-     * foo.com) 3. If the server's name contains more than two dots, we drop everything up to and
-     * including the first part, and use the remainder 4. In all other cases, we use the full server
-     * name
+     * <ol>
+     *  <li> If the server includes its network name in the 005 information, we use that
+     *  <li> If the domain ends in a public suffix, the top private domain is used.
+     *  <li> In all other cases, we use the full server name
+     * </ol>
      *
      * @return The name of this server's network
      */
