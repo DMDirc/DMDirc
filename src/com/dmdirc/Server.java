@@ -55,6 +55,8 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.HighlightManager;
 
+import com.google.common.net.InternetDomainName;
+
 import java.net.NoRouteToHostException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -637,40 +639,17 @@ public class Server implements Connection {
     }
 
     /**
-     * Calculates a network name from the specified server name. This method implements parts 2-4 of
-     * the procedure documented at getNetwork().
+     * Calculates a network name from the specified server name.
      *
      * @param serverName The server name to parse
-     *
      * @return A network name for the specified server
      */
     protected static String getNetworkFromServerName(final String serverName) {
-        final String[] parts = serverName.split("\\.");
-        final String[] tlds = {"biz", "com", "info", "net", "org"};
-        boolean isTLD = false;
-
-        for (String tld : tlds) {
-            if (serverName.endsWith('.' + tld)) {
-                isTLD = true;
-                break;
-            }
-        }
-
-        if (isTLD && parts.length > 2) {
-            return parts[parts.length - 2] + '.' + parts[parts.length - 1];
-        } else if (parts.length > 2) {
-            final StringBuilder network = new StringBuilder();
-
-            for (int i = 1; i < parts.length; i++) {
-                if (network.length() > 0) {
-                    network.append('.');
-                }
-
-                network.append(parts[i]);
-            }
-
-            return network.toString();
-        } else {
+        try {
+            return InternetDomainName.from(serverName).topPrivateDomain().toString();
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            // Either couldn't parse it as a domain name, or it didn't have a public suffix.
+            // Just use the server name as-is.
             return serverName;
         }
     }
