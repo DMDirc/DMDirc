@@ -88,6 +88,7 @@ public class NightlyCheckerTest {
         instance.setChannel("STABLE");
         final Map<UpdateComponent, UpdateCheckResult> updates =
                 instance.checkForUpdates(Lists.newArrayList(componentThree));
+        assertEquals(0, updates.size());
     }
 
     @Test
