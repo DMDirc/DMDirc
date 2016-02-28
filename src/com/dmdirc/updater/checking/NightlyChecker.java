@@ -136,6 +136,11 @@ public class NightlyChecker implements UpdateCheckStrategy {
                     } catch (MalformedURLException e1) {
                         LOG.error("Unable to create a URL for {}", name);
                     }
+                    LOG.info("Updating {} from {} to {}", e.getName(), e.getVersion(),
+                            resultsMap.get(e.getName()).getVersion());
+                } else {
+                    LOG.info("Not updating {} from {} to {}", e.getName(), e.getVersion(),
+                            resultsMap.get(e.getName()).getVersion());
                 }
             }
         });

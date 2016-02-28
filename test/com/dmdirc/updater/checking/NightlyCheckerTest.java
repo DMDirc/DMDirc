@@ -77,7 +77,7 @@ public class NightlyCheckerTest {
         when(uiswingUpdateComponent.getVersion()).thenReturn(new Version("1.2"));
         when(clientUpdateComponent.getVersion()).thenReturn(new Version("4.5"));
         when(timeUpdateComponent.getVersion()).thenReturn(new Version("0.1"));
-        when(audioUpdateComponent.getVersion()).thenReturn(new Version("10.0"));
+        when(audioUpdateComponent.getVersion()).thenReturn(new Version("0.1"));
         when(uiweb2UpdateComponent.getVersion()).thenReturn(new Version("10.0"));
         when(randomtestUpdateComponent.getVersion()).thenReturn(new Version("10.0"));
         instance = new NightlyChecker(config, downloader);
