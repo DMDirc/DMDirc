@@ -29,6 +29,7 @@ import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.Downloader;
 
+import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -61,7 +62,7 @@ public class NightlyChecker implements UpdateCheckStrategy {
     private static final Logger LOG = LoggerFactory.getLogger(NightlyChecker.class);
     /** Name matching regex. */
     private final Pattern pattern = Pattern.compile(
-            "^(.*?)-([^-]+(-[0-9]+-g[0-9a-f]+)?)(-SNAPSHOT).jar?$");
+            "^(.*?)-([^-]+(-[0-9]+-g[0-9a-f]+)?)(-SNAPSHOT)?\\.jar$");
     /** The URL to request to check for updates. */
     private static final String UPDATE_URL = "https://nightlies.dmdirc.com/json/latest";
     /** The update channel to check for updates on. */
@@ -201,6 +202,13 @@ public class NightlyChecker implements UpdateCheckStrategy {
 
         void setUrl(final String url) {
             this.url = url;
+        }
+
+        public String toString() {
+            return MoreObjects.toStringHelper(NightlyChecker.class)
+                    .add("name", otherName)
+                    .add("version", version)
+                    .toString();
         }
     }
 }

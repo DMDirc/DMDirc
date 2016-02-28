@@ -2,5 +2,7 @@
   { "name":"audio-0.8-1262-gc6376f4-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:49 GMT", "size":17861 },
   { "name":"client-0.8.4-2046-g998b950-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:14:04 GMT", "size":7016852 },
   { "name":"time-0.8-1296-ge579fda-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:45 GMT", "size":18769 },
-  { "name":"ui_swing-0.8-1314-g8583be9-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:58 GMT", "size":1038006 }
+  { "name":"ui_swing-0.8-1314-g8583be9-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:58 GMT", "size":1038006 },
+  { "name":"ui_web2-0.8.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:58 GMT", "size":1038006 },
+  { "name":"random-test-0.8-1314-g8583be9-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:58 GMT", "size":1038006 }
 ]

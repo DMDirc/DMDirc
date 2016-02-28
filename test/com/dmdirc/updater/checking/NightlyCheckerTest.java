@@ -33,7 +33,9 @@ import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +44,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -52,10 +55,12 @@ public class NightlyCheckerTest {
     @Mock private AggregateConfigProvider config;
     @Mock private Downloader downloader;
     @Mock private ConfigBinder configBinder;
-    @Mock private UpdateComponent componentOne;
-    @Mock private UpdateComponent componentTwo;
-    @Mock private UpdateComponent componentThree;
-    @Mock private UpdateComponent componentFour;
+    @Mock private UpdateComponent uiswingUpdateComponent;
+    @Mock private UpdateComponent clientUpdateComponent;
+    @Mock private UpdateComponent timeUpdateComponent;
+    @Mock private UpdateComponent audioUpdateComponent;
+    @Mock private UpdateComponent uiweb2UpdateComponent;
+    @Mock private UpdateComponent randomtestUpdateComponent;
 
     @Before
     public void setUp() throws Exception {
@@ -63,14 +68,18 @@ public class NightlyCheckerTest {
         when(downloader.getPage(anyString())).thenReturn(
                 Files.readAllLines(
                         FileUtils.getPathForResource(getClass().getResource("nightlies.json"))));
-        when(componentOne.getName()).thenReturn("ui_swing");
-        when(componentTwo.getName()).thenReturn("client");
-        when(componentThree.getName()).thenReturn("time");
-        when(componentFour.getName()).thenReturn("audio");
-        when(componentOne.getVersion()).thenReturn(new Version("1.2"));
-        when(componentTwo.getVersion()).thenReturn(new Version("4.5"));
-        when(componentThree.getVersion()).thenReturn(new Version("0.1"));
-        when(componentFour.getVersion()).thenReturn(new Version("10"));
+        when(uiswingUpdateComponent.getName()).thenReturn("ui_swing");
+        when(clientUpdateComponent.getName()).thenReturn("client");
+        when(timeUpdateComponent.getName()).thenReturn("time");
+        when(audioUpdateComponent.getName()).thenReturn("audio");
+        when(uiweb2UpdateComponent.getName()).thenReturn("ui_web2");
+        when(randomtestUpdateComponent.getName()).thenReturn("random-test");
+        when(uiswingUpdateComponent.getVersion()).thenReturn(new Version("1.2"));
+        when(clientUpdateComponent.getVersion()).thenReturn(new Version("4.5"));
+        when(timeUpdateComponent.getVersion()).thenReturn(new Version("0.1"));
+        when(audioUpdateComponent.getVersion()).thenReturn(new Version("10.0"));
+        when(uiweb2UpdateComponent.getVersion()).thenReturn(new Version("10.0"));
+        when(randomtestUpdateComponent.getVersion()).thenReturn(new Version("10.0"));
         instance = new NightlyChecker(config, downloader);
         instance.setChannel("NIGHTLY");
     }
@@ -79,7 +88,7 @@ public class NightlyCheckerTest {
     public void testUnknownChannel() throws Exception {
         instance.setChannel("RANDOM");
         final Map<UpdateComponent, UpdateCheckResult> updates =
-                instance.checkForUpdates(Lists.newArrayList(componentThree));
+                instance.checkForUpdates(Lists.newArrayList(timeUpdateComponent));
         assertEquals(0, updates.size());
     }
 
@@ -87,35 +96,36 @@ public class NightlyCheckerTest {
     public void testNotNightly() throws Exception {
         instance.setChannel("STABLE");
         final Map<UpdateComponent, UpdateCheckResult> updates =
-                instance.checkForUpdates(Lists.newArrayList(componentThree));
+                instance.checkForUpdates(Lists.newArrayList(timeUpdateComponent));
         assertEquals(0, updates.size());
     }
 
     @Test
     public void testNightly() throws Exception {
         final Map<UpdateComponent, UpdateCheckResult> updates =
-                instance.checkForUpdates(Lists.newArrayList(componentThree));
+                instance.checkForUpdates(Lists.newArrayList(timeUpdateComponent));
         assertEquals(1, updates.size());
     }
 
     @Test
     public void testNoUpdates() throws Exception {
         final Map<UpdateComponent, UpdateCheckResult> updates = instance.checkForUpdates(
-                Lists.newArrayList(componentOne, componentTwo));
+                Lists.newArrayList(uiswingUpdateComponent, clientUpdateComponent));
         assertEquals(0, updates.size());
     }
 
     @Test
     public void testOneUpdate() throws Exception {
         final Map<UpdateComponent, UpdateCheckResult> updates = instance.checkForUpdates(
-                Lists.newArrayList(componentOne, componentThree));
+                Lists.newArrayList(uiswingUpdateComponent, timeUpdateComponent));
         assertEquals(1, updates.size());
     }
 
     @Test
     public void testMultipleUpdate() throws Exception {
         final Map<UpdateComponent, UpdateCheckResult> updates = instance.checkForUpdates(
-                Lists.newArrayList(componentOne, componentTwo, componentThree, componentFour));
+                Lists.newArrayList(uiswingUpdateComponent, clientUpdateComponent,
+                        timeUpdateComponent, audioUpdateComponent));
         assertEquals(2, updates.size());
     }
 
@@ -123,7 +133,27 @@ public class NightlyCheckerTest {
     public void testMalformedPage() throws Exception {
         when(downloader.getPage(anyString())).thenThrow(new IOException("Failure."));
         final Map<UpdateComponent, UpdateCheckResult> updates =
-                instance.checkForUpdates(Lists.newArrayList(componentThree));
+                instance.checkForUpdates(Lists.newArrayList(timeUpdateComponent));
         assertEquals(0, updates.size());
+    }
+
+    @Test
+    public void testNames() throws Exception {
+        when(downloader.getPage(anyString())).thenReturn(
+                Files.readAllLines(
+                        FileUtils.getPathForResource(getClass().getResource("nightlies2.json"))));
+        final Map<UpdateComponent, UpdateCheckResult> updates =
+                instance.checkForUpdates(Lists.newArrayList(uiswingUpdateComponent,
+                        clientUpdateComponent, timeUpdateComponent, audioUpdateComponent,
+                        randomtestUpdateComponent, uiweb2UpdateComponent));
+        final List<String> updateNames = updates.keySet().stream()
+                .map(UpdateComponent::getName)
+                .collect(Collectors.toList());
+        assertTrue(updateNames.contains("client"));
+        assertTrue(updateNames.contains("time"));
+        assertTrue(updateNames.contains("ui_swing"));
+        assertTrue(updateNames.contains("ui_web2"));
+        assertTrue(updateNames.contains("random-test"));
+        assertTrue(updateNames.contains("audio"));
     }
 }
