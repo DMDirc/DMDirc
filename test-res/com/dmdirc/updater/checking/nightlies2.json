@@ -1,0 +1,8 @@
+[
+  { "name":"audio-99.0-1262-gc6376f4-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:49 GMT", "size":17861 },
+  { "name":"client-99.0-2046-g998b950-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:14:04 GMT", "size":7016852 },
+  { "name":"time-99.0-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:45 GMT", "size":18769 },
+  { "name":"ui_swing-88.0-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:58 GMT", "size":1038006 },
+  { "name":"ui_web2-11.0.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:58 GMT", "size":1038006 },
+  { "name":"random-test-20.0-SNAPSHOT.jar", "type":"file", "mtime":"Fri, 26 Feb 2016 00:13:58 GMT", "size":1038006 }
+]

@@ -28,6 +28,7 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.checking.CheckResultConsolidator;
 import com.dmdirc.updater.checking.DMDircCheckStrategy;
 import com.dmdirc.updater.checking.NaiveConsolidator;
+import com.dmdirc.updater.checking.NightlyChecker;
 import com.dmdirc.updater.checking.UpdateCheckStrategy;
 import com.dmdirc.updater.components.ClientComponent;
 import com.dmdirc.updater.components.DefaultsComponent;
@@ -185,6 +186,18 @@ public class UpdaterModule {
      */
     @Provides(type = Provides.Type.SET)
     public UpdateCheckStrategy getCheckStrategy(final DMDircCheckStrategy strategy) {
+        return strategy;
+    }
+
+    /**
+     * Provides an {@link UpdateCheckStrategy} that the client should use for nightlies.
+     *
+     * @param strategy The strategy to provide.
+     *
+     * @return The strategy to use in the client.
+     */
+    @Provides(type = Provides.Type.SET)
+    public UpdateCheckStrategy getCheckStrategy(final NightlyChecker strategy) {
         return strategy;
     }
 
