@@ -24,6 +24,8 @@ package com.dmdirc.updater.manager;
 
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.checking.CheckResultConsolidator;
+import com.dmdirc.updater.checking.UpdateCheckResult;
+import com.dmdirc.updater.retrieving.UpdateRetrievalStrategy;
 
 import java.util.concurrent.Executor;
 
@@ -31,11 +33,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateManagerImplTest {
@@ -47,6 +51,10 @@ public class UpdateManagerImplTest {
     @Mock private UpdateComponent component2;
     @Mock private UpdateComponent component3;
     @Mock private UpdateStatusListener statusListener;
+    @Mock private UpdateCheckResult checkResult1;
+    @Mock private UpdateCheckResult checkResult2;
+    @Mock private UpdateRetrievalStrategy strategy1;
+    @Mock private UpdateRetrievalStrategy strategy2;
     private UpdateManagerImpl manager;
 
     @Before
@@ -64,19 +72,50 @@ public class UpdateManagerImplTest {
 
         manager.addUpdateStatusListener(statusListener);
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(final InvocationOnMock invocation) throws Throwable {
-                // Add a new component from the manager while it's checking for updates.
-                // This potentially causes a CME, see CLIENT-404.
-                manager.addComponent(component3);
-                return null;
-            }
+        doAnswer(invocation -> {
+            // Add a new component from the manager while it's checking for updates.
+            // This potentially causes a CME, see CLIENT-404.
+            manager.addComponent(component3);
+            return null;
         }).when(statusListener).updateStatusChanged(component1, UpdateStatus.CHECKING, 0);
 
         when(updateComponentPolicy.canCheck(any(UpdateComponent.class))).thenReturn(true);
 
         manager.checkForUpdates();
+    }
+
+    @Test
+    public void testGetSingleRetrievalStrategy() {
+        // Given a single retrieval strategy that can handle anything
+        when(strategy1.canHandle(any())).thenReturn(true);
+        manager.addRetrievalStrategy(strategy1);
+
+        // Then it is returned for any result.
+        assertSame(strategy1, manager.getStrategy(checkResult1));
+        assertSame(strategy1, manager.getStrategy(checkResult2));
+    }
+
+    @Test
+    public void testGetMultipleRetrievalStrategy() {
+        // Given two retrieval strategies that can handle different check results
+        when(strategy1.canHandle(checkResult1)).thenReturn(true);
+        when(strategy2.canHandle(checkResult2)).thenReturn(true);
+        manager.addRetrievalStrategy(strategy1);
+        manager.addRetrievalStrategy(strategy2);
+
+        // Then the corresponding strategy is returned for each result
+        assertSame(strategy1, manager.getStrategy(checkResult1));
+        assertSame(strategy2, manager.getStrategy(checkResult2));
+    }
+
+    @Test
+    public void testGetNoRetrievalStrategy() {
+        // Given a retrieval strategies that can handle a specific check result
+        when(strategy1.canHandle(checkResult1)).thenReturn(true);
+        manager.addRetrievalStrategy(strategy1);
+
+        // Then null is returned for other check results
+        assertNull(manager.getStrategy(checkResult2));
     }
 
 }

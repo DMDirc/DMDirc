@@ -55,9 +55,9 @@ public class UpdateManagerImpl implements UpdateManager {
     /** Collection of known update checking strategies. */
     private final List<UpdateCheckStrategy> checkers = new CopyOnWriteArrayList<>();
     /** Collection of known update retrieval strategies. */
-    private final List<UpdateRetrievalStrategy> retrievers = new CopyOnWriteArrayList<>();
+    private final Collection<UpdateRetrievalStrategy> retrievers = new CopyOnWriteArrayList<>();
     /** Collection of known update installation strategies. */
-    private final List<UpdateInstallationStrategy> installers = new CopyOnWriteArrayList<>();
+    private final Collection<UpdateInstallationStrategy> installers = new CopyOnWriteArrayList<>();
     /** Map of known component names to their components. Guarded by {@link #componentsLock}. */
     private final Map<String, UpdateComponent> components = new HashMap<>();
     /** Listener used to proxy retrieval events. */
@@ -154,8 +154,8 @@ public class UpdateManagerImpl implements UpdateManager {
         LOG.trace("Components: {}", components);
         LOG.trace("Strategies: {}", checkers);
 
-        final List<UpdateComponent> enabledComponents = new ArrayList<>(components.size());
-        final List<UpdateComponent> disabledComponents = new ArrayList<>(components.size());
+        final Collection<UpdateComponent> enabledComponents = new ArrayList<>(components.size());
+        final Collection<UpdateComponent> disabledComponents = new ArrayList<>(components.size());
 
         synchronized (componentsLock) {
             for (UpdateComponent component : components.values()) {
@@ -233,7 +233,8 @@ public class UpdateManagerImpl implements UpdateManager {
      * @param install   True to install automatically, false to just retrieve
      */
     public void retrieve(final UpdateComponent component, final boolean install) {
-        if (!checkResults.containsKey(component) || !checkResults.get(component).isUpdateAvailable()) {
+        if (!checkResults.containsKey(component)
+                || !checkResults.get(component).isUpdateAvailable()) {
             LOG.warn("Tried to retrieve component with no update: {}", component);
             return;
         }
@@ -268,7 +269,7 @@ public class UpdateManagerImpl implements UpdateManager {
      *
      * @param result The result to find a strategy for
      *
-     * @return A relevant strategy, or <code>null</code> if none are available
+     * @return A relevant strategy, or {@code null} if none are available
      */
     protected UpdateRetrievalStrategy getStrategy(final UpdateCheckResult result) {
         LOG.debug("Trying to find retrieval strategy for {}", result);
@@ -292,7 +293,7 @@ public class UpdateManagerImpl implements UpdateManager {
      *
      * @param result The result to find a strategy for
      *
-     * @return A relevant strategy, or <code>null</code> if none are available
+     * @return A relevant strategy, or {@code null} if none are available
      */
     protected UpdateInstallationStrategy getStrategy(final UpdateRetrievalResult result) {
         LOG.debug("Trying to find installation strategy for {}", result);
