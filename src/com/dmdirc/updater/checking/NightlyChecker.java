@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -58,6 +59,9 @@ import static com.dmdirc.ClientModule.GlobalConfig;
 public class NightlyChecker implements UpdateCheckStrategy {
 
     private static final Logger LOG = LoggerFactory.getLogger(NightlyChecker.class);
+    /** Name matching regex. */
+    private final Pattern pattern = Pattern.compile(
+            "^(.*?)-([^-]+(-[0-9]+-g[0-9a-f]+)?)(-SNAPSHOT).jar?$");
     /** The URL to request to check for updates. */
     private static final String UPDATE_URL = "https://nightlies.dmdirc.com/json/latest";
     /** The update channel to check for updates on. */
@@ -74,12 +78,12 @@ public class NightlyChecker implements UpdateCheckStrategy {
     @Inject
     public NightlyChecker(@GlobalConfig final AggregateConfigProvider configProvider,
             final Downloader downloader) {
-        configProvider.getBinder().bind(this, DMDircCheckStrategy.class);
+        configProvider.getBinder().bind(this, NightlyChecker.class);
         this.downloader = downloader;
     }
 
     /**
-     * Sets the channel which will be used by the {@link DMDircCheckStrategy}.
+     * Sets the channel which will be used by the {@link NightlyChecker}.
      *
      * @param channel The new channel to use
      */
@@ -110,8 +114,7 @@ public class NightlyChecker implements UpdateCheckStrategy {
         resultsList.stream()
                 .filter(Objects::nonNull) //This is incase the JSON is broken
                 .forEach(e -> {
-            final Matcher matcher = Pattern.compile(
-                    "^(.*?)-([^-]+(-[0-9]+-g[0-9a-f]+)?)(-SNAPSHOT).jar?$").matcher(e.getName());
+            final Matcher matcher = pattern.matcher(e.getName());
             if (matcher.matches()) {
                 e.setOtherName(matcher.group(1));
                 e.setVersion(new Version(matcher.group(2)));
@@ -119,7 +122,7 @@ public class NightlyChecker implements UpdateCheckStrategy {
             }
         });
         final Map<String, NightlyResult> resultsMap = resultsList.stream()
-                .collect(Collectors.toMap(NightlyResult::getOtherName, n -> n));
+                .collect(Collectors.toMap(NightlyResult::getOtherName, Function.identity()));
         final Map<UpdateComponent, UpdateCheckResult> returns = new HashMap<>();
         components.forEach(e -> {
             if (resultsMap.containsKey(e.getName())) {
