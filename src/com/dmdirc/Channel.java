@@ -78,8 +78,10 @@ public class Channel extends FrameContainer implements GroupChat {
     private final ConfigProviderMigrator configMigrator;
     /** Manager used to retrieve {@link GroupChatUser}s */
     private final GroupChatUserManager groupChatUserManager;
-    /** Whether we're in this channel or not. */
+    /** Whether we're currently in this channel or not. */
     private boolean isOnChannel;
+    /** Reason for leaving the channel. */
+    private PartReason partReason;
 
     /**
      * Creates a new instance of Channel.
@@ -128,6 +130,11 @@ public class Channel extends FrameContainer implements GroupChat {
     @Override
     public boolean isOnChannel() {
         return isOnChannel;
+    }
+
+    @Override
+    public PartReason getPartReason() {
+        return partReason;
     }
 
     /**
@@ -232,7 +239,7 @@ public class Channel extends FrameContainer implements GroupChat {
     public void part(final String reason) {
         channelInfo.part(reason);
 
-        resetWindow();
+        resetWindow(PartReason.LOCAL_PART);
     }
 
     @Override
@@ -243,8 +250,11 @@ public class Channel extends FrameContainer implements GroupChat {
     /**
      * Resets the window state after the client has left a channel.
      */
-    public void resetWindow() {
-        isOnChannel = false;
+    public void resetWindow(final PartReason reason) {
+        if (isOnChannel) {
+            partReason = reason;
+            isOnChannel = false;
+        }
 
         setIcon("channel-inactive");
 
@@ -297,7 +307,7 @@ public class Channel extends FrameContainer implements GroupChat {
                 TabCompletionType.CHANNEL_NICK, client.getNickname());
 
         if (client.getUser().equals(connection.getLocalUser().orElse(null))) {
-            resetWindow();
+            resetWindow(PartReason.REMOTE_PART);
         }
     }
 

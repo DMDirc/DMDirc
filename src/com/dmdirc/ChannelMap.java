@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.interfaces.GroupChat.PartReason;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.interfaces.StringConverter;
@@ -105,7 +106,7 @@ public class ChannelMap {
      * Resets the state of all channels in the map.
      */
     public void resetAll() {
-        channels.values().forEach(Channel::resetWindow);
+        channels.values().forEach(c -> c.resetWindow(PartReason.DISCONNECTED));
     }
 
     /**
