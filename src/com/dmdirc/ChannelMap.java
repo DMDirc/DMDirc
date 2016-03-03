@@ -111,11 +111,15 @@ public class ChannelMap {
 
     /**
      * Gets a representation of the channels in this map as a collection of join requests.
+     * Channels that have been parted explicitly (rather than because of a disconnection) will not
+     * be included.
      *
-     * @return A collection of join requests corresponding to channels in this map.
+     * @return A collection of join requests corresponding to channels in this map that were left
+     * due to a disconnection.
      */
     public Collection<ChannelJoinRequest> asJoinRequests() {
         return channels.values().stream()
+                .filter(channel -> channel.getPartReason() == PartReason.DISCONNECTED)
                 .map(channel -> new ChannelJoinRequest(channel.getName()))
                 .collect(Collectors.toList());
     }
