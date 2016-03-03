@@ -38,6 +38,18 @@ import javax.annotation.Nullable;
 public interface GroupChat extends Chat {
 
     /**
+     * Enumeration of reasons for us leaving a group chat.
+     */
+    enum PartReason {
+        /** We disconnected from the server. */
+        DISCONNECTED,
+        /** We issued a part request ourselves. */
+        LOCAL_PART,
+        /** A part for our user came from the server. */
+        REMOTE_PART
+    }
+
+    /**
      * Returns the current topic for this channel.
      *
      * @return Current channel topic
@@ -78,6 +90,15 @@ public interface GroupChat extends Chat {
      * @return True if joined, false otherwise.
      */
     boolean isOnChannel();
+
+    /**
+     * Returns the reason behind our last parting from this group chat. For example, if the
+     * user manually left a chat and then subsequently disconnected from the server, the part
+     * reason will be {@link PartReason#LOCAL_PART}.
+     *
+     * @return The reason for parting the chat. {@code null} if the chat has never been left.
+     */
+    PartReason getPartReason();
 
     /**
      * Joins the specified channel. This only makes sense if used after a call to part().
