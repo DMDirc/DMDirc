@@ -77,7 +77,7 @@ public class ShowTopic extends Command implements ExternalCommand {
                 final User user = topic
                         .flatMap(Topic::getClient)
                         .map(GroupChatUser::getUser)
-                        .orElseGet(null);
+                        .orElse(null);
                 channel.getEventBus().publishAsync(
                         new ChannelGotTopicEvent(channel, topic.get(), user));
             } else {
