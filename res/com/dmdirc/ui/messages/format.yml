@@ -121,6 +121,10 @@ ChannelQuitEvent:
 ChannelActionEvent:
   format: "* {{client.modePrefixedNickname}} {{message}}"
   colour: 6
+ChannelActionHighlightEvent:
+  format: "* {{client.modePrefixedNickname}} {{message}}"
+  colour: 6
+  background: F9C4BB
 ChannelSelfActionEvent:
   format: "* {{client.modePrefixedNickname}} {{message}}"
   colour: 6
@@ -195,6 +199,10 @@ channelUserBackEvent:
 QueryActionEvent:
   format: "* {{user.nickname}} {{message}}"
   colour: 6
+QueryActionHighlightEvent:
+  format: "* {{user.nickname}} {{message}}"
+  colour: 6
+  background: F9C4BB
 QuerySelfActionEvent:
   format: "* {{user.nickname}} {{message}}"
   colour: 6

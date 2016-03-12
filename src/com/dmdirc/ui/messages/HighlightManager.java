@@ -22,9 +22,13 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.events.ChannelActionEvent;
+import com.dmdirc.events.ChannelActionHighlightEvent;
 import com.dmdirc.events.ChannelHighlightEvent;
 import com.dmdirc.events.ChannelMessageEvent;
 import com.dmdirc.events.DisplayProperty;
+import com.dmdirc.events.QueryActionEvent;
+import com.dmdirc.events.QueryActionHighlightEvent;
 import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.QueryMessageEvent;
 import com.dmdirc.events.ServerConnectedEvent;
@@ -69,12 +73,36 @@ public class HighlightManager {
     }
 
     @Handler(rejectSubtypes = true)
+    void handleChannelAction(final ChannelActionEvent event) {
+        if (event.getChannel().getConnection().get().getWindowModel().equals(serverWindow)
+                && patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
+            event.setDisplayProperty(DisplayProperty.DO_NOT_DISPLAY, true);
+            event.getChannel().getEventBus().publish(
+                    new ChannelActionHighlightEvent(
+                            event.getTimestamp(), event.getChannel(), event.getClient(),
+                            event.getMessage()));
+        }
+    }
+
+    @Handler(rejectSubtypes = true)
     void handleQueryMessage(final QueryMessageEvent event) {
         if (event.getUser().getConnection().getWindowModel().equals(serverWindow)
                 && patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
             event.setDisplayProperty(DisplayProperty.DO_NOT_DISPLAY, true);
             event.getQuery().getEventBus().publish(
                     new QueryHighlightEvent(
+                            event.getTimestamp(), event.getQuery(), event.getUser(),
+                            event.getMessage()));
+        }
+    }
+
+    @Handler(rejectSubtypes = true)
+    void handleQueryMessage(final QueryActionEvent event) {
+        if (event.getUser().getConnection().getWindowModel().equals(serverWindow)
+                && patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
+            event.setDisplayProperty(DisplayProperty.DO_NOT_DISPLAY, true);
+            event.getQuery().getEventBus().publish(
+                    new QueryActionHighlightEvent(
                             event.getTimestamp(), event.getQuery(), event.getUser(),
                             event.getMessage()));
         }
