@@ -22,21 +22,15 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.config.ConfigBinding;
-import com.dmdirc.events.BaseChannelTextEvent;
-import com.dmdirc.events.BaseQueryTextEvent;
 import com.dmdirc.events.ChannelHighlightEvent;
+import com.dmdirc.events.ChannelMessageEvent;
 import com.dmdirc.events.DisplayProperty;
-import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.QueryHighlightEvent;
+import com.dmdirc.events.QueryMessageEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerNickChangeEvent;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.util.colours.Colour;
-
-import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,46 +49,34 @@ public class HighlightManager {
 
     private final Collection<Pattern> patterns = new ArrayList<>();
     private final WindowModel serverWindow;
-    private final AggregateConfigProvider configProvider;
-    private final ColourManager colourManager;
 
     private Optional<Pattern> nicknamePattern = Optional.empty();
 
-    private Optional<Colour> backgroundColour = Optional.empty();
-    private Optional<Colour> foregroundColour = Optional.empty();
-
-    public HighlightManager(
-            final WindowModel serverWindow,
-            final AggregateConfigProvider configProvider,
-            final ColourManager colourManager) {
+    public HighlightManager(final WindowModel serverWindow) {
         this.serverWindow = serverWindow;
-        this.configProvider = configProvider;
-        this.colourManager = colourManager;
     }
 
-    public void init() {
-        configProvider.getBinder().bind(this, HighlightManager.class);
-    }
-
-    public void stop() {
-        configProvider.getBinder().unbind(this);
-    }
-
-    @Handler
-    void handleChannelMessage(final BaseChannelTextEvent event) {
+    @Handler(rejectSubtypes = true)
+    void handleChannelMessage(final ChannelMessageEvent event) {
         if (event.getChannel().getConnection().get().getWindowModel().equals(serverWindow)
                 && patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
-            setColours(event);
-            event.getChannel().getEventBus().publishAsync(new ChannelHighlightEvent(event));
+            event.setDisplayProperty(DisplayProperty.DO_NOT_DISPLAY, true);
+            event.getChannel().getEventBus().publishAsync(
+                    new ChannelHighlightEvent(
+                            event.getTimestamp(), event.getChannel(), event.getClient(),
+                            event.getMessage()));
         }
     }
 
-    @Handler
-    void handleQueryMessage(final BaseQueryTextEvent event) {
+    @Handler(rejectSubtypes = true)
+    void handleQueryMessage(final QueryMessageEvent event) {
         if (event.getUser().getConnection().getWindowModel().equals(serverWindow)
                 && patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
-            setColours(event);
-            event.getQuery().getEventBus().publishAsync(new QueryHighlightEvent(event));
+            event.setDisplayProperty(DisplayProperty.DO_NOT_DISPLAY, true);
+            event.getQuery().getEventBus().publishAsync(
+                    new QueryHighlightEvent(
+                            event.getTimestamp(), event.getQuery(), event.getUser(),
+                            event.getMessage()));
         }
     }
 
@@ -119,31 +101,6 @@ public class HighlightManager {
                     .map(User::getNickname)
                     .ifPresent(this::setNickname);
         }
-    }
-
-    @ConfigBinding(domain = "ui", key = "highlightLineForegroundColour", required = false)
-    void handleForegroundColour(final String value) {
-        if (Strings.isNullOrEmpty(value)) {
-            foregroundColour = Optional.empty();
-        } else {
-            foregroundColour = Optional.ofNullable(colourManager.getColourFromString(value, null));
-        }
-    }
-
-    @ConfigBinding(domain = "ui", key = "highlightLineBackgroundColour", required = false)
-    void handleBackgroundColour(final String value) {
-        if (Strings.isNullOrEmpty(value)) {
-            backgroundColour = Optional.empty();
-        } else {
-            backgroundColour = Optional.ofNullable(colourManager.getColourFromString(value, null));
-        }
-    }
-
-    private void setColours(final DisplayableEvent event) {
-        backgroundColour.ifPresent(
-                c -> event.setDisplayProperty(DisplayProperty.BACKGROUND_COLOUR, c));
-        foregroundColour.ifPresent(
-                c -> event.setDisplayProperty(DisplayProperty.FOREGROUND_COLOUR, c));
     }
 
     private void setNickname(final String newNick) {

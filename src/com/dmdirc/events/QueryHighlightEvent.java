@@ -22,20 +22,23 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.Query;
+import com.dmdirc.interfaces.User;
+
+import java.time.LocalDateTime;
+
 /**
  * Event raised when a highlight is detected in a query.
  */
-public class QueryHighlightEvent extends QueryEvent {
+public class QueryHighlightEvent extends QueryMessageEvent {
 
-    private final QueryEvent cause;
-
-    public QueryHighlightEvent(final QueryEvent cause) {
-        super(cause.getTimestamp(), cause.getQuery());
-        this.cause = cause;
+    public QueryHighlightEvent(final LocalDateTime timestamp, final Query query, final User user,
+            final String message) {
+        super(timestamp, query, user, message);
     }
 
-    public QueryEvent getCause() {
-        return cause;
+    public QueryHighlightEvent(final Query query, final User user, final String message) {
+        super(query, user, message);
     }
 
 }

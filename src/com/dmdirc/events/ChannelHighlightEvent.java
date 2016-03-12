@@ -22,20 +22,24 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.interfaces.GroupChat;
+import com.dmdirc.interfaces.GroupChatUser;
+
+import java.time.LocalDateTime;
+
 /**
  * Event raised when a highlight is detected in a channel.
  */
-public class ChannelHighlightEvent extends ChannelEvent {
+public class ChannelHighlightEvent extends ChannelMessageEvent {
 
-    private final ChannelEvent cause;
-
-    public ChannelHighlightEvent(final ChannelEvent cause) {
-        super(cause.getTimestamp(), cause.getChannel());
-        this.cause = cause;
+    public ChannelHighlightEvent(final LocalDateTime timestamp, final GroupChat channel,
+            final GroupChatUser client, final String message) {
+        super(timestamp, channel, client, message);
     }
 
-    public ChannelEvent getCause() {
-        return cause;
+    public ChannelHighlightEvent(final GroupChat channel, final GroupChatUser client,
+            final String message) {
+        super(channel, client, message);
     }
 
 }

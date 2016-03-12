@@ -126,6 +126,8 @@ ChannelSelfActionEvent:
   colour: 6
 ChannelMessageEvent:
   format: "<{{client.modePrefixedNickname}}> {{message}}"
+ChannelHighlightEvent:
+  format: "<{{client.modePrefixedNickname}}> {{message}}"
 ChannelSelfMessageEvent:
   format: "<{{client.modePrefixedNickname}}> {{message}}"
 ChannelModeNoticeEvent:
@@ -196,6 +198,8 @@ QuerySelfActionEvent:
   format: "* {{user.nickname}} {{message}}"
   colour: 6
 QueryMessageEvent:
+  format: "<{{user.nickname}}> {{message}}"
+QueryHighlightEvent:
   format: "<{{user.nickname}}> {{message}}"
 QuerySelfMessageEvent:
   format: "<{{user.nickname}}> {{message}}"
