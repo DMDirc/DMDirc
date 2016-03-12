@@ -33,7 +33,6 @@ import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.collect.Lists;
 
@@ -47,7 +46,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
@@ -66,8 +65,6 @@ public class HighlightManagerTest {
     @Mock private GroupChatUser channelUser;
     @Mock private DMDircMBassador eventBus;
 
-    @Mock private ColourManager colourManager;
-    @Mock private AggregateConfigProvider configProvider;
     private HighlightManager manager;
 
     @Before
@@ -79,7 +76,7 @@ public class HighlightManagerTest {
         when(channel.getEventBus()).thenReturn(eventBus);
         when(channel.getConnection()).thenReturn(Optional.of(connection));
 
-        manager = new HighlightManager(windowModel, configProvider, colourManager);
+        manager = new HighlightManager(windowModel);
     }
 
     @Test
@@ -97,7 +94,9 @@ public class HighlightManagerTest {
                 ArgumentCaptor.forClass(ChannelHighlightEvent.class);
 
         verify(eventBus).publishAsync(captor.capture());
-        assertSame(event, captor.getValue().getCause());
+        assertEquals(channel, captor.getValue().getChannel());
+        assertEquals(channelUser, captor.getValue().getClient());
+        assertEquals("Hi, nickName!", captor.getValue().getMessage());
     }
 
     @Test
@@ -116,7 +115,9 @@ public class HighlightManagerTest {
                 ArgumentCaptor.forClass(ChannelHighlightEvent.class);
 
         verify(eventBus).publishAsync(captor.capture());
-        assertSame(event, captor.getValue().getCause());
+        assertEquals(channel, captor.getValue().getChannel());
+        assertEquals(channelUser, captor.getValue().getClient());
+        assertEquals("Hi, newName!", captor.getValue().getMessage());
     }
 
     @Test
@@ -149,7 +150,9 @@ public class HighlightManagerTest {
                 ArgumentCaptor.forClass(ChannelHighlightEvent.class);
 
         verify(eventBus).publishAsync(captor.capture());
-        assertSame(event, captor.getValue().getCause());
+        assertEquals(channel, captor.getValue().getChannel());
+        assertEquals(channelUser, captor.getValue().getClient());
+        assertEquals("DMDirc is great.", captor.getValue().getMessage());
     }
 
     @Test
@@ -168,7 +171,9 @@ public class HighlightManagerTest {
                 ArgumentCaptor.forClass(ChannelHighlightEvent.class);
 
         verify(eventBus, only()).publishAsync(captor.capture());
-        assertSame(event, captor.getValue().getCause());
+        assertEquals(channel, captor.getValue().getChannel());
+        assertEquals(channelUser, captor.getValue().getClient());
+        assertEquals("DMDirc is great.", captor.getValue().getMessage());
     }
 
 }

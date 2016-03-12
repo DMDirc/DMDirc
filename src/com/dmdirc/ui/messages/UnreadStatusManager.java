@@ -82,14 +82,14 @@ public class UnreadStatusManager {
 
     @Handler
     public void handleChannelHighlightEvent(final ChannelHighlightEvent event) {
-        if (event.getCause().getChannel().equals(container)) {
+        if (event.getChannel().equals(container)) {
             updateStatus(highlightColour);
         }
     }
 
     @Handler
     public void handleQueryHighlightEvent(final QueryHighlightEvent event) {
-        if (event.getCause().getQuery().equals(container)) {
+        if (event.getQuery().equals(container)) {
             updateStatus(highlightColour);
         }
     }

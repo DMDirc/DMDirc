@@ -51,7 +51,6 @@ import com.dmdirc.parser.interfaces.SecureParser;
 import com.dmdirc.parser.interfaces.StringConverter;
 import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.HighlightManager;
 
@@ -209,11 +208,7 @@ public class Server implements Connection {
         windowModel.getConfigManager().addChangeListener("formatter", "serverName", configListener);
         windowModel.getConfigManager().addChangeListener("formatter", "serverTitle", configListener);
 
-        this.highlightManager = new HighlightManager(
-                windowModel,
-                windowModel.getConfigManager(),
-                new ColourManager(windowModel.getConfigManager()));
-        highlightManager.init();
+        highlightManager = new HighlightManager(windowModel);
         windowModel.getEventBus().subscribe(highlightManager);
         windowModel.getEventBus().subscribe(this);
     }
@@ -690,7 +685,6 @@ public class Server implements Connection {
             synchronized (myStateLock) {
                 eventHandler.unregisterCallbacks();
                 windowModel.getConfigManager().removeListener(configListener);
-                highlightManager.stop();
                 windowModel.getEventBus().unsubscribe(highlightManager);
                 executorService.shutdown();
 
