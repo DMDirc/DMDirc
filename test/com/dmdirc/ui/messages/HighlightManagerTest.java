@@ -93,7 +93,7 @@ public class HighlightManagerTest {
         final ArgumentCaptor<ChannelHighlightEvent> captor =
                 ArgumentCaptor.forClass(ChannelHighlightEvent.class);
 
-        verify(eventBus).publishAsync(captor.capture());
+        verify(eventBus).publish(captor.capture());
         assertEquals(channel, captor.getValue().getChannel());
         assertEquals(channelUser, captor.getValue().getClient());
         assertEquals("Hi, nickName!", captor.getValue().getMessage());
@@ -114,7 +114,7 @@ public class HighlightManagerTest {
         final ArgumentCaptor<ChannelHighlightEvent> captor =
                 ArgumentCaptor.forClass(ChannelHighlightEvent.class);
 
-        verify(eventBus).publishAsync(captor.capture());
+        verify(eventBus).publish(captor.capture());
         assertEquals(channel, captor.getValue().getChannel());
         assertEquals(channelUser, captor.getValue().getClient());
         assertEquals("Hi, newName!", captor.getValue().getMessage());
@@ -132,7 +132,7 @@ public class HighlightManagerTest {
         manager.handleNickChange(new ServerNickChangeEvent(connection, "nickName", "newName"));
         manager.handleChannelMessage(event);
 
-        verify(eventBus, never()).publishAsync(any());
+        verify(eventBus, never()).publish(any());
     }
 
     @Test
@@ -149,7 +149,7 @@ public class HighlightManagerTest {
         final ArgumentCaptor<ChannelHighlightEvent> captor =
                 ArgumentCaptor.forClass(ChannelHighlightEvent.class);
 
-        verify(eventBus).publishAsync(captor.capture());
+        verify(eventBus).publish(captor.capture());
         assertEquals(channel, captor.getValue().getChannel());
         assertEquals(channelUser, captor.getValue().getClient());
         assertEquals("DMDirc is great.", captor.getValue().getMessage());
@@ -170,7 +170,7 @@ public class HighlightManagerTest {
         final ArgumentCaptor<ChannelHighlightEvent> captor =
                 ArgumentCaptor.forClass(ChannelHighlightEvent.class);
 
-        verify(eventBus, only()).publishAsync(captor.capture());
+        verify(eventBus, only()).publish(captor.capture());
         assertEquals(channel, captor.getValue().getChannel());
         assertEquals(channelUser, captor.getValue().getClient());
         assertEquals("DMDirc is great.", captor.getValue().getMessage());
