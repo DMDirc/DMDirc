@@ -128,6 +128,7 @@ ChannelMessageEvent:
   format: "<{{client.modePrefixedNickname}}> {{message}}"
 ChannelHighlightEvent:
   format: "<{{client.modePrefixedNickname}}> {{message}}"
+  background: F9C4BB
 ChannelSelfMessageEvent:
   format: "<{{client.modePrefixedNickname}}> {{message}}"
 ChannelModeNoticeEvent:
@@ -201,6 +202,7 @@ QueryMessageEvent:
   format: "<{{user.nickname}}> {{message}}"
 QueryHighlightEvent:
   format: "<{{user.nickname}}> {{message}}"
+  background: F9C4BB
 QuerySelfMessageEvent:
   format: "<{{user.nickname}}> {{message}}"
 QueryQuitEvent:

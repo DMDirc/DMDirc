@@ -25,6 +25,7 @@ package com.dmdirc.ui.messages;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.events.DisplayableEvent;
+import com.dmdirc.util.colours.Colour;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -112,8 +113,13 @@ public class YamlEventFormatProvider implements EventFormatProvider {
         final DisplayPropertyMap map = new DisplayPropertyMap();
         if (info.containsKey("colour")) {
             map.put(DisplayProperty.FOREGROUND_COLOUR,
-                    colourManager.getColourFromIrcCode(
-                            Integer.parseInt(info.get("colour").toString())));
+                    colourManager.getColourFromString(
+                            info.get("colour").toString(), Colour.BLACK));
+        }
+        if (info.containsKey("background")) {
+            map.put(DisplayProperty.BACKGROUND_COLOUR,
+                    colourManager.getColourFromString(
+                            info.get("background").toString(), Colour.BLACK));
         }
         if (info.containsKey("timestamp")) {
             map.put(DisplayProperty.NO_TIMESTAMPS,

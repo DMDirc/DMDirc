@@ -173,8 +173,6 @@ ui:
   miscellaneousNotificationColour=3
   messageNotificationColour=12
   highlightNotificationColour=4
-  highlightLineBackgroundColour=F9C4BB
-  highlightLineForegroundColour=
 
 treeview:
   dragSelection=true
