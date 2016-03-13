@@ -27,6 +27,7 @@ import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.BaseChannelTextEvent;
 import com.dmdirc.events.BaseQueryTextEvent;
 import com.dmdirc.events.ChannelHighlightEvent;
+import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.UnreadStatusChangedEvent;
@@ -61,37 +62,42 @@ public class UnreadStatusManager {
 
     @Handler
     public void handleDisplayableEvent(final DisplayableEvent event) {
-        if (event.getSource().equals(container)) {
+        if (includeEvent(event)) {
             updateStatus(miscellaneousColour, unreadLines + 1);
         }
     }
 
     @Handler
     public void handleChannelTextEvent(final BaseChannelTextEvent event) {
-        if (event.getSource().equals(container)) {
+        if (includeEvent(event)) {
             updateStatus(messageColour);
         }
     }
 
     @Handler
     public void handleQueryTextEvent(final BaseQueryTextEvent event) {
-        if (event.getSource().equals(container)) {
+        if (includeEvent(event)) {
             updateStatus(messageColour);
         }
     }
 
     @Handler
     public void handleChannelHighlightEvent(final ChannelHighlightEvent event) {
-        if (event.getChannel().equals(container)) {
+        if (includeEvent(event)) {
             updateStatus(highlightColour);
         }
     }
 
     @Handler
     public void handleQueryHighlightEvent(final QueryHighlightEvent event) {
-        if (event.getQuery().equals(container)) {
+        if (includeEvent(event)) {
             updateStatus(highlightColour);
         }
+    }
+
+    private boolean includeEvent(final DisplayableEvent event) {
+        return event.getSource().equals(container)
+                && !event.getDisplayProperty(DisplayProperty.DO_NOT_DISPLAY).orElse(false);
     }
 
     public int getUnreadLines() {
