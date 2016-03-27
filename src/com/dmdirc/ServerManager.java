@@ -65,7 +65,7 @@ public class ServerManager implements ConnectionManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServerManager.class);
     /** All servers that currently exist. */
-    private final Set<Server> servers = new CopyOnWriteArraySet<>();
+    private final Set<Connection> servers = new CopyOnWriteArraySet<>();
     /** The manager to use to find profiles. */
     private final ProfileManager profileManager;
     /** The identity factory to give to servers. */
@@ -102,11 +102,11 @@ public class ServerManager implements ConnectionManager {
     }
 
     @Override
-    public Server createServer(final URI uri, final Profile profile) {
+    public Connection createServer(final URI uri, final Profile profile) {
         final ConfigProviderMigrator configProvider = identityFactory.createMigratableConfig(uri.
                 getScheme(), "", "", uri.getHost());
 
-        final Server server = serverFactoryImpl.getServer(
+        final Connection server = serverFactoryImpl.getServer(
                 configProvider,
                 Executors.newScheduledThreadPool(1,
                         new ThreadFactoryBuilder().setNameFormat("server-timer-%d").build()),
@@ -122,7 +122,7 @@ public class ServerManager implements ConnectionManager {
      *
      * @param server The server to be registered
      */
-    void registerServer(final Server server) {
+    void registerServer(final Connection server) {
         servers.add(server);
     }
 
@@ -143,14 +143,14 @@ public class ServerManager implements ConnectionManager {
 
     @Override
     public void disconnectAll(final String message) {
-        for (Server server : servers) {
+        for (Connection server : servers) {
             server.disconnect(message);
         }
     }
 
     @Override
     public void closeAll(final String message) {
-        for (Server server : servers) {
+        for (Connection server : servers) {
             server.disconnect(message);
             server.getWindowModel().close();
         }
@@ -175,7 +175,7 @@ public class ServerManager implements ConnectionManager {
 
     @Override
     public Connection connectToAddress(final URI uri, final Profile profile) {
-        final Server server = servers.stream()
+        final Connection server = servers.stream()
                 .filter(s -> s.compareURI(uri)).findAny()
                 .orElse(createServer(uri, profile));
 
