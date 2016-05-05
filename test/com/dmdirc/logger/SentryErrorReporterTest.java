@@ -38,12 +38,12 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import net.kencochrane.raven.Raven;
-import net.kencochrane.raven.RavenFactory;
-import net.kencochrane.raven.dsn.Dsn;
-import net.kencochrane.raven.event.Event;
-import net.kencochrane.raven.event.interfaces.ExceptionInterface;
-import net.kencochrane.raven.event.interfaces.SentryInterface;
+import com.getsentry.raven.Raven;
+import com.getsentry.raven.RavenFactory;
+import com.getsentry.raven.dsn.Dsn;
+import com.getsentry.raven.event.Event;
+import com.getsentry.raven.event.interfaces.ExceptionInterface;
+import com.getsentry.raven.event.interfaces.SentryInterface;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
