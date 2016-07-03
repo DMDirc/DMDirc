@@ -1,0 +1,324 @@
+# This is the DMDirc default config file. If you wish to make changes to the settings
+# for your copy of DMDirc, you should edit the dmdirc.config file in the main DMDirc
+# profile directory instead. This file will be replaced by the updater.
+
+keysections:
+  identity
+  general
+  notifications
+  ui
+  treeview
+  channel
+  tabcompletion
+  logging
+  server
+  updater
+  popups
+  protocol
+  plugin-addonid
+  icon
+  ssl
+  actions
+  nicklist
+  statusBar
+  temp
+  dialogstate
+  browser
+  commands
+  newserver
+
+identity:
+  name=DMDirc default settings
+  globaldefault=true
+  order=100000
+
+general:
+  bindip=
+  closechannelsonquit=false
+  closequeriesonquit=false
+  closechannelsondisconnect=false
+  closemessage=DMDirc exiting
+  closequeriesondisconnect=false
+  commandchar=/
+  commandhistory=10
+  cyclemessage=Cycling
+  encoding=UTF-8
+  extendedListModes=false
+  firstRun=true
+  hidechannels=false
+  kickmessage=Bye!
+  logerrors=false
+  partmessage=Using DMDirc
+  password=
+  port=6667
+  quitmessage=Using DMDirc
+  reconnectdelay=5000
+  reconnectmessage=Reconnecting
+  reconnectondisconnect=true
+  reconnectonconnectfailure=true
+  rejoinchannels=true
+  showcolourdialog=true
+  showglobalwindow=true
+  showrawwindow=false
+  silencechar=.
+  submitErrors=false
+  ui=swing
+
+notifications:
+  authNotice=server
+  away=server
+  back=server
+  unknownNotice=server
+  channelListModeRetrieved=none
+  connectError=server
+  connectRetry=server
+  selfNickChange=server
+  serverError=all
+  socketClosed=all
+  stonedServer=all
+  privateNotice=all
+  serverNotice=server
+  privateCTCP=server
+  privateCTCPreply=lastcommand:ctcp %1$s %4$S
+  wallusers=server
+  wallops=server
+  walldesync=server
+
+  channelUserAwayDiscovered=none
+  channelUserBackDiscovered=none
+
+  numeric_006=group:map
+  numeric_007=group:map
+  numeric_015=group:map
+  numeric_017=group:map
+
+  numeric_251=group:lusers
+  numeric_252=group:lusers
+  numeric_253=group:lusers
+  numeric_254=group:lusers
+  numeric_255=group:lusers
+
+  numeric_290=server
+  numeric_292=server
+  numeric_294=server
+
+  numeric_311=group:whois
+  numeric_318=group:whois
+
+  numeric_401=lastcommand:(raw )?(whois|(priv)?msg|notice|ctcp|invite) %4$s( .*?)?
+  numeric_404=channel:%4$s lastcommand:(raw priv)?msg %4$s
+  numeric_405=server
+  numeric_421=server
+  numeric_432=lastcommand:(raw )?nick %4$s
+  numeric_433=server
+  numeric_437=lastcommand:(raw )?nick %4$s
+  numeric_438=lastcommand:(raw )?nick %4$s
+  numeric_461=lastcommand:(raw )?%4$s( .*)?
+  numeric_471=server
+  numeric_472=server
+  numeric_473=server
+  numeric_474=server
+  numeric_475=server
+  numeric_479=server
+  numeric_482=channel:%4$s
+  numeric_486=lastcommand:(raw priv)?msg %4$s .*
+  numeric_499=channel:%4$s
+
+  numeric_501=server
+  numeric_524=server
+
+  numeric_705=server
+
+  lusers=server
+  map=window:Network Map
+  whois=lastcommand:(raw )?whois %4$s( %4$s)?
+
+ui:
+  antialias=true
+  awayindicator=true
+  backgroundcolour=0
+  confirmQuit=true
+  foregroundcolour=1
+  frameBufferSize=25000
+  framemanager=com.dmdirc.addons.ui_swing.framemanager.tree.TreeFrameManager
+  framemanagerPosition=left
+  frameManagerSize=150
+  inputbackgroundcolour=false:0
+  inputbuffersize=50
+  inputforegroundcolour=false:1
+  lookandfeel=Native
+  maximisewindows=true
+  mdiBarVisibility=showWhenMaximised
+  nickListAltBackgroundColour=false:f0f0f0
+  nicklistbackgroundcolour=false:0
+  nicklistforegroundcolour=false:1
+  pasteProtectionLimit=true:1
+  quickCopy=false
+  shownickcoloursinnicklist=true
+  shownickcoloursintext=false
+  showversion=true
+  stylelinks=true
+  stylechannels=true
+  linkcolour=12
+  channelcolour=3
+  treeviewActiveBackground=false:f0f0f0
+  treeviewActiveBold=true
+  treeviewActiveForeground=false:1
+  treeviewRolloverColour=false:f0f0f0
+  useOneTouchExpandable=false
+  channelSplitPanePosition=150
+  sortrootwindows=true
+  sortchildwindows=true
+  typingindicator=true
+  miscellaneousNotificationColour=3
+  messageNotificationColour=12
+  highlightNotificationColour=4
+
+treeview:
+  dragSelection=true
+  backgroundcolour=false:0
+  foregroundcolour=false:0
+
+channel:
+  showmodeprefix=true
+  topichistorysize=10
+  encoding=UTF-8
+
+tabcompletion:
+  allowempty=false
+  casesensitive=false
+  style=mirc
+
+logging:
+  dateFormat=EEE, d MMM yyyy HH:mm:ss Z
+  programLogging=true
+  debugLogging=true
+  debugLoggingSysOut=true
+
+server:
+  pingtimeout=60000
+  pingtimer=10000
+  pingfrequency=60000
+  proxy.address=
+  proxy.user=
+  proxy.password=
+  proxy.port=1080
+
+updater:
+  autoupdate=false
+  channel=STABLE
+  enable=false
+  frequency=86400
+  lastcheck=0
+
+popups:
+  nick=Query:query %1$s\nWhois:whois %1$s
+  chan-nick=-\nBan:ban %1$s\nKick:kick %1$s
+  umodes=<umodes-op\n<umodes-voice
+
+  umodes-op=Op:6:mode +oooooo %1$s %2$s %3$s %4$s %5$s %6$s\nDeop:6:mode -oooooo %1$s %2$s %3$s %4$s %5$s %6$s
+  umodes-hop=Half-Op:6:mode +hhhhhh %1$s %2$s %3$s %4$s %5$s %6$s\nDehalf-op:6:mode -hhhhhh %1$s %2$s %3$s %4$s %5$s %6$s
+  umodes-voice=Voice:6:mode +vvvvvv %1$s %2$s %3$s %4$s %5$s %6$s\nDevoice:6:mode -vvvvvvv %1$s %2$s %3$s %4$s %5$s %6$s
+  umodes-admin=Make admin:6:mode +aaaaaa %1$s %2$s %3$s %4$s %5$s %6$s\nRemove admin:6:mode -aaaaaa %1$s %2$s %3$s %4$s %5$s %6$s
+  umodes-owner=Make owner:6:mode +qqqqqq %1$s %2$s %3$s %4$s %5$s %6$s\nRemove owner:6:mode -qqqqqq %1$s %2$s %3$s %4$s %5$s %6$s
+
+  CHAN_NICK=<nick\n-\nModes:<umodes\n<chan-nick
+  CHAN_NORMAL=
+  QUERY_NORMAL=<nick
+
+protocol:
+  http=BROWSER
+  https=BROWSER
+  irc=DMDIRC
+
+plugin-addonid:
+  audio=14
+  dcc=23
+  dcop=1
+  dns=10
+  identd=15
+  lagdisplay=2
+  logging=16
+  dcopmediasource=9
+  vlcmediasource=24
+  nickcolour=12
+  nowplaying=8
+  osd=3
+  redirect=4
+  serverlistdialog=74
+  systray=5
+  timeplugin=6
+  urlcatcher=25
+  userlevel=21
+  windowstatus=13
+
+icon:
+  category-addons=dmdirc://com/dmdirc/res/addon.png
+  category-advanced=dmdirc://com/dmdirc/res/cog.png
+  category-connection=dmdirc://com/dmdirc/res/server.png
+  category-gui=dmdirc://com/dmdirc/res/monitor.png
+  category-messages=dmdirc://com/dmdirc/res/feedback.png
+  category-updates=dmdirc://com/dmdirc/res/update.png
+  category-urlhandlers=dmdirc://com/dmdirc/res/urls.png
+
+  smilie-:|=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
+  smilie-:I=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
+  smilie-:-|=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
+  smilie-:-I=dmdirc://com/dmdirc/res/smilies/yellow/neutral.png
+
+  smilie-:(=dmdirc://com/dmdirc/res/smilies/yellow/sad.png
+  smilie-:-(=dmdirc://com/dmdirc/res/smilies/yellow/sad.png
+
+  smilie-:)=dmdirc://com/dmdirc/res/smilies/yellow/smile.png
+  smilie-:-)=dmdirc://com/dmdirc/res/smilies/yellow/smile.png
+  smilie-;)=dmdirc://com/dmdirc/res/smilies/yellow/winksmile.png
+  smilie-;-)=dmdirc://com/dmdirc/res/smilies/yellow/winksmile.png
+
+  smilie-:P=dmdirc://com/dmdirc/res/smilies/yellow/tongue.png
+  smilie-:-P=dmdirc://com/dmdirc/res/smilies/yellow/tongue.png
+  smilie-;P=dmdirc://com/dmdirc/res/smilies/yellow/winktongue.png
+  smilie-;-P=dmdirc://com/dmdirc/res/smilies/yellow/winktongue.png
+
+  smilie-:/=dmdirc://com/dmdirc/res/smilies/yellow/skeptical.png
+  smilie-:-/=dmdirc://com/dmdirc/res/smilies/yellow/skeptical.png
+  smilie-:\\=dmdirc://com/dmdirc/res/smilies/yellow/skeptical.png
+  smilie-:-\\=dmdirc://com/dmdirc/res/smilies/yellow/skeptical.png
+
+ssl:
+  checkdate=true
+  checkissuer=true
+  checkhost=true
+  clientcert.file=
+  clientcert.pass=
+
+actions:
+  killswitch=false
+
+nicklist:
+  sortByMode=true
+  sortByCase=false
+
+statusBar:
+  messageDisplayLength=5
+
+temp:
+  noerrorreporting=false
+
+dialogstate:
+  channelsettingsdialog=0
+  actionsmanagerdialog=0
+  serversettingsdialog=0
+  preferences=0
+
+browser:
+  uselaunchdelay=true
+  launchdelay=500
+
+commands:
+  join-tabexistingchannels=true
+
+newserver:
+  hostname=
+  port=6667
+  password=
+  ssl=false
