@@ -1,6 +1,5 @@
 # DMDirc .gitignore file
 /build
-/generated
 /dist
 /lib
 /etc/clover.license
@@ -8,3 +7,7 @@
 /.clover
 /*.key
 /.gradle
+
+# Generated files created by IDEA
+/src/*/generated
+/src/*/generated_tests

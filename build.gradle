@@ -12,9 +12,9 @@ group = 'com.dmdirc'
 
 idea {
     module {
-         sourceDirs = [file('src'), file('generated')]
-         testSourceDirs = [file('test'), file('generated_tests')]
-         generatedSourceDirs = [file('generated'), file('generated_tests')]
+         sourceDirs += file('src/main/generated')
+         testSourceDirs += file('src/test/generated_tests')
+         generatedSourceDirs = [file('src/main/generated'), file('src/test/generated_tests')]
     }
 }
 
@@ -50,17 +50,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.19'
     testCompile group: 'com.google.jimfs', name: 'jimfs', version: '1.1'
-}
-
-sourceSets {
-    main {
-        java.srcDirs = ['src']
-        resources.srcDirs = ['res']
-    }
-    test {
-        java.srcDirs = ['test']
-        resources.srcDirs = ['test-res']
-    }
 }
 
 sourceCompatibility = 1.8
