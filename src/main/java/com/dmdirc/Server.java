@@ -79,10 +79,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 
+import net.engio.mbassy.listener.Handler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.engio.mbassy.listener.Handler;
 
 import static com.dmdirc.util.LogUtils.APP_ERROR;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -144,7 +144,7 @@ public class Server implements Connection {
     private final ServerEventHandler eventHandler;
     /** Our ignore list. */
     private final IgnoreList ignoreList = new IgnoreList();
-    /** Our string convertor. */
+    /** Our string converter. */
     private StringConverter converter = new DefaultStringConverter();
     /** ParserFactory we use for creating parsers. */
     private final ParserFactory parserFactory;
@@ -483,15 +483,23 @@ public class Server implements Connection {
         return queries.get(lnick);
     }
 
-    @Override
-    public void updateQuery(final Query query, final String oldNick, final String newNick) {
-        windowModel.getInputModel().get().getTabCompleter()
-                .removeEntry(TabCompletionType.QUERY_NICK, oldNick);
-        windowModel.getInputModel().get().getTabCompleter()
-                .addEntry(TabCompletionType.QUERY_NICK, newNick);
+    /**
+     * Updates tab completer and queries after a user changes their nickname.
+     *
+     * @param client The client that changed nickname
+     * @param oldNick The old nickname they used.
+     */
+    void handleNickChange(final ClientInfo client, final String oldNick) {
+        if (queries.containsKey(converter.toLowerCase(oldNick))) {
+            windowModel.getInputModel().get().getTabCompleter()
+                    .removeEntry(TabCompletionType.QUERY_NICK, oldNick);
+            windowModel.getInputModel().get().getTabCompleter()
+                    .addEntry(TabCompletionType.QUERY_NICK, client.getNickname());
 
-        queries.put(converter.toLowerCase(newNick), query);
-        queries.remove(converter.toLowerCase(oldNick));
+            queries.put(
+                    converter.toLowerCase(client.getNickname()),
+                    queries.remove(converter.toLowerCase(oldNick)));
+        }
     }
 
     @Override
@@ -1005,7 +1013,7 @@ public class Server implements Connection {
      * {@code orElse} value.
      */
     private <T> T withParserReadLock(
-            final Function<? super Parser, ? extends T> func,
+            final Function<Parser, T> func,
             final T orElse) {
         try {
             parserLock.readLock().lock();

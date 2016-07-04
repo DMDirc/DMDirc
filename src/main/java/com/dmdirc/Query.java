@@ -176,8 +176,6 @@ public class Query extends FrameContainer implements PrivateChat {
         final ClientInfo client = event.getClient();
         final String oldNick = event.getOldNick();
         if (client.getNickname().equals(getNickname())) {
-            connection.updateQuery(this, oldNick, client.getNickname());
-
             getEventBus().publish(new QueryNickChangeEvent(this, oldNick, client.getNickname()));
             updateTitle();
 
