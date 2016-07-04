@@ -133,8 +133,7 @@ public final class LogUtils {
             }
 
             if (throwable == null) {
-                throw new ReflectiveOperationException("Unable to find ctor of "
-                        + clazz.getClass());
+                throw new ReflectiveOperationException("Unable to find ctor of " + clazz);
             }
         }
         throwable.setStackTrace(getStackTraceElements(proxy.getStackTraceElementProxyArray()));
