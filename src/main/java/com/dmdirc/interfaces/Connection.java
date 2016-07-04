@@ -30,10 +30,11 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.interfaces.Parser;
 
-import javax.annotation.Nonnull;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 /**
  * Represents an abstract connection to a remote chat system.
