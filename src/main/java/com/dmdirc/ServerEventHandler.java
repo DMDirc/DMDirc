@@ -86,17 +86,14 @@ import com.dmdirc.parser.events.WallDesyncEvent;
 import com.dmdirc.parser.events.WallopEvent;
 import com.dmdirc.parser.events.WalluserEvent;
 import com.dmdirc.ui.StatusMessage;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
-import javax.annotation.Nonnull;
-
+import net.engio.mbassy.listener.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.engio.mbassy.listener.Handler;
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 import static com.dmdirc.util.LogUtils.APP_ERROR;
 import static com.dmdirc.util.LogUtils.USER_ERROR;
@@ -408,6 +405,8 @@ public class ServerEventHandler extends EventHandler {
                     event.getOldNick(), event.getClient().getNickname()));
             owner.updateTitle();
         }
+
+        owner.handleNickChange(event.getClient(), event.getOldNick());
     }
 
     @Handler

@@ -45,12 +45,11 @@ import com.dmdirc.parser.interfaces.ClientInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.messages.BackBufferFactory;
+import net.engio.mbassy.listener.Handler;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Optional;
-
-import net.engio.mbassy.listener.Handler;
 
 /**
  * The Query class represents the client's view of a query with another user. It handles callbacks
@@ -176,8 +175,6 @@ public class Query extends FrameContainer implements PrivateChat {
         final ClientInfo client = event.getClient();
         final String oldNick = event.getOldNick();
         if (client.getNickname().equals(getNickname())) {
-            connection.updateQuery(this, oldNick, client.getNickname());
-
             getEventBus().publish(new QueryNickChangeEvent(this, oldNick, client.getNickname()));
             updateTitle();
 

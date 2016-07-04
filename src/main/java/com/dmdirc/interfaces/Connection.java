@@ -30,11 +30,10 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.interfaces.Parser;
 
+import javax.annotation.Nonnull;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
-
-import javax.annotation.Nonnull;
 
 /**
  * Represents an abstract connection to a remote chat system.
@@ -291,19 +290,6 @@ public interface Connection {
      * Updates this server's ignore list to use the entries stored in the config manager.
      */
     void updateIgnoreList();
-
-    /**
-     * Updates the state of this server following a nick change of someone that the user has a query
-     * open with. Namely, this updates the tabcompleter with the new name, and ensures that the
-     * <code>queries</code> map uses the correct nickname.
-     *
-     * @param query   The query object being updated
-     * @param oldNick The old nickname of the user
-     * @param newNick The new nickname of the user
-     *
-     * @since 0.6.4
-     */
-    void updateQuery(final Query query, final String oldNick, final String newNick);
 
     /**
      * Updates the name and title of this window.
