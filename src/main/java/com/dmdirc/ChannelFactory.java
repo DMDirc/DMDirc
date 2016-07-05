@@ -82,6 +82,7 @@ public class ChannelFactory {
                 channel::getMaxLineLength));
         windowManager.addWindow(connection.getWindowModel(), channel);
         connection.getWindowModel().getEventBus().publish(new ChannelOpenedEvent(channel));
+        channel.selfJoin();
         return channel;
     }
 }
