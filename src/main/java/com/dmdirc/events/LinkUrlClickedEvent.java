@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.ui.Window;
 
 /**
@@ -29,7 +30,12 @@ import com.dmdirc.interfaces.ui.Window;
  */
 public class LinkUrlClickedEvent extends LinkEvent {
 
+    @Deprecated
     public LinkUrlClickedEvent(final Window window, final String target) {
+        super(window.getContainer(), target);
+    }
+
+    public LinkUrlClickedEvent(final WindowModel window, final String target) {
         super(window, target);
     }
 
