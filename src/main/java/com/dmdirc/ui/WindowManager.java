@@ -26,6 +26,7 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
 import com.dmdirc.events.FrameClosingEvent;
+import com.dmdirc.events.FrameOpenedEvent;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.util.collections.ListenerList;
@@ -67,12 +68,15 @@ public class WindowManager {
     private final ListenerList listeners = new ListenerList();
     /** Counter to use for ID assignments. */
     private final AtomicLong nextId = new AtomicLong(0L);
+    /** Event bus to dispatch window events on. */
+    private final DMDircMBassador eventBus;
 
     /**
      * Creates a new instance of {@link WindowManager}.
      */
     @Inject
     public WindowManager(final DMDircMBassador eventBus) {
+        this.eventBus = eventBus;
         eventBus.subscribe(this);
     }
 
@@ -238,7 +242,7 @@ public class WindowManager {
      *
      * @return True if the target is in the hierarchy, false otherwise
      */
-    protected boolean isInHierarchy(final WindowModel target) {
+    private boolean isInHierarchy(final WindowModel target) {
         return rootWindows.contains(target) || parents.containsKey(target);
     }
 
@@ -366,6 +370,7 @@ public class WindowManager {
      * @param focus  Should this window become focused
      */
     private void fireAddWindow(final WindowModel window, final boolean focus) {
+        eventBus.publishAsync(new FrameOpenedEvent(window));
         for (FrameListener listener : listeners.get(FrameListener.class)) {
             listener.addWindow(window, focus);
         }
@@ -381,6 +386,7 @@ public class WindowManager {
      */
     private void fireAddWindow(final WindowModel parent,
             final WindowModel child, final boolean focus) {
+        eventBus.publishAsync(new FrameOpenedEvent(child, parent));
         for (FrameListener listener : listeners.get(FrameListener.class)) {
             listener.addWindow(parent, child, focus);
         }
