@@ -23,17 +23,11 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.ui.Window;
 
 /**
  * Raised when a nickname link has been clicked.
  */
 public class LinkNicknameClickedEvent extends LinkEvent {
-
-    @Deprecated
-    public LinkNicknameClickedEvent(final Window window, final String target) {
-        super(window.getContainer(), target);
-    }
 
     public LinkNicknameClickedEvent(final WindowModel window, final String target) {
         super(window, target);
