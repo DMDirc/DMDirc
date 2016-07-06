@@ -23,17 +23,11 @@
 package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.ui.Window;
 
 /**
  * Raised when a channel link has been clicked.
  */
 public class LinkChannelClickedEvent extends LinkEvent {
-
-    @Deprecated
-    public LinkChannelClickedEvent(final Window window, final String target) {
-        super(window.getContainer(), target);
-    }
 
     public LinkChannelClickedEvent(final WindowModel window, final String target) {
         super(window, target);
