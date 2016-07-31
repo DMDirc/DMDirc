@@ -93,10 +93,10 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
+import net.engio.mbassy.listener.Handler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.engio.mbassy.listener.Handler;
 
 import static com.dmdirc.util.LogUtils.APP_ERROR;
 import static com.dmdirc.util.LogUtils.USER_ERROR;
@@ -408,6 +408,8 @@ public class ServerEventHandler extends EventHandler {
                     event.getOldNick(), event.getClient().getNickname()));
             owner.updateTitle();
         }
+
+        owner.handleNickChange(event.getClient(), event.getOldNick());
     }
 
     @Handler

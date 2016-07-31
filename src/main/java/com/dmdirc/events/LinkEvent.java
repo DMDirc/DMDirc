@@ -22,22 +22,22 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.interfaces.ui.Window;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Common properties of link events.
  */
 public abstract class LinkEvent extends DMDircEvent {
 
-    private final Window window;
+    private final WindowModel window;
     private final String target;
 
-    public LinkEvent(final Window window, final String target) {
+    public LinkEvent(final WindowModel window, final String target) {
         this.window = window;
         this.target = target;
     }
 
-    public Window getWindow() {
+    public WindowModel getWindow() {
         return window;
     }
 

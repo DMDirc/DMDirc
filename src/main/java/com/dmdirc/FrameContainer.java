@@ -125,6 +125,17 @@ public class FrameContainer implements WindowModel {
         this.id = id;
     }
 
+    /**
+     * Indicates whether this container has been assigned an ID yet.
+     *
+     * <p>The container should not post events until it has an ID.
+     *
+     * @return True if the container has an ID, false otherwise.
+     */
+    protected boolean hasId() {
+        return id != null;
+    }
+
     @Override
     public String getIcon() {
         return icon;
@@ -154,14 +165,18 @@ public class FrameContainer implements WindowModel {
     public void setName(final String name) {
         this.name = name;
 
-        eventBus.publishAsync(new FrameNameChangedEvent(this, name));
+        if (hasId()) {
+            eventBus.publishAsync(new FrameNameChangedEvent(this, name));
+        }
     }
 
     @Override
     public void setTitle(final String title) {
         this.title = title;
 
-        eventBus.publishAsync(new FrameTitleChangedEvent(this, title));
+        if (hasId()) {
+            eventBus.publishAsync(new FrameTitleChangedEvent(this, title));
+        }
     }
 
     @Override
@@ -172,14 +187,19 @@ public class FrameContainer implements WindowModel {
     @Override
     public void addComponent(final String component) {
         components.add(component);
-        eventBus.publishAsync(new FrameComponentAddedEvent(this, component));
+
+        if (hasId()) {
+            eventBus.publishAsync(new FrameComponentAddedEvent(this, component));
+        }
     }
 
     @Override
     public void removeComponent(final String component) {
         components.remove(component);
 
-        eventBus.publishAsync(new FrameComponentRemovedEvent(this, component));
+        if (hasId()) {
+            eventBus.publishAsync(new FrameComponentRemovedEvent(this, component));
+        }
     }
 
     @Override
@@ -204,7 +224,9 @@ public class FrameContainer implements WindowModel {
      * Called when this container's icon is updated.
      */
     private void iconUpdated() {
-        eventBus.publish(new FrameIconChangedEvent(this, icon));
+        if (hasId()) {
+            eventBus.publish(new FrameIconChangedEvent(this, icon));
+        }
     }
 
     @Override

@@ -22,14 +22,14 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.interfaces.ui.Window;
+import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Raised when a URL link has been clicked.
  */
 public class LinkUrlClickedEvent extends LinkEvent {
 
-    public LinkUrlClickedEvent(final Window window, final String target) {
+    public LinkUrlClickedEvent(final WindowModel window, final String target) {
         super(window, target);
     }
 

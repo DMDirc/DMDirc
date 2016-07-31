@@ -120,7 +120,6 @@ public class Channel extends FrameContainer implements GroupChat {
         initBackBuffer();
         registerCallbacks();
         updateTitle();
-        selfJoin();
     }
 
     public ChannelInfo getChannelInfo() {
