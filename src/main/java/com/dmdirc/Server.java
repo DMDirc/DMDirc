@@ -60,7 +60,6 @@ import java.net.NoRouteToHostException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -214,8 +213,7 @@ public class Server implements Connection {
     }
 
     /**
-     * Updates the connection details for this server. If the specified URI does not define a port,
-     * the default port from the protocol description will be used.
+     * Updates the connection details for this server.
      *
      * @param uri     The new URI that this server should connect to
      * @param profile The profile that this server should use
@@ -224,17 +222,6 @@ public class Server implements Connection {
         this.address = checkNotNull(uri);
         this.protocolDescription = Optional.ofNullable(parserFactory.getDescription(uri));
         this.profile = profile;
-
-        if (uri.getPort() == -1) {
-            protocolDescription.ifPresent(pd -> {
-                try {
-                    this.address = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(),
-                            pd.getDefaultPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
-                } catch (URISyntaxException ex) {
-                    LOG.warn(APP_ERROR, "Unable to construct URI", ex);
-                }
-            });
-        }
     }
 
     @Override
