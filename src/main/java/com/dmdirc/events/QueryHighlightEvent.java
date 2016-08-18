@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Query;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.User;
 
 import java.time.LocalDateTime;
@@ -32,12 +32,12 @@ import java.time.LocalDateTime;
  */
 public class QueryHighlightEvent extends QueryMessageEvent {
 
-    public QueryHighlightEvent(final LocalDateTime timestamp, final Query query, final User user,
+    public QueryHighlightEvent(final LocalDateTime timestamp, final PrivateChat query, final User user,
             final String message) {
         super(timestamp, query, user, message);
     }
 
-    public QueryHighlightEvent(final Query query, final User user, final String message) {
+    public QueryHighlightEvent(final PrivateChat query, final User user, final String message) {
         super(query, user, message);
     }
 

@@ -89,7 +89,7 @@ public class HighlightManager {
         if (event.getUser().getConnection().getWindowModel().equals(serverWindow)
                 && patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
             event.setDisplayProperty(DisplayProperty.DO_NOT_DISPLAY, true);
-            event.getQuery().getEventBus().publish(
+            event.getQuery().getWindowModel().getEventBus().publish(
                     new QueryHighlightEvent(
                             event.getTimestamp(), event.getQuery(), event.getUser(),
                             event.getMessage()));
@@ -101,7 +101,7 @@ public class HighlightManager {
         if (event.getUser().getConnection().getWindowModel().equals(serverWindow)
                 && patterns.stream().anyMatch(p -> p.matcher(event.getMessage()).matches())) {
             event.setDisplayProperty(DisplayProperty.DO_NOT_DISPLAY, true);
-            event.getQuery().getEventBus().publish(
+            event.getQuery().getWindowModel().getEventBus().publish(
                     new QueryActionHighlightEvent(
                             event.getTimestamp(), event.getQuery(), event.getUser(),
                             event.getMessage()));
