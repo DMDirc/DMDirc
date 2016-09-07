@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.Query;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -35,6 +34,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
@@ -85,7 +85,7 @@ public class OpenQuery extends Command implements IntelligentCommand,
             return;
         }
 
-        final Query query = connection.getQuery(args.getArguments()[0], !args.isSilent());
+        final PrivateChat query = connection.getQuery(args.getArguments()[0], !args.isSilent());
 
         if (args.getArguments().length > 1) {
             query.sendLine(args.getArgumentsAsString(1), args.getArguments()[0]);
