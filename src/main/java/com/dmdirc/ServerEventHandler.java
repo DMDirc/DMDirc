@@ -142,14 +142,14 @@ public class ServerEventHandler extends EventHandler {
     @Handler
     public void onPrivateMessage(final PrivateMessageEvent event) {
         if (!owner.hasQuery(event.getHost())) {
-            owner.getQuery(event.getHost()).onPrivateMessage(event);
+            ((Query) owner.getQuery(event.getHost())).onPrivateMessage(event);
         }
     }
 
     @Handler
     public void onPrivateAction(final PrivateActionEvent event) {
         if (!owner.hasQuery(event.getHost())) {
-            owner.getQuery(event.getHost()).onPrivateAction(event);
+            ((Query) owner.getQuery(event.getHost())).onPrivateAction(event);
         }
     }
 
@@ -341,7 +341,9 @@ public class ServerEventHandler extends EventHandler {
         if (event.getParser().getLocalClient().equals(event.getParser().getClient(event.getHost()))) {
             // Local client
             eventBus.publishAsync(
-                    new QuerySelfMessageEvent(owner.getQuery(event.getTarget()), owner.getLocalUser().get(),
+                    new QuerySelfMessageEvent(
+                            (Query) owner.getQuery(event.getTarget()),
+                            owner.getLocalUser().get(),
                             event.getMessage()));
         } else {
             eventBus.publishAsync(new ServerUnknownMessageEvent(
@@ -354,7 +356,9 @@ public class ServerEventHandler extends EventHandler {
         if (event.getParser().getLocalClient().equals(event.getParser().getClient(event.getHost()))) {
             // Local client
             eventBus.publishAsync(
-                    new QuerySelfActionEvent(owner.getQuery(event.getTarget()), owner.getLocalUser().get(),
+                    new QuerySelfActionEvent(
+                            (Query) owner.getQuery(event.getTarget()),
+                            owner.getLocalUser().get(),
                             event.getMessage()));
         } else {
             eventBus.publishAsync(new ServerUnknownActionEvent(

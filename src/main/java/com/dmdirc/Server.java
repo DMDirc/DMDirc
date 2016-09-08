@@ -33,6 +33,7 @@ import com.dmdirc.events.ServerUnknownProtocolEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.InviteManager;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
@@ -441,12 +442,12 @@ public class Server implements Connection {
     }
 
     @Override
-    public Query getQuery(final String host) {
+    public PrivateChat getQuery(final String host) {
         return getQuery(host, false);
     }
 
     @Override
-    public Query getQuery(final String host, final boolean focus) {
+    public PrivateChat getQuery(final String host, final boolean focus) {
         synchronized (myStateLock) {
             if (myState.getState() == ServerState.CLOSING) {
                 // Can't open queries while the server is closing
@@ -490,12 +491,12 @@ public class Server implements Connection {
     }
 
     @Override
-    public Collection<Query> getQueries() {
+    public Collection<PrivateChat> getQueries() {
         return Collections.unmodifiableCollection(queries.values());
     }
 
     @Override
-    public void delQuery(final Query query) {
+    public void delQuery(final PrivateChat query) {
         windowModel.getInputModel().get().getTabCompleter().removeEntry(
                 TabCompletionType.QUERY_NICK, query.getNickname());
         queries.remove(converter.toLowerCase(query.getNickname()));
