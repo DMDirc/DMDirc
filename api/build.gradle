@@ -1,0 +1,49 @@
+plugins {
+  id 'java'
+  id 'findbugs'
+  id 'pmd'
+  id 'idea'
+}
+
+group = 'com.dmdirc'
+
+idea {
+    module {
+         sourceDirs += file('src/main/generated')
+         testSourceDirs += file('src/test/generated_tests')
+         generatedSourceDirs = [file('src/main/generated'), file('src/test/generated_tests')]
+    }
+}
+
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 2, 'minutes'
+    resolutionStrategy.cacheChangingModulesFor 2, 'minutes'
+}
+
+dependencies {
+    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    compile group: 'com.squareup.dagger', name: 'dagger-compiler', version: '1.2.5'
+    compile group: 'com.google.auto.value', name: 'auto-value', version: '1.2'
+
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.21'
+    compile group: 'com.squareup.dagger', name: 'dagger', version: '1.2.5'
+    compile group: 'com.google.guava', name:'guava', version: '19.0'
+    compile group: 'com.dmdirc', name: 'util', version: '+', changing: true
+    compile group: 'com.dmdirc', name: 'parser-common', version: '+', changing: true
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.19'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url 'https://artifactory.dmdirc.com/artifactory/repo' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
+}

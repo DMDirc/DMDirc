@@ -1,3 +1,1 @@
-include 'modules:util'
-include 'modules:parser'
-include 'modules:plugins'
+include 'api'
