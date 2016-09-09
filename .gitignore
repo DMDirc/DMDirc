@@ -8,6 +8,10 @@
 /*.key
 /.gradle
 
+/api/build
+/api/src/*/generated
+/api/src/*/generated_tests
+
 # Generated files created by IDEA
 /src/*/generated
 /src/*/generated_tests
