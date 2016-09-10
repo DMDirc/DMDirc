@@ -25,7 +25,6 @@ package com.dmdirc.config;
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
@@ -399,13 +398,12 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    @Override
-    public void registerIdentityListener(final ConfigProviderListener listener) {
+    private void registerIdentityListener(final ConfigProviderListener listener) {
         registerIdentityListener(null, listener);
     }
 
-    @Override
-    public void unregisterIdentityListener(final ConfigProviderListener listener) {
+    // TODO: It feels like this method should be called at some point...
+    private void unregisterIdentityListener(final ConfigProviderListener listener) {
         synchronized (listeners) {
             listeners.entries().stream().filter(e -> {
                 final ConfigProviderListener value = e.getValue().get();
@@ -414,8 +412,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    @Override
-    public void registerIdentityListener(final String type, final ConfigProviderListener listener) {
+    private void registerIdentityListener(final String type, final ConfigProviderListener listener) {
         checkNotNull(listener);
 
         synchronized (listeners) {
@@ -603,7 +600,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @throws InvalidIdentityFileException If the settings are invalid
      * @since 0.6.3m1
      */
-    protected ConfigFileBackedConfigProvider createIdentity(
+    private ConfigFileBackedConfigProvider createIdentity(
             final Map<String, Map<String, String>> settings)
             throws IOException, InvalidIdentityFileException {
         if (!settings.containsKey(IDENTITY_DOMAIN)

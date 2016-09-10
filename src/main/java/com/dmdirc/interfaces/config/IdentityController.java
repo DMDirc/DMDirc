@@ -90,34 +90,6 @@ public interface IdentityController {
     void addConfigProvider(final ConfigFileBackedConfigProvider identity);
 
     /**
-     * Adds a new identity listener which will be informed of all settings identities which are
-     * added to this manager.
-     *
-     * @param listener The listener to be added
-     *
-     * @since 0.6.4
-     */
-    void registerIdentityListener(ConfigProviderListener listener);
-
-    /**
-     * Adds a new identity listener which will be informed of all identities of the specified custom
-     * type which are added to this manager.
-     *
-     * @param type     The type of identities to listen for
-     * @param listener The listener to be added
-     *
-     * @since 0.6.4
-     */
-    void registerIdentityListener(String type, ConfigProviderListener listener);
-
-    /**
-     * Unregisters the given identity listener.
-     *
-     * @param listener The listener to be removed
-     */
-    void unregisterIdentityListener(ConfigProviderListener listener);
-
-    /**
      * Saves all modified identity files to disk.
      */
     void saveAll();
