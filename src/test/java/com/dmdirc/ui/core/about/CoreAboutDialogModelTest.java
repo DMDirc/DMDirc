@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.core.about;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineParser;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
@@ -52,7 +52,7 @@ public class CoreAboutDialogModelTest {
 
     @Mock private ClientInfo clientInfo;
     @Mock private Path path;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private PluginManager pluginManager;
     @Mock private PluginMetaData pluginMetaData1;
     @Mock private PluginMetaData pluginMetaData2;

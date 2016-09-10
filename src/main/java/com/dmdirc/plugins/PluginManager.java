@@ -22,8 +22,8 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.PluginRefreshEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;
@@ -71,7 +71,7 @@ public class PluginManager {
     /** The graph to pass to plugins for DI purposes. */
     private final ObjectGraph objectGraph;
     /** Event bus to pass to plugin info for plugin loaded events. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The service manager to use. */
     private final ServiceManager serviceManager;
 
@@ -85,7 +85,7 @@ public class PluginManager {
      * @param directory           The directory to load plugins from.
      */
     public PluginManager(
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final ServiceManager serviceManager,
             final IdentityController identityController,
             final UpdateManager updateManager,

@@ -22,12 +22,12 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.DefaultInputModel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.BackBufferFactory;
@@ -39,7 +39,7 @@ public class TestWritableFrameContainer extends FrameContainer {
 
     public TestWritableFrameContainer(final int lineLength,
             final AggregateConfigProvider cm, final CommandManager commandManager,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final BackBufferFactory backBufferFactory) {
         super("raw", "Raw", "(Raw)", cm, backBufferFactory,
                 eventBus,

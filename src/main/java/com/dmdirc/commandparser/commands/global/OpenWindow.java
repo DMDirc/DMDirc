@@ -24,7 +24,6 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.CustomWindow;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -34,6 +33,7 @@ import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.WindowManager;
@@ -58,7 +58,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
     /** Window management. */
     private final WindowManager windowManager;
     /** The bus to dispatch events on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The config provider to retrieve settings from. */
     private final AggregateConfigProvider configProvider;
     /** Back buffer factory. */
@@ -71,7 +71,7 @@ public class OpenWindow extends Command implements IntelligentCommand {
     public OpenWindow(
             final CommandController controller,
             final WindowManager windowManager,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             @GlobalConfig final AggregateConfigProvider configProvider,
             final BackBufferFactory backBufferFactory) {
         super(controller);

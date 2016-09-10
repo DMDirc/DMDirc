@@ -22,7 +22,7 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
@@ -56,7 +56,7 @@ public class URLBuilderTest {
     @Mock private ThemeManager themeManager;
     @Mock private PluginInfo pluginInfo;
     @Mock private PluginMetaData pluginMetaData;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
 
     @Before
     public void setup() throws MalformedURLException {

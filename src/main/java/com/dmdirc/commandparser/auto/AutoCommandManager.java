@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 
 import java.util.Collections;
 import java.util.Map;
@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class AutoCommandManager {
 
     /** The bus to listen for events on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The factory to use to create handlers. */
     private final AutoCommandHandlerFactory factory;
     /** Known auto commands, mapped on to their handlers. */
@@ -58,7 +58,7 @@ public class AutoCommandManager {
      */
     @Inject
     public AutoCommandManager(
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final AutoCommandHandlerFactory factory) {
         this.eventBus = eventBus;
         this.factory = factory;

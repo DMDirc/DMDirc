@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Ignore;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 public class StyliserTest {
 
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
 
     @Test
     public void testStripControlCodes1() {

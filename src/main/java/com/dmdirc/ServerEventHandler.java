@@ -52,6 +52,7 @@ import com.dmdirc.events.ServerWallusersEvent;
 import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.events.UserInfoResponseEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.events.AuthNoticeEvent;
 import com.dmdirc.parser.events.AwayStateEvent;
@@ -113,7 +114,7 @@ public class ServerEventHandler extends EventHandler {
     /** Group chat manager to poke for channel events. */
     private final GroupChatManagerImpl groupChatManager;
     /** Event bus to post events to. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of ServerEventHandler.
@@ -122,7 +123,7 @@ public class ServerEventHandler extends EventHandler {
      * @param eventBus The event bus to post events to
      */
     public ServerEventHandler(final Server owner, final GroupChatManagerImpl groupChatManager,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         this.owner = owner;
         this.groupChatManager = groupChatManager;
         this.eventBus = eventBus;

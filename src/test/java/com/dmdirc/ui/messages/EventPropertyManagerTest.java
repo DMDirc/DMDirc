@@ -23,8 +23,8 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Channel;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ChannelMessageEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class EventPropertyManagerTest {
 
     private EventPropertyManager manager;
 
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private Channel channel;
     @Mock private GroupChatUser client;
 

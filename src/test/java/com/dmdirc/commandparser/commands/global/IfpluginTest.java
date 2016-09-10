@@ -21,13 +21,13 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.GlobalWindow;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.TabCompleterUtils;
@@ -53,7 +53,7 @@ public class IfpluginTest {
     @Mock private CommandController controller;
     @Mock private PluginManager pluginManager;
     @Mock private WindowModel tiw;
-    @Mock private DMDircMBassador eventbus;
+    @Mock private EventBus eventbus;
     private Ifplugin command;
 
     @Before

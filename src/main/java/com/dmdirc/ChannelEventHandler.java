@@ -47,6 +47,7 @@ import com.dmdirc.events.ChannelTopicUnsetEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.events.ChannelCTCPEvent;
 import com.dmdirc.parser.events.ChannelListModeEvent;
@@ -76,10 +77,10 @@ public class ChannelEventHandler extends EventHandler {
     /** The channel that owns this event handler. */
     private final Channel owner;
     /** Event bus to send events on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     private final GroupChatUserManager groupChatUserManager;
 
-    public ChannelEventHandler(final Channel owner, final DMDircMBassador eventBus,
+    public ChannelEventHandler(final Channel owner, final EventBus eventBus,
             final GroupChatUserManager groupChatUserManager) {
         this.owner = owner;
         this.eventBus = eventBus;

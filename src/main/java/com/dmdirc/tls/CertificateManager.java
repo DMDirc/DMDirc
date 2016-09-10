@@ -22,10 +22,10 @@
 
 package com.dmdirc.tls;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ServerCertificateProblemEncounteredEvent;
 import com.dmdirc.events.ServerCertificateProblemResolvedEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 
@@ -90,7 +90,7 @@ public class CertificateManager implements X509TrustManager {
     /** Used to synchronise the manager with the certificate dialog. */
     private final Semaphore actionSem = new Semaphore(0);
     /** The event bus to post errors to. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The action to perform. */
     private CertificateAction action;
     /** A list of problems encountered most recently. */
@@ -115,7 +115,7 @@ public class CertificateManager implements X509TrustManager {
             final String serverName,
             final AggregateConfigProvider config,
             final ConfigProvider userSettings,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         this.connection = connection;
         this.serverName = serverName;
         this.config = config;

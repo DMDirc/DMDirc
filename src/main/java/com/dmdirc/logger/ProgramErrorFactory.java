@@ -22,7 +22,7 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 
 import java.time.LocalDateTime;
 
@@ -34,10 +34,10 @@ import javax.inject.Inject;
  */
 public class ProgramErrorFactory {
 
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
 
     @Inject
-    public ProgramErrorFactory(final DMDircMBassador eventBus) {
+    public ProgramErrorFactory(final EventBus eventBus) {
         this.eventBus = eventBus;
     }
 

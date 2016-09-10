@@ -22,13 +22,13 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ErrorEvent;
 import com.dmdirc.events.ProgramErrorEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.collect.Lists;
@@ -52,7 +52,7 @@ import net.engio.mbassy.listener.Handler;
 public class DiskLoggingErrorManager {
 
     /** The event bus to listen for errors on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The directory to log errors to. */
     private final Path errorsDirectory;
     /** Error creating directory, don't write to disk. */
@@ -63,7 +63,7 @@ public class DiskLoggingErrorManager {
     @Inject
     public DiskLoggingErrorManager(
             @Directory(DirectoryType.ERRORS) final Path errorsDirectory,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         this.errorsDirectory = errorsDirectory;
         this.eventBus = eventBus;
     }

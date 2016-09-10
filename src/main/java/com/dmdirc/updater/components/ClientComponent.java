@@ -22,11 +22,11 @@
 
 package com.dmdirc.updater.components;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Main;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.events.StatusBarMessageEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.updater.UpdateComponent;
@@ -47,7 +47,7 @@ public class ClientComponent implements UpdateComponent {
     /** The controller to read settings from. */
     private final IdentityController identityController;
     /** The event bus to post messages to. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** Base directory to move updates to. */
     private final Path baseDirectory;
 
@@ -60,7 +60,7 @@ public class ClientComponent implements UpdateComponent {
     @Inject
     public ClientComponent(
             final IdentityController identityController,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             @Directory(DirectoryType.BASE) final Path baseDirectory) {
         this.identityController = identityController;
         this.eventBus = eventBus;

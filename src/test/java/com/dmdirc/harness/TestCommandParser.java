@@ -22,13 +22,13 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -49,7 +49,7 @@ public class TestCommandParser extends CommandParser {
     public String invalidCommand;
 
     public TestCommandParser(final AggregateConfigProvider configManager,
-            final CommandController commandManager, final DMDircMBassador eventBus) {
+            final CommandController commandManager, final EventBus eventBus) {
         super(configManager, commandManager, eventBus);
     }
 

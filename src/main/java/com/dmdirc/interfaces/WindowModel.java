@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameNameChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
@@ -61,7 +60,7 @@ public interface WindowModel {
 
     AggregateConfigProvider getConfigManager();
 
-    DMDircMBassador getEventBus();
+    EventBus getEventBus();
 
     /**
      * Changes the name of this container, and fires a {@link FrameNameChangedEvent}.

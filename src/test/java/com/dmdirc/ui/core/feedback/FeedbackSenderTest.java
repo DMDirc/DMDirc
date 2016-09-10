@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.core.feedback;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.StatusBarMessageEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.io.Downloader;
 
@@ -60,7 +60,7 @@ public class FeedbackSenderTest {
 
     @Mock private AggregateConfigProvider config;
     @Mock private Downloader downloader;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Captor private ArgumentCaptor<StatusBarMessageEvent> messageEvent;
 
     private FeedbackSender feedbackSender;

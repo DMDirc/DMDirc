@@ -22,7 +22,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.ui.FrameListener;
 
@@ -59,7 +59,7 @@ public class WindowManagerTest {
     @Mock private WindowModel container;
     @Mock private WindowModel child;
     @Mock private WindowModel grandchild;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Captor private ArgumentCaptor<String> idCaptor;
     private WindowManager manager;
 

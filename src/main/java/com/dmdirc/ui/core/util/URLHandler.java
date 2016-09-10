@@ -22,10 +22,10 @@
 
 package com.dmdirc.ui.core.util;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.events.UnknownURLEvent;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.CommandUtils;
@@ -51,7 +51,7 @@ public class URLHandler {
     /** The time a browser was last launched. */
     private static Date lastLaunch;
     /** Event bus to fire unknown protocol errors on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** Config manager. */
     private final AggregateConfigProvider config;
     /** Server manager to use to connect to servers. */
@@ -68,7 +68,7 @@ public class URLHandler {
      */
     @Inject
     public URLHandler(
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final AggregateConfigProvider globalConfig,
             final ConnectionManager connectionManager) {
         this.eventBus = eventBus;

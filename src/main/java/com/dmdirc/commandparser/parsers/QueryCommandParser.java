@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -30,6 +29,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.WindowModel;
 
@@ -56,7 +56,7 @@ public class QueryCommandParser extends ChatCommandParser {
      * @param eventBus          Event bus to post events on
      */
     public QueryCommandParser(final WindowModel owner, final CommandController commandController,
-            final DMDircMBassador eventBus, final PrivateChat query) {
+            final EventBus eventBus, final PrivateChat query) {
         super(owner, commandController, eventBus, query);
         this.query = query;
     }

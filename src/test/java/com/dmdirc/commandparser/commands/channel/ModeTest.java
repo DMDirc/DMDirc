@@ -23,13 +23,13 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.events.ChannelModesDiscoveredEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.parser.interfaces.Parser;
 
@@ -51,7 +51,7 @@ import static org.mockito.Mockito.when;
 public class ModeTest {
 
     @Mock private WindowModel origin;
-    @Mock private DMDircMBassador eventbus;
+    @Mock private EventBus eventbus;
     @Mock private CommandController controller;
     @Mock private Channel channel;
     @Mock private Connection connection;

@@ -35,6 +35,7 @@ import com.dmdirc.config.profiles.ProfilesModule;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -109,7 +110,7 @@ public class ClientModule {
 
     @Provides
     @Singleton
-    public DMDircMBassador getMBassador() {
+    public EventBus getMBassador() {
         return new DMDircMBassador();
     }
 
@@ -137,7 +138,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public ThemeManager getThemeManager(
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final IdentityController controller,
             @Directory(DirectoryType.THEMES) final String directory) {
         final ThemeManager manager = new ThemeManager(controller, directory);
