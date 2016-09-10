@@ -32,10 +32,10 @@ import java.util.Comparator;
  * A collection sorted by this comparator will have the most specific (tightly scoped) providers
  * first, and global (loosely scoped) last.
  */
-public class ConfigProviderTargetComparator implements Comparator<ConfigProvider> {
+public class ConfigProviderTargetComparator implements Comparator<ConfigFileBackedConfigProvider> {
 
     @Override
-    public int compare(final ConfigProvider t, final ConfigProvider t1) {
+    public int compare(final ConfigFileBackedConfigProvider t, final ConfigFileBackedConfigProvider t1) {
         return t1.getTarget().compareTo(t.getTarget());
     }
 

@@ -58,7 +58,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     /** Magical domain to redirect to the version identity. */
     private static final String VERSION_DOMAIN = "version";
     /** A list of sources for this config manager. */
-    private final List<ConfigProvider> sources = new ArrayList<>();
+    private final List<ConfigFileBackedConfigProvider> sources = new ArrayList<>();
     /** The listeners registered for this manager. */
     private final Multimap<String, ConfigChangeListener> listeners = ArrayListMultimap.create();
     /** The config binder to use for this manager. */
@@ -255,7 +255,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
      *
      * @return True if the identity applies, false otherwise
      */
-    public boolean identityApplies(final ConfigProvider identity) {
+    public boolean identityApplies(final ConfigFileBackedConfigProvider identity) {
         final String comp;
 
         switch (identity.getTarget().getType()) {
@@ -315,7 +315,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
      *
      * @param identity The identity to be checked
      */
-    public void checkIdentity(final ConfigProvider identity) {
+    public void checkIdentity(final ConfigFileBackedConfigProvider identity) {
         if (!sources.contains(identity) && identityApplies(identity)) {
             synchronized (sources) {
                 sources.add(identity);
@@ -382,8 +382,8 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
                     removeIdentity(identity);
                 });
 
-        final List<ConfigProvider> newSources = manager.getIdentitiesForManager(this);
-        for (ConfigProvider identity : newSources) {
+        final List<ConfigFileBackedConfigProvider> newSources = manager.getIdentitiesForManager(this);
+        for (ConfigFileBackedConfigProvider identity : newSources) {
             LOG.trace("Testing new identity: {}", identity);
             checkIdentity(identity);
         }
@@ -468,12 +468,12 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     }
 
     @Override
-    public void configProviderAdded(final ConfigProvider configProvider) {
+    public void configProviderAdded(final ConfigFileBackedConfigProvider configProvider) {
         checkIdentity(configProvider);
     }
 
     @Override
-    public void configProviderRemoved(final ConfigProvider configProvider) {
+    public void configProviderRemoved(final ConfigFileBackedConfigProvider configProvider) {
         removeIdentity(configProvider);
     }
 

@@ -271,7 +271,6 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
         }
     }
 
-    @Override
     public boolean isProfile() {
         return (hasOptionString(PROFILE_DOMAIN, "nicknames")
                 || hasOptionString(PROFILE_DOMAIN, "nickname"))
@@ -474,7 +473,6 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
         identityManager.removeConfigProvider(this);
     }
 
-    @Override
     public ConfigTarget getTarget() {
         return myTarget;
     }
@@ -511,7 +509,7 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
     public boolean equals(final Object obj) {
         return obj instanceof ConfigFileBackedConfigProvider
                 && getName().equals(((ConfigProvider) obj).getName())
-                && getTarget() == ((ConfigProvider) obj).getTarget();
+                && getTarget() == ((ConfigFileBackedConfigProvider) obj).getTarget();
     }
 
 }

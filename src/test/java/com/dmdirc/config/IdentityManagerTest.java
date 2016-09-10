@@ -26,7 +26,6 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.tests.JimFsRule;
 import com.dmdirc.util.ClientInfo;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -63,7 +62,8 @@ public class IdentityManagerTest {
                 baseDirectory, identitiesDirectory, clientInfo);
         identityManager.initialise();
 
-        final ConfigProvider versionSettings = identityManager.getVersionSettings();
+        final ConfigFileBackedConfigProvider versionSettings =
+                (ConfigFileBackedConfigProvider) identityManager.getVersionSettings();
         assertNotNull(versionSettings);
         assertEquals(ConfigTarget.TYPE.GLOBALDEFAULT, versionSettings.getTarget().getType());
         assertEquals("DMDirc version information", versionSettings.getName());
