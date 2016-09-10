@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces.config;
+package com.dmdirc.config;
 
-import com.dmdirc.config.ConfigFileBackedConfigProvider;
+import com.dmdirc.interfaces.config.IdentityController;
 
 /**
  * An interface of objects which are interested in config providers being added and removed from the
@@ -30,7 +30,7 @@ import com.dmdirc.config.ConfigFileBackedConfigProvider;
  *
  * @since 0.6.4
  */
-public interface ConfigProviderListener {
+interface ConfigProviderListener {
 
     /**
      * Called whenever a relevant new config provider is added to the associated
