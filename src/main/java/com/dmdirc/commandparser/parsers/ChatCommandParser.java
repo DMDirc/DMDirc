@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -31,6 +30,7 @@ import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.Chat;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;
@@ -57,7 +57,7 @@ public class ChatCommandParser extends ServerCommandParser {
     public ChatCommandParser(
             final WindowModel owner,
             final CommandController commandController,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final Chat chat) {
         super(owner.getConfigManager(), commandController, eventBus, chat.getConnection().get());
         this.owner = chat;

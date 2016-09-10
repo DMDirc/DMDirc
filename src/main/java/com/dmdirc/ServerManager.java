@@ -27,6 +27,7 @@ import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
@@ -75,7 +76,7 @@ public class ServerManager implements ConnectionManager {
     /** Concrete server factory to use. */
     private final ServerFactoryImpl serverFactoryImpl;
     /** Event bus for servers. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of ServerManager.
@@ -92,7 +93,7 @@ public class ServerManager implements ConnectionManager {
             final IdentityFactory identityFactory,
             final WindowManager windowManager,
             final ServerFactoryImpl serverFactory,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         this.profileManager = profileManager;
         this.identityFactory = identityFactory;
         this.windowManager = windowManager;

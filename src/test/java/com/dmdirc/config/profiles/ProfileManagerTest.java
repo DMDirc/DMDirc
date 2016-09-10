@@ -22,9 +22,9 @@
 
 package com.dmdirc.config.profiles;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.util.SystemInfo;
 
 import com.google.common.collect.Lists;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ProfileManagerTest {
 
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private Profile profile1;
     @Mock private Profile profile2;
     @Mock private SystemInfo systemInfo;

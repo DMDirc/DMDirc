@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 
 import java.util.Optional;
 
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AutoCommandManagerTest {
 
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private AutoCommandHandlerFactory factory;
     @Mock private AutoCommandHandler globalHandler;
     @Mock private AutoCommandHandler ircquakenetHandler;

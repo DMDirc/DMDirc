@@ -21,8 +21,8 @@
  */
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 @RunWith(Parameterized.class)
 public class IntelligentLinkingTest {
 
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     private final String input, expected;
     private final Styliser styliser;
 

@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -30,6 +29,7 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 
@@ -56,7 +56,7 @@ public class AliasCommandHandlerTest {
     @Mock private CommandParser commandParser;
     @Mock private CommandContext context;
     @Mock private CommandInfo commandInfo;
-    @Mock private DMDircMBassador eventbus;
+    @Mock private EventBus eventbus;
     @Captor private ArgumentCaptor<CommandErrorEvent> errorEventCaptor;
 
     @Before

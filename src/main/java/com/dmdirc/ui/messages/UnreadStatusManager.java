@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.BaseChannelTextEvent;
 import com.dmdirc.events.BaseQueryTextEvent;
@@ -31,6 +30,7 @@ import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.UnreadStatusChangedEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.colours.Colour;
 
@@ -43,7 +43,7 @@ import net.engio.mbassy.listener.Handler;
  */
 public class UnreadStatusManager {
 
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     private final WindowModel container;
     private final ColourManager colourManager;
 

@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -49,7 +50,7 @@ public class SystemLifecycleController implements LifecycleController {
     /** Manager to use to disconnect servers. */
     private final ConnectionManager connectionManager;
     /** The event bus to raise client closed events on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The identity controller to save when quitting. */
     private final IdentityController identityController;
 
@@ -58,7 +59,7 @@ public class SystemLifecycleController implements LifecycleController {
             @GlobalConfig final AggregateConfigProvider configProvider,
             final Set<SystemLifecycleComponent> lifecycleComponents,
             final ConnectionManager connectionManager,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final IdentityController identityController) {
         this.configProvider = configProvider;
         this.lifecycleComponents = new HashSet<>(lifecycleComponents);

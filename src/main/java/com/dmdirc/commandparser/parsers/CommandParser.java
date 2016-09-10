@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandInfoPair;
@@ -36,6 +35,7 @@ import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.UnknownCommandEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
@@ -68,7 +68,7 @@ public abstract class CommandParser implements Serializable {
     /** Command manager to use. */
     protected final CommandController commandManager;
     /** Event bus to post events to. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of CommandParser.
@@ -80,7 +80,7 @@ public abstract class CommandParser implements Serializable {
     protected CommandParser(
             final ReadOnlyConfigProvider configManager,
             final CommandController commandManager,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         this.eventBus = eventBus;
         commands = new HashMap<>();
         history = new RollingList<>(configManager.getOptionInt("general", "commandhistory"));

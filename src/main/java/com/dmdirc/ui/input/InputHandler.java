@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfoPair;
@@ -32,6 +31,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ClientUserInputEvent;
 import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.ui.InputField;
@@ -119,7 +119,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** The controller to use to retrieve command information. */
     private final CommandController commandController;
     /** The event bus to use to dispatch input events. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** Executor service. */
     private final ScheduledExecutorService executorService;
 
@@ -140,7 +140,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             final CommandParser commandParser,
             final WindowModel parentWindow,
             final TabCompleterUtils tabCompleterUtils,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         buffer = new RollingList<>(parentWindow.getConfigManager()
                 .getOptionInt("ui", "inputbuffersize"), "");
 

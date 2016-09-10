@@ -22,10 +22,10 @@
 
 package com.dmdirc.ui.core.errors;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.NonFatalProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorDeletedEvent;
 import com.dmdirc.events.ProgramErrorStatusEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.ui.ErrorsDialogModel;
 import com.dmdirc.interfaces.ui.ErrorsDialogModelListener;
 import com.dmdirc.logger.ErrorManager;
@@ -51,13 +51,13 @@ public class CoreErrorsDialogModel implements ErrorsDialogModel {
 
     private final ListenerList listenerList;
     private final ErrorManager errorManager;
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     private Optional<DisplayableError> selectedError;
     private final Set<DisplayableError> errors;
 
     @Inject
     public CoreErrorsDialogModel(final ErrorManager errorManager,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         this.listenerList = new ListenerList();
         this.errorManager = errorManager;
         this.eventBus = eventBus;

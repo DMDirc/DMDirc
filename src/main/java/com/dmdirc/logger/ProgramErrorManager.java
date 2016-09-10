@@ -22,12 +22,12 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ErrorEvent;
 import com.dmdirc.events.FatalProgramErrorEvent;
 import com.dmdirc.events.NonFatalProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorDeletedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.LogUtils;
 
@@ -56,14 +56,14 @@ import net.engio.mbassy.listener.Handler;
 public class ProgramErrorManager {
 
     /** The event bus to listen for errors on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The current list of errors. */
     private final Set<ProgramError> errors;
     /** Factory to create {@link ProgramError}s. */
     private final ProgramErrorFactory programErrorFactory;
 
     @Inject
-    public ProgramErrorManager(final DMDircMBassador eventBus,
+    public ProgramErrorManager(final EventBus eventBus,
             final ProgramErrorFactory programErrorFactory) {
         this.eventBus = eventBus;
         this.programErrorFactory = programErrorFactory;

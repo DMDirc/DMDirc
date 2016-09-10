@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
@@ -30,6 +29,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.WindowModel;
 
@@ -55,7 +55,7 @@ public class ChannelCommandParser extends ChatCommandParser {
     public ChannelCommandParser(
             final WindowModel owner,
             final CommandController commandController,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final GroupChat groupChat) {
         super(owner, commandController, eventBus, groupChat);
 

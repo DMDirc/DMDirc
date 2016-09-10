@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.core.feedback;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.StatusBarMessageEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.io.Downloader;
@@ -39,14 +39,14 @@ import java.util.Map;
 public class FeedbackSender implements Runnable {
 
     private final Map<String, String> postData;
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     private final AggregateConfigProvider config;
     private final Downloader downloader;
 
     public FeedbackSender(
             final AggregateConfigProvider config,
             final Downloader downloader,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final String name,
             final String email,
             final String feedback,

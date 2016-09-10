@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.core.feedback;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.io.Downloader;
 
@@ -37,12 +37,12 @@ public class FeedbackSenderFactory {
 
     private final AggregateConfigProvider config;
     private final Downloader downloader;
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
 
     @Inject
     public FeedbackSenderFactory(
             @GlobalConfig final AggregateConfigProvider config,
-            final Downloader downloader, final DMDircMBassador eventBus) {
+            final Downloader downloader, final EventBus eventBus) {
         this.config = config;
         this.downloader = downloader;
         this.eventBus = eventBus;

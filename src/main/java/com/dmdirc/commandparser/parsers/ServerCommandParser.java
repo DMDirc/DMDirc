@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -33,6 +32,7 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
@@ -63,7 +63,7 @@ public class ServerCommandParser extends GlobalCommandParser {
     public ServerCommandParser(
             final AggregateConfigProvider configManager,
             final CommandController commandController,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final Connection connection) {
         super(configManager, commandController, eventBus);
         this.server = checkNotNull(connection);

@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -66,7 +67,7 @@ public class ServerManagerTest {
     @Mock private Server server;
     @Mock private WindowModel windowModel;
     @Mock private GroupChatManager groupChatManager;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private Channel channel;
 
     @Captor private ArgumentCaptor<URI> uriCaptor;

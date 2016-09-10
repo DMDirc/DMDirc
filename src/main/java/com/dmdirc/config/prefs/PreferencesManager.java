@@ -22,9 +22,9 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ConnectionPrefsRequestedEvent;
 import com.dmdirc.events.GroupChatPrefsRequestedEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.util.validators.NumericalValidator;
@@ -40,10 +40,10 @@ import javax.inject.Inject;
 public class PreferencesManager {
 
     /** Event bus to public events on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
 
     @Inject
-    public PreferencesManager(final DMDircMBassador eventBus) {
+    public PreferencesManager(final EventBus eventBus) {
         this.eventBus = eventBus;
     }
 

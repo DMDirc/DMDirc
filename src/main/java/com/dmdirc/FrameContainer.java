@@ -29,6 +29,7 @@ import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameNameChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -65,7 +66,7 @@ public class FrameContainer implements WindowModel {
     /** The UI components that this frame requires. */
     private final Set<String> components;
     /** Event bus to dispatch events to. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The manager handling this frame's unread status. */
     private final UnreadStatusManager unreadStatusManager;
     /** The back buffer factory. */
@@ -88,7 +89,7 @@ public class FrameContainer implements WindowModel {
             final String title,
             final AggregateConfigProvider config,
             final BackBufferFactory backBufferFactory,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final Collection<String> components) {
         this.configManager = config;
         this.name = name;
@@ -157,7 +158,7 @@ public class FrameContainer implements WindowModel {
     }
 
     @Override
-    public DMDircMBassador getEventBus() {
+    public EventBus getEventBus() {
         return eventBus;
     }
 

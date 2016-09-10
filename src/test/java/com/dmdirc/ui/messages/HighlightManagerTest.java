@@ -23,13 +23,13 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Channel;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.ChannelHighlightEvent;
 import com.dmdirc.events.ChannelMessageEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerNickChangeEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
@@ -63,7 +63,7 @@ public class HighlightManagerTest {
 
     @Mock private Channel channel;
     @Mock private GroupChatUser channelUser;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
 
     private HighlightManager manager;
 

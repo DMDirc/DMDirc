@@ -22,13 +22,13 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
@@ -66,7 +66,7 @@ public class SetNickColourTest {
     @Mock private ColourManager colourManager;
     @Mock private CommandController controller;
     @Mock private WindowModel tiw;
-    @Mock private DMDircMBassador eventbus;
+    @Mock private EventBus eventbus;
     @Captor private ArgumentCaptor<CommandErrorEvent> errorEventCaptor;
     private SetNickColour command;
 
