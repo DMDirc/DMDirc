@@ -22,6 +22,8 @@
 
 package com.dmdirc.interfaces.config;
 
+import com.dmdirc.config.ConfigFileBackedConfigProvider;
+
 /**
  * An interface of objects which are interested in config providers being added and removed from the
  * {@link IdentityController}.
@@ -36,7 +38,7 @@ public interface ConfigProviderListener {
      *
      * @param configProvider The configProvider which has been added
      */
-    void configProviderAdded(final ConfigProvider configProvider);
+    void configProviderAdded(final ConfigFileBackedConfigProvider configProvider);
 
     /**
      * Called whenever a relevant config provider is removed from the associated
@@ -44,6 +46,6 @@ public interface ConfigProviderListener {
      *
      * @param configProvider The configProvider which has been removed
      */
-    void configProviderRemoved(final ConfigProvider configProvider);
+    void configProviderRemoved(final ConfigFileBackedConfigProvider configProvider);
 
 }

@@ -22,6 +22,8 @@
 
 package com.dmdirc.interfaces.config;
 
+import com.dmdirc.config.ConfigFileBackedConfigProvider;
+
 import java.util.Collection;
 
 /**
@@ -85,7 +87,7 @@ public interface IdentityController {
      *
      * @param identity The identity to be added
      */
-    void addConfigProvider(ConfigProvider identity);
+    void addConfigProvider(final ConfigFileBackedConfigProvider identity);
 
     /**
      * Adds a new identity listener which will be informed of all settings identities which are
@@ -125,6 +127,6 @@ public interface IdentityController {
      *
      * @param identity The identity to be removed
      */
-    void removeConfigProvider(ConfigProvider identity);
+    void removeConfigProvider(final ConfigFileBackedConfigProvider identity);
 
 }

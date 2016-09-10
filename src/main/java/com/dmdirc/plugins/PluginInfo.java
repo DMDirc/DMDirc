@@ -91,7 +91,7 @@ public class PluginInfo implements ServiceProvider {
     /** Map of exports. */
     private final Map<String, ExportInfo> exports = new HashMap<>();
     /** List of configuration providers. */
-    private final Collection<ConfigProvider> configProviders = new ArrayList<>();
+    private final Collection<ConfigFileBackedConfigProvider> configProviders = new ArrayList<>();
     /** Event bus to post plugin loaded events to. */
     private final EventBus eventBus;
     /** File system for the plugin's jar. */
@@ -264,7 +264,7 @@ public class PluginInfo implements ServiceProvider {
 
         try (final InputStream stream = Files.newInputStream(path)) {
             synchronized (configProviders) {
-                final ConfigProvider configProvider =
+                final ConfigFileBackedConfigProvider configProvider =
                         new ConfigFileBackedConfigProvider(stream, false);
                 identityController.addConfigProvider(configProvider);
                 configProviders.add(configProvider);
