@@ -1,25 +1,3 @@
-/*
- * Copyright (c) 2006-2015 DMDirc Developers
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 package com.dmdirc.config;
 
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -47,7 +25,7 @@ import static com.dmdirc.util.LogUtils.APP_ERROR;
  * Facilitates automatically binding fields or methods annotated with a {@link ConfigBinding}
  * element to a configuration value.
  */
-public class ConfigBinder {
+class ConfigBinderImpl implements ConfigBinder {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigBinder.class);
 
@@ -60,25 +38,19 @@ public class ConfigBinder {
     /** Retriever to use to get typed config values. */
     private final ConfigValueRetriever valueRetriever;
 
-    ConfigBinder(final AggregateConfigProvider manager) {
+    ConfigBinderImpl(final AggregateConfigProvider manager) {
         this.manager = manager;
         this.valueRetriever = new ConfigValueRetriever(manager);
         this.defaultDomain = Optional.empty();
     }
 
-    ConfigBinder(final AggregateConfigProvider manager, @Nonnull final String domain) {
+    ConfigBinderImpl(final AggregateConfigProvider manager, @Nonnull final String domain) {
         this.manager = manager;
         this.valueRetriever = new ConfigValueRetriever(manager);
         this.defaultDomain = Optional.of(domain);
     }
 
-    /**
-     * Binds all annotated methods and fields of the given instance to this binder's configuration
-     * manager.
-     *
-     * @param instance The instance to be bound
-     * @param clazz    The class to read bindings from
-     */
+    @Override
     public void bind(final Object instance, final Class<?> clazz) {
         final Collection<ConfigChangeListener> newListeners = new ArrayList<>();
         final Collection<AccessibleObject> elements = new ArrayList<>();
@@ -191,11 +163,7 @@ public class ConfigBinder {
         }
     }
 
-    /**
-     * Unbinds all elements of the given instance that have been bound using this ConfigBinder.
-     *
-     * @param instance The instance to be unbound
-     */
+    @Override
     public void unbind(final Object instance) {
         synchronized (listeners) {
             listeners.get(instance).forEach(manager::removeListener);
@@ -203,14 +171,9 @@ public class ConfigBinder {
         }
     }
 
-    /**
-     * Returns a new config binder with the specified default domain.
-     *
-     * @param domain The default domain to use if one is not specified
-     * @return A config binder with the specified default domain.
-     */
+    @Override
     public ConfigBinder withDefaultDomain(@Nonnull final String domain) {
-        return new ConfigBinder(manager, domain);
+        return new ConfigBinderImpl(manager, domain);
     }
 
 }

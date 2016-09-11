@@ -37,14 +37,14 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ConfigBinderTest {
+public class ConfigBinderImplTest {
 
     @Mock private AggregateConfigProvider configProvider;
     private ConfigBinder binder;
 
     @Before
     public void setup() {
-        binder = new ConfigBinder(configProvider);
+        binder = new ConfigBinderImpl(configProvider);
     }
 
     @Test
