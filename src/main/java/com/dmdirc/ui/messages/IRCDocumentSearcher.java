@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class IRCDocumentSearcher {
 
     /** Document to search. */
-    private final IRCDocument document;
+    private final Document document;
     /** Phrase to search for. */
     private final String phrase;
     /** Textpane position. */
@@ -48,7 +48,7 @@ public class IRCDocumentSearcher {
      * @param document      Document to search
      * @param caseSensitive Whether or not this searcher is case sensitive
      */
-    public IRCDocumentSearcher(final String phrase, final IRCDocument document,
+    public IRCDocumentSearcher(final String phrase, final Document document,
             final boolean caseSensitive) {
         this.phrase = phrase;
         this.document = document;

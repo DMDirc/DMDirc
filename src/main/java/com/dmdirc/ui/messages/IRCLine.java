@@ -24,14 +24,13 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayPropertyMap;
-
 import java.util.Arrays;
 import java.util.Optional;
 
 /**
  * Represents a line of text in IRC.
  */
-public class Line {
+public class IRCLine implements Line {
 
     private final String timestamp;
     private final String text;
@@ -50,7 +49,7 @@ public class Line {
      * @param fontSize  The height for this line
      * @param fontName  The name of the font to use for this line
      */
-    public Line(final Styliser styliser, final String timestamp, final String text,
+    public IRCLine(final Styliser styliser, final String timestamp, final String text,
             final DisplayPropertyMap displayProperties, final int fontSize, final String fontName) {
         this.styliser = styliser;
         this.timestamp = timestamp; // TODO: Make this a long and convert further down the line
@@ -65,7 +64,7 @@ public class Line {
      *
      * @return Lines parts
      */
-    public String[] getLineParts() {
+    private String[] getLineParts() {
         if (displayProperties.get(DisplayProperty.NO_TIMESTAMPS).orElse(false)) {
             return new String[] { text };
         } else {
@@ -73,67 +72,37 @@ public class Line {
         }
     }
 
-    /**
-     * Returns the length of the specified line.
-     *
-     * @return Length of the line
-     */
+    @Override
     public int getLength() {
         return timestamp.length() + text.length();
     }
 
-    /**
-     * Returns the height of the specified line.
-     *
-     * @return Line height
-     */
+    @Override
     public int getFontSize() {
         return fontSize;
     }
 
-    /**
-     * Sets the default font size for this line.
-     *
-     * @param fontSize New default font size
-     */
+    @Override
     public void setFontSize(final int fontSize) {
         this.fontSize = fontSize;
     }
 
-    /**
-     * Sets the default font name for this line.
-     *
-     * @param fontName New default font name
-     */
+    @Override
     public void setFontName(final String fontName) {
         this.fontName = fontName;
     }
 
-    /**
-     * Returns the Line text at the specified number.
-     *
-     * @return Line at the specified number or null
-     */
+    @Override
     public String getText() {
         return Styliser.stipControlCodes(timestamp + text);
     }
 
-    /**
-     * Returns the Line text at the specified number.
-     *
-     * @return Line at the specified number or null
-     *
-     * @since 0.6.3m1
-     */
+    @Override
     public String getStyledText() {
         return timestamp + text;
     }
 
-    /**
-     * Converts a StyledDocument into an AttributedString.
-     *
-     * @return AttributedString representing the specified StyledDocument
-     */
+    @Override
     public <T> T getStyled(final StyledMessageMaker<T> maker) {
         maker.setDefaultFont(fontName, fontSize);
         final T styledString = styliser.getStyledString(getLineParts(), maker);
@@ -144,7 +113,7 @@ public class Line {
 
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof Line && Arrays.equals(((Line) obj).getLineParts(), getLineParts());
+        return obj instanceof Line && Arrays.equals(((IRCLine) obj).getLineParts(), getLineParts());
     }
 
     @Override
@@ -152,6 +121,7 @@ public class Line {
         return Arrays.hashCode(getLineParts());
     }
 
+    @Override
     public <T> Optional<T> getDisplayableProperty(final DisplayProperty<T> property) {
         return displayProperties.get(property);
     }

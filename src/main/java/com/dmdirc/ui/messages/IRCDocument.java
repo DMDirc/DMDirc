@@ -38,7 +38,7 @@ import javax.swing.UIManager;
 /**
  * Data contained in a TextPane.
  */
-public class IRCDocument implements Serializable, ConfigChangeListener {
+public class IRCDocument implements Serializable, ConfigChangeListener, Document {
 
     /** A version number for this class. */
     private static final long serialVersionUID = 4;
@@ -73,43 +73,27 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         setCachedSettings();
     }
 
-    /**
-     * Returns the number of lines in this document.
-     *
-     * @return Number of lines
-     */
+    @Override
     public int getNumLines() {
         synchronized (lines) {
             return lines.size();
         }
     }
 
-    /**
-     * Returns the Line at the specified number.
-     *
-     * @param lineNumber Line number to retrieve
-     *
-     * @return Line at the specified number or null
-     */
+    @Override
     public Line getLine(final int lineNumber) {
         synchronized (lines) {
             return lines.get(lineNumber);
         }
     }
 
-    /**
-     * Adds the stylised string to the canvas.
-     *
-     * @param timestamp The timestamp to show along with the text.
-     * @param displayPropertyMap The display properties to use
-     * @param text stylised string to add to the document
-     */
+    @Override
     public void addText(final LocalDateTime timestamp, final DisplayPropertyMap displayPropertyMap,
-            final String text) {
+        final String text) {
         final int start;
         synchronized (lines) {
             start = lines.size();
-            lines.add(new Line(styliser, formatTimestamp(timestamp), text, displayPropertyMap,
+            lines.add(new IRCLine(styliser, formatTimestamp(timestamp), text, displayPropertyMap,
                     fontSize, fontName));
         }
         fireLinesAdded(start, 1);
@@ -119,11 +103,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         return Formatter.formatMessage(configManager, "timestamp", timestamp);
     }
 
-    /**
-     * Trims the document to the specified number of lines.
-     *
-     * @param numLines Number of lines to trim the document to
-     */
+    @Override
     public void trim(final int numLines) {
         synchronized (lines) {
             if (frameBufferSize != null && frameBufferSize > 0) {
@@ -136,7 +116,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         }
     }
 
-    /** Clears all lines from the document. */
+    @Override
     public void clear() {
         synchronized (lines) {
             lines.clear();
@@ -144,26 +124,18 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         fireCleared();
     }
 
-    /**
-     * Adds a IRCDocumentListener to the listener list.
-     *
-     * @param listener Listener to add
-     */
-    public void addIRCDocumentListener(final IRCDocumentListener listener) {
+    @Override
+    public void addIRCDocumentListener(final DocumentListener listener) {
         if (listener == null) {
             return;
         }
 
-        listeners.add(IRCDocumentListener.class, listener);
+        listeners.add(DocumentListener.class, listener);
     }
 
-    /**
-     * Removes a IRCDocumentListener from the listener list.
-     *
-     * @param listener Listener to remove
-     */
-    public void removeIRCDocumentListener(final IRCDocumentListener listener) {
-        listeners.remove(IRCDocumentListener.class, listener);
+    @Override
+    public void removeIRCDocumentListener(final DocumentListener listener) {
+        listeners.remove(DocumentListener.class, listener);
     }
 
     /**
@@ -173,8 +145,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param size  Number of lines added
      */
     protected void fireLinesAdded(final int index, final int size) {
-        for (IRCDocumentListener listener
-                : listeners.get(IRCDocumentListener.class)) {
+        for (DocumentListener listener
+                : listeners.get(DocumentListener.class)) {
             listener.linesAdded(index, size, lines.size());
         }
         trim(frameBufferSize);
@@ -187,8 +159,8 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * @param trimmedLines Number of trimmed lines
      */
     protected void fireTrimmed(final int newSize, final int trimmedLines) {
-        for (IRCDocumentListener listener
-                : listeners.get(IRCDocumentListener.class)) {
+        for (DocumentListener listener
+                : listeners.get(DocumentListener.class)) {
             listener.trimmed(newSize, trimmedLines);
         }
     }
@@ -197,14 +169,14 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
      * fires the cleared method on all listeners.
      */
     protected void fireCleared() {
-        listeners.get(IRCDocumentListener.class).forEach(IRCDocumentListener::cleared);
+        listeners.get(DocumentListener.class).forEach(DocumentListener::cleared);
     }
 
     /**
      * fires the need repaint method on all listeners.
      */
     protected void fireRepaintNeeded() {
-        listeners.get(IRCDocumentListener.class).forEach(IRCDocumentListener::repaintNeeded);
+        listeners.get(DocumentListener.class).forEach(DocumentListener::repaintNeeded);
     }
 
     /**
@@ -218,13 +190,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener {
         return line.getFontSize();
     }
 
-    /**
-     * Returns the line height of the specified.
-     *
-     * @param line Line
-     *
-     * @return Line height
-     */
+    @Override
     public int getLineHeight(final int line) {
         return getLineHeight(getLine(line));
     }
