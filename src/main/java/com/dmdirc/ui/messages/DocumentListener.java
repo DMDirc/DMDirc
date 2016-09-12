@@ -25,9 +25,9 @@ package com.dmdirc.ui.messages;
 import java.util.EventListener;
 
 /**
- * Interface for IRCDocument listeners.
+ * Interface for document listeners.
  */
-public interface IRCDocumentListener extends EventListener {
+public interface DocumentListener extends EventListener {
 
     /**
      * A line has been added to the textpane.

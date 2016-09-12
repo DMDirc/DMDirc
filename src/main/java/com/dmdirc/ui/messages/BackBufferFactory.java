@@ -44,8 +44,8 @@ public class BackBufferFactory {
         this.formatter = formatter;
     }
 
-    public BackBuffer getBackBuffer(final WindowModel owner) {
-        return new BackBuffer(owner, colourManagerFactory, formatter);
+    public BackBufferImpl getBackBuffer(final WindowModel owner) {
+        return new BackBufferImpl(owner, colourManagerFactory, formatter);
     }
 
 }

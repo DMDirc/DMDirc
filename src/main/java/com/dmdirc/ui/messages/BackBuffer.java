@@ -22,86 +22,14 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.events.DisplayProperty;
-import com.dmdirc.events.DisplayableEvent;
-import com.dmdirc.interfaces.EventBus;
-import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.util.EventUtils;
-
-import java.util.Arrays;
-
-import net.engio.mbassy.listener.Handler;
-
 /**
  * Models the history of a window in the client.
  */
-public class BackBuffer {
+public interface BackBuffer {
 
-    private final IRCDocument document;
-    private final Styliser styliser;
-    private final EventBus eventBus;
-    private final EventFormatter formatter;
-    private final WindowModel owner;
+    Document getDocument();
 
-    public BackBuffer(
-            final WindowModel owner,
-            final ColourManagerFactory colourManagerFactory,
-            final EventFormatter formatter) {
-        this.owner = owner;
-        this.styliser = new Styliser(
-                owner.getConnection().orElse(null),
-                owner.getConfigManager(),
-                colourManagerFactory.getColourManager(owner.getConfigManager()));
-        this.document = new IRCDocument(owner.getConfigManager(), styliser);
-        this.eventBus = owner.getEventBus();
-        this.formatter = formatter;
-    }
-
-    /**
-     * Starts adding events received on the event bus to this buffer's document.
-     */
-    public void startAddingEvents() {
-        eventBus.subscribe(this);
-    }
-
-    /**
-     * Stops adding events received on the event bus to this buffer's document.
-     */
-    public void stopAddingEvents() {
-        eventBus.unsubscribe(this);
-    }
-
-    /**
-     * Handles a displayable event received on the event bus.
-     *
-     * @param event The event to be displayed.
-     */
-    @Handler(priority = EventUtils.PRIORITY_DISPLAYABLE_EVENT_HANDLER)
-    private void handleDisplayableEvent(final DisplayableEvent event) {
-        if (shouldDisplay(event)) {
-            formatter.format(event).map(s -> s.split("\n")).map(Arrays::stream).ifPresent(
-                    t -> t.forEach(line -> document.addText(
-                            event.getTimestamp(), event.getDisplayProperties(), line)));
-        }
-    }
-
-    /**
-     * Determines if the specified event should be displayed in this backbuffer.
-     *
-     * @param event The event to check
-     * @return True if the event should be displayed, false otherwise.
-     */
-    private boolean shouldDisplay(final DisplayableEvent event) {
-        return event.getSource().equals(owner)
-                && !event.hasDisplayProperty(DisplayProperty.DO_NOT_DISPLAY);
-    }
-
-    public IRCDocument getDocument() {
-        return document;
-    }
-
-    public Styliser getStyliser() {
-        return styliser;
-    }
+    Styliser getStyliser();
 
 }
+

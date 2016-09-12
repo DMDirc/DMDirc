@@ -31,7 +31,7 @@ import com.dmdirc.util.collections.RollingList;
 public class CachingDocument<T> {
 
     /** The document to wrap and cache data from. */
-    private final IRCDocument document;
+    private final Document document;
     /** The maker to use to produce styled lines. */
     private final StyledMessageMaker<T> maker;
     /** Cached lines. */
@@ -39,7 +39,7 @@ public class CachingDocument<T> {
     /** Cached attributed strings. */
     private final RollingList<T> cachedStrings;
 
-    public CachingDocument(final IRCDocument document, final StyledMessageMaker<T> maker) {
+    public CachingDocument(final Document document, final StyledMessageMaker<T> maker) {
         this.document = document;
         this.maker = maker;
 

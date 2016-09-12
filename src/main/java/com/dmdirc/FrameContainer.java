@@ -37,6 +37,7 @@ import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
+import com.dmdirc.ui.messages.BackBufferImpl;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 
 import java.util.Collection;
@@ -72,7 +73,7 @@ public class FrameContainer implements WindowModel {
     /** The back buffer factory. */
     private final BackBufferFactory backBufferFactory;
     /** The back buffer for this container. */
-    private BackBuffer backBuffer;
+    private BackBufferImpl backBuffer;
     /** The input model for this container. */
     private Optional<InputModel> inputModel = Optional.empty();
     /** The connection associated with this model. */
@@ -208,7 +209,7 @@ public class FrameContainer implements WindowModel {
         eventBus.unsubscribe(unreadStatusManager);
         configManager.getBinder().unbind(unreadStatusManager);
         eventBus.publish(new FrameClosingEvent(this));
-        getBackBuffer().stopAddingEvents();
+        backBuffer.stopAddingEvents();
     }
 
     @Override
