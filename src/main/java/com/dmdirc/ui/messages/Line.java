@@ -23,100 +23,47 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.DisplayProperty;
-import com.dmdirc.events.DisplayPropertyMap;
-
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
  * Represents a line of text in IRC.
  */
-public class Line {
-
-    private final String timestamp;
-    private final String text;
-    private final Styliser styliser;
-    private final DisplayPropertyMap displayProperties;
-    private int fontSize;
-    private String fontName;
-
-    /**
-     * Creates a new line with a specified height.
-     *
-     * @param styliser  The styliser to use to style this line
-     * @param timestamp The textual timestamp to use for the line
-     * @param text      The textual content of the line
-     * @param displayProperties The properties to use when displaying the line.
-     * @param fontSize  The height for this line
-     * @param fontName  The name of the font to use for this line
-     */
-    public Line(final Styliser styliser, final String timestamp, final String text,
-            final DisplayPropertyMap displayProperties, final int fontSize, final String fontName) {
-        this.styliser = styliser;
-        this.timestamp = timestamp; // TODO: Make this a long and convert further down the line
-        this.text = text;
-        this.displayProperties = displayProperties;
-        this.fontName = fontName;
-        this.fontSize = fontSize;
-    }
-
-    /**
-     * Returns the line parts of this line.
-     *
-     * @return Lines parts
-     */
-    public String[] getLineParts() {
-        if (displayProperties.get(DisplayProperty.NO_TIMESTAMPS).orElse(false)) {
-            return new String[] { text };
-        } else {
-            return new String[] { timestamp, text };
-        }
-    }
+public interface Line {
 
     /**
      * Returns the length of the specified line.
      *
      * @return Length of the line
      */
-    public int getLength() {
-        return timestamp.length() + text.length();
-    }
+    int getLength();
 
     /**
      * Returns the height of the specified line.
      *
      * @return Line height
      */
-    public int getFontSize() {
-        return fontSize;
-    }
+    int getFontSize();
 
     /**
      * Sets the default font size for this line.
      *
      * @param fontSize New default font size
      */
-    public void setFontSize(final int fontSize) {
-        this.fontSize = fontSize;
-    }
+    void setFontSize(final int fontSize);
 
     /**
      * Sets the default font name for this line.
      *
      * @param fontName New default font name
      */
-    public void setFontName(final String fontName) {
-        this.fontName = fontName;
-    }
+    void setFontName(final String fontName);
 
     /**
      * Returns the Line text at the specified number.
      *
      * @return Line at the specified number or null
      */
-    public String getText() {
-        return Styliser.stipControlCodes(timestamp + text);
-    }
+    String getText();
 
     /**
      * Returns the Line text at the specified number.
@@ -125,35 +72,14 @@ public class Line {
      *
      * @since 0.6.3m1
      */
-    public String getStyledText() {
-        return timestamp + text;
-    }
+    String getStyledText();
 
     /**
      * Converts a StyledDocument into an AttributedString.
      *
      * @return AttributedString representing the specified StyledDocument
      */
-    public <T> T getStyled(final StyledMessageMaker<T> maker) {
-        maker.setDefaultFont(fontName, fontSize);
-        final T styledString = styliser.getStyledString(getLineParts(), maker);
-        fontSize = maker.getMaximumFontSize();
-        maker.clear();
-        return styledString;
-    }
+    <T> T getStyled(final StyledMessageMaker<T> maker);
 
-    @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof Line && Arrays.equals(((Line) obj).getLineParts(), getLineParts());
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(getLineParts());
-    }
-
-    public <T> Optional<T> getDisplayableProperty(final DisplayProperty<T> property) {
-        return displayProperties.get(property);
-    }
-
+    <T> Optional<T> getDisplayableProperty(DisplayProperty<T> property);
 }

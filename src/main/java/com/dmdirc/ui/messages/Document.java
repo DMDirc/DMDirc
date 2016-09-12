@@ -31,8 +31,7 @@ public interface Document {
      * @param displayPropertyMap The display properties to use
      * @param text stylised string to add to the document
      */
-    void addText(LocalDateTime timestamp, DisplayPropertyMap displayPropertyMap,
-        String text);
+    void addText(LocalDateTime timestamp, DisplayPropertyMap displayPropertyMap, String text);
 
     /**
      * Trims the document to the specified number of lines.

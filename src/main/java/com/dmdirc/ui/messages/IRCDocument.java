@@ -93,7 +93,7 @@ public class IRCDocument implements Serializable, ConfigChangeListener, Document
         final int start;
         synchronized (lines) {
             start = lines.size();
-            lines.add(new Line(styliser, formatTimestamp(timestamp), text, displayPropertyMap,
+            lines.add(new IRCLine(styliser, formatTimestamp(timestamp), text, displayPropertyMap,
                     fontSize, fontName));
         }
         fireLinesAdded(start, 1);
