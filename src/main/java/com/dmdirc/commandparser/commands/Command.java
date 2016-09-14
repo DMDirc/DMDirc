@@ -28,7 +28,7 @@ import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.CommandOutputEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.messages.IRCControlCodes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -104,8 +104,8 @@ public abstract class Command {
      */
     protected static String doTable(final String[] headers, final String[][] data) {
         final StringBuilder res = new StringBuilder();
-        res.append(Styliser.CODE_FIXED);
-        res.append(Styliser.CODE_BOLD);
+        res.append(IRCControlCodes.FIXED);
+        res.append(IRCControlCodes.BOLD);
 
         final int[] maxsizes = new int[headers.length];
 
@@ -121,7 +121,7 @@ public abstract class Command {
 
         for (String[] source : data) {
             res.append('\n');
-            res.append(Styliser.CODE_FIXED);
+            res.append(IRCControlCodes.FIXED);
 
             for (int i = 0; i < source.length; i++) {
                 doPadding(res, source[i], maxsizes[i]);

@@ -22,17 +22,15 @@
 
 package com.dmdirc.ui.messages;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.util.colours.Colour;
-
 import java.util.Locale;
 import java.util.regex.Pattern;
-
 import javax.annotation.Nullable;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * The styliser applies IRC styles to text. Styles are indicated by various control codes which are
@@ -40,41 +38,26 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class Styliser implements ConfigChangeListener {
 
-    /** The character used for marking up bold text. */
-    public static final char CODE_BOLD = 2;
-    /** The character used for marking up coloured text. */
-    public static final char CODE_COLOUR = 3;
-    /** The character used for marking up coloured text (using hex). */
-    public static final char CODE_HEXCOLOUR = 4;
     /** Character used to indicate hyperlinks. */
     public static final char CODE_HYPERLINK = 5;
     /** Character used to indicate channel links. */
     public static final char CODE_CHANNEL = 6;
     /** Character used to indicate smilies. */
     public static final char CODE_SMILIE = 7;
-    /** The character used for stopping all formatting. */
-    public static final char CODE_STOP = 15;
     /** Character used to indicate nickname links. */
     public static final char CODE_NICKNAME = 16;
-    /** The character used for marking up fixed pitch text. */
-    public static final char CODE_FIXED = 17;
-    /** The character used for negating control codes. */
-    public static final char CODE_NEGATE = 18;
     /** The character used for tooltips. */
     public static final char CODE_TOOLTIP = 19;
-    /** The character used for marking up italic text. */
-    public static final char CODE_ITALIC = 29;
-    /** The character used for marking up underlined text. */
-    public static final char CODE_UNDERLINE = 31;
     /** Internal chars. */
     private static final String INTERNAL_CHARS = String.valueOf(CODE_HYPERLINK)
             + CODE_NICKNAME + CODE_CHANNEL + CODE_SMILIE + CODE_TOOLTIP;
     /** Characters used for hyperlinks. */
     private static final String HYPERLINK_CHARS = Character.toString(CODE_HYPERLINK) + CODE_CHANNEL;
     /** Regexp to match characters which shouldn't be used in channel links. */
-    private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
-            + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
-            + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + CODE_NEGATE + "\",]";
+    private static final String RESERVED_CHARS = "[^\\s" + IRCControlCodes.BOLD + IRCControlCodes.COLOUR
+            + IRCControlCodes.STOP + IRCControlCodes.COLOUR_HEX + IRCControlCodes.FIXED + IRCControlCodes.ITALIC
+            + IRCControlCodes.UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + IRCControlCodes.NEGATE
+        + "\",]";
     /** Defines all characters treated as trailing punctuation that are illegal in URLs. */
     private static final String URL_PUNCT_ILLEGAL = "\"";
     /** Defines all characters treated as trailing punctuation that're legal in URLs. */
@@ -87,7 +70,7 @@ public class Styliser implements ConfigChangeListener {
     private static final String URL_CHARS = '[' + URL_PUNCT_LEGAL + URL_NOPUNCT
             + "]*[" + URL_NOPUNCT + "]+[" + URL_PUNCT_LEGAL + URL_NOPUNCT + "]*";
     /** The regular expression to use for marking up URLs. */
-    private static final String URL_REGEXP = "(?i)((?>(?<!" + CODE_HEXCOLOUR
+    private static final String URL_REGEXP = "(?i)((?>(?<!" + IRCControlCodes.COLOUR_HEX
             + "[a-f0-9]{5})[a-f]|[g-z+])+://" + URL_CHARS
             + "|(?<![a-z0-9:/])www\\." + URL_CHARS + ')';
     /** Regular expression for intelligent handling of closing brackets. */
@@ -192,18 +175,6 @@ public class Styliser implements ConfigChangeListener {
     }
 
     /**
-     * Stylises the specified string.
-     *
-     * @param strings The line to be stylised
-     *
-     * @return StyledDocument for the inputted strings
-     */
-    public <T> T getStyledString(final String[] strings, final StyledMessageMaker<T> maker) {
-        addStyledString(maker, strings);
-        return maker.getStyledMessage();
-    }
-
-    /**
      * Retrieves the styled String contained within the unstyled offsets specified. That is, the
      * <code>from</code> and <code>to</code> arguments correspond to indexes in an unstyled version
      * of the <code>styled</code> string. The unstyled indices are translated to offsets within the
@@ -293,7 +264,7 @@ public class Styliser implements ConfigChangeListener {
      *
      * @since 0.6.3m1
      */
-    public String doSmilies(final String string) {
+    private String doSmilies(final String string) {
         // TODO: Check if they're enabled.
         // TODO: Store the list instead of building it every line
 
@@ -320,11 +291,11 @@ public class Styliser implements ConfigChangeListener {
      * @return a copy of the input with control codes removed
      */
     public static String stipControlCodes(final String input) {
-        return input.replaceAll("[" + CODE_BOLD + CODE_CHANNEL + CODE_FIXED
-                + CODE_HYPERLINK + CODE_ITALIC + CODE_NEGATE + CODE_NICKNAME
-                + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + "]|"
-                + CODE_HEXCOLOUR + "([A-Za-z0-9]{6}(,[A-Za-z0-9]{6})?)?|"
-                + CODE_COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "")
+        return input.replaceAll("[" + IRCControlCodes.BOLD + CODE_CHANNEL + IRCControlCodes.FIXED
+                + CODE_HYPERLINK + IRCControlCodes.ITALIC + IRCControlCodes.NEGATE + CODE_NICKNAME
+                + CODE_SMILIE + IRCControlCodes.STOP + IRCControlCodes.UNDERLINE + "]|"
+                + IRCControlCodes.COLOUR_HEX + "([A-Za-z0-9]{6}(,[A-Za-z0-9]{6})?)?|"
+                + IRCControlCodes.COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "")
                 .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)" + CODE_TOOLTIP, "$1");
     }
 
@@ -337,9 +308,9 @@ public class Styliser implements ConfigChangeListener {
      *
      * @since 0.6.5
      */
-    public static String stipInternalControlCodes(final String input) {
+    private static String stipInternalControlCodes(final String input) {
         return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK + CODE_NICKNAME
-                + CODE_SMILIE + CODE_STOP + CODE_UNDERLINE + ']', "")
+                + CODE_SMILIE + IRCControlCodes.STOP + IRCControlCodes.UNDERLINE + ']', "")
                 .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
                         + CODE_TOOLTIP, "$1");
     }
@@ -356,18 +327,18 @@ public class Styliser implements ConfigChangeListener {
     public static String readUntilControl(final String input) {
         int pos = input.length();
 
-        pos = checkChar(pos, input.indexOf(CODE_BOLD));
-        pos = checkChar(pos, input.indexOf(CODE_UNDERLINE));
-        pos = checkChar(pos, input.indexOf(CODE_STOP));
-        pos = checkChar(pos, input.indexOf(CODE_COLOUR));
-        pos = checkChar(pos, input.indexOf(CODE_HEXCOLOUR));
-        pos = checkChar(pos, input.indexOf(CODE_ITALIC));
-        pos = checkChar(pos, input.indexOf(CODE_FIXED));
+        pos = checkChar(pos, input.indexOf(IRCControlCodes.BOLD));
+        pos = checkChar(pos, input.indexOf(IRCControlCodes.UNDERLINE));
+        pos = checkChar(pos, input.indexOf(IRCControlCodes.STOP));
+        pos = checkChar(pos, input.indexOf(IRCControlCodes.COLOUR));
+        pos = checkChar(pos, input.indexOf(IRCControlCodes.COLOUR_HEX));
+        pos = checkChar(pos, input.indexOf(IRCControlCodes.ITALIC));
+        pos = checkChar(pos, input.indexOf(IRCControlCodes.FIXED));
         pos = checkChar(pos, input.indexOf(CODE_HYPERLINK));
         pos = checkChar(pos, input.indexOf(CODE_NICKNAME));
         pos = checkChar(pos, input.indexOf(CODE_CHANNEL));
         pos = checkChar(pos, input.indexOf(CODE_SMILIE));
-        pos = checkChar(pos, input.indexOf(CODE_NEGATE));
+        pos = checkChar(pos, input.indexOf(IRCControlCodes.NEGATE));
         pos = checkChar(pos, input.indexOf(CODE_TOOLTIP));
 
         return input.substring(0, pos);
@@ -404,7 +375,7 @@ public class Styliser implements ConfigChangeListener {
         final boolean isNegated = state.isNegated;
 
         // Bold
-        if (string.charAt(0) == CODE_BOLD) {
+        if (string.charAt(0) == IRCControlCodes.BOLD) {
             if (!isNegated) {
                 maker.toggleBold();
             }
@@ -413,7 +384,7 @@ public class Styliser implements ConfigChangeListener {
         }
 
         // Underline
-        if (string.charAt(0) == CODE_UNDERLINE) {
+        if (string.charAt(0) == IRCControlCodes.UNDERLINE) {
             if (!isNegated) {
                 maker.toggleUnderline();
             }
@@ -422,7 +393,7 @@ public class Styliser implements ConfigChangeListener {
         }
 
         // Italic
-        if (string.charAt(0) == CODE_ITALIC) {
+        if (string.charAt(0) == IRCControlCodes.ITALIC) {
             if (!isNegated) {
                 maker.toggleItalic();
             }
@@ -475,7 +446,7 @@ public class Styliser implements ConfigChangeListener {
         }
 
         // Fixed pitch
-        if (string.charAt(0) == CODE_FIXED) {
+        if (string.charAt(0) == IRCControlCodes.FIXED) {
             if (!isNegated) {
                 maker.toggleFixedWidth();
             }
@@ -484,7 +455,7 @@ public class Styliser implements ConfigChangeListener {
         }
 
         // Stop formatting
-        if (string.charAt(0) == CODE_STOP) {
+        if (string.charAt(0) == IRCControlCodes.STOP) {
             if (!isNegated) {
                 maker.resetAllStyles();
             }
@@ -493,7 +464,7 @@ public class Styliser implements ConfigChangeListener {
         }
 
         // Colours
-        if (string.charAt(0) == CODE_COLOUR) {
+        if (string.charAt(0) == IRCControlCodes.COLOUR) {
             int count = 1;
             // This isn't too nice!
             if (string.length() > count && isInt(string.charAt(count))) {
@@ -542,7 +513,7 @@ public class Styliser implements ConfigChangeListener {
         }
 
         // Hex colours
-        if (string.charAt(0) == CODE_HEXCOLOUR) {
+        if (string.charAt(0) == IRCControlCodes.COLOUR_HEX) {
             int count = 1;
             if (hasHexString(string, 1)) {
                 if (!isNegated) {
@@ -583,7 +554,7 @@ public class Styliser implements ConfigChangeListener {
         }
 
         // Control code negation
-        if (string.charAt(0) == CODE_NEGATE) {
+        if (string.charAt(0) == IRCControlCodes.NEGATE) {
             state.isNegated = !state.isNegated;
             return 1;
         }
@@ -692,10 +663,10 @@ public class Styliser implements ConfigChangeListener {
 
     private static class StyliserState {
 
-        public boolean isNegated;
-        public boolean isInLink;
-        public boolean isInSmilie;
-        public boolean isInToolTip;
+        boolean isNegated;
+        boolean isInLink;
+        boolean isInSmilie;
+        boolean isInToolTip;
 
     }
 

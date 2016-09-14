@@ -38,7 +38,7 @@ import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.messages.IRCControlCodes;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -76,12 +76,12 @@ public class OpenQuery extends Command implements IntelligentCommand,
         final Connection connection = ((ServerCommandContext) context).getConnection();
         if (connection.getParser().get().isValidChannelName(args.getArguments()[0])) {
             showError(origin, args.isSilent(), "You can't open a query "
-                    + "with a channel; maybe you meant " + Styliser.CODE_FIXED
-                    + Styliser.CODE_BOLD
+                    + "with a channel; maybe you meant " + IRCControlCodes.FIXED
+                    + IRCControlCodes.BOLD
                     + getController().getCommandChar()
                     + (args.getArguments().length > 1 ? "msg" : "join") + ' '
                     + args.getArgumentsAsString()
-                    + Styliser.CODE_BOLD + Styliser.CODE_FIXED + '?');
+                    + IRCControlCodes.BOLD + IRCControlCodes.FIXED + '?');
             return;
         }
 
