@@ -68,5 +68,5 @@ apply from: 'gradle/jar.gradle'
 apply from: 'gradle/fatjar.gradle'
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
+    gradleVersion = '3.1'
 }
