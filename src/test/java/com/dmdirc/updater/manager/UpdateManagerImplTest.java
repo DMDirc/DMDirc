@@ -111,7 +111,6 @@ public class UpdateManagerImplTest {
     @Test
     public void testGetNoRetrievalStrategy() {
         // Given a retrieval strategies that can handle a specific check result
-        when(strategy1.canHandle(checkResult1)).thenReturn(true);
         manager.addRetrievalStrategy(strategy1);
 
         // Then null is returned for other check results

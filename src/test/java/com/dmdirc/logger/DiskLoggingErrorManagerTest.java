@@ -62,7 +62,6 @@ public class DiskLoggingErrorManagerTest {
     public void setUp() throws Exception {
         when(error.getTimestamp()).thenReturn(LocalDateTime.now());
         when(error.getError()).thenReturn(programError);
-        when(programError.getThrowable()).thenReturn(Optional.of(new IllegalArgumentException()));
         when(programError.getThrowableAsString()).thenReturn(Optional.of("test"));
         when(programError.getLevel()).thenReturn(ErrorLevel.MEDIUM);
         when(config.getBinder()).thenReturn(configBinder);

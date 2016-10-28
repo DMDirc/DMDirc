@@ -55,7 +55,6 @@ public class AliasCommandHandlerTest {
     @Mock private CommandController commandController;
     @Mock private CommandParser commandParser;
     @Mock private CommandContext context;
-    @Mock private CommandInfo commandInfo;
     @Mock private EventBus eventbus;
     @Captor private ArgumentCaptor<CommandErrorEvent> errorEventCaptor;
 
@@ -65,8 +64,6 @@ public class AliasCommandHandlerTest {
         when(inputModel.getCommandParser()).thenReturn(commandParser);
         when(commandController.getCommandChar()).thenReturn('#');
         when(commandController.getSilenceChar()).thenReturn('/');
-        when(context.getSource()).thenReturn(container);
-        when(context.getCommandInfo()).thenReturn(commandInfo);
         when(container.getEventBus()).thenReturn(eventbus);
     }
 

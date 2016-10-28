@@ -56,7 +56,6 @@ public class RenameAliasValidatorTest {
     @Test
     public void testRenameSelected() {
         when(model.getSelectedAlias()).thenReturn(Optional.ofNullable(alias1));
-        when(model.getSelectedAliasName()).thenReturn("alias1");
         final RenameAliasValidator instance = new RenameAliasValidator(model);
         assertFalse(instance.validate("alias1").isFailure());
         assertTrue(instance.validate("alias2").isFailure());
@@ -67,7 +66,6 @@ public class RenameAliasValidatorTest {
     @Test
     public void testRenameNonSelected() {
         when(model.getSelectedAlias()).thenReturn(Optional.<Alias>empty());
-        when(model.getSelectedAliasName()).thenReturn(null);
         final RenameAliasValidator instance = new RenameAliasValidator(model);
         assertTrue(instance.validate("alias1").isFailure());
         assertTrue(instance.validate("alias2").isFailure());

@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -77,8 +78,7 @@ public class SentryLoggingErrorManagerTest {
     @Test
     public void testHandleErrorEvent() throws Exception {
         instance.handleErrorEvent(appErrorEvent);
-        verify(sentryErrorReporter).sendException(anyString(), any(ErrorLevel.class),
-                any(LocalDateTime.class), any());
+        verify(sentryErrorReporter).sendException(isNull(), isNull(), isNull(), any());
     }
 
     @Test
@@ -120,8 +120,7 @@ public class SentryLoggingErrorManagerTest {
         instance.handleSubmitErrors(true);
         instance.handleNoErrorReporting(false);
         instance.handleErrorEvent(appErrorEvent);
-        verify(sentryErrorReporter).sendException(anyString(), any(ErrorLevel.class),
-                any(LocalDateTime.class), any());
+        verify(sentryErrorReporter).sendException(isNull(), isNull(), isNull(), any());
     }
 
     @Test

@@ -56,7 +56,6 @@ public class IdentitiesProfileMigratorTest {
         instance = new IdentitiesProfileMigrator(identityManager, profileManager);
         when(configProvider1.getName()).thenReturn("name1");
         when(configProvider1.getOption("profile", "realname")).thenReturn("realname1");
-        when(configProvider1.hasOptionString("profile", "ident1")).thenReturn(false);
         when(configProvider1.getOptionList("profile", "nicknames")).thenReturn(
                 Lists.newArrayList("nickname1")
         );

@@ -66,7 +66,6 @@ public class CoreAliasDialogModelTest {
     @Before
     public void setupAliases() {
         aliases = new HashSet<>();
-        when(commandController.getCommandChar()).thenReturn('/');
     }
 
     @Before
