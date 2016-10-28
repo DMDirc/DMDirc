@@ -81,7 +81,6 @@ public class CommandParserTest {
         when(container.getConnection()).thenReturn(Optional.of(connection));
         when(connection.getGroupChatManager()).thenReturn(groupChatManager);
         when(groupChatManager.isValidChannelName("#channel1")).thenReturn(true);
-        when(groupChatManager.isValidChannelName("#channel2")).thenReturn(true);
         when(groupChatManager.getChannel("#channel1")).thenReturn(Optional.of(channel));
 
         commandParser = new TestCommandParser(configProvider, commandController, eventBus);

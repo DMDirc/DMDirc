@@ -44,6 +44,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -56,7 +57,6 @@ public class NewServerTest {
     @Mock private EventBus eventBus;
     @Mock private CommandController controller;
     @Mock private ProfileManager profileManager;
-    @Mock private Profile identity;
     @Mock private WindowModel container;
     @Mock private ServiceManager serviceManager;
     @Mock private ConnectionFactory factory;
@@ -66,9 +66,7 @@ public class NewServerTest {
     @Before
     public void setup() {
         when(container.getEventBus()).thenReturn(eventBus);
-        when(factory.createServer(any(URI.class), any(Profile.class))).thenReturn(connection);
-        when(profileManager.getProfiles()).thenReturn(
-                Collections.singletonList(identity));
+        when(factory.createServer(any(URI.class), isNull())).thenReturn(connection);
         command = new NewServer(controller, factory, serviceManager, profileManager, new URIParser());
     }
 
@@ -77,7 +75,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo irc.foo.com"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(factory).createServer(eq(new URI("irc://irc.foo.com")), any(Profile.class));
+        verify(factory).createServer(eq(new URI("irc://irc.foo.com")), isNull());
         verify(connection).connect();
     }
 
@@ -86,7 +84,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo irc.foo.com:1234"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(factory).createServer(eq(new URI("irc://irc.foo.com:1234")), any(Profile.class));
+        verify(factory).createServer(eq(new URI("irc://irc.foo.com:1234")), isNull());
         verify(connection).connect();
     }
 
@@ -95,7 +93,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo otheruri://foo.com:123/blah"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(factory).createServer(eq(new URI("otheruri://foo.com:123/blah")), any(Profile.class));
+        verify(factory).createServer(eq(new URI("otheruri://foo.com:123/blah")), isNull());
         verify(connection).connect();
     }
 

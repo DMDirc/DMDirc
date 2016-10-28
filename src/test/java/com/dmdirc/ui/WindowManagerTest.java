@@ -252,7 +252,6 @@ public class WindowManagerTest {
         final CustomWindow customContainer = mock(CustomWindow.class);
         final CustomWindow customChild = mock(CustomWindow.class);
 
-        when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
 
         manager.addWindow(customContainer);
@@ -266,7 +265,6 @@ public class WindowManagerTest {
         final CustomWindow customContainer = mock(CustomWindow.class);
         final CustomWindow customChild = mock(CustomWindow.class);
 
-        when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
 
         manager.addWindow(customContainer);

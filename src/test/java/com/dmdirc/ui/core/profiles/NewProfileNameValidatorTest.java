@@ -55,7 +55,6 @@ public class NewProfileNameValidatorTest {
         when(profile2.getName()).thenReturn("profile2");
         when(profile3.getName()).thenReturn("profile3");
         when(model.getProfileList()).thenReturn(profiles);
-        when(model.getSelectedProfile()).thenReturn(Optional.ofNullable(profile2));
     }
 
     @Test

@@ -32,8 +32,6 @@ import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.parser.interfaces.ChannelInfo;
 
 import java.util.Optional;
 
@@ -61,20 +59,14 @@ public class KickReasonTest {
     @Mock private CommandController controller;
     @Mock private WindowModel container;
     @Mock private EventBus eventbus;
-    @Mock private ChannelInfo channelInfo;
-    @Mock private AggregateConfigProvider configProvider;
     @Captor private ArgumentCaptor<CommandErrorEvent> errorEventCaptor;
     private KickReason command;
 
     @Before
     public void setup() {
-        when(container.getConfigManager()).thenReturn(configProvider);
-        when(configProvider.getOption("general", "kickmessage")).thenReturn("KICKREASON");
-        when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channel.getConnection()).thenReturn(Optional.of(connection));
         when(connection.getUser("user")).thenReturn(user1);
         when(connection.getUser("user1")).thenReturn(user2);
-        when(groupChatUser.getHostname()).thenReturn(Optional.of("HOSTNAME"));
         when(channel.getUser(user1)).thenReturn(Optional.of(groupChatUser));
         when(channel.getUser(user2)).thenReturn(Optional.empty());
         when(controller.getCommandChar()).thenReturn('/');

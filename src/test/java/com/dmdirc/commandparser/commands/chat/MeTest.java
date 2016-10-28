@@ -50,7 +50,6 @@ public class MeTest {
 
     @Before
     public void setUp() {
-        when(chat.getWindowModel()).thenReturn(frameContainer);
         when(frameContainer.getEventBus()).thenReturn(eventbus);
         command = new Me(controller);
     }

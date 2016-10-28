@@ -46,7 +46,6 @@ import static org.mockito.Mockito.when;
 public class NamesTest {
 
     @Mock private CommandController controller;
-    @Mock private ChannelInfo channelinfo;
     @Mock private Channel channel;
     @Mock private Connection connection;
     @Mock private Parser parser;
@@ -57,7 +56,6 @@ public class NamesTest {
     public void setUp() throws InvalidIdentityFileException {
         when(channel.getConnection()).thenReturn(Optional.of(connection));
         when(connection.getParser()).thenReturn(Optional.of(parser));
-        when(channel.getChannelInfo()).thenReturn(channelinfo);
         when(channel.getName()).thenReturn("#chan");
 
         command = new Names(controller);
