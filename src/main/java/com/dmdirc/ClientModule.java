@@ -149,8 +149,15 @@ public class ClientModule {
     @Provides
     @Singleton
     @GlobalConfig
+    public ColourManager getOldGlobalColourManager(@com.dmdirc.config.GlobalConfig final ColourManager colourManager) {
+        return colourManager;
+    }
+
+    @Provides
+    @Singleton
+    @com.dmdirc.config.GlobalConfig
     public ColourManager getGlobalColourManager(final ColourManagerFactory colourManagerFactory,
-            @GlobalConfig final  AggregateConfigProvider globalConfig) {
+            @com.dmdirc.config.GlobalConfig final AggregateConfigProvider globalConfig) {
         return colourManagerFactory.getColourManager(globalConfig);
     }
 
