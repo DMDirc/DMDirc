@@ -43,10 +43,11 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -133,9 +134,9 @@ public class WindowManagerTest {
 
         manager.removeWindow(child);
 
-        verify(frameListener, never()).addWindow(anyObject(), anyBoolean());
-        verify(frameListener, never()).addWindow(anyObject(), anyObject(), anyBoolean());
-        verify(frameListener, never()).delWindow(anyObject());
+        verify(frameListener, never()).addWindow(any(), anyBoolean());
+        verify(frameListener, never()).addWindow(any(), any(), anyBoolean());
+        verify(frameListener, never()).delWindow(any());
         verify(frameListener).delWindow(same(container), same(child));
     }
 
@@ -146,10 +147,10 @@ public class WindowManagerTest {
         manager.removeListener(frameListener);
         manager.addWindow(container, child);
 
-        verify(frameListener, never()).addWindow(anyObject(), anyBoolean());
-        verify(frameListener, never()).addWindow(anyObject(), anyObject(), anyBoolean());
-        verify(frameListener, never()).delWindow(anyObject());
-        verify(frameListener, never()).delWindow(anyObject(), anyObject());
+        verify(frameListener, never()).addWindow(any(), anyBoolean());
+        verify(frameListener, never()).addWindow(any(), any(), anyBoolean());
+        verify(frameListener, never()).delWindow(any());
+        verify(frameListener, never()).delWindow(any(), any());
     }
 
     @Test

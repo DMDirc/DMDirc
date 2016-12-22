@@ -23,31 +23,27 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.util.ClientInfo;
-
+import com.getsentry.raven.Raven;
+import com.getsentry.raven.RavenFactory;
+import com.getsentry.raven.event.Event;
+import com.getsentry.raven.event.interfaces.ExceptionInterface;
+import com.getsentry.raven.event.interfaces.SentryInterface;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.getsentry.raven.Raven;
-import com.getsentry.raven.RavenFactory;
-import com.getsentry.raven.dsn.Dsn;
-import com.getsentry.raven.event.Event;
-import com.getsentry.raven.event.interfaces.ExceptionInterface;
-import com.getsentry.raven.event.interfaces.SentryInterface;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,7 +67,7 @@ public class SentryErrorReporterTest {
 
     @Before
     public void setUp() {
-        when(ravenFactory.createRavenInstance(Matchers.<Dsn>anyObject())).thenReturn(raven);
+        when(ravenFactory.createRavenInstance(any())).thenReturn(raven);
         throwable = Optional.of(new IllegalArgumentException());
         sentryErrorReporter = new SentryErrorReporter(clientInfo);
     }
