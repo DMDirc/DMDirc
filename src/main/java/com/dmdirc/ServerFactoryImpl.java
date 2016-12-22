@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
+import com.dmdirc.config.UserConfig;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.EventBus;
@@ -69,7 +70,7 @@ public class ServerFactoryImpl {
             final Provider<CommandController> commandController,
             final EventBus eventBus,
             final MessageEncoderFactory messageEncoderFactory,
-            @ClientModule.UserConfig final ConfigProvider userSettings,
+            @UserConfig final ConfigProvider userSettings,
             final BackBufferFactory backBufferFactory,
             final GroupChatManagerImplFactory groupChatManagerFactory,
             final UserManager userManager) {

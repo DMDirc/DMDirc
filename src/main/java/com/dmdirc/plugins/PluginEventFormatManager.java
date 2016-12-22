@@ -22,7 +22,7 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.ClientModule.GlobalConfig;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.PluginLoadedEvent;
 import com.dmdirc.events.PluginUnloadedEvent;
 import com.dmdirc.interfaces.EventBus;
@@ -31,16 +31,14 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.EventFormatProvider;
 import com.dmdirc.ui.messages.MultiEventFormatProvider;
 import com.dmdirc.ui.messages.YamlEventFormatProvider;
+import net.engio.mbassy.listener.Handler;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import net.engio.mbassy.listener.Handler;
 
 /**
  * Loads default event formats from plugins.

@@ -22,7 +22,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ClientModule.GlobalConfig;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.EventBus;
