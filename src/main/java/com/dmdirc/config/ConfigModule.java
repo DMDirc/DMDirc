@@ -97,12 +97,6 @@ public class ConfigModule {
     }
 
     @Provides
-    @com.dmdirc.ClientModule.AddonConfig
-    public ConfigProvider getOldAddonConfig(final IdentityController controller) {
-        return controller.getAddonSettings();
-    }
-
-    @Provides
     @AddonConfig
     public ConfigProvider getAddonConfig(final IdentityController controller) {
         return controller.getAddonSettings();

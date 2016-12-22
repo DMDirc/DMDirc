@@ -48,17 +48,13 @@ import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.util.LoggingExecutorService;
 import com.dmdirc.util.io.Downloader;
-
-import java.util.concurrent.ExecutorService;
-
-import javax.inject.Named;
-import javax.inject.Provider;
-import javax.inject.Qualifier;
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
+import java.util.concurrent.ExecutorService;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 
 /**
  * Provides dependencies for the client.
@@ -79,11 +75,6 @@ import dagger.Provides;
         },
         library = true)
 public class ClientModule {
-
-    /** Qualifier that identities the addon defaults config provider. */
-    @Qualifier
-    public @interface AddonConfig {
-    }
 
     /** The object graph to inject where necessary. */
     private ObjectGraph objectGraph;
