@@ -30,8 +30,8 @@ import java.nio.file.Path;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -85,7 +85,7 @@ public class LegacyInstallationStrategyTest {
         when(file.toString()).thenReturn("path");
         when(file.toAbsolutePath()).thenReturn(absoluteFile);
         when(absoluteFile.toString()).thenReturn("/my/path");
-        when(component.doInstall(Matchers.<Path>anyObject())).thenThrow(new IOException());
+        when(component.doInstall(any())).thenThrow(new IOException());
         strategy.addUpdateInstallationListener(listener);
         strategy.installImpl(component, result);
         verify(listener).installFailed(component);
