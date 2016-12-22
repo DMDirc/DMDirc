@@ -22,8 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Query;
-
+import com.dmdirc.interfaces.PrivateChat;
 import java.time.LocalDateTime;
 
 /**
@@ -33,12 +32,12 @@ public class QueryQuitEvent extends QueryDisplayableEvent {
 
     private final String reason;
 
-    public QueryQuitEvent(final LocalDateTime timestamp, final Query query, final String reason) {
+    public QueryQuitEvent(final LocalDateTime timestamp, final PrivateChat query, final String reason) {
         super(timestamp, query);
         this.reason = reason;
     }
 
-    public QueryQuitEvent(final Query query, final String reason) {
+    public QueryQuitEvent(final PrivateChat query, final String reason) {
         super(query);
         this.reason = reason;
     }

@@ -22,8 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Query;
-
+import com.dmdirc.interfaces.PrivateChat;
 import java.time.LocalDateTime;
 
 /**
@@ -34,14 +33,14 @@ public class QueryNickChangeEvent extends QueryDisplayableEvent {
     private final String oldNick;
     private final String newNick;
 
-    public QueryNickChangeEvent(final LocalDateTime timestamp, final Query query,
+    public QueryNickChangeEvent(final LocalDateTime timestamp, final PrivateChat query,
             final String oldNick, final String newNick) {
         super(timestamp, query);
         this.oldNick = oldNick;
         this.newNick = newNick;
     }
 
-    public QueryNickChangeEvent(final Query query, final String oldNick, final String newNick) {
+    public QueryNickChangeEvent(final PrivateChat query, final String oldNick, final String newNick) {
         super(query);
         this.oldNick = oldNick;
         this.newNick = newNick;
