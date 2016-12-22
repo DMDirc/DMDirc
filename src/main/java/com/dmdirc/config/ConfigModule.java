@@ -91,12 +91,6 @@ public class ConfigModule {
     }
 
     @Provides
-    @com.dmdirc.ClientModule.UserConfig
-    public ConfigProvider getOldUserConfig(final IdentityController controller) {
-        return controller.getUserSettings();
-    }
-
-    @Provides
     @UserConfig
     public ConfigProvider getUserConfig(final IdentityController controller) {
         return controller.getUserSettings();

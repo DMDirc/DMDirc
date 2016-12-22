@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.core.newserver;
 
-import com.dmdirc.ClientModule.UserConfig;
 import com.dmdirc.config.GlobalConfig;
+import com.dmdirc.config.UserConfig;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.ProfileAddedEvent;

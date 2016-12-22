@@ -80,11 +80,6 @@ import dagger.Provides;
         library = true)
 public class ClientModule {
 
-    /** Qualifier that identities the user settings config provider. */
-    @Qualifier
-    public @interface UserConfig {
-    }
-
     /** Qualifier that identities the addon defaults config provider. */
     @Qualifier
     public @interface AddonConfig {
