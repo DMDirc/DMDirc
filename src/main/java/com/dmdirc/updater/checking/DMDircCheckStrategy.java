@@ -22,15 +22,18 @@
 
 package com.dmdirc.updater.checking;
 
-import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.LogUtils;
 import com.dmdirc.util.io.Downloader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,11 +41,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A strategy which sends a request to the DMDirc update service for information.

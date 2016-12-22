@@ -22,18 +22,17 @@
 
 package com.dmdirc.ui.core.feedback;
 
-import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.util.ClientInfo;
 
-import java.nio.file.Path;
-
 import javax.inject.Inject;
+import java.nio.file.Path;
 
 public class FeedbackHelper {
 

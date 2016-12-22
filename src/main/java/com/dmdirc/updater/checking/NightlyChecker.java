@@ -23,16 +23,15 @@
 package com.dmdirc.updater.checking;
 
 import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.Downloader;
-
 import com.google.common.base.MoreObjects;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,13 +45,9 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.dmdirc.ClientModule.GlobalConfig;
 
 /**
  * Nightly update checker.

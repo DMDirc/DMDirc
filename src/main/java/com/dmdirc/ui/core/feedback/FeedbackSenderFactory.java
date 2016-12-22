@@ -22,13 +22,11 @@
 
 package com.dmdirc.ui.core.feedback;
 
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.io.Downloader;
-
 import javax.inject.Inject;
-
-import static com.dmdirc.ClientModule.GlobalConfig;
 
 /**
  * Factory for {@link com.dmdirc.ui.core.feedback.FeedbackSender}s

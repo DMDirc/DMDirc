@@ -85,12 +85,6 @@ public class ConfigModule {
     }
 
     @Provides
-    @com.dmdirc.ClientModule.GlobalConfig
-    public AggregateConfigProvider getOldGlobalConfig(final IdentityController controller) {
-        return controller.getGlobalConfiguration();
-    }
-
-    @Provides
     @GlobalConfig
     public AggregateConfigProvider getGlobalConfig(final IdentityController controller) {
         return controller.getGlobalConfiguration();

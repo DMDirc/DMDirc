@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.aliases.AliasesModule;
 import com.dmdirc.commandparser.auto.AutoCommandModule;
 import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.ConfigModule;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.config.profiles.ProfilesModule;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ConnectionFactory;
@@ -78,11 +79,6 @@ import dagger.Provides;
         },
         library = true)
 public class ClientModule {
-
-    /** Qualifier that identities a global configuration source. */
-    @Qualifier
-    public @interface GlobalConfig {
-    }
 
     /** Qualifier that identities the user settings config provider. */
     @Qualifier
@@ -149,15 +145,8 @@ public class ClientModule {
     @Provides
     @Singleton
     @GlobalConfig
-    public ColourManager getOldGlobalColourManager(@com.dmdirc.config.GlobalConfig final ColourManager colourManager) {
-        return colourManager;
-    }
-
-    @Provides
-    @Singleton
-    @com.dmdirc.config.GlobalConfig
     public ColourManager getGlobalColourManager(final ColourManagerFactory colourManagerFactory,
-            @com.dmdirc.config.GlobalConfig final AggregateConfigProvider globalConfig) {
+            @GlobalConfig final AggregateConfigProvider globalConfig) {
         return colourManagerFactory.getColourManager(globalConfig);
     }
 

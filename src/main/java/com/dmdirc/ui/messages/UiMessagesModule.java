@@ -22,15 +22,13 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
-
-import java.nio.file.Path;
-
-import javax.inject.Singleton;
-
+import com.dmdirc.config.GlobalConfig;
 import dagger.Module;
 import dagger.Provides;
+
+import javax.inject.Singleton;
+import java.nio.file.Path;
 
 import static com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType.BASE;
 

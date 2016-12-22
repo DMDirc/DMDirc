@@ -22,9 +22,9 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.EventBus;
