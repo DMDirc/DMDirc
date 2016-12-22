@@ -22,8 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Query;
-
+import com.dmdirc.interfaces.PrivateChat;
 import java.time.LocalDateTime;
 
 /**
@@ -31,11 +30,11 @@ import java.time.LocalDateTime;
  */
 public class QueryOpenedEvent extends QueryEvent {
 
-    public QueryOpenedEvent(final LocalDateTime timestamp, final Query query) {
+    public QueryOpenedEvent(final LocalDateTime timestamp, final PrivateChat query) {
         super(timestamp, query);
     }
 
-    public QueryOpenedEvent(final Query query) {
+    public QueryOpenedEvent(final PrivateChat query) {
         super(query);
     }
 
