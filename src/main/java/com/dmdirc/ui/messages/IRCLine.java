@@ -105,7 +105,7 @@ public class IRCLine implements Line {
     @Override
     public <T> T getStyled(final StyledMessageMaker<T> maker) {
         maker.setDefaultFont(fontName, fontSize);
-        styliser.addStyledString(maker, getLineParts());;
+        styliser.addStyledString(maker, getLineParts());
         final T styledString = maker.getStyledMessage();
         fontSize = maker.getMaximumFontSize();
         maker.clear();
