@@ -23,12 +23,12 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +55,7 @@ public class BanTest {
     @Mock private Channel channel;
     @Mock private CommandController controller;
     @Mock private WindowModel container;
-    @Mock private DMDircMBassador eventbus;
+    @Mock private EventBus eventbus;
     private Ban command;
 
     @Before

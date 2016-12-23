@@ -22,11 +22,11 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigFileBackedConfigProvider;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.events.PluginLoadedEvent;
 import com.dmdirc.events.PluginUnloadedEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.util.validators.ValidationResponse;
@@ -91,9 +91,9 @@ public class PluginInfo implements ServiceProvider {
     /** Map of exports. */
     private final Map<String, ExportInfo> exports = new HashMap<>();
     /** List of configuration providers. */
-    private final Collection<ConfigProvider> configProviders = new ArrayList<>();
+    private final Collection<ConfigFileBackedConfigProvider> configProviders = new ArrayList<>();
     /** Event bus to post plugin loaded events to. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** File system for the plugin's jar. */
     private final FileSystem pluginFilesystem;
 
@@ -111,7 +111,7 @@ public class PluginInfo implements ServiceProvider {
             final PluginManager pluginManager,
             final ServiceManager serviceManager,
             final PluginMetaData metadata,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final IdentityController identityController,
             final ObjectGraph objectGraph) throws PluginException {
         this.pluginManager = pluginManager;
@@ -264,7 +264,7 @@ public class PluginInfo implements ServiceProvider {
 
         try (final InputStream stream = Files.newInputStream(path)) {
             synchronized (configProviders) {
-                final ConfigProvider configProvider =
+                final ConfigFileBackedConfigProvider configProvider =
                         new ConfigFileBackedConfigProvider(stream, false);
                 identityController.addConfigProvider(configProvider);
                 configProviders.add(configProvider);

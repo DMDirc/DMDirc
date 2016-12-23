@@ -34,8 +34,8 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class StyliserIndicesTest {
 
-    protected String input, output;
-    protected int start, end;
+    private String input, output;
+    private int start, end;
 
     public StyliserIndicesTest(final String input, final int start, final int end, final String output) {
         this.input = input;
@@ -46,7 +46,7 @@ public class StyliserIndicesTest {
 
     @Test
     public void testStyle() {
-        assertEquals(output, Styliser.getStyledText(input, start, end));
+        assertEquals(output, new StyledMessageUtils().getStyledText(input, start, end));
     }
 
     @Parameterized.Parameters
@@ -55,14 +55,14 @@ public class StyliserIndicesTest {
             // No style
             {"Blah blah blah", 0, 1, "B"},
             {"Blah blah blah", 0, 4, "Blah"},
-            {Styliser.CODE_BOLD + "Blah blah blah", 0, 4, Styliser.CODE_BOLD + "Blah"},
-            {Styliser.CODE_BOLD + "Bl" + Styliser.CODE_BOLD + "ah blah blah",
-                     0, 4, Styliser.CODE_BOLD + "Bl" + Styliser.CODE_BOLD + "ah"},
-            {"Blah" + Styliser.CODE_BOLD + " blah blah",
+            {IRCControlCodes.BOLD + "Blah blah blah", 0, 4, IRCControlCodes.BOLD + "Blah"},
+            {IRCControlCodes.BOLD + "Bl" + IRCControlCodes.BOLD + "ah blah blah",
+                     0, 4, IRCControlCodes.BOLD + "Bl" + IRCControlCodes.BOLD + "ah"},
+            {"Blah" + IRCControlCodes.BOLD + " blah blah",
                      0, 4, "Blah"},
-            {"Blah" + Styliser.CODE_COLOUR + "4,0RED blah blah",
-                     4, 7, Styliser.CODE_COLOUR + "4,0RED"},
-            {"Blah" + Styliser.CODE_COLOUR + "4,0RED blah blah",
+            {"Blah" + IRCControlCodes.COLOUR + "4,0RED blah blah",
+                     4, 7, IRCControlCodes.COLOUR + "4,0RED"},
+            {"Blah" + IRCControlCodes.COLOUR + "4,0RED blah blah",
                      5, 7, "ED"},
             {Styliser.CODE_TOOLTIP + "Annoying internal tooltip text"
                      + Styliser.CODE_TOOLTIP + "Blah" + Styliser.CODE_TOOLTIP + "Blah",

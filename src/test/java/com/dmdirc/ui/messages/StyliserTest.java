@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import org.junit.Ignore;
@@ -37,25 +37,7 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 public class StyliserTest {
 
-    @Mock private DMDircMBassador eventBus;
-
-    @Test
-    public void testStripControlCodes1() {
-        final String input = "This"+ (char) 2 +" is "+ (char) 17 +"a test";
-
-        final String expResult = "This is a test";
-        final String result = Styliser.stipControlCodes(input);
-        assertEquals(expResult, result);
-    }
-
-    @Test
-    public void testStripControlCodes2() {
-        final String input = "This is "+ (char) 3 +"5a "+ (char) 4 +"FF0000test";
-
-        final String expResult = "This is a test";
-        final String result = Styliser.stipControlCodes(input);
-        assertEquals(expResult, result);
-    }
+    @Mock private EventBus eventBus;
 
     @Test
     public void testReadUntilControl1() {

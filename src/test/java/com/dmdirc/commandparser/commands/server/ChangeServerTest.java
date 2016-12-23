@@ -21,13 +21,13 @@
  */
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.util.URIParser;
@@ -41,16 +41,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ChangeServerTest {
 
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private ErrorManager errorManager;
     @Mock private CommandController controller;
     @Mock private WindowModel tiw;

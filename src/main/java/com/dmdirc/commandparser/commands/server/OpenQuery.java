@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.Query;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -35,10 +34,11 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.messages.IRCControlCodes;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -76,16 +76,16 @@ public class OpenQuery extends Command implements IntelligentCommand,
         final Connection connection = ((ServerCommandContext) context).getConnection();
         if (connection.getParser().get().isValidChannelName(args.getArguments()[0])) {
             showError(origin, args.isSilent(), "You can't open a query "
-                    + "with a channel; maybe you meant " + Styliser.CODE_FIXED
-                    + Styliser.CODE_BOLD
+                    + "with a channel; maybe you meant " + IRCControlCodes.FIXED
+                    + IRCControlCodes.BOLD
                     + getController().getCommandChar()
                     + (args.getArguments().length > 1 ? "msg" : "join") + ' '
                     + args.getArgumentsAsString()
-                    + Styliser.CODE_BOLD + Styliser.CODE_FIXED + '?');
+                    + IRCControlCodes.BOLD + IRCControlCodes.FIXED + '?');
             return;
         }
 
-        final Query query = connection.getQuery(args.getArguments()[0], !args.isSilent());
+        final PrivateChat query = connection.getQuery(args.getArguments()[0], !args.isSilent());
 
         if (args.getArguments().length > 1) {
             query.sendLine(args.getArgumentsAsString(1), args.getArguments()[0]);

@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces.config;
 
-import com.dmdirc.config.ConfigTarget;
 import com.dmdirc.util.io.InvalidConfigFileException;
 
 import java.io.IOException;
@@ -62,21 +61,6 @@ public interface ConfigProvider extends ReadOnlyConfigProvider {
      * @return The name of this identity
      */
     String getName();
-
-    /**
-     * Retrieves this identity's target.
-     *
-     * @return The target of this identity
-     */
-    ConfigTarget getTarget();
-
-    /**
-     * Determines whether this identity can be used as a profile when connecting to a server.
-     * Profiles are identities that can supply nick, ident, real name, etc.
-     *
-     * @return True iff this identity can be used as a profile
-     */
-    boolean isProfile();
 
     /**
      * Attempts to reload this identity from disk. If this identity has been modified (i.e.,

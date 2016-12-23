@@ -22,9 +22,9 @@
 
 package com.dmdirc.config.profiles;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.util.SystemInfo;
 
 import com.google.common.collect.Iterables;
@@ -45,12 +45,12 @@ import javax.inject.Singleton;
 @Singleton
 public class ProfileManager {
 
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     private final List<Profile> profiles;
     private final Profile defaultProfile;
 
     @Inject
-    public ProfileManager(final DMDircMBassador eventBus, final SystemInfo systemInfo) {
+    public ProfileManager(final EventBus eventBus, final SystemInfo systemInfo) {
         this.eventBus = eventBus;
         profiles = new ArrayList<>();
         final String nick = systemInfo.getProperty("user.name").replace(' ', '_');

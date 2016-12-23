@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandline;
 
-import com.dmdirc.ClientModule.GlobalConfig;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.InvalidURIException;

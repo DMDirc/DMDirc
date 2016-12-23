@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ClientPopupGeneratedEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ public class PopupManager {
     /** The command controller to use for items. */
     private final CommandController commandController;
     /** The bus to dispatch events on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of PopupManager.
@@ -46,7 +46,7 @@ public class PopupManager {
      * @param eventBus          The bus to dispatch events on.
      */
     @Inject
-    public PopupManager(final CommandController commandController, final DMDircMBassador eventBus) {
+    public PopupManager(final CommandController commandController, final EventBus eventBus) {
         this.commandController = commandController;
         this.eventBus = eventBus;
     }

@@ -30,6 +30,7 @@ import com.dmdirc.events.FeedbackNagEvent;
 import com.dmdirc.events.FirstRunEvent;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -92,7 +93,7 @@ public class Main {
     /** The set of migrators to execute on startup. */
     private final Set<Migrator> migrators;
     /** The event bus to dispatch events on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The commands to load into the command manager. */
     private final Set<CommandDetails> commands;
     /** Mode alias reporter to use. */
@@ -123,7 +124,7 @@ public class Main {
             final GlobalWindowManager globalWindowManager,
             final Set<SystemLifecycleComponent> lifecycleComponents,
             final Set<Migrator> migrators,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final Set<CommandDetails> commands,
             final ModeAliasReporter reporter,
             final ServiceManager serviceManager,

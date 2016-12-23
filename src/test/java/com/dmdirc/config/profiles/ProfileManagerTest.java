@@ -22,9 +22,9 @@
 
 package com.dmdirc.config.profiles;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.util.SystemInfo;
 
 import com.google.common.collect.Lists;
@@ -40,7 +40,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ProfileManagerTest {
 
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private Profile profile1;
     @Mock private Profile profile2;
     @Mock private SystemInfo systemInfo;

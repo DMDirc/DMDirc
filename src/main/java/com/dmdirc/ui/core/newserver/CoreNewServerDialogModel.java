@@ -22,36 +22,29 @@
 
 package com.dmdirc.ui.core.newserver;
 
-import com.dmdirc.ClientModule.GlobalConfig;
-import com.dmdirc.ClientModule.UserConfig;
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.config.GlobalConfig;
+import com.dmdirc.config.UserConfig;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.ui.NewServerDialogModel;
 import com.dmdirc.interfaces.ui.NewServerDialogModelListener;
 import com.dmdirc.util.collections.ListenerList;
-import com.dmdirc.util.validators.IntegerPortValidator;
-import com.dmdirc.util.validators.ListNotEmptyValidator;
-import com.dmdirc.util.validators.PermissiveValidator;
-import com.dmdirc.util.validators.ServerNameValidator;
-import com.dmdirc.util.validators.Validator;
-
+import com.dmdirc.util.validators.*;
 import com.google.common.collect.ImmutableList;
+import net.engio.mbassy.listener.Handler;
 
+import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.inject.Inject;
-
-import net.engio.mbassy.listener.Handler;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -66,7 +59,7 @@ public class CoreNewServerDialogModel implements NewServerDialogModel {
     private final ConnectionManager connectionManager;
     private final ProfileManager profileManager;
     private final List<Profile> profiles;
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     private Optional<Profile> selectedProfile;
     private Optional<String> hostname;
     private Optional<Integer> port;
@@ -80,7 +73,7 @@ public class CoreNewServerDialogModel implements NewServerDialogModel {
             @UserConfig final ConfigProvider userConfig,
             final ProfileManager profileManager,
             final ConnectionManager connectionManager,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         this.globalConfig = globalConfig;
         this.userConfig = userConfig;
         this.profileManager = profileManager;

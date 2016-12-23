@@ -24,19 +24,16 @@ package com.dmdirc;
 
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
-
 import java.net.URI;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,9 +43,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,13 +57,12 @@ public class ServerManagerTest {
     @Mock private IdentityFactory identityFactory;
     @Mock private ConfigProviderMigrator configProviderMigrator;
     @Mock private Profile profile;
-    @Mock private AggregateConfigProvider configProvider;
     @Mock private WindowManager windowManager;
     @Mock private ServerFactoryImpl serverFactoryImpl;
     @Mock private Server server;
     @Mock private WindowModel windowModel;
     @Mock private GroupChatManager groupChatManager;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private Channel channel;
 
     @Captor private ArgumentCaptor<URI> uriCaptor;
@@ -78,14 +74,11 @@ public class ServerManagerTest {
         serverManager = new ServerManager(profileManager, identityFactory, windowManager, serverFactoryImpl, eventBus);
 
         when(server.getState()).thenReturn(ServerState.DISCONNECTED);
-        when(server.getGroupChatManager()).thenReturn(groupChatManager);
         when(server.getWindowModel()).thenReturn(windowModel);
 
-        when(profileManager.getProfiles()).thenReturn(Collections.singletonList(profile));
         when(profileManager.getDefault()).thenReturn(profile);
         when(identityFactory.createMigratableConfig(anyString(), anyString(), anyString(),
                 anyString())).thenReturn(configProviderMigrator);
-        when(configProviderMigrator.getConfigProvider()).thenReturn(configProvider);
 
         when(serverFactoryImpl.getServer(eq(configProviderMigrator),
                 any(ScheduledExecutorService.class), uriCaptor.capture(), eq(profile)))
@@ -193,7 +186,6 @@ public class ServerManagerTest {
 
         final Server serverB = mock(Server.class);
         when(serverB.isNetwork("Quakenet")).thenReturn(false);
-        when(serverB.getState()).thenReturn(ServerState.CONNECTED);
 
         serverManager.registerServer(serverA);
         serverManager.registerServer(serverB);

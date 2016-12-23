@@ -143,9 +143,7 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     @Override
     public void setSelectedProfile(final Optional<MutableProfile> profile) {
         checkNotNull(profile, "profile cannot be null");
-        if (profile.isPresent()) {
-            checkArgument(profiles.containsValue(profile.get()), "Profile must exist in list");
-        }
+        profile.ifPresent(mutableProfile -> checkArgument(profiles.containsValue(mutableProfile), "Profile must exist in list"));
         if (!selectedProfile.equals(profile)) {
             selectedProfile = profile;
             listeners.getCallable(ProfilesDialogModelListener.class).profileSelectionChanged(profile);
@@ -273,10 +271,8 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     public void setSelectedProfileSelectedNickname(final Optional<String> selectedNickname) {
         checkNotNull(selectedNickname, "Nickname cannot be null");
         selectedProfile.ifPresent(p -> {
-            if (selectedNickname.isPresent()) {
-                checkArgument(p.getNicknames().contains(selectedNickname.get()),
-                    "Nickname must exist in nicknames list");
-            }
+            selectedNickname.ifPresent(s -> checkArgument(p.getNicknames().contains(s),
+                    "Nickname must exist in nicknames list"));
             if (this.selectedNickname != selectedNickname) {
                 this.selectedNickname = selectedNickname;
                 listeners.getCallable(ProfilesDialogModelListener.class)
@@ -289,10 +285,8 @@ public class CoreProfilesDialogModel implements ProfilesDialogModel {
     public void setSelectedProfileSelectedHighlight(final Optional<String> selectedHighlight) {
         checkNotNull(selectedHighlight, "Highlight cannot be null");
         selectedProfile.ifPresent(p -> {
-            if (selectedHighlight.isPresent()) {
-                checkArgument(p.getHighlights().contains(selectedHighlight.get()),
-                        "Nickname must exist in nicknames list");
-            }
+            selectedHighlight.ifPresent(s -> checkArgument(p.getHighlights().contains(s),
+                    "Nickname must exist in nicknames list"));
             if (this.selectedHighlight != selectedHighlight) {
                 this.selectedHighlight = selectedHighlight;
                 listeners.getCallable(ProfilesDialogModelListener.class)

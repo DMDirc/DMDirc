@@ -22,8 +22,8 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineParser;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.checking.CheckResultConsolidator;
 import com.dmdirc.updater.checking.DMDircCheckStrategy;
@@ -107,7 +107,7 @@ public class UpdaterModule {
             final CommandLineParser commandLineParser,
             final DMDircUpdateManager updateManager,
             final IdentityController identityController,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         UpdateChecker.init(updateManager, identityController);
 
         commandLineParser.getLauncherVersion().ifPresent(version ->

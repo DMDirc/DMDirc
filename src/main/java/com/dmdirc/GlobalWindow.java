@@ -22,11 +22,12 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ClientModule.GlobalConfig;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.WindowManager;
@@ -53,7 +54,7 @@ public class GlobalWindow extends FrameContainer {
     @Inject
     public GlobalWindow(@GlobalConfig final AggregateConfigProvider config,
             final GlobalCommandParser parser, final TabCompleterFactory tabCompleterFactory,
-            final DMDircMBassador eventBus, final BackBufferFactory backBufferFactory) {
+            final EventBus eventBus, final BackBufferFactory backBufferFactory) {
         super("icon", "Global", "(Global)", config, backBufferFactory, eventBus,
                 Arrays.asList(WindowComponent.TEXTAREA.getIdentifier(),
                         WindowComponent.INPUTFIELD.getIdentifier()));

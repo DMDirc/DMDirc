@@ -22,8 +22,8 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProgramErrorStatusEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.util.ClientInfo;
 
 import java.time.LocalDateTime;
@@ -45,7 +45,7 @@ import static org.mockito.Mockito.verify;
 public class ProgramErrorTest {
 
     @Mock private ErrorManager errorManager;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private ClientInfo clientInfo;
     @Captor private ArgumentCaptor<ProgramErrorStatusEvent> event;
 

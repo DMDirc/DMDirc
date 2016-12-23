@@ -21,13 +21,13 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.aliases.AliasFactory;
 import com.dmdirc.commandparser.aliases.AliasManager;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +49,7 @@ public class AliasCommandTest {
     @Mock private CommandController controller;
     @Mock private TabCompleterUtils tabCompleterUtils;
     @Mock private WindowModel tiw;
-    @Mock private DMDircMBassador eventbus;
+    @Mock private EventBus eventbus;
     private AliasCommand command;
 
     @Before

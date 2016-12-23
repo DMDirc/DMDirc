@@ -25,7 +25,6 @@ package com.dmdirc.config;
 import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
@@ -81,9 +80,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * Standard identities are inserted with a {@code null} key, custom identities use their
      * custom type as the key.
      */
-    private final Multimap<String, ConfigProvider> identities = ArrayListMultimap.create();
+    private final Multimap<String, ConfigFileBackedConfigProvider> identities = ArrayListMultimap.create();
     /** Map of paths to corresponding config providers, to facilitate reloading. */
-    private final Map<Path, ConfigProvider> configProvidersByPath = new ConcurrentHashMap<>();
+    private final Map<Path, ConfigFileBackedConfigProvider> configProvidersByPath = new ConcurrentHashMap<>();
     /**
      * The {@link ConfigProviderListener}s that have registered with this manager.
      *
@@ -95,11 +94,11 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     /** Client info objecty. */
     private final ClientInfo clientInfo;
     /** The identity file used for the global config. */
-    private ConfigProvider config;
+    private ConfigFileBackedConfigProvider config;
     /** The identity file used for addon defaults. */
-    private ConfigProvider addonConfig;
+    private ConfigFileBackedConfigProvider addonConfig;
     /** The identity file bundled with the client containing version info. */
-    private ConfigProvider versionConfig;
+    private ConfigFileBackedConfigProvider versionConfig;
     /** The config manager used for global settings. */
     private AggregateConfigProvider globalconfig;
 
@@ -251,7 +250,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
 
         try {
-            final ConfigProvider provider = new ConfigFileBackedConfigProvider(this, file, false);
+            final ConfigFileBackedConfigProvider provider = new ConfigFileBackedConfigProvider(this, file, false);
             addConfigProvider(provider);
             configProvidersByPath.put(file, provider);
         } catch (InvalidIdentityFileException ex) {
@@ -268,7 +267,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @since 0.6.4
      */
-    private Iterable<ConfigProvider> getAllIdentities() {
+    private Iterable<ConfigFileBackedConfigProvider> getAllIdentities() {
         return identities.values();
     }
 
@@ -282,7 +281,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @since 0.6.4
      */
-    private String getGroup(final ConfigProvider identity) {
+    private String getGroup(final ConfigFileBackedConfigProvider identity) {
         return identity.getTarget().getType() == ConfigTarget.TYPE.CUSTOM
                 ? identity.getTarget().getData() : null;
     }
@@ -345,7 +344,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     }
 
     @Override
-    public void addConfigProvider(final ConfigProvider identity) {
+    public void addConfigProvider(final ConfigFileBackedConfigProvider identity) {
         checkNotNull(identity);
 
         final String target = getGroup(identity);
@@ -369,7 +368,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     }
 
     @Override
-    public void removeConfigProvider(final ConfigProvider identity) {
+    public void removeConfigProvider(final ConfigFileBackedConfigProvider identity) {
         checkNotNull(identity);
 
         final String group = getGroup(identity);
@@ -377,7 +376,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         checkArgument(identities.containsEntry(group, identity));
 
         Path path = null;
-        for (Map.Entry<Path, ConfigProvider> entry : configProvidersByPath.entrySet()) {
+        for (Map.Entry<Path, ConfigFileBackedConfigProvider> entry : configProvidersByPath.entrySet()) {
             if (entry.getValue() == identity) {
                 path = entry.getKey();
             }
@@ -399,13 +398,12 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    @Override
-    public void registerIdentityListener(final ConfigProviderListener listener) {
+    private void registerIdentityListener(final ConfigProviderListener listener) {
         registerIdentityListener(null, listener);
     }
 
-    @Override
-    public void unregisterIdentityListener(final ConfigProviderListener listener) {
+    // TODO: It feels like this method should be called at some point...
+    private void unregisterIdentityListener(final ConfigProviderListener listener) {
         synchronized (listeners) {
             listeners.entries().stream().filter(e -> {
                 final ConfigProviderListener value = e.getValue().get();
@@ -414,8 +412,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         }
     }
 
-    @Override
-    public void registerIdentityListener(final String type, final ConfigProviderListener listener) {
+    private void registerIdentityListener(final String type, final ConfigProviderListener listener) {
         checkNotNull(listener);
 
         synchronized (listeners) {
@@ -436,8 +433,8 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @return A list of all matching config sources
      */
-    List<ConfigProvider> getIdentitiesForManager(final ConfigManager manager) {
-        final List<ConfigProvider> sources = new ArrayList<>();
+    List<ConfigFileBackedConfigProvider> getIdentitiesForManager(final ConfigManager manager) {
+        final List<ConfigFileBackedConfigProvider> sources = new ArrayList<>();
 
         synchronized (identities) {
             sources.addAll(identities.get(null).stream()
@@ -445,7 +442,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                     .collect(Collectors.toList()));
         }
 
-        Collections.sort(sources, new ConfigProviderTargetComparator());
+        sources.sort(new ConfigProviderTargetComparator());
 
         LOG.debug("Found {} source(s) for {}", sources.size(), manager);
 
@@ -476,7 +473,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String myTarget = (channel + '@' + network).toLowerCase();
 
         synchronized (identities) {
-            for (ConfigProvider identity : identities.get(null)) {
+            for (ConfigFileBackedConfigProvider identity : identities.get(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.CHANNEL
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -501,7 +498,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String myTarget = network.toLowerCase();
 
         synchronized (identities) {
-            for (ConfigProvider identity : identities.get(null)) {
+            for (ConfigFileBackedConfigProvider identity : identities.get(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.NETWORK
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -526,7 +523,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
         final String myTarget = server.toLowerCase();
 
         synchronized (identities) {
-            for (ConfigProvider identity : identities.get(null)) {
+            for (ConfigFileBackedConfigProvider identity : identities.get(null)) {
                 if (identity.getTarget().getType() == ConfigTarget.TYPE.SERVER
                         && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                     return identity;
@@ -603,7 +600,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @throws InvalidIdentityFileException If the settings are invalid
      * @since 0.6.3m1
      */
-    protected ConfigFileBackedConfigProvider createIdentity(
+    private ConfigFileBackedConfigProvider createIdentity(
             final Map<String, Map<String, String>> settings)
             throws IOException, InvalidIdentityFileException {
         if (!settings.containsKey(IDENTITY_DOMAIN)
@@ -643,9 +640,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @param configManager The manager to be initialised.
      */
     private void setUpConfigManager(final ConfigManager configManager) {
-        final List<ConfigProvider> sources = getIdentitiesForManager(configManager);
+        final List<ConfigFileBackedConfigProvider> sources = getIdentitiesForManager(configManager);
 
-        for (ConfigProvider identity : sources) {
+        for (ConfigFileBackedConfigProvider identity : sources) {
             LOG.trace("Found {}", identity);
             configManager.checkIdentity(identity);
         }

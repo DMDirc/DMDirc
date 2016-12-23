@@ -22,7 +22,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.ui.FrameListener;
 
@@ -43,10 +43,11 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -59,7 +60,7 @@ public class WindowManagerTest {
     @Mock private WindowModel container;
     @Mock private WindowModel child;
     @Mock private WindowModel grandchild;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Captor private ArgumentCaptor<String> idCaptor;
     private WindowManager manager;
 
@@ -133,9 +134,9 @@ public class WindowManagerTest {
 
         manager.removeWindow(child);
 
-        verify(frameListener, never()).addWindow(anyObject(), anyBoolean());
-        verify(frameListener, never()).addWindow(anyObject(), anyObject(), anyBoolean());
-        verify(frameListener, never()).delWindow(anyObject());
+        verify(frameListener, never()).addWindow(any(), anyBoolean());
+        verify(frameListener, never()).addWindow(any(), any(), anyBoolean());
+        verify(frameListener, never()).delWindow(any());
         verify(frameListener).delWindow(same(container), same(child));
     }
 
@@ -146,10 +147,10 @@ public class WindowManagerTest {
         manager.removeListener(frameListener);
         manager.addWindow(container, child);
 
-        verify(frameListener, never()).addWindow(anyObject(), anyBoolean());
-        verify(frameListener, never()).addWindow(anyObject(), anyObject(), anyBoolean());
-        verify(frameListener, never()).delWindow(anyObject());
-        verify(frameListener, never()).delWindow(anyObject(), anyObject());
+        verify(frameListener, never()).addWindow(any(), anyBoolean());
+        verify(frameListener, never()).addWindow(any(), any(), anyBoolean());
+        verify(frameListener, never()).delWindow(any());
+        verify(frameListener, never()).delWindow(any(), any());
     }
 
     @Test
@@ -252,7 +253,6 @@ public class WindowManagerTest {
         final CustomWindow customContainer = mock(CustomWindow.class);
         final CustomWindow customChild = mock(CustomWindow.class);
 
-        when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
 
         manager.addWindow(customContainer);
@@ -266,7 +266,6 @@ public class WindowManagerTest {
         final CustomWindow customContainer = mock(CustomWindow.class);
         final CustomWindow customChild = mock(CustomWindow.class);
 
-        when(customContainer.getName()).thenReturn("test");
         when(customChild.getName()).thenReturn("test1");
 
         manager.addWindow(customContainer);

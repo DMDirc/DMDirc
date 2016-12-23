@@ -23,9 +23,7 @@
 package com.dmdirc.ui.core.feedback;
 
 import com.dmdirc.interfaces.ui.FeedbackDialogModelListener;
-
 import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,9 +33,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CoreFeedbackDialogModelTest {
@@ -47,7 +43,6 @@ public class CoreFeedbackDialogModelTest {
     private static final String FEEDBACK = "DMDirc Rocks.";
 
     @Mock private FeedbackSenderFactory feedbackSenderFactory;
-    @Mock private FeedbackSender feedbackSender;
     @Mock private FeedbackDialogModelListener listener;
     @Mock private FeedbackHelper feedbackHelper;
 
@@ -56,29 +51,27 @@ public class CoreFeedbackDialogModelTest {
     @Before
     public void setup() {
         instance = new CoreFeedbackDialogModel(feedbackSenderFactory, feedbackHelper);
-        when(feedbackSenderFactory.getFeedbackSender(anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString())).thenReturn(feedbackSender);
     }
 
     @Test
     public void testName() {
         assertEquals("testName", Optional.<String>empty(), instance.getName());
-        instance.setName(Optional.ofNullable(NAME));
-        assertEquals("testName", Optional.ofNullable(NAME), instance.getName());
+        instance.setName(Optional.of(NAME));
+        assertEquals("testName", Optional.of(NAME), instance.getName());
     }
 
     @Test
     public void testEmail() {
         assertEquals("testEmail", Optional.<String>empty(), instance.getEmail());
-        instance.setEmail(Optional.ofNullable(EMAIL));
-        assertEquals("testEmail", Optional.ofNullable(EMAIL), instance.getEmail());
+        instance.setEmail(Optional.of(EMAIL));
+        assertEquals("testEmail", Optional.of(EMAIL), instance.getEmail());
     }
 
     @Test
     public void testFeedback() {
         assertEquals("testFeedback", Optional.<String>empty(), instance.getFeedback());
-        instance.setFeedback(Optional.ofNullable(FEEDBACK));
-        assertEquals("testFeedback", Optional.ofNullable(FEEDBACK), instance.getFeedback());
+        instance.setFeedback(Optional.of(FEEDBACK));
+        assertEquals("testFeedback", Optional.of(FEEDBACK), instance.getFeedback());
     }
 
     @Test
@@ -99,9 +92,9 @@ public class CoreFeedbackDialogModelTest {
     public void testSaveWithoutServerWithoutDMDirc() {
         instance.setIncludeDMDircInfo(false);
         instance.setIncludeServerInfo(false);
-        instance.setName(Optional.ofNullable(NAME));
-        instance.setEmail(Optional.ofNullable(EMAIL));
-        instance.setFeedback(Optional.ofNullable(FEEDBACK));
+        instance.setName(Optional.of(NAME));
+        instance.setEmail(Optional.of(EMAIL));
+        instance.setFeedback(Optional.of(FEEDBACK));
         instance.save();
         verify(feedbackSenderFactory).getFeedbackSender(NAME, EMAIL, FEEDBACK,
                 feedbackHelper.getVersion(), "", "");
@@ -111,9 +104,9 @@ public class CoreFeedbackDialogModelTest {
     public void testSaveWithoutServerWithDMDirc() {
         instance.setIncludeDMDircInfo(true);
         instance.setIncludeServerInfo(false);
-        instance.setName(Optional.ofNullable(NAME));
-        instance.setEmail(Optional.ofNullable(EMAIL));
-        instance.setFeedback(Optional.ofNullable(FEEDBACK));
+        instance.setName(Optional.of(NAME));
+        instance.setEmail(Optional.of(EMAIL));
+        instance.setFeedback(Optional.of(FEEDBACK));
         instance.save();
         verify(feedbackSenderFactory).getFeedbackSender(NAME, EMAIL, FEEDBACK,
                 feedbackHelper.getVersion(), "", feedbackHelper.getDMDircInfo());
@@ -123,9 +116,9 @@ public class CoreFeedbackDialogModelTest {
     public void testSaveWithoutDMDircWithServer() {
         instance.setIncludeDMDircInfo(false);
         instance.setIncludeServerInfo(true);
-        instance.setName(Optional.ofNullable(NAME));
-        instance.setEmail(Optional.ofNullable(EMAIL));
-        instance.setFeedback(Optional.ofNullable(FEEDBACK));
+        instance.setName(Optional.of(NAME));
+        instance.setEmail(Optional.of(EMAIL));
+        instance.setFeedback(Optional.of(FEEDBACK));
         instance.save();
         verify(feedbackSenderFactory).getFeedbackSender(NAME, EMAIL, FEEDBACK,
                 feedbackHelper.getVersion(), feedbackHelper.getServerInfo(), "");
@@ -135,9 +128,9 @@ public class CoreFeedbackDialogModelTest {
     public void testSaveWithServerWithDMDirc() {
         instance.setIncludeDMDircInfo(true);
         instance.setIncludeServerInfo(true);
-        instance.setName(Optional.ofNullable(NAME));
-        instance.setEmail(Optional.ofNullable(EMAIL));
-        instance.setFeedback(Optional.ofNullable(FEEDBACK));
+        instance.setName(Optional.of(NAME));
+        instance.setEmail(Optional.of(EMAIL));
+        instance.setFeedback(Optional.of(FEEDBACK));
         instance.save();
         verify(feedbackSenderFactory).getFeedbackSender(NAME, EMAIL, FEEDBACK,
                 feedbackHelper.getVersion(), feedbackHelper.getServerInfo(),
@@ -147,22 +140,22 @@ public class CoreFeedbackDialogModelTest {
     @Test
     public void testNameListener() {
         instance.addListener(listener);
-        instance.setName(Optional.ofNullable(NAME));
-        verify(listener).nameChanged(Optional.ofNullable(NAME));
+        instance.setName(Optional.of(NAME));
+        verify(listener).nameChanged(Optional.of(NAME));
     }
 
     @Test
     public void testEmailListener() {
         instance.addListener(listener);
-        instance.setEmail(Optional.ofNullable(EMAIL));
-        verify(listener).emailChanged(Optional.ofNullable(EMAIL));
+        instance.setEmail(Optional.of(EMAIL));
+        verify(listener).emailChanged(Optional.of(EMAIL));
     }
 
     @Test
     public void testFeedbackListener() {
         instance.addListener(listener);
-        instance.setFeedback(Optional.ofNullable(FEEDBACK));
-        verify(listener).feedbackChanged(Optional.ofNullable(FEEDBACK));
+        instance.setFeedback(Optional.of(FEEDBACK));
+        verify(listener).feedbackChanged(Optional.of(FEEDBACK));
     }
 
     @Test

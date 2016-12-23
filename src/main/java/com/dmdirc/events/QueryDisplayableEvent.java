@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Query;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.WindowModel;
 
 import java.time.LocalDateTime;
@@ -36,11 +36,11 @@ public abstract class QueryDisplayableEvent extends QueryEvent implements Displa
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();
 
-    public QueryDisplayableEvent(final LocalDateTime timestamp, final Query query) {
+    public QueryDisplayableEvent(final LocalDateTime timestamp, final PrivateChat query) {
         super(timestamp, query);
     }
 
-    public QueryDisplayableEvent(final Query query) {
+    public QueryDisplayableEvent(final PrivateChat query) {
         super(query);
     }
 
@@ -61,7 +61,7 @@ public abstract class QueryDisplayableEvent extends QueryEvent implements Displa
 
     @Override
     public WindowModel getSource() {
-        return getQuery();
+        return getQuery().getWindowModel();
     }
 
 }

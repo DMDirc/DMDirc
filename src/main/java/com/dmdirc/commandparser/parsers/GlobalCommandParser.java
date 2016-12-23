@@ -22,22 +22,20 @@
 
 package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.ClientModule;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,9 +60,9 @@ public class GlobalCommandParser extends CommandParser {
      */
     @Inject
     public GlobalCommandParser(
-            @ClientModule.GlobalConfig final AggregateConfigProvider configManager,
+            @GlobalConfig final AggregateConfigProvider configManager,
             final CommandController commandManager,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         super(configManager, commandManager, eventBus);
     }
 

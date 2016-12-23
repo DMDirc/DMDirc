@@ -22,11 +22,11 @@
 
 package com.dmdirc.ui.core.about;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.events.ClientInfoRequestEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.ui.AboutDialogModel;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.util.ClientInfo;
@@ -56,7 +56,7 @@ public class CoreAboutDialogModel implements AboutDialogModel {
     private static final Logger LOGGER = LoggerFactory.getLogger(CoreAboutDialogModel.class);
     private final Path baseDirectory;
     private final ClientInfo clientInfo;
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     private final PluginManager pluginManager;
     private final CommandLineParser commandLineParser;
     private String about;
@@ -67,7 +67,7 @@ public class CoreAboutDialogModel implements AboutDialogModel {
 
     @Inject
     public CoreAboutDialogModel(@Directory(DirectoryType.BASE) final Path baseDirectory,
-            final ClientInfo clientInfo, final DMDircMBassador eventBus,
+            final ClientInfo clientInfo, final EventBus eventBus,
             final PluginManager pluginManager, final CommandLineParser commandLineParser) {
         this.baseDirectory = baseDirectory;
         this.clientInfo = clientInfo;

@@ -24,8 +24,10 @@ package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
+import com.dmdirc.config.UserConfig;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
@@ -52,7 +54,7 @@ public class ServerFactoryImpl {
     private final IdentityFactory identityFactory;
     private final Provider<QueryFactory> queryFactory;
     private final Provider<CommandController> commandController;
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     private final MessageEncoderFactory messageEncoderFactory;
     private final ConfigProvider userSettings;
     private final BackBufferFactory backBufferFactory;
@@ -66,9 +68,9 @@ public class ServerFactoryImpl {
             final IdentityFactory identityFactory,
             final Provider<QueryFactory> queryFactory,
             final Provider<CommandController> commandController,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final MessageEncoderFactory messageEncoderFactory,
-            @ClientModule.UserConfig final ConfigProvider userSettings,
+            @UserConfig final ConfigProvider userSettings,
             final BackBufferFactory backBufferFactory,
             final GroupChatManagerImplFactory groupChatManagerFactory,
             final UserManager userManager) {

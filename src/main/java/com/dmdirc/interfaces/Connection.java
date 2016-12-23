@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.Query;
 import com.dmdirc.ServerState;
 import com.dmdirc.ServerStatus;
 import com.dmdirc.config.profiles.Profile;
@@ -75,7 +74,7 @@ public interface Connection {
      *
      * @param query The query that should be removed.
      */
-    void delQuery(final Query query);
+    void delQuery(final PrivateChat query);
 
     /**
      * Disconnects from the server with the default quit message.
@@ -167,7 +166,7 @@ public interface Connection {
      *
      * @return list of queries belonging to this server
      */
-    Collection<Query> getQueries();
+    Collection<PrivateChat> getQueries();
 
     /**
      * Retrieves the specified query belonging to this server. If the query does not yet exist, it
@@ -177,7 +176,7 @@ public interface Connection {
      *
      * @return The appropriate query object
      */
-    Query getQuery(final String host);
+    PrivateChat getQuery(final String host);
 
     /**
      * Retrieves the specified query belonging to this server. If the query does not yet exist, it
@@ -188,7 +187,7 @@ public interface Connection {
      *
      * @return The appropriate query object
      */
-    Query getQuery(final String host, final boolean focus);
+    PrivateChat getQuery(final String host, final boolean focus);
 
     /**
      * Retrieves the identity for this server.

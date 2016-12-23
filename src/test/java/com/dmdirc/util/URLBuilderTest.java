@@ -22,7 +22,7 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
@@ -39,10 +39,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -56,13 +56,13 @@ public class URLBuilderTest {
     @Mock private ThemeManager themeManager;
     @Mock private PluginInfo pluginInfo;
     @Mock private PluginMetaData pluginMetaData;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
 
     @Before
     public void setup() throws MalformedURLException {
         when(pluginManagerProvider.get()).thenReturn(pluginManager);
         when(themeManagerProvider.get()).thenReturn(themeManager);
-        when(pluginManager.getPluginInfoByName(Matchers.anyString())).thenReturn(pluginInfo);
+        when(pluginManager.getPluginInfoByName(anyString())).thenReturn(pluginInfo);
         when(themeManager.getDirectory()).thenReturn("/themes/");
         when(pluginInfo.getMetaData()).thenReturn(pluginMetaData);
         when(pluginMetaData.getPluginPath()).thenReturn(jimFsRule.getPath("file://testPlugin"));

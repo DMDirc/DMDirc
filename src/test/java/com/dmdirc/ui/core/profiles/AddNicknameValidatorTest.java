@@ -52,9 +52,7 @@ public class AddNicknameValidatorTest {
         when(model.getSelectedProfile())
                 .thenReturn(Optional.ofNullable(profile));
         when(model.getSelectedProfileNicknames())
-                .thenReturn(Optional.ofNullable(nicknames));
-        when(model.getSelectedProfileSelectedNickname())
-                .thenReturn(Optional.ofNullable("nickname2"));
+                .thenReturn(Optional.of(nicknames));
     }
 
     @Test

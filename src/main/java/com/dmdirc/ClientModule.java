@@ -31,10 +31,12 @@ import com.dmdirc.commandparser.aliases.AliasesModule;
 import com.dmdirc.commandparser.auto.AutoCommandModule;
 import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.ConfigModule;
+import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.config.profiles.ProfilesModule;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -46,17 +48,13 @@ import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.util.LoggingExecutorService;
 import com.dmdirc.util.io.Downloader;
-
-import java.util.concurrent.ExecutorService;
-
-import javax.inject.Named;
-import javax.inject.Provider;
-import javax.inject.Qualifier;
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
+import java.util.concurrent.ExecutorService;
+import javax.inject.Named;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 
 /**
  * Provides dependencies for the client.
@@ -78,21 +76,6 @@ import dagger.Provides;
         library = true)
 public class ClientModule {
 
-    /** Qualifier that identities a global configuration source. */
-    @Qualifier
-    public @interface GlobalConfig {
-    }
-
-    /** Qualifier that identities the user settings config provider. */
-    @Qualifier
-    public @interface UserConfig {
-    }
-
-    /** Qualifier that identities the addon defaults config provider. */
-    @Qualifier
-    public @interface AddonConfig {
-    }
-
     /** The object graph to inject where necessary. */
     private ObjectGraph objectGraph;
 
@@ -109,7 +92,7 @@ public class ClientModule {
 
     @Provides
     @Singleton
-    public DMDircMBassador getMBassador() {
+    public EventBus getMBassador() {
         return new DMDircMBassador();
     }
 
@@ -137,7 +120,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public ThemeManager getThemeManager(
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final IdentityController controller,
             @Directory(DirectoryType.THEMES) final String directory) {
         final ThemeManager manager = new ThemeManager(controller, directory);
@@ -149,7 +132,7 @@ public class ClientModule {
     @Singleton
     @GlobalConfig
     public ColourManager getGlobalColourManager(final ColourManagerFactory colourManagerFactory,
-            @GlobalConfig final  AggregateConfigProvider globalConfig) {
+            @GlobalConfig final AggregateConfigProvider globalConfig) {
         return colourManagerFactory.getColourManager(globalConfig);
     }
 

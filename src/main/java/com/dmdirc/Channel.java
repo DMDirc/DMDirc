@@ -44,10 +44,8 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.core.components.WindowComponent;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.BackBufferFactory;
-import com.dmdirc.ui.messages.Styliser;
-
+import com.dmdirc.ui.messages.StyledMessageUtils;
 import com.google.common.collect.EvictingQueue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,7 +54,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.stream.Collectors;
-
 import javax.annotation.Nullable;
 
 /**
@@ -98,7 +95,7 @@ public class Channel extends FrameContainer implements GroupChat {
             final GroupChatUserManager groupChatUserManager) {
         super("channel-inactive",
                 newChannelInfo.getName(),
-                Styliser.stipControlCodes(newChannelInfo.getName()),
+                new StyledMessageUtils().stripControlCodes(newChannelInfo.getName()), // TODO: Inject this
                 configMigrator.getConfigProvider(),
                 backBufferFactory,
                 connection.getWindowModel().getEventBus(),
@@ -220,12 +217,12 @@ public class Channel extends FrameContainer implements GroupChat {
      * Updates the title of the channel window, and of the main window if appropriate.
      */
     private void updateTitle() {
-        String temp = Styliser.stipControlCodes(channelInfo.getName());
+        final StyledMessageUtils styleUtils = new StyledMessageUtils();
 
+        String temp = styleUtils.stripControlCodes(channelInfo.getName());
         if (!channelInfo.getTopic().isEmpty()) {
-            temp += " - " + Styliser.stipControlCodes(channelInfo.getTopic());
+            temp += " - " + styleUtils.stripControlCodes(channelInfo.getTopic());
         }
-
         setTitle(temp);
     }
 

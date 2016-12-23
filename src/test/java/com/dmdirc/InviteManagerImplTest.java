@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
 
@@ -40,7 +41,7 @@ public class InviteManagerImplTest {
 
     @Mock private Connection connection;
     @Mock private WindowModel frameContainer;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private User user;
 
     private InviteManagerImpl inviteManager;

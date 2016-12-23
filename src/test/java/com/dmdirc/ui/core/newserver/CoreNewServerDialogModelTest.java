@@ -22,12 +22,12 @@
 
 package com.dmdirc.ui.core.newserver;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.ui.NewServerDialogModelListener;
@@ -47,7 +47,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +59,7 @@ public class CoreNewServerDialogModelTest {
     @Mock private ConfigProvider userConfig;
     @Mock private ProfileManager profileManager;
     @Mock private ConnectionManager connectionManager;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private Profile profile1;
     @Mock private Profile profile2;
     @Mock private NewServerDialogModelListener listener;

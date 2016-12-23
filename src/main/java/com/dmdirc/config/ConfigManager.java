@@ -25,24 +25,19 @@ package com.dmdirc.config;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProviderListener;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.validators.Validator;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +53,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     /** Magical domain to redirect to the version identity. */
     private static final String VERSION_DOMAIN = "version";
     /** A list of sources for this config manager. */
-    private final List<ConfigProvider> sources = new ArrayList<>();
+    private final List<ConfigFileBackedConfigProvider> sources = new ArrayList<>();
     /** The listeners registered for this manager. */
     private final Multimap<String, ConfigChangeListener> listeners = ArrayListMultimap.create();
     /** The config binder to use for this manager. */
@@ -124,7 +119,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
         this.server = server;
         this.channel = chanName;
 
-        binder = new ConfigBinder(this);
+        binder = new ConfigBinderImpl(this);
     }
 
     @Override
@@ -255,7 +250,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
      *
      * @return True if the identity applies, false otherwise
      */
-    public boolean identityApplies(final ConfigProvider identity) {
+    public boolean identityApplies(final ConfigFileBackedConfigProvider identity) {
         final String comp;
 
         switch (identity.getTarget().getType()) {
@@ -315,12 +310,12 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
      *
      * @param identity The identity to be checked
      */
-    public void checkIdentity(final ConfigProvider identity) {
+    public void checkIdentity(final ConfigFileBackedConfigProvider identity) {
         if (!sources.contains(identity) && identityApplies(identity)) {
             synchronized (sources) {
                 sources.add(identity);
                 identity.addListener(this);
-                Collections.sort(sources, new ConfigProviderTargetComparator());
+                sources.sort(new ConfigProviderTargetComparator());
             }
 
             // Determine which settings will have changed
@@ -382,8 +377,8 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
                     removeIdentity(identity);
                 });
 
-        final List<ConfigProvider> newSources = manager.getIdentitiesForManager(this);
-        for (ConfigProvider identity : newSources) {
+        final List<ConfigFileBackedConfigProvider> newSources = manager.getIdentitiesForManager(this);
+        for (ConfigFileBackedConfigProvider identity : newSources) {
             LOG.trace("Testing new identity: {}", identity);
             checkIdentity(identity);
         }
@@ -468,12 +463,12 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     }
 
     @Override
-    public void configProviderAdded(final ConfigProvider configProvider) {
+    public void configProviderAdded(final ConfigFileBackedConfigProvider configProvider) {
         checkIdentity(configProvider);
     }
 
     @Override
-    public void configProviderRemoved(final ConfigProvider configProvider) {
+    public void configProviderRemoved(final ConfigFileBackedConfigProvider configProvider) {
         removeIdentity(configProvider);
     }
 

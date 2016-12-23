@@ -23,17 +23,15 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.parser.interfaces.ChannelInfo;
 
 import java.util.Optional;
 
@@ -46,7 +44,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,21 +58,15 @@ public class KickReasonTest {
     @Mock private Channel channel;
     @Mock private CommandController controller;
     @Mock private WindowModel container;
-    @Mock private DMDircMBassador eventbus;
-    @Mock private ChannelInfo channelInfo;
-    @Mock private AggregateConfigProvider configProvider;
+    @Mock private EventBus eventbus;
     @Captor private ArgumentCaptor<CommandErrorEvent> errorEventCaptor;
     private KickReason command;
 
     @Before
     public void setup() {
-        when(container.getConfigManager()).thenReturn(configProvider);
-        when(configProvider.getOption("general", "kickmessage")).thenReturn("KICKREASON");
-        when(channel.getChannelInfo()).thenReturn(channelInfo);
         when(channel.getConnection()).thenReturn(Optional.of(connection));
         when(connection.getUser("user")).thenReturn(user1);
         when(connection.getUser("user1")).thenReturn(user2);
-        when(groupChatUser.getHostname()).thenReturn(Optional.of("HOSTNAME"));
         when(channel.getUser(user1)).thenReturn(Optional.of(groupChatUser));
         when(channel.getUser(user2)).thenReturn(Optional.empty());
         when(controller.getCommandChar()).thenReturn('/');

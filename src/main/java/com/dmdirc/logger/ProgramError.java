@@ -22,8 +22,8 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ProgramErrorStatusEvent;
+import com.dmdirc.interfaces.EventBus;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
@@ -54,7 +54,7 @@ public class ProgramError implements Serializable {
     /** Date/time error first occurred. */
     private final LocalDateTime date;
     /** The eventbus to post status changes to. */
-    private final Optional<DMDircMBassador> eventBus;
+    private final Optional<EventBus> eventBus;
     /** Is this an application error? */
     private final boolean appError;
     /** Error report Status. */
@@ -76,7 +76,7 @@ public class ProgramError implements Serializable {
             @Nonnull final String message,
             @Nullable final Throwable exception,
             @Nonnull final LocalDateTime date,
-            @Nullable final DMDircMBassador eventBus,
+            @Nullable final EventBus eventBus,
             final boolean appError) {
         checkNotNull(level);
         checkNotNull(message);

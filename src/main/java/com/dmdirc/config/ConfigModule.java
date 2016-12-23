@@ -43,9 +43,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.dmdirc.ClientModule.AddonConfig;
-import static com.dmdirc.ClientModule.GlobalConfig;
-import static com.dmdirc.ClientModule.UserConfig;
 import static com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import static com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 

@@ -22,12 +22,12 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ProgramErrorAddedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorStatusEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.base.Throwables;
@@ -56,7 +56,7 @@ public class SentryLoggingErrorManager {
             IllegalAccessError.class, OutOfMemoryError.class,
             NoSuchFieldError.class,};
     /** The event bus to listen for errors on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** Sentry error reporter factory. */
     private final SentryErrorReporter sentryErrorReporter;
     /** Thread used for sending errors. */
@@ -69,7 +69,7 @@ public class SentryLoggingErrorManager {
     private boolean sendReports;
 
     @Inject
-    public SentryLoggingErrorManager(final DMDircMBassador eventBus,
+    public SentryLoggingErrorManager(final EventBus eventBus,
             final SentryErrorReporter sentryErrorReporter,
             @Named("errors") final ExecutorService executorService) {
         this.eventBus = eventBus;

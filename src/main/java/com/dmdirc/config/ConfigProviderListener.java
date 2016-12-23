@@ -20,35 +20,32 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.harness;
+package com.dmdirc.config;
 
-import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.interfaces.config.IdentityController;
 
-import org.hamcrest.Description;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Mockito;
+/**
+ * An interface of objects which are interested in config providers being added and removed from the
+ * {@link IdentityController}.
+ *
+ * @since 0.6.4
+ */
+interface ConfigProviderListener {
 
-public class CommandArgsMatcher extends ArgumentMatcher<CommandArguments> {
+    /**
+     * Called whenever a relevant new config provider is added to the associated
+     * {@link IdentityController}.
+     *
+     * @param configProvider The configProvider which has been added
+     */
+    void configProviderAdded(final ConfigFileBackedConfigProvider configProvider);
 
-    private final String text;
+    /**
+     * Called whenever a relevant config provider is removed from the associated
+     * {@link IdentityController}.
+     *
+     * @param configProvider The configProvider which has been removed
+     */
+    void configProviderRemoved(final ConfigFileBackedConfigProvider configProvider);
 
-    public CommandArgsMatcher(final String text) {
-        this.text = text;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean matches(final Object item) {
-        return text.equals(((CommandArguments) item).getLine());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void describeTo(final Description description) {
-        description.appendText("eqLine(\"" + text + "\")");
-    }
-
-    public static CommandArguments eqLine(final String line) {
-        return Mockito.argThat(new CommandArgsMatcher(line));
-    }
 }

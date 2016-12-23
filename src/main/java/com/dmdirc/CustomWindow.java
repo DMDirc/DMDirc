@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.components.WindowComponent;
@@ -60,7 +61,7 @@ public class CustomWindow extends FrameContainer {
             final String name,
             final String title,
             final AggregateConfigProvider configProvider,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final BackBufferFactory backBufferFactory) {
         super("custom", name, title, configProvider, backBufferFactory,
                 eventBus, Collections.singletonList(WindowComponent.TEXTAREA.getIdentifier()));

@@ -34,21 +34,22 @@ configurations.all {
 dependencies {
     compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     compile group: 'com.squareup.dagger', name: 'dagger-compiler', version: '1.2.5'
-    compile group: 'com.google.auto.value', name: 'auto-value', version: '1.2'
+    compile group: 'com.google.auto.value', name: 'auto-value', version: '1.3'
 
     bundle group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
     bundle group: 'org.slf4j', name: 'slf4j-api', version:'1.7.21'
     bundle group: 'com.squareup.dagger', name: 'dagger', version: '1.2.5'
     bundle group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.09'
-    bundle group: 'com.getsentry.raven', name: 'raven', version: '7.3.0'
+    bundle group: 'com.getsentry.raven', name: 'raven', version: '7.8.0'
     bundle group: 'com.google.guava', name:'guava', version: '19.0'
-    bundle group: 'net.engio', name: 'mbassador', version: '1.2.4.2'
+    bundle group: 'net.engio', name: 'mbassador', version: '1.3.0'
     bundle group: 'com.google.code.gson', name: 'gson', 'version': '2.5'
+    bundle group: 'com.dmdirc', name: 'api', version: '+', changing: true
     bundle group: 'com.dmdirc', name: 'util', version: '+', changing: true
     bundle group: 'com.dmdirc', name: 'parser-common', version: '+', changing: true
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.19'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.2.7'
     testCompile group: 'com.google.jimfs', name: 'jimfs', version: '1.1'
 }
 
@@ -67,5 +68,5 @@ apply from: 'gradle/jar.gradle'
 apply from: 'gradle/fatjar.gradle'
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
+    gradleVersion = '3.1'
 }

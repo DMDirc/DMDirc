@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
@@ -34,6 +33,7 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.events.ClientLineAddedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;
@@ -82,7 +82,7 @@ public class JoinChannelCommand extends Command implements IntelligentCommand {
     public JoinChannelCommand(
             final CommandController controller,
             final WindowManager windowManager,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         super(controller);
         this.windowManager = windowManager;
         eventBus.subscribe(this);

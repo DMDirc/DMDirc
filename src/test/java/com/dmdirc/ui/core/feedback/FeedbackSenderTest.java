@@ -22,18 +22,15 @@
 
 package com.dmdirc.ui.core.feedback;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.StatusBarMessageEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.util.io.Downloader;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import java.io.IOException;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,8 +40,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.mockito.Matchers.anyMapOf;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +57,7 @@ public class FeedbackSenderTest {
 
     @Mock private AggregateConfigProvider config;
     @Mock private Downloader downloader;
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Captor private ArgumentCaptor<StatusBarMessageEvent> messageEvent;
 
     private FeedbackSender feedbackSender;
@@ -70,8 +67,7 @@ public class FeedbackSenderTest {
     @Before
     public void setUp() throws Exception {
         feedbackSenderFactory = new FeedbackSenderFactory(config, downloader, eventBus);
-        when(downloader.getPage(anyString(), anyMapOf(String.class, String.class)))
-                .thenReturn(Lists.newArrayList("Success."));
+        when(downloader.getPage(anyString(), anyMap())).thenReturn(Lists.newArrayList("Success."));
         expectedInfo = Maps.newHashMap(ImmutableMap.<String, String>builder()
                 .put("name", NAME).put("email", EMAIL)
                 .put("feedback", FEEDBACK)
@@ -159,8 +155,7 @@ public class FeedbackSenderTest {
 
     @Test
     public void testRun_WithFail() throws Exception {
-        when(downloader.getPage(anyString(), anyMapOf(String.class, String.class)))
-                .thenReturn(Lists.newArrayList());
+        when(downloader.getPage(anyString(), anyMap())).thenReturn(Lists.newArrayList());
         feedbackSender = feedbackSenderFactory.getFeedbackSender(NAME, EMAIL, FEEDBACK, VERSION,
                 SERVER_INFO, DMDIRC_INFO);
         feedbackSender.run();
@@ -172,8 +167,7 @@ public class FeedbackSenderTest {
 
     @Test
     public void testRun_WithException() throws Exception {
-        when(downloader.getPage(anyString(), anyMapOf(String.class, String.class)))
-                .thenThrow(new IOException("Fail."));
+        when(downloader.getPage(anyString(), anyMap())).thenThrow(new IOException("Fail."));
         feedbackSender = feedbackSenderFactory.getFeedbackSender(NAME, EMAIL, FEEDBACK, VERSION,
                 SERVER_INFO, DMDIRC_INFO);
         feedbackSender.run();

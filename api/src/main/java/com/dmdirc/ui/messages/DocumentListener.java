@@ -20,30 +20,40 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.interfaces.config;
+package com.dmdirc.ui.messages;
+
+import java.util.EventListener;
 
 /**
- * An interface of objects which are interested in config providers being added and removed from the
- * {@link IdentityController}.
- *
- * @since 0.6.4
+ * Interface for document listeners.
  */
-public interface ConfigProviderListener {
+public interface DocumentListener extends EventListener {
 
     /**
-     * Called whenever a relevant new config provider is added to the associated
-     * {@link IdentityController}.
+     * A line has been added to the textpane.
      *
-     * @param configProvider The configProvider which has been added
+     * @param line   Index of the added line
+     * @param length Number of lines added
+     * @param size   New number of lines
      */
-    void configProviderAdded(final ConfigProvider configProvider);
+    void linesAdded(final int line, final int length, final int size);
 
     /**
-     * Called whenever a relevant config provider is removed from the associated
-     * {@link IdentityController}.
+     * The textpane has been trimmed to a new size.
      *
-     * @param configProvider The configProvider which has been removed
+     * @param newSize    New number of lines
+     * @param numTrimmed Number of lines trimmed
      */
-    void configProviderRemoved(final ConfigProvider configProvider);
+    void trimmed(int newSize, int numTrimmed);
+
+    /**
+     * The textpane has been cleared.
+     */
+    void cleared();
+
+    /**
+     * The textpane requires repainting.
+     */
+    void repaintNeeded();
 
 }

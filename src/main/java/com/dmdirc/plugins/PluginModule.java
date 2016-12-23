@@ -22,7 +22,7 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.manager.UpdateManager;
@@ -46,7 +46,7 @@ public class PluginModule {
     @Provides
     @Singleton
     public PluginManager getPluginManager(
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final IdentityController identityController,
             final UpdateManager updateManager,
             final ObjectGraph objectGraph,

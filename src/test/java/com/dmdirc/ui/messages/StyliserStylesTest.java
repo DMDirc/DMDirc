@@ -23,6 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.DMDircMBassador;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.awt.Color;
@@ -47,7 +48,7 @@ import static org.mockito.Mockito.mock;
 @Ignore("Doesn't work in a headless environment (initialises an IRCDocument)")
 public class StyliserStylesTest {
 
-    private DMDircMBassador eventBus;
+    private EventBus eventBus;
     protected String input, output;
 
     public StyliserStylesTest(final String input, final String output) {
@@ -61,7 +62,7 @@ public class StyliserStylesTest {
         assertEquals(output, style(input, eventBus));
     }
 
-    protected static String style(final String input, final DMDircMBassador eventBus)
+    protected static String style(final String input, final EventBus eventBus)
             throws BadLocationException{
         final DefaultStyledDocument doc = new DefaultStyledDocument();
         final StringBuilder builder = new StringBuilder();

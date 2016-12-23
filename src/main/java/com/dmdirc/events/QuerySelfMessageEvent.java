@@ -22,9 +22,8 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Query;
+import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.User;
-
 import java.time.LocalDateTime;
 
 /**
@@ -32,12 +31,12 @@ import java.time.LocalDateTime;
  */
 public class QuerySelfMessageEvent extends BaseQueryMessageEvent {
 
-    public QuerySelfMessageEvent(final LocalDateTime timestamp, final Query query, final User user,
-            final String message) {
+    public QuerySelfMessageEvent(final LocalDateTime timestamp, final PrivateChat query, final User user,
+             final String message) {
         super(timestamp, query, user, message);
     }
 
-    public QuerySelfMessageEvent(final Query query, final User user, final String message) {
+    public QuerySelfMessageEvent(final PrivateChat query, final User user, final String message) {
         super(query, user, message);
     }
 }

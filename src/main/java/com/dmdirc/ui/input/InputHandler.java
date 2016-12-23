@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfoPair;
@@ -32,6 +31,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.ClientUserInputEvent;
 import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.ui.InputField;
@@ -40,7 +40,7 @@ import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
 import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
-import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.messages.IRCControlCodes;
 import com.dmdirc.util.collections.ListenerList;
 import com.dmdirc.util.collections.RollingList;
 import com.dmdirc.util.validators.ValidationResponse;
@@ -119,7 +119,7 @@ public abstract class InputHandler implements ConfigChangeListener {
     /** The controller to use to retrieve command information. */
     private final CommandController commandController;
     /** The event bus to use to dispatch input events. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** Executor service. */
     private final ScheduledExecutorService executorService;
 
@@ -140,7 +140,7 @@ public abstract class InputHandler implements ConfigChangeListener {
             final CommandParser commandParser,
             final WindowModel parentWindow,
             final TabCompleterUtils tabCompleterUtils,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         buffer = new RollingList<>(parentWindow.getConfigManager()
                 .getOptionInt("ui", "inputbuffersize"), "");
 
@@ -250,9 +250,9 @@ public abstract class InputHandler implements ConfigChangeListener {
             // or control code with a comma (so they can pick a background)
             final String partialLine = line.substring(0, caretPosition - 1);
 
-            if (partialLine.matches("^.*" + Styliser.CODE_COLOUR + "[0-9]{0,2}$")) {
+            if (partialLine.matches("^.*" + IRCControlCodes.COLOUR + "[0-9]{0,2}$")) {
                 target.showColourPicker(true, false);
-            } else if (partialLine.matches("^.*" + Styliser.CODE_HEXCOLOUR + "[0-9A-Z]{6}?$")) {
+            } else if (partialLine.matches("^.*" + IRCControlCodes.COLOUR_HEX + "[0-9A-Z]{6}?$")) {
                 target.showColourPicker(false, true);
             }
         }
@@ -399,33 +399,33 @@ public abstract class InputHandler implements ConfigChangeListener {
             final boolean shiftPressed) {
         switch (keyCode) {
             case KeyEvent.VK_B:
-                addControlCode(Styliser.CODE_BOLD, POSITION_END);
+                addControlCode(IRCControlCodes.BOLD, POSITION_END);
                 break;
 
             case KeyEvent.VK_U:
-                addControlCode(Styliser.CODE_UNDERLINE, POSITION_END);
+                addControlCode(IRCControlCodes.UNDERLINE, POSITION_END);
                 break;
 
             case KeyEvent.VK_O:
-                addControlCode(Styliser.CODE_STOP, POSITION_END);
+                addControlCode(IRCControlCodes.STOP, POSITION_END);
                 break;
 
             case KeyEvent.VK_I:
-                addControlCode(Styliser.CODE_ITALIC, POSITION_END);
+                addControlCode(IRCControlCodes.ITALIC, POSITION_END);
                 break;
 
             case KeyEvent.VK_F:
                 if (shiftPressed) {
-                    addControlCode(Styliser.CODE_FIXED, POSITION_END);
+                    addControlCode(IRCControlCodes.FIXED, POSITION_END);
                 }
                 break;
 
             case KeyEvent.VK_K:
                 if (shiftPressed) {
-                    addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
+                    addControlCode(IRCControlCodes.COLOUR_HEX, POSITION_START);
                     target.showColourPicker(false, true);
                 } else {
-                    addControlCode(Styliser.CODE_COLOUR, POSITION_START);
+                    addControlCode(IRCControlCodes.COLOUR, POSITION_START);
                     target.showColourPicker(true, false);
                 }
                 break;

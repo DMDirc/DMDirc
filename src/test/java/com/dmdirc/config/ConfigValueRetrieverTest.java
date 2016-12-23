@@ -65,8 +65,6 @@ public class ConfigValueRetrieverTest {
 
     @Test
     public void testRetrievesStringWithFallback() {
-        when(configProvider.getOptionString(DOMAIN, KEY, true,
-                ReadOnlyConfigProvider.PERMISSIVE_VALIDATOR)).thenReturn(null);
         when(configProvider.getOptionString(
                 DOMAIN, KEY, true, ReadOnlyConfigProvider.PERMISSIVE_VALIDATOR,
                 FALLBACK_DOMAIN, FALLBACK_KEY))
@@ -80,16 +78,12 @@ public class ConfigValueRetrieverTest {
     public void testRetrievesStringWithRequiresFalse() {
         when(configProvider.getOptionString(DOMAIN, KEY, false,
                 ReadOnlyConfigProvider.PERMISSIVE_VALIDATOR)).thenReturn(null);
-        when(configProvider.getOptionString(DOMAIN, KEY, true,
-                ReadOnlyConfigProvider.PERMISSIVE_VALIDATOR)).thenReturn("value!");
 
         assertNull(retriever.getValue(String.class, DOMAIN, KEY, false));
     }
 
     @Test
     public void testRetrievesStringWithRequiresTrue() {
-        when(configProvider.getOptionString(DOMAIN, KEY, false,
-                ReadOnlyConfigProvider.PERMISSIVE_VALIDATOR)).thenReturn(null);
         when(configProvider.getOptionString(DOMAIN, KEY, true,
                 ReadOnlyConfigProvider.PERMISSIVE_VALIDATOR)).thenReturn("value!");
 

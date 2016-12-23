@@ -21,44 +21,38 @@
  */
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionFactory;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.util.URIParser;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyChar;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NewServerTest {
 
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private CommandController controller;
     @Mock private ProfileManager profileManager;
-    @Mock private Profile identity;
     @Mock private WindowModel container;
     @Mock private ServiceManager serviceManager;
     @Mock private ConnectionFactory factory;
@@ -68,9 +62,7 @@ public class NewServerTest {
     @Before
     public void setup() {
         when(container.getEventBus()).thenReturn(eventBus);
-        when(factory.createServer(any(URI.class), any(Profile.class))).thenReturn(connection);
-        when(profileManager.getProfiles()).thenReturn(
-                Collections.singletonList(identity));
+        when(factory.createServer(any(URI.class), isNull())).thenReturn(connection);
         command = new NewServer(controller, factory, serviceManager, profileManager, new URIParser());
     }
 
@@ -79,7 +71,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo irc.foo.com"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(factory).createServer(eq(new URI("irc://irc.foo.com")), any(Profile.class));
+        verify(factory).createServer(eq(new URI("irc://irc.foo.com")), isNull());
         verify(connection).connect();
     }
 
@@ -88,7 +80,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo irc.foo.com:1234"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(factory).createServer(eq(new URI("irc://irc.foo.com:1234")), any(Profile.class));
+        verify(factory).createServer(eq(new URI("irc://irc.foo.com:1234")), isNull());
         verify(connection).connect();
     }
 
@@ -97,7 +89,7 @@ public class NewServerTest {
         command.execute(container, new CommandArguments(controller, "/foo otheruri://foo.com:123/blah"),
                 new CommandContext(null, NewServer.INFO));
 
-        verify(factory).createServer(eq(new URI("otheruri://foo.com:123/blah")), any(Profile.class));
+        verify(factory).createServer(eq(new URI("otheruri://foo.com:123/blah")), isNull());
         verify(connection).connect();
     }
 

@@ -33,7 +33,7 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
-import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.messages.IRCControlCodes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,14 +87,14 @@ public class Help extends Command implements IntelligentCommand {
 
         Collections.sort(commands);
 
-        showOutput(origin, isSilent, Styliser.CODE_FIXED
+        showOutput(origin, isSilent, IRCControlCodes.FIXED
                 + "----------------------- Available commands -------");
 
         final StringBuilder builder = new StringBuilder();
 
         for (String command : commands) {
             if (builder.length() + command.length() + 1 > 50) {
-                showOutput(origin, isSilent, Styliser.CODE_FIXED + builder.toString());
+                showOutput(origin, isSilent, IRCControlCodes.FIXED + builder.toString());
                 builder.delete(0, builder.length());
             } else if (builder.length() > 0) {
                 builder.append(' ');
@@ -104,10 +104,10 @@ public class Help extends Command implements IntelligentCommand {
         }
 
         if (builder.length() > 0) {
-            showOutput(origin, isSilent, Styliser.CODE_FIXED + builder.toString());
+            showOutput(origin, isSilent, IRCControlCodes.FIXED + builder.toString());
         }
 
-        showOutput(origin, isSilent, Styliser.CODE_FIXED
+        showOutput(origin, isSilent, IRCControlCodes.FIXED
                 + "--------------------------------------------------");
     }
 
@@ -131,15 +131,15 @@ public class Help extends Command implements IntelligentCommand {
         if (command == null) {
             showError(origin, isSilent, "Command '" + name + "' not found.");
         } else {
-            showOutput(origin, isSilent, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, IRCControlCodes.FIXED
                     + "---------------------- Command information -------");
-            showOutput(origin, isSilent, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, IRCControlCodes.FIXED
                     + " Name: " + name);
-            showOutput(origin, isSilent, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, IRCControlCodes.FIXED
                     + " Type: " + command.getKey().getType());
-            showOutput(origin, isSilent, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, IRCControlCodes.FIXED
                     + "Usage: " + command.getKey().getHelp());
-            showOutput(origin, isSilent, Styliser.CODE_FIXED
+            showOutput(origin, isSilent, IRCControlCodes.FIXED
                     + "--------------------------------------------------");
         }
     }

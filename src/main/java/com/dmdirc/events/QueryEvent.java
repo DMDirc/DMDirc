@@ -22,7 +22,7 @@
 
 package com.dmdirc.events;
 
-import com.dmdirc.Query;
+import com.dmdirc.interfaces.PrivateChat;
 
 import java.time.LocalDateTime;
 
@@ -34,18 +34,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class QueryEvent extends DMDircEvent {
 
     /** The query that this event occurred on. */
-    private final Query query;
+    private final PrivateChat query;
 
-    public QueryEvent(final LocalDateTime timestamp, final Query query) {
+    public QueryEvent(final LocalDateTime timestamp, final PrivateChat query) {
         super(timestamp);
         this.query = checkNotNull(query);
     }
 
-    public QueryEvent(final Query query) {
+    public QueryEvent(final PrivateChat query) {
         this.query = checkNotNull(query);
     }
 
-    public Query getQuery() {
+    public PrivateChat getQuery() {
         return query;
     }
 

@@ -22,9 +22,9 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.events.ClientPrefsClosedEvent;
 import com.dmdirc.events.ClientPrefsOpenedEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.plugins.Service;
@@ -65,7 +65,7 @@ public class PreferencesDialogModel {
     /** Service manager. */
     private final ServiceManager serviceManager;
     /** Event bus to post events on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of PreferencesDialogModel.
@@ -78,7 +78,7 @@ public class PreferencesDialogModel {
             final AggregateConfigProvider configManager,
             final ConfigProvider identity,
             final ServiceManager serviceManager,
-            final DMDircMBassador eventBus) {
+            final EventBus eventBus) {
         this.pluginPanel = pluginPanel;
         this.themePanel = themePanel;
         this.updatesPanel = updatesPanel;

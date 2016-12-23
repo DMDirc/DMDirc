@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2016 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,38 +22,26 @@
 
 package com.dmdirc.ui.messages;
 
-import java.util.EventListener;
-
 /**
- * Interface for IRCDocument listeners.
+ * Contains constants for IRC 'control codes' that modify text styles.
  */
-public interface IRCDocumentListener extends EventListener {
+public interface IRCControlCodes {
 
-    /**
-     * A line has been added to the textpane.
-     *
-     * @param line   Index of the added line
-     * @param length Number of lines added
-     * @param size   New number of lines
-     */
-    void linesAdded(final int line, final int length, final int size);
-
-    /**
-     * The textpane has been trimmed to a new size.
-     *
-     * @param newSize    New number of lines
-     * @param numTrimmed Number of lines trimmed
-     */
-    void trimmed(int newSize, int numTrimmed);
-
-    /**
-     * The textpane has been cleared.
-     */
-    void cleared();
-
-    /**
-     * The textpane requires repainting.
-     */
-    void repaintNeeded();
+  /** The character used for marking up bold text. */
+  char BOLD = 2;
+  /** The character used for marking up coloured text. */
+  char COLOUR = 3;
+  /** The character used for marking up coloured text (using hex). */
+  char COLOUR_HEX = 4;
+  /** The character used for stopping all formatting. */
+  char STOP = 15;
+  /** The character used for marking up fixed pitch text. */
+  char FIXED = 17;
+  /** The character used for negating control codes. */
+  char NEGATE = 18;
+  /** The character used for marking up italic text. */
+  char ITALIC = 29;
+  /** The character used for marking up underlined text. */
+  char UNDERLINE = 31;
 
 }

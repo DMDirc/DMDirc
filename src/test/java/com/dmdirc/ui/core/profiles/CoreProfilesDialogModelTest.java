@@ -42,7 +42,7 @@ import static java.util.Comparator.comparing;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -56,7 +56,6 @@ public class CoreProfilesDialogModelTest {
     private MutableProfile mutableProfile1;
     private MutableProfile mutableProfile2;
     private MutableProfile mutableProfile3;
-    private MutableProfile mutableProfile4;
     private List<MutableProfile> mutableProfiles;
     private CoreProfilesDialogModel instance;
 
@@ -71,7 +70,6 @@ public class CoreProfilesDialogModelTest {
         mutableProfile1 = new MutableProfile(profile1);
         mutableProfile2 = new MutableProfile(profile2);
         mutableProfile3 = new MutableProfile(profile3);
-        mutableProfile4 = new MutableProfile(profile4);
         mutableProfiles = Lists.newArrayList(mutableProfile1, mutableProfile2, mutableProfile3);
         Collections.sort(mutableProfiles, comparing(MutableProfile::getName));
         when(profileManager.getProfiles()).thenReturn(profiles);
@@ -196,9 +194,9 @@ public class CoreProfilesDialogModelTest {
         instance.setSelectedProfile(instance.getProfile("profile1"));
         assertEquals("testSetSelectedProfileSelectedNickname", Optional.<String>empty(),
                 instance.getSelectedProfileSelectedNickname());
-        instance.setSelectedProfileSelectedNickname(Optional.ofNullable("nickname12"));
+        instance.setSelectedProfileSelectedNickname(Optional.of("nickname12"));
         verify(listener).selectedNicknameChanged(Optional.of("nickname12"));
-        assertEquals("testSetSelectedProfileSelectedNickname", Optional.ofNullable("nickname12"),
+        assertEquals("testSetSelectedProfileSelectedNickname", Optional.of("nickname12"),
                 instance.getSelectedProfileSelectedNickname());
     }
 
@@ -206,11 +204,10 @@ public class CoreProfilesDialogModelTest {
     public void testSetSelectedProfileDetails() {
         instance.setSelectedProfile(instance.getProfile("profile2"));
         verify(listener).profileSelectionChanged(Optional.of(mutableProfile2));
-        instance.setSelectedProfileName(Optional.ofNullable("testName"));
-        instance.setSelectedProfileIdent(Optional.ofNullable("testIdent"));
-        instance.setSelectedProfileRealname(Optional.ofNullable("testRealname"));
-        instance.setSelectedProfileNicknames(Optional.ofNullable((List<String>) Lists.
-                newArrayList("testNickname")));
+        instance.setSelectedProfileName(Optional.of("testName"));
+        instance.setSelectedProfileIdent(Optional.of("testIdent"));
+        instance.setSelectedProfileRealname(Optional.of("testRealname"));
+        instance.setSelectedProfileNicknames(Optional.of(Lists.newArrayList("testNickname")));
         assertEquals("testGetSelectedProfileDetails", "testName",
                 instance.getSelectedProfileName().get());
         assertEquals("testGetSelectedProfileDetails", "testIdent",
@@ -251,9 +248,9 @@ public class CoreProfilesDialogModelTest {
     @Test
     public void testEditSelectedProfileSelectedNickname() {
         instance.setSelectedProfile(instance.getProfile("profile1"));
-        instance.setSelectedProfileSelectedNickname(Optional.ofNullable("nickname12"));
+        instance.setSelectedProfileSelectedNickname(Optional.of("nickname12"));
         assertEquals("testSetSelectedProfileSelectedNickname",
-                Optional.ofNullable("nickname12"),
+                Optional.of("nickname12"),
                 instance.getSelectedProfileSelectedNickname());
         instance.editSelectedProfileNickname("nickname12", "nickname4");
         verify(listener).selectedProfileNicknameEdited("nickname12", "nickname4");
@@ -275,7 +272,7 @@ public class CoreProfilesDialogModelTest {
         final MutableProfile profile4 = instance.getProfile("profile4").get();
         verify(listener).profileAdded(profile4);
         instance.removeListener(listener);
-        instance.setSelectedProfile(Optional.ofNullable(profile4));
+        instance.setSelectedProfile(Optional.of(profile4));
         verify(listener, never()).profileRemoved(profile4);
     }
 

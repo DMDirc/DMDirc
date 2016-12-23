@@ -22,6 +22,8 @@
 
 package com.dmdirc.interfaces.config;
 
+import com.dmdirc.config.ConfigFileBackedConfigProvider;
+
 import java.util.Collection;
 
 /**
@@ -85,35 +87,7 @@ public interface IdentityController {
      *
      * @param identity The identity to be added
      */
-    void addConfigProvider(ConfigProvider identity);
-
-    /**
-     * Adds a new identity listener which will be informed of all settings identities which are
-     * added to this manager.
-     *
-     * @param listener The listener to be added
-     *
-     * @since 0.6.4
-     */
-    void registerIdentityListener(ConfigProviderListener listener);
-
-    /**
-     * Adds a new identity listener which will be informed of all identities of the specified custom
-     * type which are added to this manager.
-     *
-     * @param type     The type of identities to listen for
-     * @param listener The listener to be added
-     *
-     * @since 0.6.4
-     */
-    void registerIdentityListener(String type, ConfigProviderListener listener);
-
-    /**
-     * Unregisters the given identity listener.
-     *
-     * @param listener The listener to be removed
-     */
-    void unregisterIdentityListener(ConfigProviderListener listener);
+    void addConfigProvider(final ConfigFileBackedConfigProvider identity);
 
     /**
      * Saves all modified identity files to disk.
@@ -125,6 +99,6 @@ public interface IdentityController {
      *
      * @param identity The identity to be removed
      */
-    void removeConfigProvider(ConfigProvider identity);
+    void removeConfigProvider(final ConfigFileBackedConfigProvider identity);
 
 }

@@ -22,7 +22,6 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Topic;
 import com.dmdirc.parser.common.ChannelListModeItem;
 
@@ -61,7 +60,7 @@ public interface GroupChat extends Chat {
      *
      * @return An event bus scoped to this channel.
      */
-    DMDircMBassador getEventBus();
+    EventBus getEventBus();
 
     /**
      * Retrieves the maximum length that a topic on this channel can be.

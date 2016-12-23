@@ -22,9 +22,9 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.events.ProgramErrorAddedEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.util.concurrent.MoreExecutors;
@@ -38,9 +38,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,7 +49,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SentryLoggingErrorManagerTest {
 
-    @Mock private DMDircMBassador eventBus;
+    @Mock private EventBus eventBus;
     @Mock private AggregateConfigProvider config;
     @Mock private ConfigBinder configBinder;
     @Mock private SentryErrorReporter sentryErrorReporter;
@@ -77,8 +78,7 @@ public class SentryLoggingErrorManagerTest {
     @Test
     public void testHandleErrorEvent() throws Exception {
         instance.handleErrorEvent(appErrorEvent);
-        verify(sentryErrorReporter).sendException(anyString(), any(ErrorLevel.class),
-                any(LocalDateTime.class), any());
+        verify(sentryErrorReporter).sendException(isNull(), isNull(), isNull(), any());
     }
 
     @Test
@@ -120,8 +120,7 @@ public class SentryLoggingErrorManagerTest {
         instance.handleSubmitErrors(true);
         instance.handleNoErrorReporting(false);
         instance.handleErrorEvent(appErrorEvent);
-        verify(sentryErrorReporter).sendException(anyString(), any(ErrorLevel.class),
-                any(LocalDateTime.class), any());
+        verify(sentryErrorReporter).sendException(isNull(), isNull(), isNull(), any());
     }
 
     @Test

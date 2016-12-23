@@ -23,23 +23,26 @@
 package com.dmdirc;
 
 import com.dmdirc.events.DMDircEvent;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.dmdirc.interfaces.EventBus;
 
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.config.IBusConfiguration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static com.dmdirc.util.LogUtils.APP_ERROR;
 
 /**
  * Generified MBassador.
  */
-public class DMDircMBassador extends MBassador<DMDircEvent> {
+public class DMDircMBassador implements EventBus {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMDircMBassador.class);
+
+    private final MBassador<DMDircEvent> bus;
 
     public DMDircMBassador() {
         this(new BusConfiguration()
@@ -52,8 +55,28 @@ public class DMDircMBassador extends MBassador<DMDircEvent> {
 
     @SuppressWarnings("TypeMayBeWeakened")
     public DMDircMBassador(final IBusConfiguration configuration) {
-        super(configuration.addPublicationErrorHandler(
+        bus = new MBassador<>(configuration.addPublicationErrorHandler(
                 e -> LOG.error(APP_ERROR, e.getMessage(), e.getCause())));
+    }
+
+    @Override
+    public void subscribe(Object listener) {
+        bus.subscribe(listener);
+    }
+
+    @Override
+    public void unsubscribe(Object listener) {
+        bus.unsubscribe(listener);
+    }
+
+    @Override
+    public void publish(DMDircEvent message) {
+        bus.publish(message);
+    }
+
+    @Override
+    public void publishAsync(DMDircEvent message) {
+        bus.publishAsync(message);
     }
 
 }

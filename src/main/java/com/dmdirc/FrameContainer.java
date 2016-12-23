@@ -29,6 +29,7 @@ import com.dmdirc.events.FrameIconChangedEvent;
 import com.dmdirc.events.FrameNameChangedEvent;
 import com.dmdirc.events.FrameTitleChangedEvent;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
@@ -36,6 +37,7 @@ import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.parser.common.CompositionState;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
+import com.dmdirc.ui.messages.BackBufferImpl;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 
 import java.util.Collection;
@@ -65,13 +67,13 @@ public class FrameContainer implements WindowModel {
     /** The UI components that this frame requires. */
     private final Set<String> components;
     /** Event bus to dispatch events to. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     /** The manager handling this frame's unread status. */
     private final UnreadStatusManager unreadStatusManager;
     /** The back buffer factory. */
     private final BackBufferFactory backBufferFactory;
     /** The back buffer for this container. */
-    private BackBuffer backBuffer;
+    private BackBufferImpl backBuffer;
     /** The input model for this container. */
     private Optional<InputModel> inputModel = Optional.empty();
     /** The connection associated with this model. */
@@ -88,7 +90,7 @@ public class FrameContainer implements WindowModel {
             final String title,
             final AggregateConfigProvider config,
             final BackBufferFactory backBufferFactory,
-            final DMDircMBassador eventBus,
+            final EventBus eventBus,
             final Collection<String> components) {
         this.configManager = config;
         this.name = name;
@@ -157,7 +159,7 @@ public class FrameContainer implements WindowModel {
     }
 
     @Override
-    public DMDircMBassador getEventBus() {
+    public EventBus getEventBus() {
         return eventBus;
     }
 
@@ -207,7 +209,7 @@ public class FrameContainer implements WindowModel {
         eventBus.unsubscribe(unreadStatusManager);
         configManager.getBinder().unbind(unreadStatusManager);
         eventBus.publish(new FrameClosingEvent(this));
-        getBackBuffer().stopAddingEvents();
+        backBuffer.stopAddingEvents();
     }
 
     @Override

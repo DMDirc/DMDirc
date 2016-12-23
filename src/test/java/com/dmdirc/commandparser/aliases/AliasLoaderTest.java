@@ -23,16 +23,14 @@
 package com.dmdirc.commandparser.aliases;
 
 import com.google.common.collect.Sets;
-
 import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.anySetOf;
+import static org.mockito.ArgumentMatchers.anySetOf;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

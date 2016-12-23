@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.events.ChannelOpenedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.WindowManager;
@@ -44,7 +45,7 @@ public class ChannelFactory {
 
     private final TabCompleterFactory tabCompleterFactory;
     private final CommandController commandController;
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
     private final BackBufferFactory backBufferFactory;
     private final GroupChatUserManager groupChatUserManager;
     private final WindowManager windowManager;
@@ -52,7 +53,7 @@ public class ChannelFactory {
     @Inject
     public ChannelFactory(final TabCompleterFactory tabCompleterFactory,
             final CommandController commandController,
-            final DMDircMBassador eventBus, final BackBufferFactory backBufferFactory,
+            final EventBus eventBus, final BackBufferFactory backBufferFactory,
             final GroupChatUserManager groupChatUserManager, final WindowManager windowManager) {
         this.tabCompleterFactory = tabCompleterFactory;
         this.commandController = commandController;

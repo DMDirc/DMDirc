@@ -118,7 +118,7 @@ public class PreferencesReader {
         readCategoriesList(asList(value));
     }
 
-    private void readCategoriesList(final List<Object> list) throws PreferencesReaderException {
+    private void readCategoriesList(final List<Object> list) {
         for (Object category : list) {
             LOG.debug("Found category entry: {}", category.getClass().getName());
             final CategoryReader reader = new CategoryReader(asMap(category));

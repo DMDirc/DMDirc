@@ -23,10 +23,10 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
-import com.dmdirc.DMDircMBassador;
 import com.dmdirc.Precondition;
 import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.events.FrameOpenedEvent;
+import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.util.collections.ListenerList;
@@ -69,13 +69,13 @@ public class WindowManager {
     /** Counter to use for ID assignments. */
     private final AtomicLong nextId = new AtomicLong(0L);
     /** Event bus to dispatch window events on. */
-    private final DMDircMBassador eventBus;
+    private final EventBus eventBus;
 
     /**
      * Creates a new instance of {@link WindowManager}.
      */
     @Inject
-    public WindowManager(final DMDircMBassador eventBus) {
+    public WindowManager(final EventBus eventBus) {
         this.eventBus = eventBus;
         eventBus.subscribe(this);
     }
