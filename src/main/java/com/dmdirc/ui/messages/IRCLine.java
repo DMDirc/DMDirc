@@ -35,6 +35,7 @@ public class IRCLine implements Line {
     private final String timestamp;
     private final String text;
     private final Styliser styliser;
+    private final StyledMessageUtils styleUtils = new StyledMessageUtils(); // TODO: Inject
     private final DisplayPropertyMap displayProperties;
     private int fontSize;
     private String fontName;
@@ -94,7 +95,7 @@ public class IRCLine implements Line {
 
     @Override
     public String getText() {
-        return Styliser.stipControlCodes(timestamp + text);
+        return styleUtils.stripControlCodes(timestamp + text);
     }
 
     @Override

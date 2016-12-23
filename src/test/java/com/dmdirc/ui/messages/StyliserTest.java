@@ -40,24 +40,6 @@ public class StyliserTest {
     @Mock private EventBus eventBus;
 
     @Test
-    public void testStripControlCodes1() {
-        final String input = "This"+ (char) 2 +" is "+ (char) 17 +"a test";
-
-        final String expResult = "This is a test";
-        final String result = Styliser.stipControlCodes(input);
-        assertEquals(expResult, result);
-    }
-
-    @Test
-    public void testStripControlCodes2() {
-        final String input = "This is "+ (char) 3 +"5a "+ (char) 4 +"FF0000test";
-
-        final String expResult = "This is a test";
-        final String result = Styliser.stipControlCodes(input);
-        assertEquals(expResult, result);
-    }
-
-    @Test
     public void testReadUntilControl1() {
         final String input = "This"+ (char) 2 +" is "+ (char) 17 +"a test";
         final String expResult = "This";

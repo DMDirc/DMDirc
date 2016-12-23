@@ -22,15 +22,16 @@
 
 package com.dmdirc.ui.messages;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.util.colours.Colour;
+import com.google.common.annotations.VisibleForTesting;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * The styliser applies IRC styles to text. Styles are indicated by various control codes which are
@@ -195,7 +196,9 @@ public class Styliser implements ConfigChangeListener {
      * @return The corresponding text between the two indices
      *
      * @since 0.6.3
+     * @deprecated Use {@link StyledMessageUtils}
      */
+    @Deprecated
     public static String getStyledText(final String styled, final int from, final int to) {
         checkArgument(from < to, "'from' (" + from + ") must be less than 'to' (" + to + ')');
         checkArgument(from >= 0, "'from' (" + from + ") must be non-negative");
@@ -289,7 +292,9 @@ public class Styliser implements ConfigChangeListener {
      * @param input the String to be stripped
      *
      * @return a copy of the input with control codes removed
+     * @deprecated Use {@link StyledMessageUtils}
      */
+    @Deprecated
     public static String stipControlCodes(final String input) {
         return input.replaceAll("[" + IRCControlCodes.BOLD + CODE_CHANNEL + IRCControlCodes.FIXED
                 + CODE_HYPERLINK + IRCControlCodes.ITALIC + IRCControlCodes.NEGATE + CODE_NICKNAME
@@ -308,6 +313,7 @@ public class Styliser implements ConfigChangeListener {
      *
      * @since 0.6.5
      */
+    @Deprecated
     private static String stipInternalControlCodes(final String input) {
         return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK + CODE_NICKNAME
                 + CODE_SMILIE + IRCControlCodes.STOP + IRCControlCodes.UNDERLINE + ']', "")
@@ -324,7 +330,8 @@ public class Styliser implements ConfigChangeListener {
      *
      * @return A substring of the input containing no control characters
      */
-    public static String readUntilControl(final String input) {
+    @VisibleForTesting
+    static String readUntilControl(final String input) {
         int pos = input.length();
 
         pos = checkChar(pos, input.indexOf(IRCControlCodes.BOLD));

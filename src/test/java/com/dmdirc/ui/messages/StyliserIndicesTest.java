@@ -34,8 +34,8 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class StyliserIndicesTest {
 
-    protected String input, output;
-    protected int start, end;
+    private String input, output;
+    private int start, end;
 
     public StyliserIndicesTest(final String input, final int start, final int end, final String output) {
         this.input = input;
@@ -46,7 +46,7 @@ public class StyliserIndicesTest {
 
     @Test
     public void testStyle() {
-        assertEquals(output, Styliser.getStyledText(input, start, end));
+        assertEquals(output, new StyledMessageUtils().getStyledText(input, start, end));
     }
 
     @Parameterized.Parameters
