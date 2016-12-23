@@ -47,7 +47,7 @@ task createFatVersionConfig {
 
         targetFile << "\nbundledplugins_versions:\n"
         configurations.plugin.each { p ->
-            targetFile << " " + p.name.replaceFirst('-', '=').replaceAll('.jar$', '\n');
+            targetFile << " " + p.name.replaceFirst('-', '=').replaceAll('.jar$', '\n')
         }
     }
 }

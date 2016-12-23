@@ -28,20 +28,16 @@ import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.validators.Validator;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -319,7 +315,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
             synchronized (sources) {
                 sources.add(identity);
                 identity.addListener(this);
-                Collections.sort(sources, new ConfigProviderTargetComparator());
+                sources.sort(new ConfigProviderTargetComparator());
             }
 
             // Determine which settings will have changed

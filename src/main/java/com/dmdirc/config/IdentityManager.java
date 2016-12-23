@@ -442,7 +442,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
                     .collect(Collectors.toList()));
         }
 
-        Collections.sort(sources, new ConfigProviderTargetComparator());
+        sources.sort(new ConfigProviderTargetComparator());
 
         LOG.debug("Found {} source(s) for {}", sources.size(), manager);
 
