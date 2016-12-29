@@ -670,7 +670,6 @@ public class Server implements Connection {
         return myState.getState();
     }
 
-    @Override
     public ServerStatus getStatus() {
         return myState;
     }
