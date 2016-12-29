@@ -29,7 +29,6 @@ public interface BackBuffer {
 
     Document getDocument();
 
-    Styliser getStyliser();
+    StyleApplier getStyliser();
 
 }
-
