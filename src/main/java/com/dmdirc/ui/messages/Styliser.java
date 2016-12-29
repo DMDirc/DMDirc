@@ -35,18 +35,8 @@ import javax.annotation.Nullable;
  * The styliser applies IRC styles to text. Styles are indicated by various control codes which are
  * a de-facto IRC standard.
  */
-public class Styliser implements ConfigChangeListener {
+public class Styliser implements ConfigChangeListener, StyleApplier {
 
-    /** Character used to indicate hyperlinks. */
-    public static final char CODE_HYPERLINK = 5;
-    /** Character used to indicate channel links. */
-    public static final char CODE_CHANNEL = 6;
-    /** Character used to indicate smilies. */
-    public static final char CODE_SMILIE = 7;
-    /** Character used to indicate nickname links. */
-    public static final char CODE_NICKNAME = 16;
-    /** The character used for tooltips. */
-    public static final char CODE_TOOLTIP = 19;
     /** Internal chars. */
     private static final String INTERNAL_CHARS = String.valueOf(CODE_HYPERLINK)
             + CODE_NICKNAME + CODE_CHANNEL + CODE_SMILIE + CODE_TOOLTIP;
@@ -136,12 +126,7 @@ public class Styliser implements ConfigChangeListener {
                 configManager.getOptionString("ui", "channelcolour"), null);
     }
 
-    /**
-     * Stylises the specified strings and adds them to the specified maker.
-     *
-     * @param maker   The message maker to add styling to.
-     * @param strings The lines to be stylised
-     */
+    @Override
     public void addStyledString(final StyledMessageMaker<?> maker, final String... strings) {
         maker.resetAllStyles();
 
@@ -173,13 +158,7 @@ public class Styliser implements ConfigChangeListener {
         }
     }
 
-    /**
-     * Applies the hyperlink styles and intelligent linking regexps to the target.
-     *
-     * @param string The string to be linked
-     *
-     * @return A copy of the string with hyperlinks marked up
-     */
+    @Override
     public String doLinks(final String string) {
         String target = string;
         final String prefixes = connection == null ? null
