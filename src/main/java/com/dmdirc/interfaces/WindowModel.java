@@ -134,5 +134,11 @@ public interface WindowModel {
      */
     Optional<InputModel> getInputModel();
 
+    /**
+     * Returns the manager tracking this window's unread messages.
+     *
+     * @return The unread status manager for this window.
+     */
     UnreadStatusManager getUnreadStatusManager();
+
 }
