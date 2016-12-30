@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.Precondition;
 import com.dmdirc.interfaces.CommandController;
 
 import java.util.Arrays;
@@ -190,7 +189,6 @@ public class CommandArguments {
      *
      * @return A String representation of the requested words
      */
-    @Precondition("Start index is less than or equal to end index")
     public String getWordsAsString(final int start, final int end) {
         checkPositionIndex(start, end);
 

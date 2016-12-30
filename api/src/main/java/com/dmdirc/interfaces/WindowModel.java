@@ -22,9 +22,6 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.events.FrameIconChangedEvent;
-import com.dmdirc.events.FrameNameChangedEvent;
-import com.dmdirc.events.FrameTitleChangedEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.UnreadStatusManager;
@@ -63,14 +60,14 @@ public interface WindowModel {
     EventBus getEventBus();
 
     /**
-     * Changes the name of this container, and fires a {@link FrameNameChangedEvent}.
+     * Changes the name of this container.
      *
      * @param name The new name for this frame.
      */
     void setName(String name);
 
     /**
-     * Changes the title of this container, and fires a {@link FrameTitleChangedEvent}.
+     * Changes the title of this container.
      *
      * @param title The new title for this frame.
      */
@@ -114,7 +111,7 @@ public interface WindowModel {
     Optional<Connection> getConnection();
 
     /**
-     * Sets the icon to be used by this frame container and fires a {@link FrameIconChangedEvent}.
+     * Sets the icon to be used by this window.
      *
      * @param icon The new icon to be used
      */

@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.ServerState;
-import com.dmdirc.ServerStatus;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.parser.common.IgnoreList;
