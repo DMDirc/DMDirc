@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.events.CommandErrorEvent;
@@ -36,15 +36,14 @@ import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.InvalidURIException;
 import com.dmdirc.util.URIParser;
 
-import java.net.URI;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.net.URI;
 
 /**
  * The /server command allows the user to connect to a new server.
  */
-public class ChangeServer extends Command {
+public class ChangeServer extends BaseCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("server",

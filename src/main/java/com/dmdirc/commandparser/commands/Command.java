@@ -1,15 +1,49 @@
+/*
+ * Copyright (c) 2006-2016 DMDirc Developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.interfaces.CommandController;
+import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.WindowModel;
+
+import javax.annotation.Nonnull;
 
 /**
  * @deprecated Use {@link BaseCommand} directly.
  */
 @Deprecated
-public abstract class Command extends BaseCommand {
+public abstract class Command {
 
-    public Command(CommandController controller) {
-        super(controller);
-    }
+    /**
+     * Executes this command.
+     *
+     * @param origin  The container which received the command
+     * @param args    Arguments passed to this command
+     * @param context The context the command was executed in
+     *
+     * @since 0.6.4
+     */
+    public abstract void execute(@Nonnull WindowModel origin, CommandArguments args,
+                                 CommandContext context);
 
 }

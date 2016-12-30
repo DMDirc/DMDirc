@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -45,8 +45,7 @@ import javax.inject.Inject;
  * Sends a names request.
  */
 @CommandOptions(allowOffline = false)
-public class Names extends Command implements IntelligentCommand,
-        ExternalCommand {
+public class Names extends BaseCommand implements IntelligentCommand, ExternalCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("names",
