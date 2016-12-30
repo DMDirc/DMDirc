@@ -23,11 +23,12 @@
 package com.dmdirc.ui.input;
 
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The tab completer handles a user's request to tab complete some word.
@@ -75,9 +76,8 @@ public class TabCompleter {
      *
      * @return A TabCompleterResult containing any matches found
      */
-    public TabCompletionMatches complete(final String partial,
-            @Nullable final AdditionalTabTargets additionals) {
-        final TabCompletionMatches result = new TabCompletionMatches();
+    public List<String> complete(final String partial, @Nullable final AdditionalTabTargets additionals) {
+        final List<String> result = new ArrayList<>();
 
         final boolean caseSensitive = configManager.getOptionBool("tabcompletion", "casesensitive");
         final boolean allowEmpty = configManager.getOptionBool("tabcompletion", "allowempty");
@@ -103,14 +103,16 @@ public class TabCompleter {
                 // Filter out duplicates
                 .distinct()
                 // Add them all to the result
-                .forEach(result::addResult);
+                .forEach(result::add);
 
         if (parent != null) {
             if (additionals != null) {
                 additionals.clear();
             }
 
-            result.merge(parent.complete(partial, additionals));
+            parent.complete(partial, additionals).stream()
+                    .filter(match -> !result.contains(match))
+                    .forEach(result::add);
         }
 
         return result;
