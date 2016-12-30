@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
-import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.parsers.BaseCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.WindowModel;
@@ -34,7 +34,7 @@ import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import javax.annotation.Nonnull;
 
-public class TestCommandParser extends CommandParser {
+public class TestCommandParser extends BaseCommandParser {
 
     private static final long serialVersionUID = 7073002401375438532L;
 
