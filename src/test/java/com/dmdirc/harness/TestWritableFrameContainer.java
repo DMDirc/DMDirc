@@ -29,7 +29,7 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.input.TabCompleterImpl;
 import com.dmdirc.ui.messages.BackBufferFactory;
 
 import java.util.Collections;
@@ -49,7 +49,7 @@ public class TestWritableFrameContainer extends FrameContainer {
                 new DefaultInputModel(
                         line -> {},
                         new GlobalCommandParser(cm, commandManager, eventBus),
-                        new TabCompleter(cm),
+                        new TabCompleterImpl(cm),
                         () -> lineLength));
     }
 

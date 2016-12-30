@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * The tab completer handles a user's request to tab complete some word.
  */
-public class TabCompleter {
+public class TabCompleterImpl implements TabCompleter {
 
     /**
      * The parent TabCompleter. Results from parents are merged with results from this completer.
@@ -46,36 +46,29 @@ public class TabCompleter {
     private final Multimap<TabCompletionType, String> entries = ArrayListMultimap.create();
 
     /**
-     * Creates a new instance of {@link TabCompleter}.
+     * Creates a new instance of {@link TabCompleterImpl}.
      *
      * @param configManager     The manager to read config settings from.
      */
-    public TabCompleter(final AggregateConfigProvider configManager) {
+    public TabCompleterImpl(final AggregateConfigProvider configManager) {
         this.parent = null;
         this.configManager = configManager;
     }
 
     /**
-     * Creates a new instance of {@link TabCompleter}.
+     * Creates a new instance of {@link TabCompleterImpl}.
      *
      * @param configManager     The manager to read config settings from.
      * @param parent            The parent tab completer to inherit completions from.
      */
-    public TabCompleter(
+    public TabCompleterImpl(
             final AggregateConfigProvider configManager,
             @Nullable final TabCompleter parent) {
         this.parent = parent;
         this.configManager = configManager;
     }
 
-    /**
-     * Attempts to complete the partial string.
-     *
-     * @param partial     The string to tab complete
-     * @param additionals A list of additional strings to use
-     *
-     * @return A TabCompleterResult containing any matches found
-     */
+    @Override
     public List<String> complete(final String partial, @Nullable final AdditionalTabTargets additionals) {
         final List<String> result = new ArrayList<>();
 
@@ -118,22 +111,12 @@ public class TabCompleter {
         return result;
     }
 
-    /**
-     * Adds a new entry to this tab completer's list.
-     *
-     * @param type  The type of the entry that's being added
-     * @param entry The new entry to be added
-     */
+    @Override
     public void addEntry(final TabCompletionType type, final String entry) {
         entries.put(type, entry);
     }
 
-    /**
-     * Adds multiple new entries to this tab completer's list.
-     *
-     * @param type       The type of the entries that're being added
-     * @param newEntries Entries to be added
-     */
+    @Override
     public void addEntries(final TabCompletionType type, final Iterable<String> newEntries) {
         if (newEntries == null) {
             return;
@@ -144,28 +127,17 @@ public class TabCompleter {
         }
     }
 
-    /**
-     * Removes a specified entry from this tab completer's list.
-     *
-     * @param type  The type of the entry that should be removed
-     * @param entry The entry to be removed
-     */
+    @Override
     public void removeEntry(final TabCompletionType type, final String entry) {
         entries.remove(type, entry);
     }
 
-    /**
-     * Clears all entries in this tab completer.
-     */
+    @Override
     public void clear() {
         entries.clear();
     }
 
-    /**
-     * Clears all entries of the specified type in this tab completer.
-     *
-     * @param type The type of entry to clear
-     */
+    @Override
     public void clear(final TabCompletionType type) {
         entries.removeAll(type);
     }
