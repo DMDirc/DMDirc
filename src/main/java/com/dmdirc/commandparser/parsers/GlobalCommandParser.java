@@ -45,7 +45,7 @@ import static com.dmdirc.util.LogUtils.USER_ERROR;
  * The command parser used for global commands.
  */
 @Singleton
-public class GlobalCommandParser extends CommandParser {
+public class GlobalCommandParser extends BaseCommandParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(GlobalCommandParser.class);
     /** A version number for this class. */
