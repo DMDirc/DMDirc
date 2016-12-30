@@ -29,10 +29,9 @@ import com.dmdirc.interfaces.WindowModel;
 import javax.annotation.Nonnull;
 
 /**
- * @deprecated Use {@link BaseCommand} directly.
+ * A command responds to user-input in a text field.
  */
-@Deprecated
-public abstract class Command {
+public interface Command {
 
     /**
      * Executes this command.
@@ -40,10 +39,7 @@ public abstract class Command {
      * @param origin  The container which received the command
      * @param args    Arguments passed to this command
      * @param context The context the command was executed in
-     *
-     * @since 0.6.4
      */
-    public abstract void execute(@Nonnull WindowModel origin, CommandArguments args,
-                                 CommandContext context);
+    void execute(@Nonnull WindowModel origin, CommandArguments args, CommandContext context);
 
 }
