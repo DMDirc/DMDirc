@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 /**
  * Represents a generic command.
  */
-public abstract class BaseCommand extends Command {
+public abstract class BaseCommand implements Command {
 
     /** The controller this command is associated with. */
     private final CommandController controller;
