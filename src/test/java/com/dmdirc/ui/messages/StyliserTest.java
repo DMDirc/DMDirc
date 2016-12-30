@@ -70,7 +70,7 @@ public class StyliserTest {
         final String input2 = "abcdefghi";
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
-        final Styliser styliser = new Styliser(null, manager, new ColourManager(manager));
+        final Styliser styliser = new Styliser(null, manager, new ColourManagerImpl(manager));
 
         for (int i = 0; i < input2.length(); i++) {
             // TODO...

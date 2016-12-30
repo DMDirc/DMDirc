@@ -39,9 +39,9 @@ import static com.dmdirc.util.LogUtils.USER_ERROR;
  * The colour manager manages the colour scheme for the IRC client. It allows other components to
  * use IRC colour codes instead of absolute colours.
  */
-public class ColourManager {
+public class ColourManagerImpl implements ColourManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ColourManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ColourManagerImpl.class);
     /** Default colours used for the standard 16 IRC colours. */
     private static final Colour[] DEFAULT_COLOURS = {
         Colour.WHITE, Colour.BLACK, new Colour(0, 0, 127), new Colour(0, 141, 0),
@@ -56,11 +56,11 @@ public class ColourManager {
     private final Colour[] ircColours = DEFAULT_COLOURS.clone();
 
     /**
-     * Creates a new instance of {@link ColourManager}.
+     * Creates a new instance of {@link ColourManagerImpl}.
      *
      * @param configManager The manager to read config settings from.
      */
-    public ColourManager(final AggregateConfigProvider configManager) {
+    public ColourManagerImpl(final AggregateConfigProvider configManager) {
         this.configManager = configManager;
 
         configManager.addChangeListener("colour", (domain, key) -> initColours());
@@ -85,16 +85,7 @@ public class ColourManager {
         }
     }
 
-    /**
-     * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the target string, and
-     * returns the corresponding colour. Returns the specified fallback colour if the spec can't be
-     * parsed.
-     *
-     * @param spec     The string to parse
-     * @param fallback The colour to use if the spec isn't valid
-     *
-     * @return A colour representation of the specified string
-     */
+    @Override
     public Colour getColourFromString(final String spec, final Colour fallback) {
         if (colourCache.containsKey(spec)) {
             return colourCache.get(spec);
@@ -130,14 +121,7 @@ public class ColourManager {
         return res;
     }
 
-    /**
-     * Returns a Colour object that corresponds to the specified 6-digit hex string. If the string
-     * is invalid, logs a warning and returns white.
-     *
-     * @param hex The hex string to convert into a Colour
-     *
-     * @return A Colour object corresponding to the hex input
-     */
+    @Override
     public Colour getColourFromHex(final String hex) {
         if (colourCache.containsKey(hex)) {
             return colourCache.get(hex);
@@ -163,15 +147,7 @@ public class ColourManager {
         return colour;
     }
 
-    /**
-     * Returns a Colour object that represents the colour associated with the specified IRC colour
-     * code. If the code is not found, a warning is logged with the client's Logger class, and white
-     * is returned.
-     *
-     * @param number The IRC colour code to look up
-     *
-     * @return The corresponding Colour object
-     */
+    @Override
     public Colour getColourFromIrcCode(final int number) {
         if (number >= 0 && number <= 15) {
             return ircColours[number];

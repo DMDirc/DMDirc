@@ -38,7 +38,7 @@ public class ColourManagerFactory {
     }
 
     public ColourManager getColourManager(final AggregateConfigProvider configManager) {
-        return new ColourManager(configManager);
+        return new ColourManagerImpl(configManager);
     }
 
 }

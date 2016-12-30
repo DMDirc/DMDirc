@@ -57,7 +57,7 @@ public class UnreadStatusManagerImpl implements UnreadStatusManager {
     public UnreadStatusManagerImpl(final WindowModel container) {
         this.container = container;
         this.eventBus = container.getEventBus();
-        this.colourManager = new ColourManager(container.getConfigManager());
+        this.colourManager = new ColourManagerImpl(container.getConfigManager());
     }
 
     @Handler

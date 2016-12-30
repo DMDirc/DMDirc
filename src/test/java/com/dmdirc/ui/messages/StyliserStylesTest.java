@@ -69,7 +69,7 @@ public class StyliserStylesTest {
 
         final AggregateConfigProvider manager = mock(AggregateConfigProvider.class);
 
-        final Styliser styliser = new Styliser(null, manager, new ColourManager(manager));
+        final Styliser styliser = new Styliser(null, manager, new ColourManagerImpl(manager));
         styliser.addStyledString(null, input);  // TODO...
         final AttributedCharacterIterator aci = null; // TODO...
 
