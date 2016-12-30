@@ -41,7 +41,7 @@ import net.engio.mbassy.listener.Handler;
 /**
  * Tracks unread messages and other notifications.
  */
-public class UnreadStatusManager {
+public class UnreadStatusManagerImpl implements UnreadStatusManager {
 
     private final EventBus eventBus;
     private final WindowModel container;
@@ -54,7 +54,7 @@ public class UnreadStatusManager {
     private Optional<Colour> messageColour = Optional.of(Colour.BLUE);
     private Optional<Colour> highlightColour = Optional.of(Colour.RED);
 
-    public UnreadStatusManager(final WindowModel container) {
+    public UnreadStatusManagerImpl(final WindowModel container) {
         this.container = container;
         this.eventBus = container.getEventBus();
         this.colourManager = new ColourManager(container.getConfigManager());
@@ -100,14 +100,17 @@ public class UnreadStatusManager {
                 && !event.getDisplayProperty(DisplayProperty.DO_NOT_DISPLAY).orElse(false);
     }
 
+    @Override
     public int getUnreadLines() {
         return unreadLines;
     }
 
+    @Override
     public Optional<Colour> getNotificationColour() {
         return notificationColour;
     }
 
+    @Override
     public void clearStatus() {
         updateStatus(Optional.empty(), 0);
     }
