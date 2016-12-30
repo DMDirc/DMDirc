@@ -25,7 +25,7 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
  * Implements a raw server command (i.e., a command that is sent to the server as-is.
  */
 @CommandOptions(allowOffline = false)
-public class RawServerCommand extends Command implements CommandInfo {
+public class RawServerCommand extends BaseCommand implements CommandInfo {
 
     /** The name of this raw command. */
     private final String myName;

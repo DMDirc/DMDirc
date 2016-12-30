@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
@@ -44,17 +44,16 @@ import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
-import java.util.List;
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * The set command allows the user to inspect and change global config settings.
  */
-public class SetCommand extends Command implements IntelligentCommand {
+public class SetCommand extends BaseCommand implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("set",
