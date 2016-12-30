@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
- * Base class for miscallenous displayable events.
+ * Base class for miscellaneous displayable events.
  */
 public abstract class BaseDisplayableEvent extends DMDircEvent implements DisplayableEvent {
 
