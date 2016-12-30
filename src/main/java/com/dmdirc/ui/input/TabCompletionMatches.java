@@ -28,13 +28,11 @@ import java.util.List;
 
 /**
  * Describes a set of matches from a tab completion attempt.
+ *
+ * @deprecated This class is dumb. Just use a List.
  */
-public class TabCompletionMatches {
-
-    /**
-     * The result list for this tab completer.
-     */
-    private final List<String> results = new ArrayList<>();
+@Deprecated
+public class TabCompletionMatches extends ArrayList<String> {
 
     /**
      * Adds a result to this result set.
@@ -42,7 +40,7 @@ public class TabCompletionMatches {
      * @param result The result to be added
      */
     public void addResult(final String result) {
-        results.add(result);
+        add(result);
     }
 
     /**
@@ -53,7 +51,7 @@ public class TabCompletionMatches {
      * @return True if this set contains the specified result, false otherwise
      */
     public boolean hasResult(final String result) {
-        return results.contains(result);
+        return contains(result);
     }
 
     /**
@@ -72,7 +70,7 @@ public class TabCompletionMatches {
      * @return the size of this result set
      */
     public int getResultCount() {
-        return results.size();
+        return size();
     }
 
     /**
@@ -81,14 +79,14 @@ public class TabCompletionMatches {
      * @return An unmodifiable list containing the results
      */
     public List<String> getResults() {
-        return Collections.unmodifiableList(results);
+        return Collections.unmodifiableList(this);
     }
 
     @Override
     public String toString() {
         final StringBuilder buff = new StringBuilder();
 
-        for (String entry : results) {
+        for (String entry : this) {
             if (buff.length() > 0) {
                 buff.append(", ");
             }
