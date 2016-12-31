@@ -61,10 +61,8 @@ public class EventPropertyManager {
         functions.put("bracketed", s -> Strings.isNullOrEmpty(s) ? "" : " (" + s + ')');
     }
 
-    public <S> Optional<Object> getProperty(final S object, final Class<? extends S> type,
-            final String property) {
-        final String methodName = "get" + property.substring(0, 1).toUpperCase()
-                + property.substring(1);
+    public <S> Optional<Object> getProperty(final S object, final Class<? extends S> type, final String property) {
+        final String methodName = "get" + property.substring(0, 1).toUpperCase() + property.substring(1);
         try {
             final Method method = type.getMethod(methodName);
             // TODO: This is needed for AutoValues, should probably get return types not real types
@@ -77,8 +75,7 @@ public class EventPropertyManager {
 
             return Optional.ofNullable(result);
         } catch (ReflectiveOperationException ex) {
-            LOG.warn(USER_ERROR, "Unable to format event: could not retrieve property {}",
-                    ex.getMessage(), ex);
+            LOG.warn(USER_ERROR, "Unable to format event: could not retrieve property {}", property, ex);
         }
         return Optional.empty();
     }

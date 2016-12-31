@@ -333,14 +333,17 @@ public class Styliser implements ConfigChangeListener, StyleApplier {
 
         // Nickname links
         if (string.charAt(0) == CODE_NICKNAME) {
+            int count = 1;
             if (state.isInLink) {
                 maker.endNicknameLink();
             } else {
-                maker.startNicknameLink(readUntilControl(string.substring(1)));
+                int next = string.indexOf(CODE_NICKNAME, 1);
+                maker.startNicknameLink(string.substring(1, next));
+                count += next;
             }
             state.isInLink = !state.isInLink;
 
-            return 1;
+            return count;
         }
 
         // Fixed pitch

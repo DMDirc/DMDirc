@@ -22,8 +22,12 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.events.DisplayProperty;
+import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.events.DisplayableEvent;
 
+import com.dmdirc.interfaces.Displayable;
+import com.dmdirc.util.colours.ColourUtils;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -111,13 +115,20 @@ public class EventFormatter {
     private String getReplacement(final Object dataSource, final String tag) {
         final String[] functionParts = tag.split("\\|");
         final String[] dataParts = functionParts[0].split("\\.");
+        final DisplayPropertyMap displayProperties = new DisplayPropertyMap();
 
         Object target = dataSource;
         for (String part : dataParts) {
-            final Optional<Object> result =
-                    propertyManager.getProperty(target, target.getClass(), part);
+            final Optional<Object> result = propertyManager.getProperty(target, target.getClass(), part);
             if (result.isPresent()) {
                 target = result.get();
+
+                // Collate all the display properties for objects as we traverse. More specific ones will
+                // override earlier ones.
+                if (target instanceof Displayable) {
+                    displayProperties.putAll(((Displayable) target).getDisplayProperties());
+                }
+
             } else {
                 return ERROR_STRING;
             }
@@ -128,7 +139,25 @@ public class EventFormatter {
             value = propertyManager.applyFunction(value, functionParts[i]);
         }
 
-        return value;
+        return applyDisplayProperties(displayProperties, value);
+    }
+
+    // TODO: It should be possible for plugins etc to add new ways of applying properties.
+    private String applyDisplayProperties(final DisplayPropertyMap displayProperties, final String value) {
+        final StringBuilder res = new StringBuilder(value);
+
+        displayProperties.get(DisplayProperty.LINK_USER).ifPresent(user -> res
+                .insert(0, StyleApplier.CODE_NICKNAME)
+                .insert(0, user.getNickname())
+                .insert(0, StyleApplier.CODE_NICKNAME)
+                .append(StyleApplier.CODE_NICKNAME));
+
+        displayProperties.get(DisplayProperty.FOREGROUND_COLOUR).ifPresent(colour -> res
+                .insert(0, ColourUtils.getHex(colour))
+                .insert(0, IRCControlCodes.COLOUR_HEX)
+                .append(IRCControlCodes.COLOUR_HEX));
+
+        return res.toString();
     }
 
 }
