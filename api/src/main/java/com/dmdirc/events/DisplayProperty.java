@@ -22,10 +22,11 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.interfaces.User;
 import com.dmdirc.util.colours.Colour;
 
 /**
- * Describes a property that may be set on a {@link DisplayableEvent} to affect its display.
+ * Describes a property that may be set on a {@link com.dmdirc.interfaces.Displayable} to affect its display.
  */
 @SuppressWarnings("UnusedDeclaration") // Generic type used for compile-time validation only
 public interface DisplayProperty<T> {
@@ -38,6 +39,8 @@ public interface DisplayProperty<T> {
     DisplayProperty<Boolean> DO_NOT_DISPLAY = new DisplayPropertyImpl<>();
     /** Whether to suppress timestamps for the event. */
     DisplayProperty<Boolean> NO_TIMESTAMPS = new DisplayPropertyImpl<>();
+    /** A user that the displayable is linked to. */
+    DisplayProperty<User> LINK_USER = new DisplayPropertyImpl<>();
 
     final class DisplayPropertyImpl<T> implements DisplayProperty<T> {}
 

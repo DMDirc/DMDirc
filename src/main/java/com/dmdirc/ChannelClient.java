@@ -48,6 +48,7 @@ public class ChannelClient implements GroupChatUser {
         this.groupChat = groupChat;
         this.clientInfo = clientInfo;
         properties = new DisplayPropertyMap();
+        properties.put(DisplayProperty.LINK_USER, user);
     }
 
     @Override
