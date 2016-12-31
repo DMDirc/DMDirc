@@ -22,52 +22,13 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.interfaces.Displayable;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * Describes an event which is rendered in the client to the user.
  */
-public interface DisplayableEvent extends SourcedEvent {
-
-    /**
-     * Sets a property relating to how this event should be displayed.
-     *
-     * @param property The property to be set
-     * @param value The value of the property
-     * @param <T> The type of value that the property takes.
-     */
-    <T> void setDisplayProperty(DisplayProperty<T> property, T value);
-
-    /**
-     * Retrieves a property relating to how this event should be displayed.
-     *
-     * @param property The property to be retrieved.
-     * @param <T> The type of value that the property takes.
-     * @return An optional value for the property.
-     */
-    <T> Optional<T> getDisplayProperty(DisplayProperty<T> property);
-
-    /**
-     * Determines whether this event has a display property.
-     *
-     * <p>Only use this method if the value of the property does not matter; otherwise use
-     * {@link #getDisplayProperty(DisplayProperty)} and use the appropriate {@link Optional}
-     * accessors.
-     *
-     * @param property The property to be checked.
-     * @return True if the property is present, false otherwise.
-     */
-    default boolean hasDisplayProperty(final DisplayProperty<?> property) {
-        return getDisplayProperty(property).isPresent();
-    }
-
-    /**
-     * Gets the map of all display properties.
-     *
-     * @return The map of display properties.
-     */
-    DisplayPropertyMap getDisplayProperties();
+public interface DisplayableEvent extends SourcedEvent, Displayable {
 
     /**
      * Gets the times at which the event occurred.
