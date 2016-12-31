@@ -102,7 +102,7 @@ public class FrameContainer implements WindowModel {
         this.eventBus = eventBus;
         this.unreadStatusManager = new UnreadStatusManagerImpl(this);
         this.eventBus.subscribe(unreadStatusManager);
-        configManager.getBinder().bind(unreadStatusManager, UnreadStatusManager.class);
+        configManager.getBinder().bind(unreadStatusManager, UnreadStatusManagerImpl.class);
 
         setIcon(icon);
     }
