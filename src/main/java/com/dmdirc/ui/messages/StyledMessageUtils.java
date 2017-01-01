@@ -108,8 +108,7 @@ public class StyledMessageUtils {
      * @return a copy of the input with control codes removed
      */
     private String stripInternalControlCodes(final String input) {
-        return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK
-                + CODE_SMILIE + IRCControlCodes.STOP + IRCControlCodes.UNDERLINE + ']', "")
+        return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK + CODE_SMILIE + ']', "")
                 .replaceAll("([" + CODE_TOOLTIP + CODE_NICKNAME + "]).*?\\1(.*?)\\1", "$2");
     }
 
