@@ -46,11 +46,11 @@ public class StyledMessageUtils {
      */
     public String stripControlCodes(final String input) {
         return input.replaceAll("[" + IRCControlCodes.BOLD + CODE_CHANNEL + IRCControlCodes.FIXED
-                + CODE_HYPERLINK + IRCControlCodes.ITALIC + IRCControlCodes.NEGATE + CODE_NICKNAME
+                + CODE_HYPERLINK + IRCControlCodes.ITALIC + IRCControlCodes.NEGATE
                 + CODE_SMILIE + IRCControlCodes.STOP + IRCControlCodes.UNDERLINE + "]|"
                 + IRCControlCodes.COLOUR_HEX + "([A-Za-z0-9]{6}(,[A-Za-z0-9]{6})?)?|"
                 + IRCControlCodes.COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "")
-                .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)" + CODE_TOOLTIP, "$1");
+                .replaceAll("([" + CODE_TOOLTIP + CODE_NICKNAME + "]).*?\\1(.*?)\\1", "$2");
     }
 
     /**
@@ -108,10 +108,9 @@ public class StyledMessageUtils {
      * @return a copy of the input with control codes removed
      */
     private String stripInternalControlCodes(final String input) {
-        return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK + CODE_NICKNAME
+        return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK
                 + CODE_SMILIE + IRCControlCodes.STOP + IRCControlCodes.UNDERLINE + ']', "")
-                .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
-                        + CODE_TOOLTIP, "$1");
+                .replaceAll("([" + CODE_TOOLTIP + CODE_NICKNAME + "]).*?\\1(.*?)\\1", "$2");
     }
 
 }
