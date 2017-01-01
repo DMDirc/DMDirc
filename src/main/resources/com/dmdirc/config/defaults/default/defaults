@@ -59,7 +59,6 @@ general:
   rejoinchannels=true
   showcolourdialog=true
   showglobalwindow=true
-  showrawwindow=false
   silencechar=.
   submitErrors=false
   ui=swing
