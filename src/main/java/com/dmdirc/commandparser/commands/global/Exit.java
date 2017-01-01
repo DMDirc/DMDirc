@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.LifecycleController;
@@ -39,7 +39,7 @@ import javax.inject.Inject;
  * The exit command allows the user to quit DMDirc with a custom quit message. When the client
  * quits, it disconnects all servers (with the quit message supplied) and saves the config file.
  */
-public class Exit extends Command {
+public class Exit extends BaseCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("exit",

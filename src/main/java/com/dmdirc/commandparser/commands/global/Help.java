@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
@@ -35,20 +36,19 @@ import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 import com.dmdirc.ui.messages.IRCControlCodes;
 
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
 /**
  * The help command shows the user a list of available commands, along with their arguments, and a
  * description. It is context-aware, so channel commands are only displayed when in a channel
  * window, for example.
  */
-public class Help extends Command implements IntelligentCommand {
+public class Help extends BaseCommand implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("help",

@@ -73,4 +73,12 @@ task('fatjar', type: Jar) {
     manifest {
         attributes 'Main-Class': 'com.dmdirc.Main'
     }
+
+    doLast {
+        copy {
+            from jar.archivePath
+            into "dist/"
+            rename ".*", "DMDirc-fat.jar"
+        }
+    }
 }

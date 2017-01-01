@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser.aliases;
 
 import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
@@ -34,7 +35,7 @@ import javax.annotation.Nonnull;
 /**
  * {@link Command} implementation that handles an alias.
  */
-public class AliasCommandHandler extends Command {
+public class AliasCommandHandler extends BaseCommand {
 
     private final Alias alias;
 

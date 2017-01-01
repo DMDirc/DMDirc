@@ -57,7 +57,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * determines if it is an attempt at executing a command (based on the character at the start of the
  * string), and handles it appropriately.
  */
-public abstract class CommandParser implements Serializable {
+public abstract class BaseCommandParser implements Serializable, CommandParser {
 
     /** A version number for this class. */
     private static final long serialVersionUID = 1;
@@ -77,7 +77,7 @@ public abstract class CommandParser implements Serializable {
      * @param commandManager Command manager to load plugins from
      * @param eventBus       The event bus to post events to.
      */
-    protected CommandParser(
+    protected BaseCommandParser(
             final ReadOnlyConfigProvider configManager,
             final CommandController commandManager,
             final EventBus eventBus) {
@@ -91,49 +91,24 @@ public abstract class CommandParser implements Serializable {
     /** Loads the relevant commands into the parser. */
     protected abstract void loadCommands();
 
-    /**
-     * Registers the specified command with this parser.
-     *
-     * @since 0.6.3m1
-     * @param command Command to be registered
-     * @param info    The information the command should be registered with
-     */
+    @Override
     public final void registerCommand(final Command command, final CommandInfo info) {
         commands.put(info.getName().toLowerCase(), new CommandInfoPair(info, command));
     }
 
-    /**
-     * Unregisters the specified command with this parser.
-     *
-     * @param info Command information to be unregistered
-     *
-     * @since 0.6.3m1
-     */
+    @Override
     public final void unregisterCommand(final CommandInfo info) {
         commands.remove(info.getName().toLowerCase());
     }
 
-    /**
-     * Retrieves a map of commands known by this command parser.
-     *
-     * @since 0.6.3m1
-     * @return A map of commands known to this parser
-     */
+    @Override
     public Map<String, CommandInfoPair> getCommands() {
         return new HashMap<>(commands);
     }
 
-    /**
-     * Parses the specified string as a command.
-     *
-     * @param origin       The container which received the command
-     * @param line         The line to be parsed
-     * @param parseChannel Whether or not to try and parse the first argument as a channel name
-     *
-     * @since 0.6.4
-     */
+    @Override
     public final void parseCommand(@Nonnull final WindowModel origin, final String line,
-            final boolean parseChannel) {
+                                   final boolean parseChannel) {
         checkNotNull(origin);
 
         final CommandArguments args = new CommandArguments(commandManager, line);
@@ -260,34 +235,17 @@ public abstract class CommandParser implements Serializable {
         return res;
     }
 
-    /**
-     * Parses the specified string as a command.
-     *
-     * @param origin The container which received the command
-     * @param line   The line to be parsed
-     *
-     * @since 0.6.4
-     */
+    @Override
     public void parseCommand(@Nonnull final WindowModel origin, final String line) {
         parseCommand(origin, line, true);
     }
 
-    /**
-     * Handles the specified string as a non-command.
-     *
-     * @param origin The window in which the command was typed
-     * @param line   The line to be parsed
-     */
+    @Override
     public void parseCommandCtrl(final WindowModel origin, final String line) {
         handleNonCommand(origin, line);
     }
 
-    /**
-     * Gets the command with the given name that was previously registered with this parser.
-     *
-     * @param commandName The name of the command to retrieve.
-     * @return The command info pair, or {@code null} if the command does not exist.
-     */
+    @Override
     @Nullable
     public CommandInfoPair getCommand(final String commandName) {
         return commands.get(commandName);

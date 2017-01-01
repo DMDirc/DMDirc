@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.ValidatingCommand;
 import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
@@ -42,7 +42,7 @@ import javax.inject.Inject;
 /**
  * The me command sends a CTCP action to the current channel.
  */
-public class Me extends Command implements ValidatingCommand {
+public class Me extends BaseCommand implements ValidatingCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("me",

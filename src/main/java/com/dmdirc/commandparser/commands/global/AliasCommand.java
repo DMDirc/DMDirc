@@ -29,7 +29,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.aliases.Alias;
 import com.dmdirc.commandparser.aliases.AliasFactory;
 import com.dmdirc.commandparser.aliases.AliasManager;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
@@ -37,15 +37,14 @@ import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * The alias command allows users to create aliases on-the-fly.
  */
-public class AliasCommand extends Command implements IntelligentCommand {
+public class AliasCommand extends BaseCommand implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("alias",

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2016 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +20,26 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.messages;
+package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.commandparser.CommandArguments;
+import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.interfaces.WindowModel;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.annotation.Nonnull;
 
 /**
- * Factory to create {@link ColourManager}s.
+ * A command responds to user-input in a text field.
  */
-@Singleton
-public class ColourManagerFactory {
+public interface Command {
 
-    @Inject
-    public ColourManagerFactory() {
-    }
-
-    public ColourManager getColourManager(final AggregateConfigProvider configManager) {
-        return new ColourManagerImpl(configManager);
-    }
+    /**
+     * Executes this command.
+     *
+     * @param origin  The container which received the command
+     * @param args    Arguments passed to this command
+     * @param context The context the command was executed in
+     */
+    void execute(@Nonnull WindowModel origin, CommandArguments args, CommandContext context);
 
 }

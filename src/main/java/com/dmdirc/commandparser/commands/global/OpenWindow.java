@@ -27,7 +27,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.config.GlobalConfig;
@@ -47,7 +47,7 @@ import java.util.Optional;
 /**
  * Opens a new window.
  */
-public class OpenWindow extends Command implements IntelligentCommand {
+public class OpenWindow extends BaseCommand implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("openwindow",

@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.WrappableCommand;
@@ -41,17 +41,15 @@ import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompletionType;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * Allows the user to send privmsgs.
  */
 @CommandOptions(allowOffline = false)
-public class Message extends Command implements IntelligentCommand,
-        WrappableCommand {
+public class Message extends BaseCommand implements IntelligentCommand, WrappableCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("msg",

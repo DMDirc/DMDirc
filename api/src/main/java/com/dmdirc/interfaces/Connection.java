@@ -23,7 +23,6 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.ServerState;
-import com.dmdirc.ServerStatus;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.parser.common.IgnoreList;
@@ -202,15 +201,6 @@ public interface Connection {
      * @return This server's state
      */
     ServerState getState();
-
-    /**
-     * Retrieves the status object for this server. Effecting state transitions on the object
-     * returned by this method will almost certainly cause problems.
-     *
-     * @since 0.6.3m1
-     * @return This server's status object.
-     */
-    ServerStatus getStatus();
 
     /**
      * Determines whether the server knows of the specified query.

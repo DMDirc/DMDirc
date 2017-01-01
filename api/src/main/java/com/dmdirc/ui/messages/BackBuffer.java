@@ -20,28 +20,15 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.events;
-
-import com.dmdirc.interfaces.User;
-import com.dmdirc.util.colours.Colour;
+package com.dmdirc.ui.messages;
 
 /**
- * Describes a property that may be set on a {@link com.dmdirc.interfaces.Displayable} to affect its display.
+ * Models the history of a window in the client.
  */
-@SuppressWarnings("UnusedDeclaration") // Generic type used for compile-time validation only
-public interface DisplayProperty<T> {
+public interface BackBuffer {
 
-    /** The foreground colour of text relating to the event. */
-    DisplayProperty<Colour> FOREGROUND_COLOUR = new DisplayPropertyImpl<>();
-    /** The background colour of text relating to the event. */
-    DisplayProperty<Colour> BACKGROUND_COLOUR = new DisplayPropertyImpl<>();
-    /** Whether to suppress display of the event. */
-    DisplayProperty<Boolean> DO_NOT_DISPLAY = new DisplayPropertyImpl<>();
-    /** Whether to suppress timestamps for the event. */
-    DisplayProperty<Boolean> NO_TIMESTAMPS = new DisplayPropertyImpl<>();
-    /** A user that the displayable is linked to. */
-    DisplayProperty<User> LINK_USER = new DisplayPropertyImpl<>();
+    Document getDocument();
 
-    final class DisplayPropertyImpl<T> implements DisplayProperty<T> {}
+    StyleApplier getStyliser();
 
 }

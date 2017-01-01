@@ -36,12 +36,12 @@ import javax.annotation.Nullable;
 /**
  * Represents a generic command.
  */
-public abstract class Command {
+public abstract class BaseCommand implements Command {
 
     /** The controller this command is associated with. */
     private final CommandController controller;
 
-    public Command(final CommandController controller) {
+    public BaseCommand(final CommandController controller) {
         this.controller = controller;
     }
 
@@ -146,17 +146,5 @@ public abstract class Command {
             builder.append(' ');
         }
     }
-
-    /**
-     * Executes this command.
-     *
-     * @param origin  The container which received the command
-     * @param args    Arguments passed to this command
-     * @param context The context the command was executed in
-     *
-     * @since 0.6.4
-     */
-    public abstract void execute(@Nonnull WindowModel origin, CommandArguments args,
-            CommandContext context);
 
 }

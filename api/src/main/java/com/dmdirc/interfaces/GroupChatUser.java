@@ -22,16 +22,13 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.events.DisplayProperty;
-import com.dmdirc.events.DisplayPropertyMap;
-
 import java.util.Comparator;
 import java.util.Optional;
 
 /**
  * Describes a {@link User} that is present on a {@link GroupChat}.
  */
-public interface GroupChatUser {
+public interface GroupChatUser extends Displayable {
 
     /**
      * Retrieves the {@link User} object which this object corresponds
@@ -107,33 +104,4 @@ public interface GroupChatUser {
      */
     Comparator<String> getModeComparator();
 
-    /**
-     * Sets a property relating to how this {@link GroupChatUser} should be displayed.
-     *
-     * @param property The property to be set
-     * @param value The value of the property
-     * @param <T> The type of value that the property takes.
-     */
-    <T> void setDisplayProperty(final DisplayProperty<T> property, final T value);
-
-    /**
-     * Retrieves a property relating to how this {@link GroupChatUser} should be displayed.
-     *
-     * @param property The property to be retrieved.
-     * @param <T> The type of value that the property takes.
-     * @return An optional value for the property.
-     */
-    <T> Optional<T> getDisplayProperty(final DisplayProperty<T> property);
-
-    /**
-     * Removes a property relating to how this {@link GroupChatUser} should be displayed.
-     */
-    <T> void removeDisplayProperty(final DisplayProperty<T> property);
-
-    /**
-     * Gets the map of all display properties for this {@link GroupChatUser}.
-     *
-     * @return The map of display properties.
-     */
-    DisplayPropertyMap getDisplayProperties();
 }

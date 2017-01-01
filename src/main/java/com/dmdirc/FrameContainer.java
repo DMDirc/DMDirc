@@ -39,6 +39,7 @@ import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.BackBufferFactory;
 import com.dmdirc.ui.messages.BackBufferImpl;
 import com.dmdirc.ui.messages.UnreadStatusManager;
+import com.dmdirc.ui.messages.UnreadStatusManagerImpl;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -99,9 +100,9 @@ public class FrameContainer implements WindowModel {
         this.backBufferFactory = backBufferFactory;
 
         this.eventBus = eventBus;
-        this.unreadStatusManager = new UnreadStatusManager(this);
+        this.unreadStatusManager = new UnreadStatusManagerImpl(this);
         this.eventBus.subscribe(unreadStatusManager);
-        configManager.getBinder().bind(unreadStatusManager, UnreadStatusManager.class);
+        configManager.getBinder().bind(unreadStatusManager, UnreadStatusManagerImpl.class);
 
         setIcon(icon);
     }

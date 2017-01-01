@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
@@ -35,15 +35,14 @@ import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 
-import java.util.stream.Collectors;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.stream.Collectors;
 
 /**
  * Allows the user to unload a plugin.
  */
-public class UnloadPlugin extends Command implements IntelligentCommand {
+public class UnloadPlugin extends BaseCommand implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("unloadplugin",

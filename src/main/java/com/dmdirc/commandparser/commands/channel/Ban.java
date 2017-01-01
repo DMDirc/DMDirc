@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
@@ -43,7 +43,7 @@ import javax.inject.Inject;
 /**
  * The kick command bans a specified user or host from the channel.
  */
-public class Ban extends Command implements IntelligentCommand {
+public class Ban extends BaseCommand implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("ban",

@@ -27,7 +27,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.CommandParser;
@@ -40,17 +40,16 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.input.TabCompleterUtils;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.Optional;
 
 /**
  * The if plugin command allows the user to execute commands based on whether or not a plugin is
  * loaded.
  */
-public class Ifplugin extends Command implements IntelligentCommand {
+public class Ifplugin extends BaseCommand implements IntelligentCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("ifplugin",

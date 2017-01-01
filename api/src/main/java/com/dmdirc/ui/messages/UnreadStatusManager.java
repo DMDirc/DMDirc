@@ -22,14 +22,35 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.util.colours.Colour;
+
+import java.util.Optional;
+
 /**
- * Models the history of a window in the client.
+ * Keeps track of the number of unread messages in a window, and the most important notification colour for those
+ * messages.
  */
-public interface BackBuffer {
+public interface UnreadStatusManager {
 
-    Document getDocument();
+    /**
+     * Gets the total number of unread lines in the window.
+     *
+     * @return The number of unread lines
+     */
+    int getUnreadLines();
 
-    Styliser getStyliser();
+    /**
+     * Gets the most significant notification colour for the window, if any. More important events will override the
+     * colour of less important events (for example, the colour for a highlight event may replace the colour for
+     * an unread message event).
+     *
+     * @return The notification colour for the window. If empty, there is no active notification.
+     */
+    Optional<Colour> getNotificationColour();
+
+    /**
+     * Clears the unread status of the window, marking everything as read.
+     */
+    void clearStatus();
 
 }
-

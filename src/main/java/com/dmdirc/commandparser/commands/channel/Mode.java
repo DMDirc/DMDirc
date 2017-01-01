@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.BaseCommandInfo;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
-import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -47,8 +47,7 @@ import javax.inject.Inject;
  * The mode command allows the user to inspect and change channel modes.
  */
 @CommandOptions(allowOffline = false)
-public class Mode extends Command implements IntelligentCommand,
-        ExternalCommand {
+public class Mode extends BaseCommand implements IntelligentCommand, ExternalCommand {
 
     /** A command info object for this command. */
     public static final CommandInfo INFO = new BaseCommandInfo("mode",
