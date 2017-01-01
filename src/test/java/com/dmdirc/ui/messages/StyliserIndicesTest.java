@@ -24,17 +24,17 @@ package com.dmdirc.ui.messages;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class StyliserIndicesTest {
 
     private String input, output;
+
     private int start, end;
 
     public StyliserIndicesTest(final String input, final int start, final int end, final String output) {
@@ -52,22 +52,21 @@ public class StyliserIndicesTest {
     @Parameterized.Parameters
     public static List<Object[]> data() {
         final Object[][] tests = {
-            // No style
-            {"Blah blah blah", 0, 1, "B"},
-            {"Blah blah blah", 0, 4, "Blah"},
-            {IRCControlCodes.BOLD + "Blah blah blah", 0, 4, IRCControlCodes.BOLD + "Blah"},
-            {IRCControlCodes.BOLD + "Bl" + IRCControlCodes.BOLD + "ah blah blah",
-                     0, 4, IRCControlCodes.BOLD + "Bl" + IRCControlCodes.BOLD + "ah"},
-            {"Blah" + IRCControlCodes.BOLD + " blah blah",
-                     0, 4, "Blah"},
-            {"Blah" + IRCControlCodes.COLOUR + "4,0RED blah blah",
-                     4, 7, IRCControlCodes.COLOUR + "4,0RED"},
-            {"Blah" + IRCControlCodes.COLOUR + "4,0RED blah blah",
-                     5, 7, "ED"},
-            {Styliser.CODE_TOOLTIP + "Annoying internal tooltip text"
-                     + Styliser.CODE_TOOLTIP + "Blah" + Styliser.CODE_TOOLTIP + "Blah",
-                     2, 6, "ahBl"},
-        };
+                // No style
+                {"Blah blah blah", 0, 1, "B"}, {"Blah blah blah", 0, 4, "Blah"},
+                {IRCControlCodes.BOLD + "Blah blah blah", 0, 4, IRCControlCodes.BOLD + "Blah"},
+                {IRCControlCodes.BOLD + "Bl" + IRCControlCodes.BOLD + "ah blah blah", 0, 4,
+                        IRCControlCodes.BOLD + "Bl" + IRCControlCodes.BOLD + "ah"},
+                {"Blah" + IRCControlCodes.BOLD + " blah blah", 0, 4, "Blah"},
+                {"Blah" + IRCControlCodes.UNDERLINE + " blah blah", 0, 6, "Blah" + IRCControlCodes.UNDERLINE + " b"},
+                {"Blah" + IRCControlCodes.STOP + " blah blah", 0, 6, "Blah" + IRCControlCodes.STOP + " b"},
+                {"Blah" + IRCControlCodes.COLOUR + "4,0RED blah blah", 4, 7, IRCControlCodes.COLOUR + "4,0RED"},
+                {"Blah" + IRCControlCodes.COLOUR + "4,0RED blah blah", 5, 7, "ED"},
+                {Styliser.CODE_TOOLTIP + "Annoying internal tooltip text" + Styliser.CODE_TOOLTIP + "Blah"
+                        + Styliser.CODE_TOOLTIP + "Blah", 2, 6, "ahBl"},
+                {Styliser.CODE_NICKNAME + "Annoying internal tooltip text" + Styliser.CODE_NICKNAME
+                        + IRCControlCodes.BOLD + "Blah" + IRCControlCodes.BOLD + Styliser.CODE_NICKNAME + "Blah", 2, 6,
+                        "ah" + IRCControlCodes.BOLD + "Bl"},};
 
         return Arrays.asList(tests);
     }
