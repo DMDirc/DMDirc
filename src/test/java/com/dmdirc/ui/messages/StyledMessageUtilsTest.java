@@ -55,4 +55,12 @@ public class StyledMessageUtilsTest {
         assertEquals(expResult, result);
     }
 
+    @Test
+    public void testStripControlCodesNicknames() {
+        final String input = "Link to \020Someone's long name\020\002Someone\002\020...";
+        final String expResult = "Link to Someone...";
+        final String result = styleUtils.stripControlCodes(input);
+        assertEquals(expResult, result);
+    }
+
 }
