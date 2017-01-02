@@ -35,6 +35,7 @@ dependencies {
     compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     compile group: 'com.squareup.dagger', name: 'dagger-compiler', version: '1.2.5'
     compile group: 'com.google.auto.value', name: 'auto-value', version: '1.3'
+    compile group: 'org.osgi', name: 'org.osgi.core', version: '6.0.0'
 
     bundle group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
     bundle group: 'org.slf4j', name: 'slf4j-api', version:'1.7.21'
