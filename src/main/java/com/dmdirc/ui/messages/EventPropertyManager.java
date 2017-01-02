@@ -54,6 +54,7 @@ public class EventPropertyManager {
         functions.put("lowercase", String::toLowerCase);
         functions.put("trim", String::trim);
         functions.put("bracketed", s -> Strings.isNullOrEmpty(s) ? "" : " (" + s + ')');
+        functions.put("unstyled", new StyledMessageUtils()::stripControlCodes);
     }
 
     public <S> Optional<Object> getProperty(final S object, final Class<? extends S> type, final String property) {
