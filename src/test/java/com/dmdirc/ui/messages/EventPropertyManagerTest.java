@@ -56,6 +56,7 @@ public class EventPropertyManagerTest {
         assertEquals("test 123", manager.applyFunction("TeSt 123", "lowercase"));
         assertEquals("TEST 123", manager.applyFunction("TeSt 123", "uppercase"));
         assertEquals("TeSt 123", manager.applyFunction("  TeSt 123  ", "trim"));
+        assertEquals("TeSt 123", manager.applyFunction("\2TeSt \4FFFFFF123", "unstyled"));
     }
 
     @Test
