@@ -17,7 +17,7 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.manager.UpdateManager;

@@ -23,6 +23,7 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.Topic;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.parser.common.ChannelListModeItem;
 
 import java.util.Collection;

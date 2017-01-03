@@ -17,9 +17,11 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
+
 /**
  * Grouped preferences events.
  */
-public abstract class PreferencesEvent extends DMDircEvent {
+public abstract class PreferencesEvent extends BaseEvent {
 
 }

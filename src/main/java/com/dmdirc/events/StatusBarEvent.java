@@ -17,8 +17,10 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
+
 /**
  * Base class for all status bar events.
  */
-public abstract class StatusBarEvent extends DMDircEvent{
+public abstract class StatusBarEvent extends BaseEvent {
 }

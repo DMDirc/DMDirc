@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 import com.dmdirc.util.colours.Colour;
@@ -31,7 +32,7 @@ import java.util.Optional;
 /**
  * Event raised when the unread status of a window has changed.
  */
-public class UnreadStatusChangedEvent extends DMDircEvent implements SourcedEvent {
+public class UnreadStatusChangedEvent extends BaseEvent implements SourcedEvent {
 
     private final WindowModel source;
     private final UnreadStatusManager manager;

@@ -17,7 +17,7 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 
 import java.time.LocalDateTime;
 

@@ -22,7 +22,7 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;

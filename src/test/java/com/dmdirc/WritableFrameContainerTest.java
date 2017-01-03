@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.messages.BackBufferFactory;
 

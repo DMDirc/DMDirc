@@ -23,11 +23,12 @@
 package com.dmdirc.events;
 
 import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.events.eventbus.BaseEvent;
 
 /**
  * Fired when a profile is added to the config.
  */
-public class ProfileAddedEvent extends DMDircEvent {
+public class ProfileAddedEvent extends BaseEvent {
 
     private final Profile profile;
 

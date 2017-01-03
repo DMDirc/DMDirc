@@ -24,7 +24,7 @@ package com.dmdirc.config.profiles;
 
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.util.SystemInfo;
 
 import com.google.common.collect.Lists;

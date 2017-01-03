@@ -19,12 +19,13 @@ package com.dmdirc.events;
 
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupType;
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 /**
  * Raised when a popup is being generated.
  */
-public class ClientPopupGeneratedEvent extends DMDircEvent {
+public class ClientPopupGeneratedEvent extends BaseEvent {
 
     private final PopupType type;
     private final PopupMenu menu;

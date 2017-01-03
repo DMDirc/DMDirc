@@ -28,10 +28,11 @@ import com.dmdirc.commandparser.commands.CommandModule;
 import com.dmdirc.config.ConfigModule;
 import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.config.profiles.ProfilesModule;
+import com.dmdirc.events.eventbus.MBassadorEventBus;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
@@ -88,7 +89,7 @@ public class ClientModule {
     @Provides
     @Singleton
     public EventBus getMBassador() {
-        return new DMDircMBassador();
+        return new MBassadorEventBus();
     }
 
     @Provides

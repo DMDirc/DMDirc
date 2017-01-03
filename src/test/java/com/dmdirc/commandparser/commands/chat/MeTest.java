@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.Chat;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 
 import org.junit.Before;

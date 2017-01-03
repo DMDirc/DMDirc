@@ -18,7 +18,7 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.events.ProgramErrorStatusEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;

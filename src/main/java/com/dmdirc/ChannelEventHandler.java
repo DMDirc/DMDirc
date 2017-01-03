@@ -42,7 +42,7 @@ import com.dmdirc.events.ChannelTopicUnsetEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.events.ChannelCTCPEvent;
 import com.dmdirc.parser.events.ChannelListModeEvent;

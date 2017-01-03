@@ -20,7 +20,7 @@ package com.dmdirc;
 import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.LifecycleController;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;

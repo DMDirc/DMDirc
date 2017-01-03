@@ -17,11 +17,12 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.logger.ErrorLevel;
 
 import com.google.common.base.MoreObjects;
 
-public abstract class ErrorEvent extends DMDircEvent {
+public abstract class ErrorEvent extends BaseEvent {
 
     private final ErrorLevel level;
     private final Throwable throwable;

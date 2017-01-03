@@ -22,8 +22,10 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
+
 /**
  * Fired when the client is first opened.
  */
-public class ClientOpenedEvent extends DMDircEvent {
+public class ClientOpenedEvent extends BaseEvent {
 }

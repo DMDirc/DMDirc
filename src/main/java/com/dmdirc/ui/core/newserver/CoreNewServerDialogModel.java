@@ -24,7 +24,7 @@ import com.dmdirc.config.profiles.ProfileManager;
 import com.dmdirc.events.ProfileAddedEvent;
 import com.dmdirc.events.ProfileDeletedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.ui.NewServerDialogModel;

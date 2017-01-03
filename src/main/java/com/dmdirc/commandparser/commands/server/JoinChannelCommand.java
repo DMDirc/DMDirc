@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.events.ClientLineAddedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.ui.WindowManager;

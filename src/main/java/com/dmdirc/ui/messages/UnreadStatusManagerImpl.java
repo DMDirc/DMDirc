@@ -25,7 +25,7 @@ import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.UnreadStatusChangedEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.colours.Colour;
 

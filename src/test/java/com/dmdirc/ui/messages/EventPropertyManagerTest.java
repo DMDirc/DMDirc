@@ -24,7 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.Channel;
 import com.dmdirc.events.ChannelMessageEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 
 import org.junit.Before;

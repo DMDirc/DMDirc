@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 
 import java.util.Optional;
 

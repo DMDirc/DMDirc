@@ -25,7 +25,7 @@ import com.dmdirc.commandparser.commands.context.ChatCommandContext;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.Chat;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;

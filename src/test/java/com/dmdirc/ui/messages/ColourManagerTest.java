@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.logger.ErrorManager;

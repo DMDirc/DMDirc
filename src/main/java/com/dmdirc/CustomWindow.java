@@ -18,7 +18,7 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.core.components.WindowComponent;

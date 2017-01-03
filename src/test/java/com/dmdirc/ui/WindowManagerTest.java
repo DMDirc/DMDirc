@@ -22,7 +22,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.CustomWindow;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.ui.FrameListener;
 

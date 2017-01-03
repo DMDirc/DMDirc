@@ -25,7 +25,7 @@ import com.dmdirc.events.FeedbackNagEvent;
 import com.dmdirc.events.FirstRunEvent;
 import com.dmdirc.interfaces.CommandController.CommandDetails;
 import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.Migrator;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.interfaces.config.IdentityController;

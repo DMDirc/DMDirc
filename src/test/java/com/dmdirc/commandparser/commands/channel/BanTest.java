@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;

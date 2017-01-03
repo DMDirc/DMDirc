@@ -17,6 +17,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.ui.core.about.InfoItem;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * Fired to give other components a chance to add info to the info panel.
  */
-public class ClientInfoRequestEvent extends DMDircEvent {
+public class ClientInfoRequestEvent extends BaseEvent {
 
     private final List<InfoItem> newItems;
 

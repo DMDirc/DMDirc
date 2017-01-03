@@ -18,7 +18,7 @@
 package com.dmdirc.ui.core.feedback;
 
 import com.dmdirc.events.StatusBarMessageEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.io.Downloader;

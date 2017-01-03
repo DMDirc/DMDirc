@@ -24,7 +24,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.context.QueryCommandContext;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.WindowModel;
 

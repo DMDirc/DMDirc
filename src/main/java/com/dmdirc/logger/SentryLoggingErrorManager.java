@@ -22,7 +22,7 @@ import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ProgramErrorAddedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorStatusEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.base.Throwables;

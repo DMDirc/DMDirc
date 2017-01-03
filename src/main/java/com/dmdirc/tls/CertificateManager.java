@@ -20,7 +20,7 @@ package com.dmdirc.tls;
 import com.dmdirc.events.ServerCertificateProblemEncounteredEvent;
 import com.dmdirc.events.ServerCertificateProblemResolvedEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProvider;
 

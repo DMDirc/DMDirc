@@ -23,7 +23,7 @@ import com.dmdirc.config.ConfigBinder;
 import com.dmdirc.config.ConfigBinding;
 import com.dmdirc.events.ErrorEvent;
 import com.dmdirc.events.ProgramErrorEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import com.google.common.collect.Lists;

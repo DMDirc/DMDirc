@@ -22,7 +22,7 @@ import com.dmdirc.events.FatalProgramErrorEvent;
 import com.dmdirc.events.NonFatalProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorDeletedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.util.EventUtils;
 import com.dmdirc.util.LogUtils;
 
