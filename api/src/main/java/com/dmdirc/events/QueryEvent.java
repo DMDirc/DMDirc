@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.PrivateChat;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Base type for events that occur in queries.
  */
-public abstract class QueryEvent extends DMDircEvent {
+public abstract class QueryEvent extends BaseEvent {
 
     /** The query that this event occurred on. */
     private final PrivateChat query;

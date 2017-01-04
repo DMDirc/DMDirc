@@ -22,9 +22,11 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
+
 /**
  * Fired when the client is about to close.
  */
-public class ClientClosingEvent extends DMDircEvent {
+public class ClientClosingEvent extends BaseEvent {
 
 }

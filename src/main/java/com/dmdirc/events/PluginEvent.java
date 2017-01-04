@@ -17,12 +17,13 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.plugins.PluginInfo;
 
 /**
  * Base class for all plugin events.
  */
-public abstract class PluginEvent extends DMDircEvent {
+public abstract class PluginEvent extends BaseEvent {
 
     private final PluginInfo plugin;
 

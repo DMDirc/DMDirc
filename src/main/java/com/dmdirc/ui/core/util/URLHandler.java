@@ -20,7 +20,7 @@ package com.dmdirc.ui.core.util;
 import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.events.UnknownURLEvent;
 import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.util.CommandUtils;

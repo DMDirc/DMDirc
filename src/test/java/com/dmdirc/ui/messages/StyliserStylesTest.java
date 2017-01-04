@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.DMDircMBassador;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.MBassadorEventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 
 import java.awt.Color;
@@ -54,7 +54,7 @@ public class StyliserStylesTest {
     public StyliserStylesTest(final String input, final String output) {
         this.input = input;
         this.output = output;
-        eventBus = mock(DMDircMBassador.class);
+        eventBus = mock(MBassadorEventBus.class);
     }
 
     @Test

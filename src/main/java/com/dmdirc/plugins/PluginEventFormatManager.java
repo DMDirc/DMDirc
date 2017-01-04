@@ -20,7 +20,7 @@ package com.dmdirc.plugins;
 import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.PluginLoadedEvent;
 import com.dmdirc.events.PluginUnloadedEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.EventFormatProvider;

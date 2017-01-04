@@ -22,12 +22,13 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Common properties of link events.
  */
-public abstract class LinkEvent extends DMDircEvent {
+public abstract class LinkEvent extends BaseEvent {
 
     private final WindowModel window;
     private final String target;

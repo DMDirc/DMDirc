@@ -21,7 +21,7 @@ import com.dmdirc.Main;
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.events.StatusBarMessageEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.ui.StatusMessage;
 import com.dmdirc.updater.UpdateComponent;

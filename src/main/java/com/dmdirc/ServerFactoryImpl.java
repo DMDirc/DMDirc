@@ -22,7 +22,7 @@ import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.UserConfig;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.ConfigProvider;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;

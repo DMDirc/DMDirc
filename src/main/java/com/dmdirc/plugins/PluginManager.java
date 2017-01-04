@@ -18,7 +18,7 @@
 package com.dmdirc.plugins;
 
 import com.dmdirc.events.PluginRefreshEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.updater.components.PluginComponent;
 import com.dmdirc.updater.manager.UpdateManager;

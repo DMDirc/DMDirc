@@ -21,7 +21,7 @@ import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
 import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.events.ClientInfoRequestEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.ui.AboutDialogModel;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.util.ClientInfo;

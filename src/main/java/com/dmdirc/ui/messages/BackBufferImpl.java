@@ -19,7 +19,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.EventUtils;
 import java.util.Arrays;

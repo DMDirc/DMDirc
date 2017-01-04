@@ -17,9 +17,11 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
+
 /**
  * Fired when the list of available plugins may have updated.
  */
-public class PluginRefreshEvent extends DMDircEvent {
+public class PluginRefreshEvent extends BaseEvent {
 
 }

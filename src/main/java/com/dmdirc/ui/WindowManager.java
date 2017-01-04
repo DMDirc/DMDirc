@@ -21,7 +21,7 @@ import com.dmdirc.CustomWindow;
 import com.dmdirc.Precondition;
 import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.events.FrameOpenedEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.ui.FrameListener;
 import com.dmdirc.util.collections.ListenerList;

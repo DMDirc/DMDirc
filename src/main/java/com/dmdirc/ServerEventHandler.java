@@ -47,7 +47,7 @@ import com.dmdirc.events.ServerWallusersEvent;
 import com.dmdirc.events.StatusBarMessageEvent;
 import com.dmdirc.events.UserInfoResponseEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.events.AuthNoticeEvent;
 import com.dmdirc.parser.events.AwayStateEvent;

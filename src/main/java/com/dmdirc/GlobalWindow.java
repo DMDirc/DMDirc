@@ -22,7 +22,7 @@ import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.ui.WindowManager;

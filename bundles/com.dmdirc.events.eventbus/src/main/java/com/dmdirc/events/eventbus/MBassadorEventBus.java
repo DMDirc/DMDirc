@@ -15,43 +15,29 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.dmdirc;
-
-import com.dmdirc.events.DMDircEvent;
-import com.dmdirc.interfaces.EventBus;
+package com.dmdirc.events.eventbus;
 
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
-import net.engio.mbassy.bus.config.IBusConfiguration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.dmdirc.util.LogUtils.APP_ERROR;
-
 /**
- * Generified MBassador.
+ * Concrete event bus backed by {@link MBassador}.
  */
-public class DMDircMBassador implements EventBus {
+public class MBassadorEventBus implements EventBus {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DMDircMBassador.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MBassadorEventBus.class);
 
-    private final MBassador<DMDircEvent> bus;
+    private final MBassador<BaseEvent> bus;
 
-    public DMDircMBassador() {
-        this(new BusConfiguration()
+    public MBassadorEventBus() {
+        bus = new MBassador<>(new BusConfiguration()
                 .addFeature(Feature.SyncPubSub.Default())
                 .addFeature(Feature.AsynchronousHandlerInvocation.Default(1, 1))
-                .addFeature(
-                        Feature.AsynchronousMessageDispatch.Default()
-                                .setNumberOfMessageDispatchers(1)));
-    }
-
-    @SuppressWarnings("TypeMayBeWeakened")
-    public DMDircMBassador(final IBusConfiguration configuration) {
-        bus = new MBassador<>(configuration.addPublicationErrorHandler(
-                e -> LOG.error(APP_ERROR, e.getMessage(), e.getCause())));
+                .addFeature(Feature.AsynchronousMessageDispatch.Default().setNumberOfMessageDispatchers(1))
+                .addPublicationErrorHandler(e -> LOG.error("Unhandled exception while publishing event", e)));
     }
 
     @Override
@@ -65,12 +51,12 @@ public class DMDircMBassador implements EventBus {
     }
 
     @Override
-    public void publish(DMDircEvent message) {
+    public void publish(BaseEvent message) {
         bus.publish(message);
     }
 
     @Override
-    public void publishAsync(DMDircEvent message) {
+    public void publishAsync(BaseEvent message) {
         bus.publishAsync(message);
     }
 

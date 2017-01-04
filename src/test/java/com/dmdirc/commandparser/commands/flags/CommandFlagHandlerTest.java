@@ -21,10 +21,10 @@
  */
 package com.dmdirc.commandparser.commands.flags;
 
-import com.dmdirc.DMDircMBassador;
+import com.dmdirc.events.eventbus.MBassadorEventBus;
 import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 
 import java.util.Arrays;
@@ -74,7 +74,7 @@ public class CommandFlagHandlerTest {
     @Test
     public void testParse() {
         final WindowModel container = mock(WindowModel.class);
-        final EventBus eventBus = mock(DMDircMBassador.class);
+        final EventBus eventBus = mock(MBassadorEventBus.class);
         final CommandController controller = mock(CommandController.class);
         when(controller.getCommandChar()).thenReturn('/');
         when(controller.getSilenceChar()).thenReturn('.');

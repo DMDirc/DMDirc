@@ -1,1 +1,2 @@
 include 'api'
+include 'bundles:com.dmdirc.events.eventbus'

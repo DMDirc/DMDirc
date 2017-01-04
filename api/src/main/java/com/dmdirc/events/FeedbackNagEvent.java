@@ -22,9 +22,11 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
+
 /**
  * Fired when its time to nag for feedback.
  */
-public class FeedbackNagEvent extends DMDircEvent {
+public class FeedbackNagEvent extends BaseEvent {
 
 }

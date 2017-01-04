@@ -22,7 +22,7 @@ import com.dmdirc.commandparser.parsers.ChannelCommandParser;
 import com.dmdirc.events.ChannelOpenedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;
 import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.ui.WindowManager;

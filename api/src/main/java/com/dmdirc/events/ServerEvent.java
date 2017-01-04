@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.Connection;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Base type for events that occur on a connection.
  */
-public abstract class ServerEvent extends DMDircEvent {
+public abstract class ServerEvent extends BaseEvent {
 
     /** The connection that this event occurred on. */
     private final Connection connection;

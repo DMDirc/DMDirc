@@ -22,12 +22,13 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Event fired when some input has been entered into the client.
  */
-public class ClientUserInputEvent extends DMDircEvent {
+public class ClientUserInputEvent extends BaseEvent {
 
     private final WindowModel container;
     private final StringBuffer buffer;

@@ -17,12 +17,13 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.logger.ProgramError;
 
 /**
  * Fired when an error has been created and logged.
  */
-public abstract class ProgramErrorEvent extends DMDircEvent {
+public abstract class ProgramErrorEvent extends BaseEvent {
 
     private final ProgramError error;
     private boolean handled;

@@ -29,7 +29,7 @@ import com.dmdirc.events.ChannelMessageEvent;
 import com.dmdirc.events.ServerConnectedEvent;
 import com.dmdirc.events.ServerNickChangeEvent;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;

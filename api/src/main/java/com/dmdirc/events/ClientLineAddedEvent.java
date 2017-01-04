@@ -22,12 +22,13 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Event fired when a line has been added to a window.
  */
-public class ClientLineAddedEvent extends DMDircEvent {
+public class ClientLineAddedEvent extends BaseEvent {
 
     private final WindowModel container;
     private final String line;
