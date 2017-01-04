@@ -38,7 +38,7 @@ import com.esotericsoftware.yamlbeans.YamlReader;
 
 import static com.dmdirc.util.LogUtils.FATAL_APP_ERROR;
 import static com.dmdirc.util.LogUtils.USER_ERROR;
-import static com.dmdirc.util.YamlReaderUtils.asMap;
+import static com.dmdirc.util.io.yaml.YamlReaderUtils.asMap;
 
 /**
  * YAML-backed supplier of event formats.

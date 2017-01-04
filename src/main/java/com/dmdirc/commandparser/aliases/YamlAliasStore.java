@@ -17,7 +17,7 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.util.BaseYamlStore;
+import com.dmdirc.util.io.yaml.BaseYamlStore;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -29,8 +29,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.dmdirc.util.YamlReaderUtils.asMap;
-import static com.dmdirc.util.YamlReaderUtils.requiredString;
+import static com.dmdirc.util.io.yaml.YamlReaderUtils.asMap;
+import static com.dmdirc.util.io.yaml.YamlReaderUtils.requiredString;
 
 /**
  * Store that reads and writes aliases from a YAML file on disk.
