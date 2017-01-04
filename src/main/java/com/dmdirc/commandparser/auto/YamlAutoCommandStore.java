@@ -17,7 +17,7 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.dmdirc.util.BaseYamlStore;
+import com.dmdirc.util.io.yaml.BaseYamlStore;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -29,9 +29,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.dmdirc.util.YamlReaderUtils.asMap;
-import static com.dmdirc.util.YamlReaderUtils.optionalString;
-import static com.dmdirc.util.YamlReaderUtils.requiredString;
+import static com.dmdirc.util.io.yaml.YamlReaderUtils.asMap;
+import static com.dmdirc.util.io.yaml.YamlReaderUtils.optionalString;
+import static com.dmdirc.util.io.yaml.YamlReaderUtils.requiredString;
 
 /**
  * Store that reads and writes auto-commands from a YAML file on disk.

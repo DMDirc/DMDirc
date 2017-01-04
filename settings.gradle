@@ -1,2 +1,7 @@
 include 'api'
-include 'bundles:com.dmdirc.events.eventbus'
+
+// Include all bundles
+new File(rootDir, 'bundles').eachDir() { File dir ->
+  include 'bundles:' + dir.name
+}
+

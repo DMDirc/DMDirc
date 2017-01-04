@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.yamlbeans.YamlReader;
 
-import static com.dmdirc.util.YamlReaderUtils.asList;
-import static com.dmdirc.util.YamlReaderUtils.asMap;
+import static com.dmdirc.util.io.yaml.YamlReaderUtils.asList;
+import static com.dmdirc.util.io.yaml.YamlReaderUtils.asMap;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
