@@ -49,6 +49,7 @@ dependencies {
     bundle group: 'com.dmdirc', name: 'com.dmdirc.config.binding', version: '+', changing: true
     bundle group: 'com.dmdirc', name: 'com.dmdirc.events.eventbus', version: '+', changing: true
     bundle group: 'com.dmdirc', name: 'com.dmdirc.util.io.yaml', version: '+', changing: true
+    bundle group: 'com.dmdirc', name: 'com.dmdirc.util.system', version: '+', changing: true
 
     bundle group: 'com.dmdirc', name: 'api', version: '+', changing: true
     bundle group: 'com.dmdirc', name: 'util', version: '+', changing: true

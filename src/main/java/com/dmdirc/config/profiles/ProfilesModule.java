@@ -19,7 +19,7 @@ package com.dmdirc.config.profiles;
 
 import com.dmdirc.commandline.CommandLineOptionsModule;
 import com.dmdirc.interfaces.Migrator;
-import com.dmdirc.interfaces.SystemLifecycleComponent;
+import com.dmdirc.util.system.SystemLifecycleComponent;
 
 import java.nio.file.Path;
 

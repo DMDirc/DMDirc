@@ -17,7 +17,7 @@
 
 package com.dmdirc.commandline;
 
-import com.dmdirc.util.SystemInfo;
+import com.dmdirc.util.system.SystemInfo;
 
 import java.io.File;
 

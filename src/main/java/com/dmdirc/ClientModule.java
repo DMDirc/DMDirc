@@ -44,6 +44,7 @@ import com.dmdirc.ui.themes.ThemeManager;
 import com.dmdirc.updater.UpdaterModule;
 import com.dmdirc.util.LoggingExecutorService;
 import com.dmdirc.util.io.Downloader;
+import com.dmdirc.util.system.SystemInfo;
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
@@ -74,6 +75,12 @@ public class ClientModule {
 
     /** The object graph to inject where necessary. */
     private ObjectGraph objectGraph;
+
+    @Provides
+    @Singleton
+    public SystemInfo getSystemInfo() {
+        return new SystemInfo();
+    }
 
     @Provides
     public ConnectionManager getConnectionManager(final ServerManager serverManager) {

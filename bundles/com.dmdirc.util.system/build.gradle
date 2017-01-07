@@ -15,45 +15,41 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.dmdirc.commandparser.auto;
-
-import com.dmdirc.util.system.SystemLifecycleComponent;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-/**
- * Lifecycle manager for the auto commands system.
- */
-@Singleton
-public class AutoCommandLifecycleManager implements SystemLifecycleComponent {
-
-    private final AutoCommandManager manager;
-    private final AutoCommandStore store;
-
-    @Inject
-    public AutoCommandLifecycleManager(
-            final AutoCommandManager manager,
-            final AutoCommandStore store) {
-        this.manager = manager;
-        this.store = store;
-    }
-
-    @Override
-    public void startUp() {
-        store.readAutoCommands().forEach(manager::addAutoCommand);
-        manager.start();
-    }
-
-    @Override
-    public void shutDown() {
-        manager.stop();
-        save();
-    }
-
-    @Override
-    public void save() {
-        store.writeAutoCommands(manager.getAutoCommands());
-    }
-
+plugins {
+    id 'java'
+    id 'findbugs'
+    id 'pmd'
+    id 'idea'
+    id 'osgi'
 }
+
+group = 'com.dmdirc'
+
+idea {
+    module {
+         sourceDirs += file('src/main/generated')
+         testSourceDirs += file('src/test/generated_tests')
+         generatedSourceDirs = [file('src/main/generated'), file('src/test/generated_tests')]
+    }
+}
+
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 2, 'minutes'
+    resolutionStrategy.cacheChangingModulesFor 2, 'minutes'
+}
+
+dependencies {
+    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.21'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.19'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+

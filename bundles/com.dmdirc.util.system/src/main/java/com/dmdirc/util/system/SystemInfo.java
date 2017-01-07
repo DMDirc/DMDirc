@@ -15,18 +15,12 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.dmdirc.util;
-
-import javax.inject.Inject;
+package com.dmdirc.util.system;
 
 /**
  * Injectable wrapper around {@link System}
  */
 public class SystemInfo {
-
-    @Inject
-    public SystemInfo() {
-    }
 
     public String getProperty(final String key) {
         return System.getProperty(key);
@@ -35,4 +29,5 @@ public class SystemInfo {
     public String getenv(final String name) {
         return System.getenv(name);
     }
+
 }

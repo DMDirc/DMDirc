@@ -15,45 +15,31 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.dmdirc.commandparser.auto;
-
-import com.dmdirc.util.system.SystemLifecycleComponent;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+package com.dmdirc.util.system;
 
 /**
- * Lifecycle manager for the auto commands system.
+ * A component that participates in or needs to know about the system lifecycle.
  */
-@Singleton
-public class AutoCommandLifecycleManager implements SystemLifecycleComponent {
+public interface SystemLifecycleComponent {
 
-    private final AutoCommandManager manager;
-    private final AutoCommandStore store;
+    /**
+     * Called when the system or component is starting up.
+     */
+    void startUp();
 
-    @Inject
-    public AutoCommandLifecycleManager(
-            final AutoCommandManager manager,
-            final AutoCommandStore store) {
-        this.manager = manager;
-        this.store = store;
-    }
+    /**
+     * Indicates that the component should save any configuration or other data to disk.
+     */
+    default void save() {}
 
-    @Override
-    public void startUp() {
-        store.readAutoCommands().forEach(manager::addAutoCommand);
-        manager.start();
-    }
-
-    @Override
-    public void shutDown() {
-        manager.stop();
+    /**
+     * Called when the system or component is shutting down.
+     * <p>
+     * Any resources or threads used by the implementing class must be released before returning
+     * from this method.
+     */
+    default void shutDown() {
         save();
-    }
-
-    @Override
-    public void save() {
-        store.writeAutoCommands(manager.getAutoCommands());
     }
 
 }
