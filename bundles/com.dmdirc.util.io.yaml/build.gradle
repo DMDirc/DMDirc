@@ -16,10 +16,11 @@
  */
 
 plugins {
-  id 'java'
-  id 'findbugs'
-  id 'pmd'
-  id 'idea'
+    id 'java'
+    id 'findbugs'
+    id 'pmd'
+    id 'idea'
+    id 'osgi'
 }
 
 group = 'com.dmdirc'
