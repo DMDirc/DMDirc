@@ -17,7 +17,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.config.binding.ConfigBinding;
 import com.dmdirc.events.BaseChannelTextEvent;
 import com.dmdirc.events.BaseQueryTextEvent;
 import com.dmdirc.events.ChannelHighlightEvent;

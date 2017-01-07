@@ -17,8 +17,8 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.config.ConfigBinder;
-import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.config.binding.ConfigBinder;
+import com.dmdirc.config.binding.ConfigBinding;
 import com.dmdirc.events.ProgramErrorAddedEvent;
 import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.events.ProgramErrorStatusEvent;

@@ -23,7 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.ConfigBinder;
+import com.dmdirc.config.binding.ConfigBinder;
 import com.dmdirc.harness.TestWritableFrameContainer;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.events.eventbus.EventBus;

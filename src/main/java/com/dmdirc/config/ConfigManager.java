@@ -17,6 +17,7 @@
 
 package com.dmdirc.config;
 
+import com.dmdirc.config.binding.ConfigBinder;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.ConfigChangeListener;
 import com.dmdirc.interfaces.config.ConfigProvider;
