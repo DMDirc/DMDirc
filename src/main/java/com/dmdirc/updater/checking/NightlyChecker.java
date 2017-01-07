@@ -17,7 +17,7 @@
 
 package com.dmdirc.updater.checking;
 
-import com.dmdirc.config.ConfigBinding;
+import com.dmdirc.config.binding.ConfigBinding;
 import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.interfaces.config.AggregateConfigProvider;
 import com.dmdirc.updater.UpdateChannel;
