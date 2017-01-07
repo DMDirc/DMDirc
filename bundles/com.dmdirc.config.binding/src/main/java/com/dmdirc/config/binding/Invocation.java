@@ -33,7 +33,7 @@ public abstract class Invocation {
      * @param instance Instance to call the element on
      * @param value    Value to be passed to the element
      */
-    protected void invoke(final AccessibleObject element, final Object instance, final Object value) {
+    public void invoke(final AccessibleObject element, final Object instance, final Object value) {
         if (element instanceof Field) {
             invoke((Field) element, instance, value);
         } else if (element instanceof Method) {
