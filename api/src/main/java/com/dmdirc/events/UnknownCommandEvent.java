@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.WindowModel;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ import javax.annotation.Nullable;
 /**
  * Fired when an unknown command is used.
  */
-public class UnknownCommandEvent extends DMDircEvent implements DisplayableEvent {
+public class UnknownCommandEvent extends BaseEvent implements DisplayableEvent {
 
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();

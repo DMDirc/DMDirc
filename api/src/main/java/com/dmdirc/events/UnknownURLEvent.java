@@ -22,13 +22,14 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import java.net.URI;
 
 /**
  * Fired when the URL handler encounters an unknown URL protocol.  The handled boolean should be
  * checked, if it is true the event should be disregarded.
  */
-public class UnknownURLEvent extends DMDircEvent {
+public class UnknownURLEvent extends BaseEvent {
 
     private boolean handled;
     private final URI uri;

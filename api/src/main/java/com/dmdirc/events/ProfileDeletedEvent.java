@@ -23,11 +23,12 @@
 package com.dmdirc.events;
 
 import com.dmdirc.config.profiles.Profile;
+import com.dmdirc.events.eventbus.BaseEvent;
 
 /**
  * Fired when a profile is deleted from the config.
  */
-public class ProfileDeletedEvent extends DMDircEvent {
+public class ProfileDeletedEvent extends BaseEvent {
 
     private final Profile profile;
 

@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.GroupChat;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Base type for events that occur in channels.
  */
-public abstract class ChannelEvent extends DMDircEvent {
+public abstract class ChannelEvent extends BaseEvent {
 
     /** The group chat that this event occurred on. */
     private final GroupChat groupChat;

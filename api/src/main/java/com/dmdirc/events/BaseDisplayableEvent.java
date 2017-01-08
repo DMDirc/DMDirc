@@ -22,6 +22,7 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.WindowModel;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ import java.util.Optional;
 /**
  * Base class for miscellaneous displayable events.
  */
-public abstract class BaseDisplayableEvent extends DMDircEvent implements DisplayableEvent {
+public abstract class BaseDisplayableEvent extends BaseEvent implements DisplayableEvent {
 
     /** The properties associated with this event. */
     private final DisplayPropertyMap properties = new DisplayPropertyMap();

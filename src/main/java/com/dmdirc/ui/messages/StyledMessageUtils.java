@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2006-2017 DMDirc Developers
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+ * Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ * OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package com.dmdirc.ui.messages;
 
 import javax.inject.Inject;
@@ -29,11 +46,11 @@ public class StyledMessageUtils {
      */
     public String stripControlCodes(final String input) {
         return input.replaceAll("[" + IRCControlCodes.BOLD + CODE_CHANNEL + IRCControlCodes.FIXED
-                + CODE_HYPERLINK + IRCControlCodes.ITALIC + IRCControlCodes.NEGATE + CODE_NICKNAME
+                + CODE_HYPERLINK + IRCControlCodes.ITALIC + IRCControlCodes.NEGATE
                 + CODE_SMILIE + IRCControlCodes.STOP + IRCControlCodes.UNDERLINE + "]|"
                 + IRCControlCodes.COLOUR_HEX + "([A-Za-z0-9]{6}(,[A-Za-z0-9]{6})?)?|"
                 + IRCControlCodes.COLOUR + "([0-9]{1,2}(,[0-9]{1,2})?)?", "")
-                .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)" + CODE_TOOLTIP, "$1");
+                .replaceAll("([" + CODE_TOOLTIP + CODE_NICKNAME + "]).*?\\1(.*?)\\1", "$2");
     }
 
     /**
@@ -91,10 +108,8 @@ public class StyledMessageUtils {
      * @return a copy of the input with control codes removed
      */
     private String stripInternalControlCodes(final String input) {
-        return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK + CODE_NICKNAME
-                + CODE_SMILIE + IRCControlCodes.STOP + IRCControlCodes.UNDERLINE + ']', "")
-                .replaceAll(CODE_TOOLTIP + ".*?" + CODE_TOOLTIP + "(.*?)"
-                        + CODE_TOOLTIP, "$1");
+        return input.replaceAll("[" + CODE_CHANNEL + CODE_HYPERLINK + CODE_SMILIE + ']', "")
+                .replaceAll("([" + CODE_TOOLTIP + CODE_NICKNAME + "]).*?\\1(.*?)\\1", "$2");
     }
 
 }

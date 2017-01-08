@@ -22,11 +22,13 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
+
 /**
  * Fired when the client is first run.  Handled should be checked and set appropriately, only core
  * first run events should occur if unhandled.
  */
-public class FirstRunEvent extends DMDircEvent {
+public class FirstRunEvent extends BaseEvent {
 
     private boolean handled;
 

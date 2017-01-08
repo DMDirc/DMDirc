@@ -1,1 +1,7 @@
 include 'api'
+
+// Include all bundles
+new File(rootDir, 'bundles').eachDir() { File dir ->
+  include 'bundles:' + dir.name
+}
+

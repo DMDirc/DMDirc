@@ -22,7 +22,7 @@
 
 package com.dmdirc.interfaces.config;
 
-import com.dmdirc.config.ConfigBinder;
+import com.dmdirc.config.binding.ConfigBinder;
 
 import java.util.List;
 import java.util.Set;

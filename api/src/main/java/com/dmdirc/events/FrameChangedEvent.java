@@ -22,12 +22,13 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Base class for all frame info events.
  */
-public class FrameChangedEvent extends DMDircEvent {
+public class FrameChangedEvent extends BaseEvent {
 
     private final WindowModel container;
 

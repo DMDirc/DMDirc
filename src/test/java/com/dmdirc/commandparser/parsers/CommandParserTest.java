@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.harness.TestCommandParser;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;

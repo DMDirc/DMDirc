@@ -23,7 +23,7 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.events.ProgramErrorStatusEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.util.ClientInfo;
 
 import java.time.LocalDateTime;

@@ -23,7 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
 

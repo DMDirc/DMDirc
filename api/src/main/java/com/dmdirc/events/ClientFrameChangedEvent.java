@@ -22,12 +22,13 @@
 
 package com.dmdirc.events;
 
+import com.dmdirc.events.eventbus.BaseEvent;
 import com.dmdirc.interfaces.WindowModel;
 
 /**
  * Event fired when a new frame has been focused.
  */
-public class ClientFrameChangedEvent extends DMDircEvent {
+public class ClientFrameChangedEvent extends BaseEvent {
 
     private final WindowModel container;
 

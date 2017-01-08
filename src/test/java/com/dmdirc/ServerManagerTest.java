@@ -24,7 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.config.profiles.ProfileManager;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChatManager;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.ConfigProviderMigrator;

@@ -23,13 +23,12 @@
 package com.dmdirc.commandparser.aliases;
 
 import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.CommandInfo;
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
 

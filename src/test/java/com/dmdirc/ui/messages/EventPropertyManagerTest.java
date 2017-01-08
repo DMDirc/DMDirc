@@ -24,7 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.Channel;
 import com.dmdirc.events.ChannelMessageEvent;
-import com.dmdirc.interfaces.EventBus;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
 
 import org.junit.Before;
@@ -56,6 +56,7 @@ public class EventPropertyManagerTest {
         assertEquals("test 123", manager.applyFunction("TeSt 123", "lowercase"));
         assertEquals("TEST 123", manager.applyFunction("TeSt 123", "uppercase"));
         assertEquals("TeSt 123", manager.applyFunction("  TeSt 123  ", "trim"));
+        assertEquals("TeSt 123", manager.applyFunction("\2TeSt \4FFFFFF123", "unstyled"));
     }
 
     @Test
