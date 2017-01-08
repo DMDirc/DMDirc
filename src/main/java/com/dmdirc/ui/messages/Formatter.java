@@ -18,7 +18,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Precondition;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.util.DateUtils;
 
 import java.util.HashMap;

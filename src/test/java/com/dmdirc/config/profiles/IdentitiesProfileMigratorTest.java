@@ -23,7 +23,7 @@
 package com.dmdirc.config.profiles;
 
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.provider.ConfigProvider;
 
 import com.google.common.collect.Lists;
 

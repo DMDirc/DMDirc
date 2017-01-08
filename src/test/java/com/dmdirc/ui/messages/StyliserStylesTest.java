@@ -24,7 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.eventbus.MBassadorEventBus;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import java.awt.Color;
 import java.awt.font.TextAttribute;

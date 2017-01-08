@@ -17,7 +17,7 @@
 
 package com.dmdirc.ui;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.interfaces.ui.StatusMessageNotifier;
 
 /**

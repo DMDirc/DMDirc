@@ -18,8 +18,8 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.DisplayPropertyMap;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.config.provider.AggregateConfigProvider;
+import com.dmdirc.config.provider.ConfigChangeListener;
 import com.dmdirc.util.collections.ListenerList;
 
 import java.awt.Font;

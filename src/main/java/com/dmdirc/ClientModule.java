@@ -34,7 +34,7 @@ import com.dmdirc.interfaces.ConnectionFactory;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.LifecycleController;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.plugins.PluginModule;
 import com.dmdirc.ui.messages.ColourManager;

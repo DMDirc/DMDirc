@@ -17,8 +17,7 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ConfigProvider;
-
+import com.dmdirc.config.provider.ConfigProvider;
 import java.util.Comparator;
 
 /**

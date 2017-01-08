@@ -21,8 +21,8 @@
  */
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
+import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.util.validators.NotEmptyValidator;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.StringLengthValidator;

@@ -19,6 +19,9 @@ package com.dmdirc.interfaces.config;
 
 import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigTarget;
+import com.dmdirc.config.provider.AggregateConfigProvider;
+import com.dmdirc.config.provider.ConfigProvider;
+import com.dmdirc.config.provider.ConfigProviderMigrator;
 
 /**
  * Defines methods implemented by a factory which can create useful identities.

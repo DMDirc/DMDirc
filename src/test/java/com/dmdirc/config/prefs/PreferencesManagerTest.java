@@ -25,7 +25,7 @@ package com.dmdirc.config.prefs;
 import com.dmdirc.events.ConnectionPrefsRequestedEvent;
 import com.dmdirc.events.GroupChatPrefsRequestedEvent;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

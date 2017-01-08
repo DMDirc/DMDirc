@@ -23,7 +23,7 @@
 package com.dmdirc.interfaces;
 
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.ui.messages.BackBuffer;
 import com.dmdirc.ui.messages.UnreadStatusManager;
 

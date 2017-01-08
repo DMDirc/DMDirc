@@ -18,8 +18,8 @@
 package com.dmdirc.events;
 
 import com.dmdirc.config.prefs.PreferencesCategory;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
+import com.dmdirc.config.provider.ConfigProvider;
 
 /**
  * Raised when the group chat preferences are requested.

@@ -25,7 +25,7 @@ package com.dmdirc.logger;
 import com.dmdirc.config.binding.ConfigBinder;
 import com.dmdirc.events.ProgramErrorAddedEvent;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import com.google.common.util.concurrent.MoreExecutors;
 

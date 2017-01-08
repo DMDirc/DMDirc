@@ -24,7 +24,7 @@ package com.dmdirc.config;
 
 import com.dmdirc.config.binding.ConfigBinder;
 import com.dmdirc.config.binding.ConfigBinding;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import org.junit.Before;
 import org.junit.Test;

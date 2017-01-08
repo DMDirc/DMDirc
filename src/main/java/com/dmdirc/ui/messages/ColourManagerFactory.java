@@ -17,7 +17,7 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

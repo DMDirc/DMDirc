@@ -23,7 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import org.junit.Ignore;
 import org.junit.Test;

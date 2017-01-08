@@ -17,8 +17,8 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.provider.ConfigChangeListener;
+import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.validators.Validator;
@@ -41,8 +41,6 @@ import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.dmdirc.util.LogUtils.USER_ERROR;
 
 /**
  * Provides configuration settings from a {@link ConfigFile}.
@@ -67,7 +65,7 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
     protected final List<WeakReference<ConfigChangeListener>> listeners =
             new CopyOnWriteArrayList<>();
     /** Whether this identity needs to be saved. */
-    protected boolean needSave;
+    private boolean needSave;
 
     /**
      * Creates a new instance of Identity.
@@ -457,7 +455,7 @@ public class ConfigFileBackedConfigProvider implements ConfigProvider {
 
                 needSave = false;
             } catch (IOException ex) {
-                LOG.warn(USER_ERROR, "Unable to save identity file", ex);
+                LOG.warn("Unable to save identity file", ex);
             }
         }
     }

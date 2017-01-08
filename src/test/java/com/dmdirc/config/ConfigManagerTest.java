@@ -22,7 +22,7 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.config.provider.ConfigChangeListener;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.validators.PermissiveValidator;
 
