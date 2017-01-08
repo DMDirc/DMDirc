@@ -22,9 +22,8 @@
 
 package com.dmdirc.harness;
 
-import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
+import com.dmdirc.config.provider.ReadOnlyConfigProvider;
 import com.dmdirc.util.validators.Validator;
-
 import java.util.Map;
 
 public class TestConfigSource implements ReadOnlyConfigProvider {

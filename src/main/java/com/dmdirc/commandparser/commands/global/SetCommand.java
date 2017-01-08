@@ -28,22 +28,21 @@ import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.commandparser.commands.flags.CommandFlag;
 import com.dmdirc.commandparser.commands.flags.CommandFlagHandler;
 import com.dmdirc.commandparser.commands.flags.CommandFlagResult;
+import com.dmdirc.config.provider.AggregateConfigProvider;
+import com.dmdirc.config.provider.ConfigProvider;
+import com.dmdirc.config.provider.ReadOnlyConfigProvider;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.config.provider.AggregateConfigProvider;
-import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.ui.input.AdditionalTabTargets;
-
+import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * The set command allows the user to inspect and change global config settings.

@@ -18,7 +18,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.profiles.Profile;
-import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
+import com.dmdirc.config.provider.ReadOnlyConfigProvider;
 import com.dmdirc.parser.common.MyInfo;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.parser.interfaces.ProtocolDescription;
@@ -26,14 +26,11 @@ import com.dmdirc.plugins.NoSuchProviderException;
 import com.dmdirc.plugins.Service;
 import com.dmdirc.plugins.ServiceManager;
 import com.dmdirc.plugins.ServiceProvider;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
-
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

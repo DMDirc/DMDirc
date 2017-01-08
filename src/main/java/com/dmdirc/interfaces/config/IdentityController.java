@@ -18,9 +18,9 @@
 package com.dmdirc.interfaces.config;
 
 import com.dmdirc.config.ConfigFileBackedConfigProvider;
-
 import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.config.provider.ConfigProvider;
+import com.dmdirc.config.provider.ReadOnlyConfigProvider;
 import java.util.Collection;
 
 /**

@@ -17,8 +17,7 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
-
+import com.dmdirc.config.provider.ReadOnlyConfigProvider;
 import java.util.List;
 
 /**
