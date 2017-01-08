@@ -26,22 +26,20 @@ import com.dmdirc.commandparser.commands.CommandOptions;
 import com.dmdirc.commandparser.commands.ExternalCommand;
 import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
+import com.dmdirc.config.provider.ReadOnlyConfigProvider;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.UnknownCommandEvent;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.InputModel;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
 import com.dmdirc.util.collections.RollingList;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 

@@ -22,12 +22,9 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
-
+import com.dmdirc.config.provider.ReadOnlyConfigProvider;
 import com.google.common.collect.Lists;
-
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

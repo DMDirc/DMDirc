@@ -20,7 +20,7 @@ package com.dmdirc.events;
 import com.dmdirc.commandparser.PopupMenu;
 import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.events.eventbus.BaseEvent;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 /**
  * Raised when a popup is being generated.

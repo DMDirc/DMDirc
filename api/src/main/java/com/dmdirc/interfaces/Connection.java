@@ -24,7 +24,7 @@ package com.dmdirc.interfaces;
 
 import com.dmdirc.ServerState;
 import com.dmdirc.config.profiles.Profile;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.parser.common.IgnoreList;
 import com.dmdirc.parser.interfaces.Parser;
 

@@ -25,7 +25,7 @@ package com.dmdirc.ui.core.feedback;
 import com.dmdirc.ServerState;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.parser.interfaces.Parser;
 import com.dmdirc.util.ClientInfo;
 

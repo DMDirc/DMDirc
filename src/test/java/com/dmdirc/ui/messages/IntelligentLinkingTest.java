@@ -24,7 +24,7 @@ package com.dmdirc.ui.messages;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChatManager;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import java.util.Arrays;
 import java.util.List;

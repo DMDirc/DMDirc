@@ -22,8 +22,8 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.provider.ConfigChangeListener;
+import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.tests.JimFsRule;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.validators.NumericalValidator;

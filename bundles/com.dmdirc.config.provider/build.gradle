@@ -15,24 +15,44 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.dmdirc.util;
+plugins {
+    id 'java'
+    id 'findbugs'
+    id 'pmd'
+    id 'idea'
+    id 'osgi'
+}
 
-import javax.inject.Inject;
+group = 'com.dmdirc'
 
-/**
- * Injectable wrapper around {@link System}
- */
-public class SystemInfo {
-
-    @Inject
-    public SystemInfo() {
-    }
-
-    public String getProperty(final String key) {
-        return System.getProperty(key);
-    }
-
-    public String getenv(final String name) {
-        return System.getenv(name);
+idea {
+    module {
+         sourceDirs += file('src/main/generated')
+         testSourceDirs += file('src/test/generated_tests')
+         generatedSourceDirs = [file('src/main/generated'), file('src/test/generated_tests')]
     }
 }
+
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 2, 'minutes'
+    resolutionStrategy.cacheChangingModulesFor 2, 'minutes'
+}
+
+dependencies {
+    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.21'
+
+    compile group: 'com.dmdirc', name: 'util', version: '+', changing: true
+    compile group: 'com.dmdirc', name: 'com.dmdirc.config.binding', version: '+', changing: true
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '1.10.19'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+

@@ -17,7 +17,7 @@
 
 package com.dmdirc.updater.components;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.plugins.PluginException;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.updater.UpdateComponent;

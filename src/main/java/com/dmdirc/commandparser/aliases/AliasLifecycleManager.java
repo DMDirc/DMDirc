@@ -17,7 +17,7 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.interfaces.SystemLifecycleComponent;
+import com.dmdirc.util.system.SystemLifecycleComponent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

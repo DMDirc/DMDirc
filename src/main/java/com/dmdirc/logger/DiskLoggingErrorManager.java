@@ -24,7 +24,7 @@ import com.dmdirc.config.binding.ConfigBinding;
 import com.dmdirc.events.ErrorEvent;
 import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import com.google.common.collect.Lists;
 

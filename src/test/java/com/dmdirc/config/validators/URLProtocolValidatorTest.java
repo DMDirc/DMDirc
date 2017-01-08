@@ -23,7 +23,7 @@
 package com.dmdirc.config.validators;
 
 import com.dmdirc.config.InvalidIdentityFileException;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

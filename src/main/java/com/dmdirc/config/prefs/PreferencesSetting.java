@@ -17,13 +17,11 @@
 
 package com.dmdirc.config.prefs;
 
-import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
+import com.dmdirc.config.provider.ConfigProvider;
+import com.dmdirc.config.provider.ReadOnlyConfigProvider;
 import com.dmdirc.util.validators.PermissiveValidator;
 import com.dmdirc.util.validators.Validator;
-
 import com.google.common.collect.Table;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

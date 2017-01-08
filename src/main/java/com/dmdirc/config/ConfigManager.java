@@ -18,10 +18,10 @@
 package com.dmdirc.config;
 
 import com.dmdirc.config.binding.ConfigBinder;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProviderMigrator;
+import com.dmdirc.config.provider.AggregateConfigProvider;
+import com.dmdirc.config.provider.ConfigChangeListener;
+import com.dmdirc.config.provider.ConfigProvider;
+import com.dmdirc.config.provider.ConfigProviderMigrator;
 import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.validators.Validator;
 import com.google.common.collect.ArrayListMultimap;

@@ -23,7 +23,7 @@
 package com.dmdirc.updater.checking;
 
 import com.dmdirc.config.binding.ConfigBinder;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.updater.UpdateComponent;
 import com.dmdirc.updater.Version;
 import com.dmdirc.util.io.Downloader;

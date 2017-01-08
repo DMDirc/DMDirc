@@ -19,7 +19,7 @@ package com.dmdirc.ui.input;
 
 import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

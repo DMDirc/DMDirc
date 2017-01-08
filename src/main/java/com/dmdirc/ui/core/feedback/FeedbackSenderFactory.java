@@ -19,7 +19,7 @@ package com.dmdirc.ui.core.feedback;
 
 import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.util.io.Downloader;
 import javax.inject.Inject;
 

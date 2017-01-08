@@ -46,6 +46,7 @@ dependencies {
     compile group: 'com.squareup.dagger', name: 'dagger', version: '1.2.5'
     compile group: 'com.google.guava', name:'guava', version: '19.0'
     compile group: 'com.dmdirc', name: 'com.dmdirc.config.binding', version: '+', changing: true
+    compile group: 'com.dmdirc', name: 'com.dmdirc.config.provider', version: '+', changing: true
     compile group: 'com.dmdirc', name: 'com.dmdirc.events.eventbus', version: '+', changing: true
     compile group: 'com.dmdirc', name: 'util', version: '+', changing: true
     compile group: 'com.dmdirc', name: 'parser-common', version: '+', changing: true

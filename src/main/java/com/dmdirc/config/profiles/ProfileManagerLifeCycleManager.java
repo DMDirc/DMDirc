@@ -17,7 +17,7 @@
 
 package com.dmdirc.config.profiles;
 
-import com.dmdirc.interfaces.SystemLifecycleComponent;
+import com.dmdirc.util.system.SystemLifecycleComponent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
