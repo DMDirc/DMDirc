@@ -17,7 +17,6 @@
 
 package com.dmdirc.interfaces.config;
 
-import com.dmdirc.Precondition;
 import com.dmdirc.config.ConfigTarget;
 import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.config.provider.ConfigProvider;
@@ -38,8 +37,6 @@ public interface IdentityFactory {
      *
      * @return A config provider for the channel
      */
-    @Precondition({"The specified network is non-null and not empty",
-            "The specified channel is non-null and not empty"})
     ConfigProvider createChannelConfig(String network, String channel);
 
     /**
@@ -49,7 +46,6 @@ public interface IdentityFactory {
      *
      * @return A config provider for the network
      */
-    @Precondition("The specified network is non-null and not empty")
     ConfigProvider createNetworkConfig(String network);
 
     /**
@@ -59,7 +55,6 @@ public interface IdentityFactory {
      *
      * @return A config provider for the server
      */
-    @Precondition("The specified server is non-null and not empty")
     ConfigProvider createServerConfig(String server);
 
     /**
