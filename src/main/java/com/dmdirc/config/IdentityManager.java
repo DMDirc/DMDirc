@@ -17,20 +17,16 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.Precondition;
 import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.config.provider.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
-import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.io.ConfigFile;
 import com.dmdirc.util.io.FileUtils;
 import com.dmdirc.util.io.InvalidConfigFileException;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -46,7 +42,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,8 +81,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      */
     private final Multimap<String, WeakReference<ConfigProviderListener>> listeners =
             ArrayListMultimap.create();
-    /** Client info objecty. */
-    private final ClientInfo clientInfo;
     /** The identity file used for the global config. */
     private ConfigFileBackedConfigProvider config;
     /** The identity file used for addon defaults. */
@@ -103,11 +96,9 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      * @param baseDirectory       The BASE config directory.
      * @param identitiesDirectory The directory to store identities in.
      */
-    public IdentityManager(final Path baseDirectory, final Path identitiesDirectory,
-            final ClientInfo clientInfo) {
+    public IdentityManager(final Path baseDirectory, final Path identitiesDirectory) {
         this.configDirectory = baseDirectory;
         this.identitiesDirectory = identitiesDirectory;
-        this.clientInfo = clientInfo;
     }
 
     /**
@@ -203,10 +194,6 @@ public class IdentityManager implements IdentityFactory, IdentityController {
      *
      * @param dir The directory to be loaded
      */
-    @Precondition({
-        "The specified File is not null",
-        "The specified File is a directory"
-    })
     private void loadUser(final Path dir) {
         checkNotNull(dir);
         checkArgument(Files.isDirectory(dir));
@@ -648,8 +635,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol,
-                ircd, network, server);
+        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -657,8 +643,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public ConfigProviderMigrator createMigratableConfig(final String protocol,
             final String ircd, final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol,
-                ircd, network, server, channel);
+        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server, channel);
         setUpConfigManager(configManager);
         return new ConfigManagerMigrator(configManager);
     }
@@ -666,8 +651,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol,
-                ircd, network, server);
+        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server);
         setUpConfigManager(configManager);
         return configManager;
     }
@@ -675,8 +659,7 @@ public class IdentityManager implements IdentityFactory, IdentityController {
     @Override
     public AggregateConfigProvider createAggregateConfig(final String protocol, final String ircd,
             final String network, final String server, final String channel) {
-        final ConfigManager configManager = new ConfigManager(clientInfo, this, protocol,
-                ircd, network, server, channel);
+        final ConfigManager configManager = new ConfigManager(this, protocol, ircd, network, server, channel);
         setUpConfigManager(configManager);
         return configManager;
     }

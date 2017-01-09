@@ -23,9 +23,7 @@
 package com.dmdirc.config;
 
 import com.dmdirc.config.provider.ConfigChangeListener;
-import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.validators.PermissiveValidator;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -43,17 +41,16 @@ import static org.mockito.Mockito.verify;
 public class ConfigManagerTest {
 
     @Mock private IdentityManager identityManager;
-    @Mock private ClientInfo clientInfo;
 
     @Test
     public void testNonExistantOption() {
-        assertNull(new ConfigManager(clientInfo, identityManager, "", "", "", "")
+        assertNull(new ConfigManager(identityManager, "", "", "", "")
                 .getOption("unit-test123", "foobar"));
     }
 
     @Test
     public void testStats() {
-        final ConfigManager cm = new ConfigManager(clientInfo, identityManager, "", "", "", "");
+        final ConfigManager cm = new ConfigManager(identityManager, "", "", "", "");
         assertNull(ConfigManager.getStats().get("unit-test123.baz"));
         cm.hasOption("unit-test123", "baz", new PermissiveValidator<>());
         assertNotNull(ConfigManager.getStats().get("unit-test123.baz"));
@@ -63,7 +60,7 @@ public class ConfigManagerTest {
     @Test
     public void testDomainListener() {
         final ConfigChangeListener listener = mock(ConfigChangeListener.class);
-        final ConfigManager cm = new ConfigManager(clientInfo, identityManager, "", "", "", "");
+        final ConfigManager cm = new ConfigManager(identityManager, "", "", "", "");
         cm.addChangeListener("unit-test", listener);
 
         cm.configChanged("foo", "bar");
@@ -76,7 +73,7 @@ public class ConfigManagerTest {
     @Test
     public void testDomainKeyListener() {
         final ConfigChangeListener listener = mock(ConfigChangeListener.class);
-        final ConfigManager cm = new ConfigManager(clientInfo, identityManager, "", "", "", "");
+        final ConfigManager cm = new ConfigManager(identityManager, "", "", "", "");
         cm.addChangeListener("unit-test", "foo", listener);
 
         cm.configChanged("foo", "bar");

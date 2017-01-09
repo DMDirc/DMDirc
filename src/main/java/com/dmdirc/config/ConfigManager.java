@@ -22,7 +22,6 @@ import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.config.provider.ConfigChangeListener;
 import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.config.provider.ConfigProviderMigrator;
-import com.dmdirc.util.ClientInfo;
 import com.dmdirc.util.validators.Validator;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -56,8 +55,6 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
     private final ConfigBinder binder;
     /** The manager to use to fetch global state. */
     private final IdentityManager manager;
-    /** Client info object. */
-    private final ClientInfo clientInfo;
     /** The protocol this manager is for. */
     private String protocol;
     /** The ircd this manager is for. */
@@ -81,11 +78,10 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
      * @since 0.6.3
      */
     ConfigManager(
-            final ClientInfo clientInfo,
             final IdentityManager manager,
             final String protocol, final String ircd,
             final String network, final String server) {
-        this(clientInfo, manager, protocol, ircd, network, server, "<Unknown>");
+        this(manager, protocol, ircd, network, server, "<Unknown>");
     }
 
     /**
@@ -101,13 +97,11 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
      * @since 0.6.3
      */
     ConfigManager(
-            final ClientInfo clientInfo,
             final IdentityManager manager,
             final String protocol, final String ircd,
             final String network, final String server, final String channel) {
         final String chanName = channel + '@' + network;
 
-        this.clientInfo = clientInfo;
         this.manager = manager;
         this.protocol = protocol;
         this.ircd = ircd;
@@ -129,7 +123,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
         doStats(domain, option);
 
         if (VERSION_DOMAIN.equals(domain)) {
-            final String response = clientInfo.getVersionConfigSetting(VERSION_DOMAIN, option);
+            final String response = manager.getVersionSettings().getOption(VERSION_DOMAIN, option);
             if (response == null || validator.validate(response).isFailure()) {
                 return null;
             }
@@ -153,7 +147,7 @@ class ConfigManager implements ConfigChangeListener, ConfigProviderListener,
         doStats(domain, option);
 
         if (VERSION_DOMAIN.equals(domain)) {
-            final String response = clientInfo.getVersionConfigSetting(VERSION_DOMAIN, option);
+            final String response = manager.getVersionSettings().getOption(VERSION_DOMAIN, option);
             return response != null && !validator.validate(response).isFailure();
         }
 

@@ -24,19 +24,15 @@ import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.ui.WarningDialog;
-import com.dmdirc.util.ClientInfo;
-
+import dagger.Module;
+import dagger.Provides;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
 
 import static com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import static com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
@@ -55,10 +51,8 @@ public class ConfigModule {
             @Directory(DirectoryType.IDENTITIES) final Path identitiesDirectory,
             @Directory(DirectoryType.ERRORS) final Path errorsDirectory,
             final CommandLineParser commandLineParser,
-            final ClientInfo clientInfo,
             final ErrorManager errorManager) {
-        final IdentityManager identityManager = new IdentityManager(baseDirectory,
-                identitiesDirectory, clientInfo);
+        final IdentityManager identityManager = new IdentityManager(baseDirectory, identitiesDirectory);
         errorManager.initialise(identityManager.getGlobalConfiguration());
         identityManager.loadVersionIdentity();
         try {
