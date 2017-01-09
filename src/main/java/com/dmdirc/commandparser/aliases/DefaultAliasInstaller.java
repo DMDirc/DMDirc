@@ -17,7 +17,7 @@
 
 package com.dmdirc.commandparser.aliases;
 
-import com.dmdirc.interfaces.Migrator;
+import com.dmdirc.util.system.Migrator;
 
 import java.io.IOException;
 import java.io.InputStream;

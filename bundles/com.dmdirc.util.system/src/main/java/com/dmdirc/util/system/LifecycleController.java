@@ -15,40 +15,40 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.dmdirc.config.profiles;
-
-import com.dmdirc.commandline.CommandLineOptionsModule;
-import com.dmdirc.util.system.Migrator;
-import com.dmdirc.util.system.SystemLifecycleComponent;
-
-import java.nio.file.Path;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
+package com.dmdirc.util.system;
 
 /**
- * Dagger module for profiles.
+ * Provides methods that control the lifecycle of the application.
  */
-@Module(library = true, complete = false)
-public class ProfilesModule {
+public interface LifecycleController {
 
-    @Provides
-    @Singleton
-    public ProfileStore getProfileStore(
-            @CommandLineOptionsModule.Directory(CommandLineOptionsModule.DirectoryType.BASE) final Path directory) {
-        return new YamlProfileStore(directory.resolve("profiles.yml"));
-    }
+    /**
+     * Quits the client nicely, with the default closing message.
+     */
+    void quit();
 
-    @Provides(type = Provides.Type.SET)
-    public SystemLifecycleComponent getLifecycleComponent(
-            final ProfileManagerLifeCycleManager manager) {
-        return manager;
-    }
+    /**
+     * Quits the client nicely, with the default closing message.
+     *
+     * @param exitCode This is the exit code that will be returned to the operating system when the
+     *                 client exits
+     */
+    void quit(final int exitCode);
 
-    @Provides(type = Provides.Type.SET)
-    public Migrator getIdentitiesProfileMigrator(final IdentitiesProfileMigrator migrator) {
-        return migrator;
-    }
+    /**
+     * Quits the client nicely.
+     *
+     * @param reason The quit reason to send
+     */
+    void quit(final String reason);
+
+    /**
+     * Quits the client nicely.
+     *
+     * @param reason   The quit reason to send
+     * @param exitCode This is the exit code that will be returned to the operating system when the
+     *                 client exits
+     */
+    void quit(final String reason, final int exitCode);
+
 }

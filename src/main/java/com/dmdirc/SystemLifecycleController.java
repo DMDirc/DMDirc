@@ -21,7 +21,7 @@ import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.ClientClosedEvent;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.LifecycleController;
+import com.dmdirc.util.system.LifecycleController;
 import com.dmdirc.util.system.SystemLifecycleComponent;
 import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;

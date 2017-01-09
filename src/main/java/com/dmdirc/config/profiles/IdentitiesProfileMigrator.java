@@ -17,7 +17,7 @@
 
 package com.dmdirc.config.profiles;
 
-import com.dmdirc.interfaces.Migrator;
+import com.dmdirc.util.system.Migrator;
 import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.google.common.collect.Lists;

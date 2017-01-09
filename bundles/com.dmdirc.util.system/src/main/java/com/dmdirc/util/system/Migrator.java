@@ -15,40 +15,23 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.dmdirc.config.profiles;
-
-import com.dmdirc.commandline.CommandLineOptionsModule;
-import com.dmdirc.util.system.Migrator;
-import com.dmdirc.util.system.SystemLifecycleComponent;
-
-import java.nio.file.Path;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
+package com.dmdirc.util.system;
 
 /**
- * Dagger module for profiles.
+ * A class that can perform one-off migration after a client upgrade.
  */
-@Module(library = true, complete = false)
-public class ProfilesModule {
+public interface Migrator {
 
-    @Provides
-    @Singleton
-    public ProfileStore getProfileStore(
-            @CommandLineOptionsModule.Directory(CommandLineOptionsModule.DirectoryType.BASE) final Path directory) {
-        return new YamlProfileStore(directory.resolve("profiles.yml"));
-    }
+    /**
+     * Determines whether migration is needed or not.
+     *
+     * @return True if migration is required, false otherwise.
+     */
+    boolean needsMigration();
 
-    @Provides(type = Provides.Type.SET)
-    public SystemLifecycleComponent getLifecycleComponent(
-            final ProfileManagerLifeCycleManager manager) {
-        return manager;
-    }
+    /**
+     * Performs the actual migration.
+     */
+    void migrate();
 
-    @Provides(type = Provides.Type.SET)
-    public Migrator getIdentitiesProfileMigrator(final IdentitiesProfileMigrator migrator) {
-        return migrator;
-    }
 }

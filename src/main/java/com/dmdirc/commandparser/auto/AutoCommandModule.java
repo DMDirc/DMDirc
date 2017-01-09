@@ -17,7 +17,7 @@
 
 package com.dmdirc.commandparser.auto;
 
-import com.dmdirc.interfaces.Migrator;
+import com.dmdirc.util.system.Migrator;
 import com.dmdirc.util.system.SystemLifecycleComponent;
 
 import java.nio.file.Path;

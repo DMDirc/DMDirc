@@ -19,7 +19,7 @@ package com.dmdirc.commandparser.aliases;
 
 import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
 import com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType;
-import com.dmdirc.interfaces.Migrator;
+import com.dmdirc.util.system.Migrator;
 import com.dmdirc.util.system.SystemLifecycleComponent;
 
 import java.nio.file.Path;
