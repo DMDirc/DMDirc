@@ -146,8 +146,7 @@ public class Styliser implements ConfigChangeListener, StyleApplier {
                 position += next.length();
 
                 if (position < target.length()) {
-                    position += readControlChars(target.substring(position), state, maker,
-                            position == 0);
+                    position += readControlChars(target.substring(position), state, maker);
                 }
             }
         }
@@ -258,13 +257,10 @@ public class Styliser implements ConfigChangeListener, StyleApplier {
      * applies it to the specified attribute set.
      *
      * @return The number of characters read as control characters
-     *@param string  The string to read from
+     * @param string  The string to read from
      * @param maker The attribute set that new attributes will be applied to
-     * @param isStart Whether this is at the start of the string or not
      */
-    private int readControlChars(final String string,
-            final StyliserState state,
-            final StyledMessageMaker<?> maker, final boolean isStart) {
+    private int readControlChars(final String string, final StyliserState state, final StyledMessageMaker<?> maker) {
         final boolean isNegated = state.isNegated;
 
         // Bold
@@ -375,10 +371,6 @@ public class Styliser implements ConfigChangeListener, StyleApplier {
                 if (!isNegated) {
                     maker.setForeground(colourManager.getColourFromString(
                             String.valueOf(foreground), Colour.WHITE));
-                    if (isStart) {
-                        maker.setDefaultForeground(colourManager
-                                .getColourFromString(String.valueOf(foreground), Colour.WHITE));
-                    }
                 }
 
                 // Now background
@@ -396,10 +388,6 @@ public class Styliser implements ConfigChangeListener, StyleApplier {
                     if (!isNegated) {
                         maker.setBackground(colourManager
                                 .getColourFromString(String.valueOf(background), Colour.WHITE));
-                        if (isStart) {
-                            maker.setDefaultBackground(colourManager
-                                    .getColourFromString(String.valueOf(background), Colour.WHITE));
-                        }
                     }
                 }
             } else if (!isNegated) {
@@ -416,11 +404,6 @@ public class Styliser implements ConfigChangeListener, StyleApplier {
                     maker.setForeground(
                             colourManager.getColourFromString(string.substring(1, 7).toUpperCase(),
                                     Colour.WHITE));
-                    if (isStart) {
-                        maker.setDefaultForeground(
-                                colourManager.getColourFromString(
-                                        string.substring(1, 7).toUpperCase(), Colour.WHITE));
-                    }
                 }
 
                 count += 6;
@@ -435,10 +418,6 @@ public class Styliser implements ConfigChangeListener, StyleApplier {
                     if (!isNegated) {
                         maker.setBackground(colourManager.getColourFromString(
                                 string.substring(count, count + 6).toUpperCase(), Colour.WHITE));
-                        if (isStart) {
-                            maker.setDefaultBackground(colourManager.getColourFromString(
-                                    string.substring(count, count + 6).toUpperCase(), Colour.WHITE));
-                        }
                     }
 
                     count += 6;
