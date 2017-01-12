@@ -55,6 +55,8 @@ public class MultiEventFormatProvider implements EventFormatProvider {
 
     @Override
     public void reload() {
-        for (final EventFormatProvider evp : providers) { evp.reload(); }
+        for (final EventFormatProvider evp : providers) {
+            evp.reload();
+        }
     }
 }
