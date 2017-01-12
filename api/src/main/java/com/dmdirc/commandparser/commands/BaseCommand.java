@@ -22,15 +22,11 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.CommandOutputEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.messages.IRCControlCodes;
-
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**

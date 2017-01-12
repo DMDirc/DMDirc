@@ -28,11 +28,8 @@ import com.dmdirc.commandparser.commands.context.ChannelCommandContext;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.parser.interfaces.ChannelInfo;
 import com.dmdirc.parser.interfaces.Parser;
-
 import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

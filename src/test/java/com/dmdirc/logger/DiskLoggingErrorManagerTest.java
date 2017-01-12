@@ -87,7 +87,7 @@ public class DiskLoggingErrorManagerTest {
     public void testHandleErrorEvent() throws Exception {
         instance.initialise(config);
         instance.handleLoggingSetting(true);
-        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";;
+        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";
         assertFalse(Files.exists(jimFsRule.getPath("/errors", logName)));
         instance.handleErrorEvent(error);
         final Path errorPath = jimFsRule.getPath("/errors", logName);
@@ -99,7 +99,7 @@ public class DiskLoggingErrorManagerTest {
     public void testHandleErrorEventNotLogging() throws Exception {
         instance.initialise(config);
         instance.handleLoggingSetting(false);
-        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";;
+        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";
         assertFalse(Files.exists(jimFsRule.getPath("/errors", logName)));
         instance.handleErrorEvent(error);
         assertFalse(Files.exists(jimFsRule.getPath("/errors", logName)));
