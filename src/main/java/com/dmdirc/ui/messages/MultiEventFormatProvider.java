@@ -53,4 +53,8 @@ public class MultiEventFormatProvider implements EventFormatProvider {
                 .map(Optional::get);
     }
 
+    @Override
+    public void reload() {
+        for (final EventFormatProvider evp : providers) { evp.reload(); }
+    }
 }

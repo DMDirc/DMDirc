@@ -128,4 +128,8 @@ public class YamlEventFormatProvider implements EventFormatProvider {
         return Optional.ofNullable(formats.get(eventType.getSimpleName()));
     }
 
+    @Override
+    public void reload() {
+        load();
+    }
 }

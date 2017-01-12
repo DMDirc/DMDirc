@@ -34,4 +34,8 @@ public interface EventFormatProvider {
      */
     Optional<EventFormat> getFormat(final Class<? extends DisplayableEvent> eventType);
 
+    /**
+     * Reload the formats for this provider.
+     */
+    void reload();
 }
