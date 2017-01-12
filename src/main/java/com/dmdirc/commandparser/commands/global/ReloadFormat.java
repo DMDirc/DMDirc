@@ -53,11 +53,9 @@ public final class ReloadFormat extends BaseCommand implements IntelligentComman
      * Creates a new instance of the {@link ReloadFormat} command.
      *
      * @param controller         The controller to use for command information.
-     * @param identityController The controller to save identities on.
      */
     @Inject
     public ReloadFormat(final CommandController controller,
-                        final IdentityController identityController,
                         final EventFormatProvider formatProvider) {
         super(controller);
         this.formatProvider = formatProvider;
