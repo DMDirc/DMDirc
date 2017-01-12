@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
- * Allows the user to save the config file.
+ * Allows the user to reload the formatter.
  */
 public final class ReloadFormat extends BaseCommand implements IntelligentCommand {
 
