@@ -29,8 +29,6 @@ import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.messages.EventFormatProvider;
-import com.dmdirc.ui.messages.MultiEventFormatProvider;
-import com.dmdirc.ui.messages.YamlEventFormatProvider;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -40,11 +38,15 @@ import javax.inject.Inject;
  */
 public final class ReloadFormat extends BaseCommand implements IntelligentCommand {
 
-    /** A command info object for this command. */
+    /**
+     * A command info object for this command.
+     */
     public static final CommandInfo INFO = new BaseCommandInfo("reloadformat",
             "reloadformat - force the client to reload the format.yml file",
             CommandType.TYPE_GLOBAL);
-    /** Format provider for events. */
+    /**
+     * Format provider for events.
+     */
     private final EventFormatProvider formatProvider;
 
     /**
