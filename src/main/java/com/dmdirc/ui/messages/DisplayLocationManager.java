@@ -28,7 +28,7 @@ import java.util.Set;
 
 @Singleton
 public class DisplayLocationManager {
-    public Map<String, DisplayLocation> displayLocations = new HashMap<>();
+    private final Map<String, DisplayLocation> displayLocations = new HashMap<>();
 
     @Inject
     DisplayLocationManager() {

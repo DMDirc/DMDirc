@@ -29,14 +29,15 @@ import java.util.function.BiPredicate;
 /**
  * Valid values for the DISPLAY_LOCATION property and how to test for them.
  */
+@FunctionalInterface
 public interface DisplayLocation {
     /** Event came from the same WindowModel. */
-    DisplayLocation SOURCE = new DisplayLocationImpl((model, event) -> event.getSource().equals(model));
+    DisplayLocation SOURCE = (model, event) -> event.getSource().equals(model);
 
     /** Event came from a WindowModel that shares the same connection. */
-    DisplayLocation SAME_CONNECTION = new DisplayLocationImpl((model, event) -> event.getSource().getConnection().isPresent()
+    DisplayLocation SAME_CONNECTION = (model, event) -> event.getSource().getConnection().isPresent()
             && model.getConnection().isPresent()
-            && event.getSource().getConnection().get().equals(model.getConnection().get()));
+            && event.getSource().getConnection().get().equals(model.getConnection().get());
     /**
      * Test to see if this location is valid.
      *
@@ -45,24 +46,4 @@ public interface DisplayLocation {
      * @return True if the event should be displayed here.
      */
     boolean shouldDisplay(final WindowModel model, final DisplayableEvent event);
-
-    final class DisplayLocationImpl implements DisplayLocation {
-        /**
-         * Function to test this DisplayLocation.
-         */
-        private BiPredicate<WindowModel, DisplayableEvent> locationTester;
-
-        /**
-         * Create a new DisplayLocation
-         *
-         * @param test Test function to run to see if this location is valid.
-         */
-        DisplayLocationImpl(final BiPredicate<WindowModel, DisplayableEvent> test) {
-            locationTester = test;
-        }
-
-        public boolean shouldDisplay(final WindowModel model, final DisplayableEvent event) {
-            return locationTester.test(model, event);
-        }
-    }
 };

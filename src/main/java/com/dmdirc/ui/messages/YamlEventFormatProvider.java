@@ -131,7 +131,7 @@ public class YamlEventFormatProvider implements EventFormatProvider {
             } catch (final IllegalArgumentException iae) {
                 LOG.info(USER_ERROR, "Invalid displaywindow specified for: {}.\nValid values are: {}",
                         info.get("displaywindow").toString(),
-                        Arrays.toString(displayLocationManager.getDisplayLocations().toArray()));
+                        displayLocationManager.getDisplayLocations().toString());
             }
         }
         return map;
