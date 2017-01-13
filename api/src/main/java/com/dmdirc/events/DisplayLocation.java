@@ -24,8 +24,6 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
 
-import java.util.function.BiPredicate;
-
 /**
  * Valid values for the DISPLAY_LOCATION property and how to test for them.
  */
