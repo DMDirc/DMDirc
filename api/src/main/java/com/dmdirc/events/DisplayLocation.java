@@ -63,6 +63,6 @@ public enum DisplayLocation {
     }
 
     interface DisplayLocationTester {
-        public boolean test(final WindowModel model, final DisplayableEvent event);
+        boolean test(final WindowModel model, final DisplayableEvent event);
     }
 };
