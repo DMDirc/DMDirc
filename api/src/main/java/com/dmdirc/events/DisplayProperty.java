@@ -39,6 +39,8 @@ public interface DisplayProperty<T> {
     DisplayProperty<Boolean> DO_NOT_DISPLAY = new DisplayPropertyImpl<>();
     /** Whether to suppress timestamps for the event. */
     DisplayProperty<Boolean> NO_TIMESTAMPS = new DisplayPropertyImpl<>();
+    /** Where the event should be displayed. */
+    DisplayProperty<DisplayLocation> DISPLAY_LOCATION = new DisplayPropertyImpl<>();
     /** A user that the displayable is linked to. */
     DisplayProperty<User> LINK_USER = new DisplayPropertyImpl<>();
 

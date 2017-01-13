@@ -17,6 +17,7 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.events.DisplayLocation;
 import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.events.DisplayableEvent;
@@ -27,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -119,6 +121,15 @@ public class YamlEventFormatProvider implements EventFormatProvider {
         if (info.containsKey("timestamp")) {
             map.put(DisplayProperty.NO_TIMESTAMPS,
                     !info.get("timestamp").toString().toLowerCase().matches("y|yes|true|1|on"));
+        }
+        if (info.containsKey("displaywindow")) {
+            try {
+                map.put(DisplayProperty.DISPLAY_LOCATION,
+                        DisplayLocation.valueOf(info.get("displaywindow").toString().toUpperCase()));
+            } catch (final IllegalArgumentException iae) {
+                LOG.info(USER_ERROR, "Invalid displaywindow specified for: {}.\nValid values are: {}",
+                        info.get("displaywindow").toString(), Arrays.toString(DisplayLocation.values()));
+            }
         }
         return map;
     }
