@@ -31,10 +31,10 @@ import java.util.function.BiPredicate;
  */
 public interface DisplayLocation {
     /** Event came from the same WindowModel. */
-    final DisplayLocation SOURCE = new DisplayLocationImpl((model, event) -> event.getSource().equals(model));
+    DisplayLocation SOURCE = new DisplayLocationImpl((model, event) -> event.getSource().equals(model));
 
     /** Event came from a WindowModel that shares the same connection. */
-    final DisplayLocation SAME_CONNECTION = new DisplayLocationImpl((model, event) -> event.getSource().getConnection().isPresent()
+    DisplayLocation SAME_CONNECTION = new DisplayLocationImpl((model, event) -> event.getSource().getConnection().isPresent()
             && model.getConnection().isPresent()
             && event.getSource().getConnection().get().equals(model.getConnection().get()));
     /**
