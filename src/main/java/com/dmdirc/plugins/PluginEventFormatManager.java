@@ -25,6 +25,7 @@ import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.EventFormatProvider;
 import com.dmdirc.ui.messages.MultiEventFormatProvider;
 import com.dmdirc.ui.messages.YamlEventFormatProvider;
+import com.dmdirc.ui.messages.DisplayLocationManager;
 import com.dmdirc.util.system.SystemLifecycleComponent;
 import net.engio.mbassy.listener.Handler;
 
