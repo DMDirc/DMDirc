@@ -155,4 +155,7 @@ public class EventFormatter {
         return res.toString();
     }
 
+    public EventFormatProvider getEventFormatProvider() {
+        return formatProvider;
+    }
 }

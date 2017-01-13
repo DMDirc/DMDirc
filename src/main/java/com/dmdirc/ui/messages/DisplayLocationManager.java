@@ -17,39 +17,36 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.commandline.CommandLineOptionsModule.Directory;
-import com.dmdirc.config.GlobalConfig;
-import dagger.Module;
-import dagger.Provides;
+import com.dmdirc.events.DisplayLocation;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
-import static com.dmdirc.commandline.CommandLineOptionsModule.DirectoryType.BASE;
+@Singleton
+public class DisplayLocationManager {
+    private final Map<String, DisplayLocation> displayLocations = new HashMap<>();
 
-/**
- * Dagger module for message related objects.
- */
-@SuppressWarnings("TypeMayBeWeakened")
-@Module(library = true, complete = false)
-public class UiMessagesModule {
-
-    @Provides
-    @Singleton
-    public MultiEventFormatProvider getTemplateProvider(
-            @Directory(BASE) final Path directory,
-            @GlobalConfig final ColourManager colourManager,
-            final DisplayLocationManager displayLocationManager) {
-        final YamlEventFormatProvider yamlProvider =
-                new YamlEventFormatProvider(directory.resolve("format.yml"), colourManager, displayLocationManager);
-        yamlProvider.load();
-        return new MultiEventFormatProvider(yamlProvider);
+    @Inject
+    DisplayLocationManager() {
+        // Add Defaults
+        addDisplayLocation("source", DisplayLocation.SOURCE);
+        addDisplayLocation("sameconnection", DisplayLocation.SAME_CONNECTION);
+        addDisplayLocation("sameserver", DisplayLocation.SAME_CONNECTION);
     }
 
-    @Provides
-    @Singleton
-    public EventFormatProvider getTemplateProvider(final MultiEventFormatProvider provider) {
-        return provider;
+    public void addDisplayLocation(final String name, final DisplayLocation displayLocation) {
+        displayLocations.put(name.toLowerCase().replaceAll("[^a-z]", ""), displayLocation);
     }
 
+    public Optional<DisplayLocation> getDisplayLocation(final String name) {
+        return Optional.ofNullable(displayLocations.get(name.toLowerCase().replaceAll("[^a-z]", "")));
+    }
+
+    public Set<String> getDisplayLocations() {
+        return displayLocations.keySet();
+    }
 }
