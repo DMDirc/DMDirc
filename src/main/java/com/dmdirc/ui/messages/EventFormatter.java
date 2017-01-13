@@ -155,15 +155,7 @@ public class EventFormatter {
         return res.toString();
     }
 
-    /**
-     * Get the displayable properties map for this event according to the formatter.
-     *
-     * @param event Event to get properties for.
-     * @return DisplayPropertyMap from formatter.
-     */
-    public DisplayPropertyMap getFormatDisplayableProperties(final DisplayableEvent event) {
-        return formatProvider.getFormat(event.getClass()).isPresent()
-                ? formatProvider.getFormat(event.getClass()).get().getDisplayProperties()
-                : event.getDisplayProperties();
+    public EventFormatProvider getEventFormatProvider() {
+        return formatProvider;
     }
 }

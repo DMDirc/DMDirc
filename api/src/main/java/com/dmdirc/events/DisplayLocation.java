@@ -24,33 +24,19 @@ package com.dmdirc.events;
 
 import com.dmdirc.interfaces.WindowModel;
 
+import java.util.function.BiPredicate;
+
 /**
  * Valid values for the DISPLAY_LOCATION property and how to test for them.
  */
-public enum DisplayLocation {
+public interface DisplayLocation {
     /** Event came from the same WindowModel. */
-    SOURCE((model, event) -> event.getSource().equals(model)),
+    final DisplayLocation SOURCE = new DisplayLocationImpl((model, event) -> event.getSource().equals(model));
 
     /** Event came from a WindowModel that shares the same connection. */
-    SAMECONNECTION((model, event) -> event.getSource().getConnection().isPresent()
+    final DisplayLocation SAME_CONNECTION = new DisplayLocationImpl((model, event) -> event.getSource().getConnection().isPresent()
             && model.getConnection().isPresent()
-            && event.getSource().getConnection().get().equals(model.getConnection().get())),
-
-    /** Alias for SAMECONNECTION. */
-    SAMESERVER((model, event) -> SAMECONNECTION.shouldDisplay(model, event));
-
-    /** Function to test this DisplayLocation. */
-    private DisplayLocationTester locationTester;
-
-    /**
-     * Create a new DisplayLocation
-     *
-     * @param test Test function to run to see if this location is valid.
-     */
-    DisplayLocation(final DisplayLocationTester test) {
-        locationTester = test;
-    }
-
+            && event.getSource().getConnection().get().equals(model.getConnection().get()));
     /**
      * Test to see if this location is valid.
      *
@@ -58,11 +44,25 @@ public enum DisplayLocation {
      * @param event Event we are wanting to display.
      * @return True if the event should be displayed here.
      */
-    public boolean shouldDisplay(final WindowModel model, final DisplayableEvent event) {
-        return locationTester.test(model, event);
-    }
+    boolean shouldDisplay(final WindowModel model, final DisplayableEvent event);
 
-    interface DisplayLocationTester {
-        boolean test(final WindowModel model, final DisplayableEvent event);
+    final class DisplayLocationImpl implements DisplayLocation {
+        /**
+         * Function to test this DisplayLocation.
+         */
+        private BiPredicate<WindowModel, DisplayableEvent> locationTester;
+
+        /**
+         * Create a new DisplayLocation
+         *
+         * @param test Test function to run to see if this location is valid.
+         */
+        DisplayLocationImpl(final BiPredicate<WindowModel, DisplayableEvent> test) {
+            locationTester = test;
+        }
+
+        public boolean shouldDisplay(final WindowModel model, final DisplayableEvent event) {
+            return locationTester.test(model, event);
+        }
     }
 };

@@ -19,6 +19,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.events.DisplayLocation;
 import com.dmdirc.events.DisplayProperty;
+import com.dmdirc.events.DisplayPropertyMap;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
@@ -86,8 +87,10 @@ public class BackBufferImpl implements BackBuffer {
      * @return True if the event should be displayed, false otherwise.
      */
     private boolean shouldDisplay(final DisplayableEvent event) {
-        return formatter.getFormatDisplayableProperties(event).get(DisplayProperty.DISPLAY_LOCATION)
-                    .orElse(DisplayLocation.SOURCE).shouldDisplay(owner, event)
+        return (formatter.getEventFormatProvider().getFormat(event.getClass()).isPresent() ?
+                formatter.getEventFormatProvider().getFormat(event.getClass()).get().getDisplayProperties()
+                    .get(DisplayProperty.DISPLAY_LOCATION).orElse(DisplayLocation.SOURCE).shouldDisplay(owner, event)
+                        : DisplayLocation.SOURCE.shouldDisplay(owner, event))
                 && !event.hasDisplayProperty(DisplayProperty.DO_NOT_DISPLAY);
     }
 
