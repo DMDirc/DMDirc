@@ -11,4 +11,5 @@
 **/build
 **/src/*/generated
 **/src/*/generated_tests
-
+bundles/*.iml
+bundles/*/*.iml
