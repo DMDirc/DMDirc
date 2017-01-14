@@ -205,6 +205,7 @@ public class Server implements Connection {
 
         highlightManager = new HighlightManager(windowModel);
         windowModel.getEventBus().subscribe(highlightManager);
+        windowModel.getEventBus().subscribe(groupChatManager);
         windowModel.getEventBus().subscribe(this);
     }
 
@@ -675,6 +676,7 @@ public class Server implements Connection {
             synchronized (myStateLock) {
                 eventHandler.unregisterCallbacks();
                 windowModel.getConfigManager().removeListener(configListener);
+                windowModel.getEventBus().unsubscribe(groupChatManager);
                 windowModel.getEventBus().unsubscribe(highlightManager);
                 executorService.shutdown();
 
