@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2017 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,13 @@ import com.dmdirc.commandparser.CommandArguments;
 import com.dmdirc.commandparser.commands.context.ServerCommandContext;
 import com.dmdirc.config.profiles.Profile;
 import com.dmdirc.events.CommandErrorEvent;
+import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.util.URIParser;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +48,6 @@ import static org.mockito.Mockito.when;
 public class ChangeServerTest {
 
     @Mock private EventBus eventBus;
-    @Mock private ErrorManager errorManager;
     @Mock private CommandController controller;
     @Mock private WindowModel tiw;
     @Mock private Profile profile;

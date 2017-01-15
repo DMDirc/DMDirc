@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2017 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,8 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.provider.ConfigChangeListener;
+import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.tests.JimFsRule;
 import com.dmdirc.util.io.InvalidConfigFileException;
 import com.dmdirc.util.validators.NumericalValidator;

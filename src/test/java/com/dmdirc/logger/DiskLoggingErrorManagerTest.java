@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2017 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ package com.dmdirc.logger;
 import com.dmdirc.config.binding.ConfigBinder;
 import com.dmdirc.events.ProgramErrorEvent;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.tests.JimFsRule;
 
 import java.nio.file.Files;
@@ -87,7 +87,7 @@ public class DiskLoggingErrorManagerTest {
     public void testHandleErrorEvent() throws Exception {
         instance.initialise(config);
         instance.handleLoggingSetting(true);
-        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";;
+        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";
         assertFalse(Files.exists(jimFsRule.getPath("/errors", logName)));
         instance.handleErrorEvent(error);
         final Path errorPath = jimFsRule.getPath("/errors", logName);
@@ -99,7 +99,7 @@ public class DiskLoggingErrorManagerTest {
     public void testHandleErrorEventNotLogging() throws Exception {
         instance.initialise(config);
         instance.handleLoggingSetting(false);
-        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";;
+        final String logName = error.getTimestamp() + "-" + error.getError().getLevel() + ".log";
         assertFalse(Files.exists(jimFsRule.getPath("/errors", logName)));
         instance.handleErrorEvent(error);
         assertFalse(Files.exists(jimFsRule.getPath("/errors", logName)));

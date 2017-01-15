@@ -129,12 +129,12 @@ public class EventFormatter {
             }
         }
 
-        String value = target.toString();
+        String value = applyDisplayProperties(displayProperties, target.toString());
         for (int i = 1; i < functionParts.length; i++) {
             value = propertyManager.applyFunction(value, functionParts[i]);
         }
 
-        return applyDisplayProperties(displayProperties, value);
+        return value;
     }
 
     // TODO: It should be possible for plugins etc to add new ways of applying properties.
@@ -155,4 +155,7 @@ public class EventFormatter {
         return res.toString();
     }
 
+    public EventFormatProvider getEventFormatProvider() {
+        return formatProvider;
+    }
 }

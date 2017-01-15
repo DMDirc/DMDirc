@@ -21,7 +21,7 @@ import com.dmdirc.events.ChannelClosedEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.GroupChat;
 import com.dmdirc.interfaces.GroupChatManager;
-import com.dmdirc.interfaces.config.ConfigProviderMigrator;
+import com.dmdirc.config.provider.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.interfaces.ChannelInfo;
@@ -189,7 +189,7 @@ public class GroupChatManagerImpl implements GroupChatManager {
 
     @Handler
     void handleChannelClosing(final ChannelClosedEvent event) {
-        if (event.getChannel().getConnection().equals(connection)) {
+        if (connection.equals(event.getChannel().getConnection().orElse(null))) {
             final GroupChat channel = event.getChannel();
             connection.getWindowModel().getInputModel().get().getTabCompleter()
                     .removeEntry(TabCompletionType.CHANNEL, channel.getName());

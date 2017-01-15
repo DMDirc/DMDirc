@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2017 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,11 @@
 
 package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.commandparser.CommandArguments;
-import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.events.CommandErrorEvent;
 import com.dmdirc.events.CommandOutputEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.ui.messages.IRCControlCodes;
-
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**

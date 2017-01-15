@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2017 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,37 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.dmdirc.config;
 
-import com.dmdirc.harness.TestConfigSource;
+package com.dmdirc.events;
 
-import org.junit.Test;
+import com.dmdirc.interfaces.WindowModel;
 
-import static org.junit.Assert.*;
+/**
+ * Valid values for the DISPLAY_LOCATION property and how to test for them.
+ */
+@FunctionalInterface
+public interface DisplayLocation {
+    /** Event came from the same WindowModel. */
+    DisplayLocation SOURCE = (model, event) -> event.getSource().equals(model);
 
-public class ConfigSourceTest {
-
-    private final TestConfigSource s = new TestConfigSource();
-
-    @Test
-    public void testGetBoolean() {
-        assertTrue(s.getOptionBool("true", "true"));
-        assertFalse(s.getOptionBool("true", "false"));
-    }
-
-    @Test
-    public void testGetInt() {
-        assertEquals(42, s.getOptionInt("true", "42").intValue());
-    }
-
-    @Test
-    public void testGetList() {
-        assertTrue(s.getOptionList("false", "moo").isEmpty());
-        assertTrue(s.getOptionList("true", "").isEmpty());
-        assertTrue(s.getOptionList("true", "\n\n\n").isEmpty());
-        assertEquals(4, s.getOptionList("true", "\n\n\na", false).size());
-        assertEquals(4, s.getOptionList("true", "a\nb\nc\nd", true).size());
-        assertEquals("c", s.getOptionList("true", "a\nb\nc\nd", true).get(2));
-    }
-
-}
+    /** Event came from a WindowModel that shares the same connection. */
+    DisplayLocation SAME_CONNECTION = (model, event) -> event.getSource().getConnection().isPresent()
+            && model.getConnection().isPresent()
+            && event.getSource().getConnection().get().equals(model.getConnection().get());
+    /**
+     * Test to see if this location is valid.
+     *
+     * @param model WindowModel we are wanting to display the event in.
+     * @param event Event we are wanting to display.
+     * @return True if the event should be displayed here.
+     */
+    boolean shouldDisplay(final WindowModel model, final DisplayableEvent event);
+};

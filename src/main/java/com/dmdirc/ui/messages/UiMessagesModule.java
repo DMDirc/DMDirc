@@ -38,9 +38,10 @@ public class UiMessagesModule {
     @Singleton
     public MultiEventFormatProvider getTemplateProvider(
             @Directory(BASE) final Path directory,
-            @GlobalConfig final ColourManager colourManager) {
+            @GlobalConfig final ColourManager colourManager,
+            final DisplayLocationManager displayLocationManager) {
         final YamlEventFormatProvider yamlProvider =
-                new YamlEventFormatProvider(directory.resolve("format.yml"), colourManager);
+                new YamlEventFormatProvider(directory.resolve("format.yml"), colourManager, displayLocationManager);
         yamlProvider.load();
         return new MultiEventFormatProvider(yamlProvider);
     }

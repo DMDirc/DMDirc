@@ -52,11 +52,14 @@ public class YamlEventFormatProvider implements EventFormatProvider {
 
     private final Path path;
     private final ColourManager colourManager;
+    private final DisplayLocationManager displayLocationManager;
     private final Map<String, EventFormat> formats = new HashMap<>();
 
-    public YamlEventFormatProvider(final Path path, final ColourManager colourManager) {
+    public YamlEventFormatProvider(final Path path, final ColourManager colourManager,
+                                   final DisplayLocationManager displayLocationManager) {
         this.path = path;
         this.colourManager = colourManager;
+        this.displayLocationManager = displayLocationManager;
     }
 
     public void load() {
@@ -120,6 +123,16 @@ public class YamlEventFormatProvider implements EventFormatProvider {
             map.put(DisplayProperty.NO_TIMESTAMPS,
                     !info.get("timestamp").toString().toLowerCase().matches("y|yes|true|1|on"));
         }
+        if (info.containsKey("displaywindow")) {
+            try {
+                map.put(DisplayProperty.DISPLAY_LOCATION, displayLocationManager.getDisplayLocation(
+                        info.get("displaywindow").toString()).orElseThrow(() -> new IllegalArgumentException()));
+            } catch (final IllegalArgumentException iae) {
+                LOG.info(USER_ERROR, "Invalid displaywindow specified for: {}.\nValid values are: {}",
+                        info.get("displaywindow").toString(),
+                        displayLocationManager.getDisplayLocations().toString());
+            }
+        }
         return map;
     }
 
@@ -128,4 +141,8 @@ public class YamlEventFormatProvider implements EventFormatProvider {
         return Optional.ofNullable(formats.get(eventType.getSimpleName()));
     }
 
+    @Override
+    public void reload() {
+        load();
+    }
 }

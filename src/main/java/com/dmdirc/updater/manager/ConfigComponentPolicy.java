@@ -18,7 +18,7 @@
 package com.dmdirc.updater.manager;
 
 import com.dmdirc.config.GlobalConfig;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.updater.UpdateComponent;
 
 import javax.inject.Inject;

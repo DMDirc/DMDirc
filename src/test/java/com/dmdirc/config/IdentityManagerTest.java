@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2017 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,19 +22,15 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.tests.JimFsRule;
-import com.dmdirc.util.ClientInfo;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -44,8 +40,6 @@ import static org.junit.Assert.assertNotNull;
 public class IdentityManagerTest {
 
     @Rule public final JimFsRule jimFsRule = new JimFsRule();
-
-    @Mock private ClientInfo clientInfo;
 
     private Path baseDirectory;
     private Path identitiesDirectory;
@@ -58,8 +52,7 @@ public class IdentityManagerTest {
 
     @Test
     public void testLoadsVersionIdentity() throws InvalidIdentityFileException {
-        final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, clientInfo);
+        final IdentityManager identityManager = new IdentityManager(baseDirectory, identitiesDirectory);
         identityManager.initialise();
 
         final ConfigFileBackedConfigProvider versionSettings =
@@ -71,8 +64,7 @@ public class IdentityManagerTest {
 
     @Test
     public void testUsesSystemUsernameForProfileNickname() throws InvalidIdentityFileException {
-        final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, clientInfo);
+        final IdentityManager identityManager = new IdentityManager(baseDirectory, identitiesDirectory);
         identityManager.initialise();
 
         System.setProperty("user.name", "Awesome User");
@@ -86,8 +78,7 @@ public class IdentityManagerTest {
         Files.copy(getClass().getResourceAsStream("profile-new"),
                 identitiesDirectory.resolve("profile"));
 
-        final IdentityManager identityManager = new IdentityManager(
-                baseDirectory, identitiesDirectory, clientInfo);
+        final IdentityManager identityManager = new IdentityManager(baseDirectory, identitiesDirectory);
         identityManager.initialise();
 
         final Collection<ConfigProvider> profiles = identityManager.getProvidersByType("profile");

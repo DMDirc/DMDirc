@@ -15,24 +15,23 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.dmdirc.util;
-
-import javax.inject.Inject;
+package com.dmdirc.util.system;
 
 /**
- * Injectable wrapper around {@link System}
+ * A class that can perform one-off migration after a client upgrade.
  */
-public class SystemInfo {
+public interface Migrator {
 
-    @Inject
-    public SystemInfo() {
-    }
+    /**
+     * Determines whether migration is needed or not.
+     *
+     * @return True if migration is required, false otherwise.
+     */
+    boolean needsMigration();
 
-    public String getProperty(final String key) {
-        return System.getProperty(key);
-    }
+    /**
+     * Performs the actual migration.
+     */
+    void migrate();
 
-    public String getenv(final String name) {
-        return System.getenv(name);
-    }
 }

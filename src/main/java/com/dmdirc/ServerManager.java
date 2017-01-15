@@ -23,7 +23,7 @@ import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.interfaces.ConnectionManager;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.ConfigProviderMigrator;
+import com.dmdirc.config.provider.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.ChannelJoinRequest;
 import com.dmdirc.parser.interfaces.Parser;

@@ -28,9 +28,11 @@ import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.ui.input.AdditionalTabTargets;
+import com.dmdirc.util.system.SystemLifecycleComponent;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.Set;
 
 /**
  * Allows the user to save the config file.
@@ -43,6 +45,8 @@ public final class SaveConfig extends BaseCommand implements IntelligentCommand 
             CommandType.TYPE_GLOBAL);
     /** Identity controller cause to save identities. */
     private final IdentityController identityController;
+    /** Client lifecycle components */
+    private final Set<SystemLifecycleComponent> lifecycleComponents;
 
     /**
      * Creates a new instance of the {@link SaveConfig} command.
@@ -51,16 +55,18 @@ public final class SaveConfig extends BaseCommand implements IntelligentCommand 
      * @param identityController The controller to save identities on.
      */
     @Inject
-    public SaveConfig(final CommandController controller,
+    public SaveConfig(final CommandController controller, final Set<SystemLifecycleComponent> lifecycleComponents,
             final IdentityController identityController) {
         super(controller);
         this.identityController = identityController;
+        this.lifecycleComponents = lifecycleComponents;
     }
 
     @Override
     public void execute(@Nonnull final WindowModel origin,
             final CommandArguments args, final CommandContext context) {
         identityController.saveAll();
+        lifecycleComponents.forEach(SystemLifecycleComponent::save);
         showOutput(origin, args.isSilent(), "Configuration file saved.");
     }
 

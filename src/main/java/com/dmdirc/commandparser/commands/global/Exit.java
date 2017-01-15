@@ -24,7 +24,7 @@ import com.dmdirc.commandparser.CommandType;
 import com.dmdirc.commandparser.commands.BaseCommand;
 import com.dmdirc.commandparser.commands.context.CommandContext;
 import com.dmdirc.interfaces.CommandController;
-import com.dmdirc.interfaces.LifecycleController;
+import com.dmdirc.util.system.LifecycleController;
 import com.dmdirc.interfaces.WindowModel;
 
 import javax.annotation.Nonnull;

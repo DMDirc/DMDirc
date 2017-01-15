@@ -22,7 +22,7 @@ import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.events.PluginLoadedEvent;
 import com.dmdirc.events.PluginUnloadedEvent;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.ConfigProvider;
+import com.dmdirc.config.provider.ConfigProvider;
 import com.dmdirc.interfaces.config.IdentityController;
 import com.dmdirc.util.validators.ValidationResponse;
 

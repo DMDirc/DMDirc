@@ -28,7 +28,7 @@ import com.dmdirc.events.FrameClosingEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
+import com.dmdirc.config.provider.ConfigChangeListener;
 import com.dmdirc.interfaces.ui.InputField;
 import com.dmdirc.interfaces.ui.InputValidationListener;
 import com.dmdirc.parser.common.CompositionState;

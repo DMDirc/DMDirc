@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2015 DMDirc Developers
+ * Copyright (c) 2006-2017 DMDirc Developers
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,14 @@
  */
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.interfaces.Connection;
-import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChatManager;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -41,7 +37,6 @@ import static org.mockito.Mockito.when;
 @RunWith(Parameterized.class)
 public class IntelligentLinkingTest {
 
-    @Mock private EventBus eventBus;
     private final String input, expected;
     private final Styliser styliser;
 

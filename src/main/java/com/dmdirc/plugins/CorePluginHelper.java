@@ -17,9 +17,8 @@
 
 package com.dmdirc.plugins;
 
-import com.dmdirc.interfaces.config.ReadOnlyConfigProvider;
+import com.dmdirc.config.provider.ReadOnlyConfigProvider;
 import com.dmdirc.updater.Version;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

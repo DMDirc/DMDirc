@@ -31,9 +31,9 @@ import com.dmdirc.interfaces.InviteManager;
 import com.dmdirc.interfaces.PrivateChat;
 import com.dmdirc.interfaces.User;
 import com.dmdirc.interfaces.WindowModel;
-import com.dmdirc.interfaces.config.ConfigChangeListener;
-import com.dmdirc.interfaces.config.ConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProviderMigrator;
+import com.dmdirc.config.provider.ConfigChangeListener;
+import com.dmdirc.config.provider.ConfigProvider;
+import com.dmdirc.config.provider.ConfigProviderMigrator;
 import com.dmdirc.interfaces.config.IdentityFactory;
 import com.dmdirc.parser.common.DefaultStringConverter;
 import com.dmdirc.parser.common.IgnoreList;
@@ -205,6 +205,7 @@ public class Server implements Connection {
 
         highlightManager = new HighlightManager(windowModel);
         windowModel.getEventBus().subscribe(highlightManager);
+        windowModel.getEventBus().subscribe(groupChatManager);
         windowModel.getEventBus().subscribe(this);
     }
 
@@ -675,6 +676,7 @@ public class Server implements Connection {
             synchronized (myStateLock) {
                 eventHandler.unregisterCallbacks();
                 windowModel.getConfigManager().removeListener(configListener);
+                windowModel.getEventBus().unsubscribe(groupChatManager);
                 windowModel.getEventBus().unsubscribe(highlightManager);
                 executorService.shutdown();
 

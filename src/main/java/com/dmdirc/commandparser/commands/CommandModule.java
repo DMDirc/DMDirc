@@ -38,6 +38,7 @@ import com.dmdirc.commandparser.commands.global.Ifplugin;
 import com.dmdirc.commandparser.commands.global.LoadPlugin;
 import com.dmdirc.commandparser.commands.global.NewServer;
 import com.dmdirc.commandparser.commands.global.OpenWindow;
+import com.dmdirc.commandparser.commands.global.ReloadFormat;
 import com.dmdirc.commandparser.commands.global.ReloadIdentities;
 import com.dmdirc.commandparser.commands.global.ReloadPlugin;
 import com.dmdirc.commandparser.commands.global.SaveConfig;
@@ -283,6 +284,11 @@ public class CommandModule {
     @Provides(type = Provides.Type.SET)
     public CommandDetails getSaveConfigCommand(final SaveConfig command) {
         return new SimpleCommandDetails(command, SaveConfig.INFO);
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public CommandDetails getReloadFormatCommand(final ReloadFormat command) {
+        return new SimpleCommandDetails(command, ReloadFormat.INFO);
     }
 
     @Provides(type = Provides.Type.SET)

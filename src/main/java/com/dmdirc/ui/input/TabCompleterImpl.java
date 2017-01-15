@@ -17,7 +17,7 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 

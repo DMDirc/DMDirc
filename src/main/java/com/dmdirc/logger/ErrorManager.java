@@ -17,7 +17,7 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import java.util.Set;
 

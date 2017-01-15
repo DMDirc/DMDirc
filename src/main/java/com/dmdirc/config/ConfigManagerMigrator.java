@@ -17,8 +17,8 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
-import com.dmdirc.interfaces.config.ConfigProviderMigrator;
+import com.dmdirc.config.provider.AggregateConfigProvider;
+import com.dmdirc.config.provider.ConfigProviderMigrator;
 
 /**
  * Facilitates migration of a {@link ConfigManager}.

@@ -17,16 +17,13 @@
 
 package com.dmdirc.config.profiles;
 
-import com.dmdirc.config.IdentityManager;
-import com.dmdirc.interfaces.Migrator;
-import com.dmdirc.interfaces.config.ConfigProvider;
-
+import com.dmdirc.util.system.Migrator;
+import com.dmdirc.config.provider.ConfigProvider;
+import com.dmdirc.interfaces.config.IdentityController;
 import com.google.common.collect.Lists;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import javax.inject.Inject;
 
 /**
@@ -35,11 +32,11 @@ import javax.inject.Inject;
 public class IdentitiesProfileMigrator implements Migrator {
 
     private static final String DOMAIN_PROFILE = "profile";
-    private final IdentityManager identityManager;
+    private final IdentityController identityManager;
     private final ProfileManager profileManager;
 
     @Inject
-    public IdentitiesProfileMigrator(final IdentityManager identityManager,
+    public IdentitiesProfileMigrator(final IdentityController identityManager,
             final ProfileManager profileManager) {
         this.identityManager = identityManager;
         this.profileManager = profileManager;

@@ -20,7 +20,7 @@ package com.dmdirc.commandparser;
 import com.dmdirc.events.ClientPopupGeneratedEvent;
 import com.dmdirc.interfaces.CommandController;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.config.AggregateConfigProvider;
+import com.dmdirc.config.provider.AggregateConfigProvider;
 
 import javax.inject.Inject;
 

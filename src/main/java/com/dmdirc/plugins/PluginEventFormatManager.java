@@ -21,11 +21,12 @@ import com.dmdirc.config.GlobalConfig;
 import com.dmdirc.events.PluginLoadedEvent;
 import com.dmdirc.events.PluginUnloadedEvent;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.interfaces.SystemLifecycleComponent;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.EventFormatProvider;
 import com.dmdirc.ui.messages.MultiEventFormatProvider;
 import com.dmdirc.ui.messages.YamlEventFormatProvider;
+import com.dmdirc.ui.messages.DisplayLocationManager;
+import com.dmdirc.util.system.SystemLifecycleComponent;
 import net.engio.mbassy.listener.Handler;
 
 import javax.inject.Inject;
@@ -48,15 +49,18 @@ public class PluginEventFormatManager implements SystemLifecycleComponent {
     private final MultiEventFormatProvider multiEventFormatProvider;
     private final Map<PluginInfo, EventFormatProvider> providers = new HashMap<>();
     private final ColourManager colourManager;
+    private final DisplayLocationManager displayLocationManager;
 
     @Inject
     public PluginEventFormatManager(
             final EventBus eventbus,
             final MultiEventFormatProvider multiEventFormatProvider,
-            @GlobalConfig final ColourManager colourManager) {
+            @GlobalConfig final ColourManager colourManager,
+            final DisplayLocationManager displayLocationManager) {
         this.eventbus = eventbus;
         this.multiEventFormatProvider = multiEventFormatProvider;
         this.colourManager = colourManager;
+        this.displayLocationManager = displayLocationManager;
     }
 
     @Override
@@ -74,7 +78,7 @@ public class PluginEventFormatManager implements SystemLifecycleComponent {
         final Path path = event.getPlugin().getPath("/META-INF/format.yml");
         if (Files.exists(path)) {
             final YamlEventFormatProvider provider =
-                    new YamlEventFormatProvider(path, colourManager);
+                    new YamlEventFormatProvider(path, colourManager, displayLocationManager);
             provider.load();
             providers.put(event.getPlugin(), provider);
             multiEventFormatProvider.addProvider(provider);
