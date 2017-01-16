@@ -15,38 +15,18 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-apply plugin: 'pmd'
-apply plugin: 'jacoco'
-apply plugin: 'com.github.kt3k.coveralls'
+package com.dmdirc;
 
-configurations {
-    codacy
-}
+import org.junit.Test;
 
-dependencies {
-    codacy 'com.codacy:codacy-coverage-reporter:1.0.13'
+/**
+ * Our build system likes at least one test per project...
+ */
+public class DummyTest {
 
-    pmd group: 'net.sourceforge.pmd', name: 'pmd-core', version: '5.2.3'
-    pmd group: 'net.sourceforge.pmd', name: 'pmd-java', version: '5.2.3'
-}
-
-pmd {
-    ruleSets = []
-    ruleSetFiles = files("$rootDir/etc/pmd/full.xml")
-    toolVersion = '5.2.3'
-    ignoreFailures = true
-}
-
-tasks.withType(FindBugs) {
-    reports {
-        html.enabled = true
-        xml.enabled = false
+    @Test
+    public void testNothing() {
+        // Do nothing. Woo.
     }
-}
 
-findbugs {
-    reportLevel = 'low'
-    effort = 'max'
-    ignoreFailures = true
 }
-

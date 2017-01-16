@@ -37,11 +37,11 @@ dependencies:
 
 test:
   override:
-    - ./gradlew --stacktrace --parallel client:jar client:test:
+    - ./gradlew --stacktrace --parallel client:jar client:tests:
         pwd:
           ../meta
   post:
-    - ./gradlew client:jacocoTestReport client:coveralls:
+    - ./gradlew client:sendCoverageToCodacy client:jacocoTestReport client:coveralls:
         pwd:
           ../meta
 
