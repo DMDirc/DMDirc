@@ -19,8 +19,6 @@ package com.dmdirc;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * Our build system likes at least one test per project...
  */
@@ -28,7 +26,7 @@ public class DummyTest {
 
     @Test
     public void testNothing() {
-        assertTrue(true);
+        // Do nothing. Woo.
     }
 
 }
