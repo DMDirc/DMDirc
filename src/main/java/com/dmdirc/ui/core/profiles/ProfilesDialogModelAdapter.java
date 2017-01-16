@@ -21,55 +21,69 @@ import com.dmdirc.interfaces.ui.ProfilesDialogModelListener;
 
 import java.util.Optional;
 
-
+/**
+ * New profiles dialog model adapter, not used, work in progress.
+ */
 public class ProfilesDialogModelAdapter implements ProfilesDialogModelListener {
 
     @Override
     public void profileAdded(final MutableProfile profile) {
+        //Do nothing yet
     }
 
     @Override
     public void profileRemoved(final MutableProfile profile) {
+        //Do nothing yet
     }
 
     @Override
     public void profileEdited(final MutableProfile profile) {
+        //Do nothing yet
     }
 
     @Override
     public void profileSelectionChanged(final Optional<MutableProfile> profile) {
+        //Do nothing yet
     }
 
     @Override
     public void selectedNicknameChanged(final Optional<String> nickname) {
+        //Do nothing yet
     }
 
     @Override
     public void selectedProfileNicknameEdited(final String oldNickname, final String newNickname) {
+        //Do nothing yet
     }
 
     @Override
     public void selectedProfileNicknameAdded(final String nickname) {
+        //Do nothing yet
     }
 
     @Override
     public void selectedProfileNicknameRemoved(final String nickname) {
+        //Do nothing yet
     }
 
     @Override
     public void selectedHighlightChanged(final Optional<String> highlight) {
+        //Do nothing yet
     }
 
     @Override
     public void selectedProfileHighlightEdited(final String oldHighlight, final String newHighlight) {
+        //Do nothing yet
     }
 
     @Override
     public void selectedProfileHighlightAdded(final String highlight) {
+        //Do nothing yet
     }
 
     @Override
     public void selectedProfileHighlightRemoved(final String highlight) {
+        //Do nothing yet
     }
 
 }
