@@ -326,7 +326,7 @@ public class PreferencesSetting {
      * @return true iif the setting will be changed if saved
      */
     public boolean needsSaving() {
-        return (!Objects.equals(value, original))
+        return !Objects.equals(value, original)
                 && (value != null || original != null)
                 && (validator == null || !validator.validate(value).isFailure());
     }

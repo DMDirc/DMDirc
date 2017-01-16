@@ -22,14 +22,11 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.config.provider.ConfigChangeListener;
-import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.util.colours.Colour;
 import com.dmdirc.util.colours.ColourUtils;
 import com.dmdirc.util.validators.ColourValidator;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,10 +46,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ColourManagerTest {
 
-    @Mock private ErrorManager errorManager;
     @Mock private AggregateConfigProvider configManager;
     @Captor private ArgumentCaptor<ConfigChangeListener> configListener;
-    @Mock private EventBus eventBus;
     private ColourManager manager;
 
     @Before

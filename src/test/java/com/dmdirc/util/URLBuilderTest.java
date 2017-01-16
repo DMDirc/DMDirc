@@ -22,18 +22,14 @@
 
 package com.dmdirc.util;
 
-import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.plugins.PluginInfo;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.PluginMetaData;
 import com.dmdirc.tests.JimFsRule;
 import com.dmdirc.ui.themes.ThemeManager;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.inject.Provider;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -56,7 +52,6 @@ public class URLBuilderTest {
     @Mock private ThemeManager themeManager;
     @Mock private PluginInfo pluginInfo;
     @Mock private PluginMetaData pluginMetaData;
-    @Mock private EventBus eventBus;
 
     @Before
     public void setup() throws MalformedURLException {
