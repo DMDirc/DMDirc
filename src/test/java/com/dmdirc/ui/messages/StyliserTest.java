@@ -22,22 +22,14 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.config.provider.AggregateConfigProvider;
-
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
 public class StyliserTest {
-
-    @Mock private EventBus eventBus;
 
     @Test
     public void testReadUntilControl1() {

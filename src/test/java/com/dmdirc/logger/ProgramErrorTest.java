@@ -24,10 +24,7 @@ package com.dmdirc.logger;
 
 import com.dmdirc.events.ProgramErrorStatusEvent;
 import com.dmdirc.events.eventbus.EventBus;
-import com.dmdirc.util.ClientInfo;
-
 import java.time.LocalDateTime;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -44,9 +41,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramErrorTest {
 
-    @Mock private ErrorManager errorManager;
     @Mock private EventBus eventBus;
-    @Mock private ClientInfo clientInfo;
     @Captor private ArgumentCaptor<ProgramErrorStatusEvent> event;
 
     @Test(expected = NullPointerException.class)

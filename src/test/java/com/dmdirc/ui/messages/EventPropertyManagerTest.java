@@ -24,9 +24,7 @@ package com.dmdirc.ui.messages;
 
 import com.dmdirc.Channel;
 import com.dmdirc.events.ChannelMessageEvent;
-import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.GroupChatUser;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +40,6 @@ public class EventPropertyManagerTest {
 
     private EventPropertyManager manager;
 
-    @Mock private EventBus eventBus;
     @Mock private Channel channel;
     @Mock private GroupChatUser client;
 
