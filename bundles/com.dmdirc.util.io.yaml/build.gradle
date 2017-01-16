@@ -17,6 +17,7 @@
 
 plugins {
     id 'java'
+    id 'jacoco'
     id 'findbugs'
     id 'pmd'
     id 'idea'
@@ -52,5 +53,8 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven { url 'http://dl.bintray.com/typesafe/maven-releases' }
 }
+
+apply from: '../../gradle/analysis.gradle'
 
