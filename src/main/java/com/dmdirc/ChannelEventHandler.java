@@ -176,7 +176,7 @@ public class ChannelEventHandler extends EventHandler {
             return;
         }
 
-        eventBus.publish(new ChannelJoinEvent(
+        eventBus.publishAsync(new ChannelJoinEvent(
                 event.getDate(), owner,
                 groupChatUserManager.getUserFromClient(event.getClient(), owner)));
         owner.addClient(groupChatUserManager.getUserFromClient(event.getClient(), owner));
