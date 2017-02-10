@@ -41,8 +41,10 @@ import com.dmdirc.events.ChannelTopicChangeEvent;
 import com.dmdirc.events.ChannelTopicUnsetEvent;
 import com.dmdirc.events.ChannelUserAwayEvent;
 import com.dmdirc.events.ChannelUserBackEvent;
+import com.dmdirc.events.ChannelUserModeChangeEvent;
 import com.dmdirc.interfaces.Connection;
 import com.dmdirc.events.eventbus.EventBus;
+import com.dmdirc.interfaces.GroupChatUser;
 import com.dmdirc.parser.common.AwayState;
 import com.dmdirc.parser.events.ChannelCTCPEvent;
 import com.dmdirc.parser.events.ChannelListModeEvent;
@@ -263,6 +265,19 @@ public class ChannelEventHandler extends EventHandler {
                             event.getDate(),
                             owner, groupChatUserManager.getUserFromClient(client, owner), oldNick));
         }
+    }
+
+    @Handler
+    public void onChannelUserModeChanged(final com.dmdirc.parser.events.ChannelUserModeChangeEvent event) {
+        if (!checkChannel(event.getChannel())) {
+            return;
+        }
+
+        final GroupChatUser client = groupChatUserManager.getUserFromClient(event.getClient(), owner);
+        final GroupChatUser targetClient = groupChatUserManager.getUserFromClient(event.getTargetClient(), owner);
+        final LocalDateTime date = event.getDate();
+
+        eventBus.publishAsync(new ChannelUserModeChangeEvent(date, owner, client, targetClient, event.getMode()));
     }
 
     @Handler
