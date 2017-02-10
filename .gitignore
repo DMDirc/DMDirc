@@ -6,6 +6,7 @@
 /.clover
 /*.key
 /.gradle
+/.nb-gradle
 
 # Generated files created by IDEA
 **/build
