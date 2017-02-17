@@ -680,6 +680,10 @@ public class Server implements Connection {
                 windowModel.getEventBus().unsubscribe(highlightManager);
                 executorService.shutdown();
 
+                if (parser.isPresent()) {
+                    parser.get().shutdown();
+                }
+
                 disconnect();
 
                 myState.transition(ServerState.CLOSING);
@@ -770,6 +774,9 @@ public class Server implements Connection {
             try {
                 parserLock.writeLock().lock();
                 oldParser = parser;
+                if (oldParser.isPresent()) {
+                    oldParser.get().shutdown();
+                }
                 parser = Optional.empty();
             } finally {
                 parserLock.writeLock().unlock();
@@ -819,6 +826,9 @@ public class Server implements Connection {
             try {
                 parserLock.writeLock().lock();
                 oldParser = parser;
+                if (oldParser.isPresent()) {
+                    oldParser.get().shutdown();
+                }
                 parser = Optional.empty();
             } finally {
                 parserLock.writeLock().unlock();
