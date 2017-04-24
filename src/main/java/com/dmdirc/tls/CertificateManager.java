@@ -76,12 +76,6 @@ public class CertificateManager implements X509TrustManager {
     private final AggregateConfigProvider config;
     /** The set of CAs from the global cacert file. */
     private final Set<X509Certificate> globalTrustedCAs = new HashSet<>();
-    /** Whether or not to the issue and expiry dates of the certificate. */
-    private final boolean checkDate;
-    /** Whether or not to the issuer of the certificate. */
-    private final boolean checkIssuer;
-    /** Whether or not to the hostname of the certificate. */
-    private final boolean checkHost;
     /** Used to synchronise the manager with the certificate dialog. */
     private final Semaphore actionSem = new Semaphore(0);
     /** The event bus to post errors to. */
@@ -114,9 +108,6 @@ public class CertificateManager implements X509TrustManager {
         this.connection = connection;
         this.serverName = serverName;
         this.config = config;
-        this.checkDate = config.getOptionBool("ssl", "checkdate");
-        this.checkIssuer = config.getOptionBool("ssl", "checkissuer");
-        this.checkHost = config.getOptionBool("ssl", "checkhost");
         this.userSettings = userSettings;
         this.eventBus = eventBus;
         this.keyStoreLocator = new KeyStoreLocator();
@@ -331,26 +322,22 @@ public class CertificateManager implements X509TrustManager {
         for (X509Certificate cert : chain) {
             final TrustResult trustResult = isTrusted(cert);
 
-            if (checkDate) {
-                // Check that the certificate is in-date
-                try {
-                    cert.checkValidity();
-                } catch (CertificateException ex) {
-                    problems.add(ex);
-                }
+            // Check that the certificate is in-date
+            try {
+                cert.checkValidity();
+            } catch (CertificateException ex) {
+                problems.add(ex);
             }
 
-            if (checkIssuer) {
-                // Check that we trust an issuer
-                verified |= trustResult.isTrusted();
-            }
+            // Check that we trust an issuer
+            verified |= trustResult.isTrusted();
 
             if (trustResult == TrustResult.TRUSTED_MANUALLY) {
                 manual = true;
             }
         }
 
-        if (!verified && checkIssuer) {
+        if (!verified) {
             problems.add(new CertificateNotTrustedException("Issuer is not trusted"));
         }
         return manual;
@@ -362,12 +349,10 @@ public class CertificateManager implements X509TrustManager {
      * @param chain The chain of certificates to check.
      */
     private void checkHost(final X509Certificate... chain) {
-        if (checkHost) {
-            // Check that the cert is issued to the correct host
-            if (!isValidHost(chain[0])) {
-                problems.add(new CertificateDoesntMatchHostException(
-                        "Certificate was not issued to " + serverName));
-            }
+        // Check that the cert is issued to the correct host
+        if (!isValidHost(chain[0])) {
+            problems.add(new CertificateDoesntMatchHostException(
+                    "Certificate was not issued to " + serverName));
         }
     }
 
