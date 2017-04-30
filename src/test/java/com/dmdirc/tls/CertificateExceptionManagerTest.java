@@ -1,17 +1,17 @@
 package com.dmdirc.tls;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import sun.security.tools.keytool.CertAndKeyGen;
-import sun.security.x509.X500Name;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -19,6 +19,13 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link CertificateExceptionManager}.
+ *
+ * <p>These test use two certificates stored in a keystore. They were generated using:
+ *
+ * <pre>
+ * keytool -genkey -validity 18250 -keystore "keystore.ks" -storepass "dmdirc" -keypass "dmdirc" -alias "test1" -dname "CN=Test1, O=DMDirc, C=GB"
+ * keytool -genkey -validity 18250 -keystore "keystore.ks" -storepass "dmdirc" -keypass "dmdirc" -alias "test2" -dname "CN=Test2, O=DMDirc, C=GB"
+ * </pre>
  */
 public class CertificateExceptionManagerTest {
 
@@ -41,23 +48,23 @@ public class CertificateExceptionManagerTest {
 
     @Test
     public void testAddCert() throws GeneralSecurityException, IOException {
-        X509Certificate cert = generateCertificate();
+        final X509Certificate cert = getCertificate(1);
         assertTrue(manager.addExceptedCertificate(cert));
         assertTrue(Files.exists(keyStorePath));
-        Set<X509Certificate> certs = manager.getExceptedCertificates();
+        final Set<X509Certificate> certs = manager.getExceptedCertificates();
         assertEquals(1, certs.size());
         assertTrue(certs.contains(cert));
     }
 
     @Test
     public void testRemoveUnknownCert() throws GeneralSecurityException, IOException {
-        X509Certificate cert = generateCertificate();
+        final X509Certificate cert = getCertificate(1);
         assertFalse(manager.removeExceptedCertificate(cert));
     }
 
     @Test
     public void testRemoveCert() throws GeneralSecurityException, IOException {
-        X509Certificate cert = generateCertificate();
+        final X509Certificate cert = getCertificate(1);
         manager.addExceptedCertificate(cert);
         assertTrue(manager.removeExceptedCertificate(cert));
         assertTrue(manager.getExceptedCertificates().isEmpty());
@@ -65,20 +72,22 @@ public class CertificateExceptionManagerTest {
 
     @Test
     public void testRemoveCertLeavesExisting() throws GeneralSecurityException, IOException {
-        X509Certificate cert1 = generateCertificate();
-        X509Certificate cert2 = generateCertificate();
+        final X509Certificate cert1 = getCertificate(1);
+        final X509Certificate cert2 = getCertificate(2);
         manager.addExceptedCertificate(cert1);
         manager.addExceptedCertificate(cert2);
         assertTrue(manager.removeExceptedCertificate(cert1));
-        Set<X509Certificate> certs = manager.getExceptedCertificates();
+        final Set<X509Certificate> certs = manager.getExceptedCertificates();
         assertEquals(1, certs.size());
         assertTrue(certs.contains(cert2));
     }
 
-    private X509Certificate generateCertificate() throws GeneralSecurityException, IOException {
-        CertAndKeyGen certGen = new CertAndKeyGen("RSA", "SHA256WithRSA", null);
-        certGen.generate(2048);
-        return certGen.getSelfCertificate(new X500Name("CN=Test,O=DMDirc,C=GB"), 120);
+    private X509Certificate getCertificate(final int num) throws GeneralSecurityException, IOException {
+        try (InputStream is = getClass().getResourceAsStream("keystore.ks")) {
+            final KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(is, "dmdirc".toCharArray());
+            return (X509Certificate) keyStore.getCertificate("test" + num);
+        }
     }
 
 }
