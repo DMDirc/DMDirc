@@ -68,7 +68,7 @@ public class CertificateHostChecker {
      * @return True if the name and host parts match; false otherwise.
      */
     private boolean partMatches(final String namePart, final String hostPart) {
-        return namePart.equals("*") || hostPart.toLowerCase().matches(
+        return "*".equals(namePart) || hostPart.toLowerCase().matches(
                 Arrays.stream(namePart.toLowerCase().split("\\*"))
                         .map(Pattern::quote)
                         .collect(Collectors.joining(".*")));
