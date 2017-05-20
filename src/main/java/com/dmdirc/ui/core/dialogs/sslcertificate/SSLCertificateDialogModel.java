@@ -19,6 +19,7 @@ package com.dmdirc.ui.core.dialogs.sslcertificate;
 
 import com.dmdirc.tls.CertificateAction;
 import com.dmdirc.tls.CertificateDoesntMatchHostException;
+import com.dmdirc.tls.CertificateHostChecker;
 import com.dmdirc.tls.CertificateManager;
 import com.dmdirc.tls.CertificateNotTrustedException;
 
@@ -47,6 +48,8 @@ public class SSLCertificateDialogModel {
     private final CertificateManager manager;
     /** The list of problems found with the certs, if any. */
     private final Collection<CertificateException> problems;
+    /** Checker to use for hostnames. */
+    private final CertificateHostChecker hostChecker;
 
     /**
      * Creates a new SSLCertificateDialogModel for the specified chain.
@@ -61,6 +64,7 @@ public class SSLCertificateDialogModel {
         this.chain = chain;
         this.problems = problems;
         this.manager = manager;
+        this.hostChecker = new CertificateHostChecker();
     }
 
     /**
@@ -75,7 +79,7 @@ public class SSLCertificateDialogModel {
         boolean first = true;
 
         for (X509Certificate cert : chain) {
-            boolean invalid = first && !manager.isValidHost(cert);
+            boolean invalid = first && !hostChecker.isValidFor(cert, manager.getServerName());
             first = false;
 
             try {
@@ -123,7 +127,7 @@ public class SSLCertificateDialogModel {
                 cert.getNotAfter().toString(), tooOld, false));
         res.add(group);
 
-        final boolean wrongName = index == 0 && !manager.isValidHost(cert);
+        final boolean wrongName = index == 0 && !hostChecker.isValidFor(cert, manager.getServerName());
         final String names = getAlternateNames(cert);
         final Map<String, String> fields = CertificateManager.getDNFieldsFromCert(cert);
 
@@ -160,7 +164,7 @@ public class SSLCertificateDialogModel {
      *
      * @return A comma-separated list of alternate names
      */
-    protected String getAlternateNames(final X509Certificate cert) {
+    private String getAlternateNames(final X509Certificate cert) {
         final StringBuilder res = new StringBuilder();
 
         try {
@@ -196,11 +200,13 @@ public class SSLCertificateDialogModel {
      * @param field   The name of the field to look for
      * @param invalid Whether or not the field is a cause for concern
      */
-    protected void addCertField(final Map<String, String> fields,
-            final List<CertificateInformationEntry> group, final String title,
-            final String field, final boolean invalid) {
-        group.add(new CertificateInformationEntry(title,
-                fields.containsKey(field) ? fields.get(field) : NOTPRESENT, invalid,
+    private void addCertField(
+            final Map<String, String> fields,
+            final List<CertificateInformationEntry> group,
+            final String title,
+            final String field,
+            final boolean invalid) {
+        group.add(new CertificateInformationEntry(title, fields.getOrDefault(field, NOTPRESENT), invalid,
                 !fields.containsKey(field)));
     }
 
@@ -212,22 +218,22 @@ public class SSLCertificateDialogModel {
     public List<CertificateSummaryEntry> getSummary() {
         final List<CertificateSummaryEntry> res = new ArrayList<>();
 
-        boolean outofdate = false;
-        boolean wronghost = false;
-        boolean nottrusted = false;
+        boolean outOfDate = false;
+        boolean wrongHost = false;
+        boolean notTrusted = false;
 
         for (CertificateException ex : problems) {
             if (ex instanceof CertificateExpiredException
                     || ex instanceof CertificateNotYetValidException) {
-                outofdate = true;
+                outOfDate = true;
             } else if (ex instanceof CertificateDoesntMatchHostException) {
-                wronghost = true;
+                wrongHost = true;
             } else if (ex instanceof CertificateNotTrustedException) {
-                nottrusted = true;
+                notTrusted = true;
             }
         }
 
-        if (outofdate) {
+        if (outOfDate) {
             res.add(new CertificateSummaryEntry("One or more certificates are "
                     + "not within their validity period", false));
         } else {
@@ -235,7 +241,7 @@ public class SSLCertificateDialogModel {
                     + "within their validity period", true));
         }
 
-        if (nottrusted) {
+        if (notTrusted) {
             res.add(new CertificateSummaryEntry("The certificate is not issued "
                     + "by a trusted authority", false));
         } else {
@@ -243,7 +249,7 @@ public class SSLCertificateDialogModel {
                     + "trusted", true));
         }
 
-        if (wronghost) {
+        if (wrongHost) {
             res.add(new CertificateSummaryEntry("The certificate is not issued "
                     + "to the host you are connecting to", false));
         } else {

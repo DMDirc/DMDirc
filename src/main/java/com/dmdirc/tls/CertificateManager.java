@@ -17,13 +17,12 @@
 
 package com.dmdirc.tls;
 
-import com.dmdirc.events.ServerCertificateProblemEncounteredEvent;
-import com.dmdirc.events.ServerCertificateProblemResolvedEvent;
-import com.dmdirc.interfaces.Connection;
-import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.config.provider.AggregateConfigProvider;
 import com.dmdirc.config.provider.ConfigProvider;
-
+import com.dmdirc.events.ServerCertificateProblemEncounteredEvent;
+import com.dmdirc.events.ServerCertificateProblemResolvedEvent;
+import com.dmdirc.events.eventbus.EventBus;
+import com.dmdirc.interfaces.Connection;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,7 +31,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateParsingException;
 import java.security.cert.PKIXParameters;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
@@ -47,14 +45,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
-
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509TrustManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,6 +86,8 @@ public class CertificateManager implements X509TrustManager {
     private final ConfigProvider userSettings;
     /** Locator to use to find a system keystore. */
     private final KeyStoreLocator keyStoreLocator;
+    /** Checker to use for hostnames. */
+    private final CertificateHostChecker hostChecker;
 
     /**
      * Creates a new certificate manager for a client connecting to the specified server.
@@ -111,6 +109,7 @@ public class CertificateManager implements X509TrustManager {
         this.userSettings = userSettings;
         this.eventBus = eventBus;
         this.keyStoreLocator = new KeyStoreLocator();
+        this.hostChecker = new CertificateHostChecker();
 
         loadTrustedCAs();
     }
@@ -206,74 +205,16 @@ public class CertificateManager implements X509TrustManager {
         return TrustResult.UNTRUSTED_GENERAL;
     }
 
-    /**
-     * Determines whether the given certificate has a valid CN or alternate name for this server's
-     * hostname.
-     *
-     * @param certificate The certificate to be validated
-     *
-     * @return True if the certificate is valid for this server's host, false otherwise
-     */
-    public boolean isValidHost(final X509Certificate certificate) {
-        final Map<String, String> fields = getDNFieldsFromCert(certificate);
-        if (fields.containsKey("CN") && isMatchingServerName(fields.get("CN"))) {
-            return true;
-        }
-
-        try {
-            if (certificate.getSubjectAlternativeNames() != null) {
-                for (List<?> entry : certificate.getSubjectAlternativeNames()) {
-                    final int type = (Integer) entry.get(0);
-
-                    // DNS or IP
-                    if ((type == 2 || type == 7) && isMatchingServerName((String) entry.get(1))) {
-                        return true;
-                    }
-                }
-            }
-        } catch (CertificateParsingException ex) {
-            return false;
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks whether the specified target matches the server name this certificate manager was
-     * initialised with.
-     *
-     * Target names may contain wildcards per RFC2818.
-     *
-     * @since 0.6.5
-     * @param target The target to compare to our server name
-     *
-     * @return True if the target matches, false otherwise
-     */
-    protected boolean isMatchingServerName(final String target) {
-        final String[] targetParts = target.split("\\.");
-        final String[] serverParts = serverName.split("\\.");
-
-        if (targetParts.length != serverParts.length) {
-            // Fail fast if they don't match
-            return false;
-        }
-
-        for (int i = 0; i < serverParts.length; i++) {
-            if (!serverParts[i].matches("\\Q" + targetParts[i].replace("*", "\\E.*\\Q") + "\\E")) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType)
             throws CertificateException {
         this.chain = Arrays.copyOf(chain, chain.length);
         problems.clear();
 
-        checkHost(chain);
+        if (!hostChecker.isValidFor(chain[0], serverName)) {
+            problems.add(new CertificateDoesntMatchHostException(
+                    "Certificate was not issued to " + serverName));
+        }
 
         if (checkIssuer(chain)) {
             problems.clear();
@@ -341,19 +282,6 @@ public class CertificateManager implements X509TrustManager {
             problems.add(new CertificateNotTrustedException("Issuer is not trusted"));
         }
         return manual;
-    }
-
-    /**
-     * Checks that the host of the leaf certificate is the same as the server we are connected to.
-     *
-     * @param chain The chain of certificates to check.
-     */
-    private void checkHost(final X509Certificate... chain) {
-        // Check that the cert is issued to the correct host
-        if (!isValidHost(chain[0])) {
-            problems.add(new CertificateDoesntMatchHostException(
-                    "Certificate was not issued to " + serverName));
-        }
     }
 
     /**
