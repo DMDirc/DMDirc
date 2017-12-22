@@ -17,8 +17,10 @@
 
 package com.dmdirc.util;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,7 +85,16 @@ public class URIParser {
         if (!authorityMatcher.matches()) {
             throw new InvalidURIException("Invalid address specified");
         }
-        userInfo = authorityMatcher.group("auth");
+
+        try {
+            // User info may contain special characters. When we pass individual parts to
+            // the URI constructor below, it encodes any characters not allowed in the user
+            // info. To avoid doubly-encoding them we need to decode here...
+            userInfo = URLDecoder.decode(authorityMatcher.group("auth"), "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            throw new InvalidURIException("Unable to create user info", ex);
+        }
+
         host = authorityMatcher.group("host");
         if (authorityMatcher.group("secure") != null && scheme.charAt(scheme.length() - 1) != 's') {
             scheme += "s";
