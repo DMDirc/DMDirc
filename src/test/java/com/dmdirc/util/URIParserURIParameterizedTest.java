@@ -55,7 +55,9 @@ public class URIParserURIParameterizedTest {
             {"irc://irc.test.com:+6667", "ircs://irc.test.com:6667"},
             {"ircs://irc.test.com:+6667", "ircs://irc.test.com:6667"},
             {"ircs://irc.test.com:+6667", "ircs://irc.test.com:6667"},
-            {"ircs://username@irc.test.com:+6667", "ircs://username@irc.test.com:6667"},});
+            {"ircs://username@irc.test.com:+6667", "ircs://username@irc.test.com:6667"},
+            {"ircs://username:password%2Fnetwork@irc.test.com:+6667", "ircs://username:password%2Fnetwork@irc.test.com:6667"},
+        });
     }
 
 }
