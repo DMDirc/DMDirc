@@ -90,7 +90,8 @@ public class URIParser {
             // User info may contain special characters. When we pass individual parts to
             // the URI constructor below, it encodes any characters not allowed in the user
             // info. To avoid doubly-encoding them we need to decode here...
-            userInfo = URLDecoder.decode(authorityMatcher.group("auth"), "UTF-8");
+            String auth = authorityMatcher.group("auth");
+            userInfo = auth == null ? null : URLDecoder.decode(auth, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
             throw new InvalidURIException("Unable to create user info", ex);
         }
