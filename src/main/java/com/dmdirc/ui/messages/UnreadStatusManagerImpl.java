@@ -25,23 +25,14 @@ import com.dmdirc.events.DisplayProperty;
 import com.dmdirc.events.DisplayableEvent;
 import com.dmdirc.events.QueryHighlightEvent;
 import com.dmdirc.events.UnreadStatusChangedEvent;
-import com.dmdirc.events.eventbus.EventBus;
 import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.colours.Colour;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
+import net.engio.mbassy.listener.Handler;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Emitter;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.Observer;
-import io.reactivex.functions.Consumer;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.ReplaySubject;
-import io.reactivex.subjects.Subject;
-import net.engio.mbassy.listener.Handler;
-import org.reactivestreams.Publisher;
 
 /**
  * Tracks unread messages and other notifications.
