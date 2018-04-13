@@ -30,17 +30,27 @@ import com.dmdirc.interfaces.WindowModel;
 import com.dmdirc.util.colours.Colour;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Emitter;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.Observer;
+import io.reactivex.functions.Consumer;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.ReplaySubject;
+import io.reactivex.subjects.Subject;
 import net.engio.mbassy.listener.Handler;
+import org.reactivestreams.Publisher;
 
 /**
  * Tracks unread messages and other notifications.
  */
 public class UnreadStatusManagerImpl implements UnreadStatusManager {
 
-    private final EventBus eventBus;
     private final WindowModel container;
     private final ColourManager colourManager;
+    private final Subject<UnreadStatusChangedEvent> eventSubject;
 
     private int unreadLines;
     private Optional<Colour> notificationColour = Optional.empty();
@@ -51,8 +61,12 @@ public class UnreadStatusManagerImpl implements UnreadStatusManager {
 
     public UnreadStatusManagerImpl(final WindowModel container) {
         this.container = container;
-        this.eventBus = container.getEventBus();
         this.colourManager = new ColourManagerImpl(container.getConfigManager());
+        this.eventSubject = PublishSubject.create();
+
+        eventSubject
+                .throttleLast(200, TimeUnit.MILLISECONDS)
+                .subscribe(unreadStatusChangedEvent -> container.getEventBus().publish(unreadStatusChangedEvent));
     }
 
     @Handler
@@ -177,7 +191,7 @@ public class UnreadStatusManagerImpl implements UnreadStatusManager {
     }
 
     private void publishChangedEvent() {
-        eventBus.publishAsync(new UnreadStatusChangedEvent(container, this, notificationColour,
+        eventSubject.onNext(new UnreadStatusChangedEvent(container, this, notificationColour,
                 unreadLines));
     }
 
